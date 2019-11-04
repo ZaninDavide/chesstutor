@@ -42,7 +42,7 @@ class App extends Component {
     this.addOpening = this.addOpening.bind(this)
   }
 
-  /* ---------------------------- FUNCTIONS ---------------------------- */
+  /* ----------------------------     FUNCTIONS     ---------------------------- */
   /* ---------------------------- DATABASE & SERVER ----------------------------*/
   updateDatabaseOps(new_ops) {
     if (new_ops.toString() !== this.state.user_ops.toString()) {
