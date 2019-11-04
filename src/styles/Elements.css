@@ -1,0 +1,146 @@
+/* here you find the css attached to the elements mostly by their id */
+
+#home_button {
+  margin-top: auto;
+  margin-bottom: auto;
+  margin-right: 0px;
+  margin-left: 0px;
+}
+
+#headerChessTutorLabel {
+  vertical-align: middle;
+  margin-top: auto;
+  margin-bottom: 23px;
+  margin-left: 0px;
+  font-size: 15px;
+}
+
+#opsListPage {
+  overflow-y: auto;
+  overflow-x: hidden;
+}
+
+#newOpButton {
+  position: absolute;
+  margin: 0px;
+  padding: 0px;
+  padding-top: 1px;
+  right: var(--mediumMargin);
+  bottom: var(--mediumMargin);
+  height: var(--uiElementHeight);
+  width: var(--uiElementHeight);
+  text-align: center;
+  line-height: var(--uiElementHeight);
+  font-size: 30px;
+}
+
+#newVariButton {
+  position: absolute;
+  margin: 0px;
+  padding: 0px;
+  padding-top: 1px;
+  right: var(--mediumMargin);
+  bottom: var(--mediumMargin);
+  height: var(--uiElementHeight);
+  width: var(--uiElementHeight);
+  text-align: center;
+  line-height: var(--uiElementHeight);
+  font-size: 30px;
+}
+
+#boardContainer {
+  position: relative; /* necessary for the pieces */
+  grid-area: boardContainer;
+}
+
+#boardSVG {
+  width: 100%;
+  max-height: calc(100vh - var(--headerHeight) - var(--uiElementHeight) - var(--uiElementHeight));
+  max-width: calc(100vh - var(--headerHeight) - var(--uiElementHeight) - var(--uiElementHeight));
+}
+
+.pieceSVG {
+  width: 12.5%;
+  max-height: calc((100vh - var(--headerHeight) - var(--uiElementHeight) - var(--uiElementHeight)) / 8);
+  max-width: calc((100vh - var(--headerHeight) - var(--uiElementHeight) - var(--uiElementHeight)) / 8);
+  position: absolute;
+  transition: transform 0.25s;
+}
+
+.selection {
+  width: 12.5%;
+  max-height: calc((100vh - var(--headerHeight) - var(--uiElementHeight) - var(--uiElementHeight)) / 8);
+  max-width: calc((100vh - var(--headerHeight) - var(--uiElementHeight) - var(--uiElementHeight)) / 8);
+  position: absolute;
+  background-color: rgba(0, 0, 0, 0.15);
+}
+
+#boardGrid{
+  display: grid;
+  width: 100vw;
+  height:  calc(100vh - var(--headerHeight));
+  max-width: calc(100vh - var(--headerHeight) - var(--uiElementHeight) - var(--uiElementHeight));
+  grid-template-rows: auto var(--uiElementHeight) 1fr;
+  grid-template-areas: "boardContainer" "boardUI" "boardData";
+}
+
+#boardUI{
+  min-height: var(--uiElementHeight);
+  width: 100%;
+  /*background-color: rgba(0, 0, 0, 0.15); add to make the gap between boardContainer and boardUI visible*/
+  grid-area: boardUI;
+  display: flex;
+}
+
+#boardData{
+  grid-area: boardData;
+  padding-left: var(--mediumMargin);
+  padding-top: var(--smallMargin);
+  overflow-y: auto;
+  font-size: calc(var(--textSize) * 3 / 4);
+}
+
+.boardButton{
+  margin: 0px !important; /* overwrite simpleButton */
+  flex-grow: 1;
+  /* TEXT */
+  color: var(--buttonColor) !important; /* overwrite simpleButton */
+  font-family: "Material Icons" !important; /* overwrite simpleButton */
+  font-size: var(--iconsFontSize) !important; /* overwrite simpleButton */
+  text-align: center;
+  vertical-align: middle;
+  line-height: var(--uiElementHeight); /* = height*/
+}
+
+.textBox{
+  margin-top: var(--smallMargin);
+  padding-left: 10px;
+  border: 0px;
+  height: var(--uiElementSmallHeight);
+  width: calc(100% - 10px); /*10px = padding-left;*/
+  background-color: var(--makeDarkerColor);
+  color: var(--textColorHighlighted);
+  font-size: var(--textSize);
+  font-family: inherit;
+}
+
+.checkBox{
+  width: var(--uiElementSmallHeight);
+  height: var(--uiElementSmallHeight);
+  background-color: var(--makeDarkerColor);
+}
+
+.checkBox.checked{
+  background-color: var(--textColorHighlighted);
+}
+
+.checkBoxContainer{
+  display: flex;
+  margin-top: var(--smallMargin);
+  line-height: var(--uiElementSmallHeight);
+}
+
+#newOpPageBody, #loginPageBody{
+  margin-left: var(--mediumMargin);
+  margin-right: var(--mediumMargin);
+}

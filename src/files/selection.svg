@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   version="1.1"
+   width="45"
+   height="45"
+   id="svg18"
+   sodipodi:docname="selection.svg"
+   inkscape:version="0.92.3 (2405546, 2018-03-11)">
+  <metadata
+     id="metadata24">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <defs
+     id="defs22" />
+  <sodipodi:namedview
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1"
+     objecttolerance="10"
+     gridtolerance="10"
+     guidetolerance="10"
+     inkscape:pageopacity="0"
+     inkscape:pageshadow="2"
+     inkscape:window-width="1920"
+     inkscape:window-height="1017"
+     id="namedview20"
+     showgrid="false"
+     inkscape:snap-page="true"
+     inkscape:zoom="10.488889"
+     inkscape:cx="17.75186"
+     inkscape:cy="25.326302"
+     inkscape:window-x="1358"
+     inkscape:window-y="-8"
+     inkscape:window-maximized="1"
+     inkscape:current-layer="svg18" />
+  <path
+     style="opacity:1;vector-effect:none;fill:#ffffff;fill-opacity:1;fill-rule:nonzero;stroke:none;stroke-width:2;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-dashoffset:0;stroke-opacity:1;paint-order:normal"
+     d="M 0 0 L 0 7.0546875 L 3.2421875 7.0546875 L 3.2421875 3.2421875 L 7.0546875 3.2421875 L 7.0546875 0 L 0 0 z M 37.945312 0 L 37.945312 3.2421875 L 41.757812 3.2421875 L 41.757812 7.0546875 L 45 7.0546875 L 45 0 L 37.945312 0 z M 0 37.945312 L 0 45 L 7.0546875 45 L 7.0546875 41.757812 L 3.2421875 41.757812 L 3.2421875 37.945312 L 0 37.945312 z M 41.757812 37.945312 L 41.757812 41.757812 L 37.945312 41.757812 L 37.945312 45 L 45 45 L 45 37.945312 L 41.757812 37.945312 z "
+     id="rect4534" />
+</svg>

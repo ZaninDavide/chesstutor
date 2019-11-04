@@ -1,0 +1,265 @@
+@import url("https://fonts.googleapis.com/css?family=Quicksand|Muli|Material+Icons&display=swap");
+
+/* ---------------------------- LAYOUT & THEMES ---------------------------- */
+
+.layout {
+  font-family: "Quicksand", "Segoe UI";
+  --textSize: 16px;
+  --mediumTextSize: 19px;
+  --titleSize: 22px;
+  --textWeight: 300;
+  --mediumWeight: 400;
+  --titleWeight: 500;
+  --titleFont: "Muli", "Courier new";
+  --smallMargin: 5px;
+  --mediumMargin: 15px;
+  --largeMargin: 25px;
+  --borderSize: 1px;
+  --borderRadius: 25px; /* usually 50% of uiElementHeight */
+  --uiElementHeight: 50px; /* like buttons height */
+  --uiElementSmallHeight: 28px; /* like textBox height */
+  --headerHeight: calc(var(--uiElementHeight) + var(--smallMargin) * 4);
+  --iconsFontSize: 26px;
+}
+
+.defaultTheme {
+  --backColor: #3a4151;
+  --borderColor: rgb(204, 204, 204);
+  --textColor: #949dac;
+  --titleColor: white;
+  --borderColor: rgb(146, 146, 146);
+  --buttonColor: rgb(245, 245, 245);
+  --textColorHighlighted: white;
+  --importantButtonColor: #3a4151;
+  --importantButtonBackColor: #65f0b6;
+  --backColorImportantButtonHover: #2ec488;
+  --headerBackColor: #3a4151;
+  --makeDarkerColor: rgba(22, 22, 22, 0.2);
+}
+
+.boardStandardTheme {
+  --blackColor: rgb(121, 92, 69);
+  --whiteColor: rgb(204, 178, 95);
+}
+
+/* ---------------------------- CONTAINERS ---------------------------- */
+
+#root {
+  display: grid;
+  /* SIZE */
+  width: 100vw;
+  height: 100vh;
+  /* SPACES */
+  padding: var(--largeMargin);
+}
+
+#App {
+  outline: none;
+  /* GRID */
+  display: grid;
+  grid-template-areas: "header" "page";
+  grid-template-rows: var(--headerHeight) auto;
+  /* SIZE */
+  width: 100%;
+  height: 100%;
+  overflow: hidden;
+  /* COLORS */
+  background-color: var(--backColor);
+  /* TEXT */
+  color: var(--textColor);
+  font-weight: var(--textWeight);
+  font-size: var(--textSize);
+}
+
+#header {
+  /* GRID */
+  grid-area: header;
+  /* COLORS */
+  background-color: var(--headerBackColor);
+  /* SPACES */
+  margin-left: var(--smallMargin);
+  margin-right: var(--smallMargin);
+  /* CONTENT */
+  display: -webkit-flex; /* Safari */
+  display: flex;
+  vertical-align: middle;
+}
+
+.page {
+  /* GRID */
+  grid-area: page;
+}
+
+/* ---------------------------- TEXT LABELS ---------------------------- */
+
+h1 {
+  /* TEXT */
+  color: var(--titleColor);
+  font-family: var(--titleFont);
+  font-weight: var(--titleWeight);
+  font-size: var(--titleSize);
+  letter-spacing: 0.5px;
+  /* SPACES */
+  margin-top: auto;
+  margin-bottom: auto;
+  margin-left: var(--smallMargin);
+  margin-right: var(--smallMargin);
+}
+
+h2 {
+  /* TEXT */
+  color: var(--titleColor);
+  font-weight: var(--mediumWeight);
+  font-size: var(--mediumTextSize);
+  /* SPACES */
+  margin-top: var(--smallMargin);
+  margin-bottom: var(--smallMargin);
+  margin-left: var(--mediumMargin);
+  margin-right: var(--mediumMargin);
+}
+
+p {
+  /* TEXT */
+  color: var(--textColor);
+  font-weight: var(--textWeight);
+  font-size: var(--textSize);
+  /* SPACES */
+  margin-top: var(--smallMargin);
+  margin-bottom: var(--smallMargin);
+  margin-left: var(--mediumMargin);
+  margin-right: var(--mediumMargin);
+}
+
+/* ---------------------------- BUTTONS ---------------------------- */
+
+button {
+  outline: none;
+}
+
+a {
+  outline: none;
+}
+
+input {
+  outline: none;
+}
+
+.iconButton {
+  /* SIZE */
+  height: var(--uiElementHeight);
+  min-width: var(--uiElementHeight);
+  /* TEXT */
+  color: var(--buttonColor);
+  font-family: "Material Icons";
+  font-size: var(--iconsFontSize);
+  text-align: center;
+  vertical-align: middle;
+  line-height: var(--uiElementHeight); /* = height*/
+  /* COLORS */
+  background-color: transparent;
+  /* BORDERS */
+  border: 0px;
+  border-radius: var(--borderRadius);
+  /* SPACES */
+  margin-top: var(--smallMargin);
+  margin-bottom: var(--smallMargin);
+  margin-left: var(--mediumMargin);
+  margin-right: var(--mediumMargin);
+  padding: 0px;
+  /* TRANSITIONS */
+  transition-property: all;
+  transition-duration: 50ms;
+  transition-timing-function: cubic-bezier(0.3, 0, 0.7, 1);
+  transition-delay: 0s;
+}
+
+.iconButton:hover {
+  /* COLORS */
+  background-color: var(--makeDarkerColor);
+}
+
+button.importantButton {
+  /* SIZE */
+  height: var(--uiElementHeight);
+  border-radius: var(--borderRadius);
+  border: 0px;
+  /* TEXT */
+  color: var(--importantButtonColor);
+  font-weight: var(--textWeight);
+  font-size: var(--mediumTextSize);
+  /* COLORS */
+  background-color: var(--importantButtonBackColor);
+  /* SPACES */
+  margin-top: var(--smallMargin);
+  margin-bottom: var(--smallMargin);
+  margin-left: var(--mediumMargin);
+  margin-right: var(--mediumMargin);
+  padding: 0px;
+  padding-left: var(--largeMargin);
+  padding-right: var(--largeMargin);
+  /* TRANSITIONS */
+  transition-property: all;
+  transition-duration: 50ms;
+  transition-timing-function: cubic-bezier(0.3, 0, 0.7, 1);
+  transition-delay: 0s;
+}
+
+button.importantButton:hover {
+  /* COLORS */
+  background-color: var(--backColorImportantButtonHover);
+  /* TEXT */
+  text-align: center;
+}
+
+button.simpleButton{
+  /* SIZE */
+  height: var(--uiElementHeight);
+  min-width: var(--uiElementHeight);
+  /* TEXT */
+  color: var(--buttonColor);
+  font-family: inherit;
+  font-size: var(--textSize);
+  text-align: center;
+  vertical-align: middle;
+  line-height: var(--uiElementHeight); /* = height*/
+  /* COLORS */
+  background-color: transparent;
+  /* BORDERS */
+  border: 0px;
+  /* SPACES */
+  margin-top: var(--smallMargin);
+  margin-bottom: var(--smallMargin);
+  margin-left: var(--smallMargin);
+  margin-right: var(--smallMargin);
+  padding-left: var(--mediumMargin);
+  padding-right: var(--mediumMargin);
+  /* TRANSITIONS */
+  transition-property: all;
+  transition-duration: 50ms;
+  transition-timing-function: cubic-bezier(0.3, 0, 0.7, 1);
+  transition-delay: 0s;
+}
+
+button.simpleButton:hover {
+  /* COLORS */
+  background-color: var(--makeDarkerColor);
+}
+
+/* OTHERS */
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+.opItem,
+.variItem {
+  cursor: pointer;
+  /* SPACES */
+  padding-top: var(--smallMargin);
+  padding-bottom: var(--smallMargin);
+}
+
+.opItem:hover,
+.variItem:hover {
+  background-color: var(--makeDarkerColor);
+}
