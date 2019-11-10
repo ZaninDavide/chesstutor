@@ -14,7 +14,7 @@ class OpsListPage extends Component {
     if (ops.length > 0) {
       return ops.map((cur, index) => <OpItem op={cur} op_index={index} history={this.props.history} key={`opItem_${index}`} />)
     } else {
-      return <p>No openings yet!</p>
+      return <p><Translator text={"No openings yet! Use the + button in the right bottom corner to create a new one."}/></p>
     }
   }
 

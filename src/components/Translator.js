@@ -15,7 +15,12 @@ const languages = {
     "Opening name": "Opening name",
     "Study as": "Study as",
     Create: "Create",
-    "New opening": "New opening"
+    "New opening": "New opening",
+    Login: "Login",
+    Username: "Username",
+    Password: "Password",
+    "Remember me": "Remember me",
+    "Sign up": "Sign up"
   },
   ita: {
     Openings: "Aperture",
@@ -30,7 +35,12 @@ const languages = {
     "Opening name": "Nome apertura",
     "Study as": "Studia come",
     Create: "Crea",
-    "New opening": "Nuova apertura"
+    "New opening": "Nuova apertura",
+    Login: "Accedi",
+    Username: "Nome utente",
+    Password: "Password",
+    "Remember me": "Ricordami",
+    "Sign up": "Iscriviti"
   }
 }
 

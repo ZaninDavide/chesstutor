@@ -10,7 +10,7 @@
   --textWeight: 300;
   --mediumWeight: 400;
   --titleWeight: 500;
-  --titleFont: "Muli", "Courier new";
+  --titleFont: "Muli", "Arial";
   --smallMargin: 5px;
   --mediumMargin: 15px;
   --largeMargin: 25px;
@@ -32,7 +32,7 @@
   --textColorHighlighted: white;
   --importantButtonColor: #3a4151;
   --importantButtonBackColor: #65f0b6;
-  --backColorImportantButtonHover: #2ec488;
+  --backColorImportantButtonHover: hsl(156, 35%, 50%);
   --headerBackColor: #3a4151;
   --makeDarkerColor: rgba(22, 22, 22, 0.2);
 }
@@ -69,20 +69,6 @@
   color: var(--textColor);
   font-weight: var(--textWeight);
   font-size: var(--textSize);
-}
-
-#header {
-  /* GRID */
-  grid-area: header;
-  /* COLORS */
-  background-color: var(--headerBackColor);
-  /* SPACES */
-  margin-left: var(--smallMargin);
-  margin-right: var(--smallMargin);
-  /* CONTENT */
-  display: -webkit-flex; /* Safari */
-  display: flex;
-  vertical-align: middle;
 }
 
 .page {
@@ -142,6 +128,15 @@ a {
 
 input {
   outline: none;
+}
+
+.iconText{
+  font-family: "Material Icons";
+  font-size: var(--iconsFontSize);
+  text-align: center;
+  vertical-align: middle;
+  line-height: var(--uiElementHeight); /* = height*/
+  margin: 0px;
 }
 
 .iconButton {

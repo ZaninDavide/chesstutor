@@ -7,14 +7,6 @@
   margin-left: 0px;
 }
 
-#headerChessTutorLabel {
-  vertical-align: middle;
-  margin-top: auto;
-  margin-bottom: 23px;
-  margin-left: 0px;
-  font-size: 15px;
-}
-
 #opsListPage {
   overflow-y: auto;
   overflow-x: hidden;
@@ -143,4 +135,42 @@
 #newOpPageBody, #loginPageBody{
   margin-left: var(--mediumMargin);
   margin-right: var(--mediumMargin);
+}
+
+
+#headerChessTutorLabel {
+  vertical-align: middle;
+  margin-top: auto;
+  margin-bottom: 23px;
+  margin-left: 0px;
+  font-size: 15px;
+}
+
+#header{
+  /* GRID */
+  grid-area: header;
+  /* COLORS */
+  background-color: var(--headerBackColor);
+  /* SPACES */
+  margin-left: var(--smallMargin);
+  /* CONTENT */
+  vertical-align: middle;
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas: "headerLeftSide headerRightSide";
+}
+
+#headerButton{
+  margin-top: calc((var(--headerHeight) - var(--uiElementHeight)) / 2); /* this shouldn't be necessary because the header has vertical-align: middle but really it's needed*/
+  margin-right: calc((var(--headerHeight) - var(--uiElementHeight)) / 2);
+}
+
+#headerLeftSide{
+  grid-area: headerLeftSide;
+  display: -webkit-flex; /* Safari */
+  display: flex;
+}
+
+#headerRightSide{
+  grid-area: headerRightSide;
 }

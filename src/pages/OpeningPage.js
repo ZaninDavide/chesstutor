@@ -19,7 +19,7 @@ class OpeningPage extends Component {
     const op = this.props.ops[op_index]
     return (
       <React.Fragment>
-        <Header title={op.op_name} />
+        <Header title={op.op_name} headerButtonContent={<span className="iconText">school</span>} /> {/* play_arrow */}
         <div className="page">{this.getVariItems(op.variations, op_index)}</div>
         <button id="newVariButton" className="importantButton">
           +
