@@ -17,6 +17,9 @@ import blackPawnSVG from "../files/black_pawn.svg"
 import blackBishopSVG from "../files/black_bishop.svg"
 import selectionSVG from "../files/selection.svg"
 
+import Modal from "../components/Modal"
+import Translator from "../components/Translator"
+
 const cells = {
   "1": "700",
   "2": "600",
@@ -115,7 +118,9 @@ class Board extends Component {
     this.state = {
       game: new Chess(),
       json_moves: [], // moves' history in the correct format (see vari.moves)
-      selected_cell: undefined // undefined or "d4"
+      selected_cell: undefined, // undefined or "d4"
+      variNameModalVisible: false,
+      new_vari_name: "Unnammed opening"
     }
 
     this.newGame = this.newGame.bind(this)
@@ -125,6 +130,9 @@ class Board extends Component {
     this.boardClick = this.boardClick.bind(this)
     this.clickCell = this.clickCell.bind(this)
     this.try_undo = this.try_undo.bind(this)
+    this.closeVariNameModal = this.closeVariNameModal.bind(this);
+    this.openVariNameModal = this.openVariNameModal.bind(this);
+    this.createThisVariation = this.createThisVariation.bind(this);
   }
 
   /* ---------------------------- COMPONENT ---------------------------- */
@@ -132,19 +140,29 @@ class Board extends Component {
   render() {
     console.log("render")
     return (
-      <div id="boardGrid">
-        <div id="boardContainer" onClick={this.boardClick} onDragOver={ev => ev.preventDefault()} onDrop={this.boardClick} ref={"bContainer"} key="boardContainer">
-          {this.selection()}
-          {this.pieces()}
-          <img id="boardSVG" src={boardSVG} alt={"Board file missing"} ref="board" key="board" />
+      <React.Fragment>
+        <div id="boardGrid">
+          <div id="boardContainer" onClick={this.boardClick} onDragOver={ev => ev.preventDefault()} onDrop={this.boardClick} ref={"bContainer"} key="boardContainer">
+            {this.selection()}
+            {this.pieces()}
+            <img id="boardSVG" src={boardSVG} alt={"Board file missing"} ref="board" key="board" />
+          </div>
+          <div id="boardUI">
+            {this.boardButtons()}
+          </div>
+          <div id="boardData">
+            Comments: ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao 
+          </div>
         </div>
-        <div id="boardUI">
-          {this.boardButtons()}
-        </div>
-        <div id="boardData">
-          Comments: ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao 
-        </div>
-      </div>
+        <Modal visible={this.state.variNameModalVisible} close={this.closeVariNameModal} onDoneClick={this.createThisVariation}>
+              <Translator text={"New variation name"} />:
+              <input type="text" 
+                className="textBox"
+                value={this.state.new_vari_name} 
+                onChange={e => this.setState({new_vari_name: e.target.value})}
+              />
+          </Modal>
+      </React.Fragment>
     )
   }
 
@@ -362,9 +380,24 @@ class Board extends Component {
   boardButtons(){
     return <React.Fragment>
       <button className="simpleButton boardButton" onClick={this.try_undo}>keyboard_arrow_left</button>
-      <button className="simpleButton boardButton">done</button>
+      <button className="simpleButton boardButton" onClick={this.openVariNameModal}>done</button>
       <button className="simpleButton boardButton">emoji_objects</button>
     </React.Fragment>
+  }
+
+  closeVariNameModal(){
+    console.log("close")
+    this.setState({variNameModalVisible: false})
+  }
+
+  openVariNameModal(){
+    console.log("open")
+    this.setState({variNameModalVisible: true})
+  }
+
+  createThisVariation(){
+    let vari_index = this.props.createVari(this.state.new_vari_name, this.state.json_moves, this.props.op_index)
+    this.props.history.push("/openings/" + this.props.op_index)
   }
 
   /* ---------------------------- TEDEOUS JOB ---------------------------- */

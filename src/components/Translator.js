@@ -20,7 +20,9 @@ const languages = {
     Username: "Username",
     Password: "Password",
     "Remember me": "Remember me",
-    "Sign up": "Sign up"
+    "Sign up": "Sign up",
+    "No openings yet!" : "No openings yet!",
+    "New variation name" : "New variation name"
   },
   ita: {
     Openings: "Aperture",
@@ -40,7 +42,9 @@ const languages = {
     Username: "Nome utente",
     Password: "Password",
     "Remember me": "Ricordami",
-    "Sign up": "Iscriviti"
+    "Sign up": "Iscriviti",
+    "No openings yet!" : "La tua lista aperture è vuota!",
+    "New variation name" : "Nome della nuova variante"
   }
 }
 

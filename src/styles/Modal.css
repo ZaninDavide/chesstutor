@@ -1,0 +1,32 @@
+.modal{
+    position: fixed;
+    left:0px;
+    top:0px;
+    width: 100vw;
+    height: 100vh;
+    /*transition: background-color 0.1s;*/
+    z-index: 1;
+}
+
+.modalContent{
+    margin-top: 30vh;
+    height: 30vh;
+    width: calc(100vw - var(--mediumMargin) * 2);
+    background-color: var(--backColor);
+    padding: var(--mediumMargin);
+}
+
+.modalButton{
+    /* TEXT */
+    margin: 0px !important;
+    color: var(--buttonColor) !important;
+    font-family: "Material Icons" !important;
+    font-size: var(--iconsFontSize) !important;
+    text-align: center;
+    vertical-align: middle;
+    line-height: var(--uiElementHeight); /* = height*/
+    right: 0px;
+    top: calc(60vh - var(--uiElementHeight) + var(--mediumMargin) * 2);
+    position: absolute;
+    width: 100px;
+}

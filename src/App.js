@@ -67,6 +67,7 @@ class App extends Component {
       this.setState(() => {
         let ops = userData.user_ops
 
+        // NEW USER
         // if this is a new user give it the default openings 
         if (ops === undefined){
           this.updateDB(defaultOps) // add them to the database
@@ -111,7 +112,7 @@ class App extends Component {
   }
 
 
-  updateDB(new_ops) {
+  updateDB(new_ops = this.state.user_ops) {
     /*if (new_ops.toString() !== this.state.user_ops.toString()) {
       // Warning you that you are saving in the database something that is different from what the user sees now
       console.log("updateDB: database and state won't match. the database will be updated aniway")
@@ -133,8 +134,9 @@ class App extends Component {
   addOpening(op_object) {
     if (op_object.op_name !== undefined && op_object.op_color !== undefined) {
       /* Update state and database */
-      const op_index = 0 // index of the new opening
-      console.log(op_object)
+      const op_index = this.state.user_ops.length // index of the new opening
+      this.state.user_ops.push(op_object)
+      this.updateDB()
       return op_index
     } else {
       console.log("addOpening: Can't add an opening without op_name or user_color")
@@ -147,7 +149,7 @@ class App extends Component {
   }
 
   newVariation(vari_name = "Classic", vari_moves = []){
-    // generates a new variation
+    // generates a new variation (returns a vari_object)
     // WARN: it doesn't add it. To do that use addVariation
     return {
       vari_name: vari_name,
@@ -159,7 +161,9 @@ class App extends Component {
   addVariation(vari_object, op_index){
     if(vari_object.vari_name !== undefined){
       /* Update state and database */
-      const vari_index = 0 // index of the new variation
+      const vari_index = this.state.user_ops[op_index].variations.length // index of the new variation
+      this.state.user_ops[op_index].variations.push(vari_object)
+      this.updateDB()
       return vari_index
     }else {
       console.log("addVariation: Can't add an variation without its name")
@@ -167,15 +171,15 @@ class App extends Component {
     }
   }
 
-  createVari(new_vari_name, vari_moves){
-    return this.addVariation(this.newVariation(new_vari_name, vari_moves))
+  createVari(new_vari_name, vari_moves, op_index){
+    return this.addVariation(this.newVariation(new_vari_name, vari_moves), op_index)
   }
 
   /* ---------------------------- RENDER ---------------------------- */
   render() {
     const opsListPage = ({ history }) => <OpsListPage ops={this.state.user_ops} history={history} updateDB={this.updateUserData}/>
     const opPage = ({ match, history }) => <OpeningPage ops={this.state.user_ops} history={history} match={match} />
-    const variPage = ({ match, history }) => <VariationPage ops={this.state.user_ops} history={history} match={match} />
+    const variPage = ({ match, history }) => <VariationPage ops={this.state.user_ops} history={history} match={match} createVari={this.createVari}/>
     const newOpPage = ({ match, history }) => <NewOpPage history={history} match={match} createOp={this.createOp}/>
     const loginPage = ({ match, history }) => <LoginPage history={history} match={match} setBearer={this.setBearer}/>
 
@@ -184,8 +188,8 @@ class App extends Component {
         <Router>
           <div id="App" className={`layout ${this.state.colorTheme}`}>
             <Switch>
-              <Route path="/" component={loginPage} />
-              <Route path="/home" exact component={opsListPage} />
+              <Route path="/" component={loginPage} exact/>
+              <Route path="/home" component={opsListPage} />
               <Route path="/newOpening" component={newOpPage} />
               <Route path="/createVariation" component={CreateVariPage} />
               <Route path="/revise" component={RevisePage} />

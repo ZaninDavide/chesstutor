@@ -212,7 +212,7 @@ button.simpleButton{
   min-width: var(--uiElementHeight);
   /* TEXT */
   color: var(--buttonColor);
-  font-family: inherit;
+  /*font-family: inherit;*/
   font-size: var(--textSize);
   text-align: center;
   vertical-align: middle;
