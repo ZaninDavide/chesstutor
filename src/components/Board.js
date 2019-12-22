@@ -120,7 +120,7 @@ class Board extends Component {
       json_moves: [], // moves' history in the correct format (see vari.moves)
       selected_cell: undefined, // undefined or "d4"
       variNameModalVisible: false,
-      new_vari_name: "Unnammed opening"
+      new_vari_name: ""
     }
 
     this.newGame = this.newGame.bind(this)
@@ -160,6 +160,11 @@ class Board extends Component {
                 className="textBox"
                 value={this.state.new_vari_name} 
                 onChange={e => this.setState({new_vari_name: e.target.value})}
+                onKeyPress={e => {
+                  if (e.which === 13 || e.keyCode === 13) {
+                    this.createThisVariation()
+                  }
+                }}
               />
           </Modal>
       </React.Fragment>
@@ -396,7 +401,7 @@ class Board extends Component {
   }
 
   createThisVariation(){
-    let vari_index = this.props.createVari(this.state.new_vari_name, this.state.json_moves, this.props.op_index)
+    /*let vari_index = */this.props.createVari(this.state.new_vari_name, this.state.json_moves, this.props.op_index)
     this.props.history.push("/openings/" + this.props.op_index)
   }
 

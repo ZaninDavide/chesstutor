@@ -30,3 +30,31 @@
     position: absolute;
     width: 100px;
 }
+
+
+.hMenuBack{
+    position: fixed;
+    left:0px;
+    width: 100vw;
+    height: 100vh;
+    transition-property: background-color;
+    transition-property: 0.1s;
+    z-index: 1;
+}
+
+.hMenuContent{
+    background-color: var(--backColor);
+    position: fixed;
+    left:0px;
+    bottom:0px;
+    width: 100vw;
+    height: calc(var(--uiElementHeight) + var(--mediumMargin));
+    z-index: 1;
+    transition-property: background-color, margin-bottom;
+    transition-timing-function: linear, ease-in-out;
+    transition-duration: .2s, .2s;
+    border-top: 10px;
+    border-radius: 10px 10px 0px 0px;
+    display: flex;
+    overflow: hidden; /* avoids buttons to display in the rounded corner area */
+}

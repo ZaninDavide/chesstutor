@@ -8,6 +8,7 @@ import OpsListPage from "./pages/OpsListPage"
 import VariationPage from "./pages/VariationPage"
 import NewOpPage from "./pages/NewOpPage"
 import LoginPage from "./pages/LoginPage"
+import NewVariPage from "./pages/NewVariPage"
 
 import "./styles/App.css" // css by CLASSES + MAIN COMPONENTS
 import "./styles/Elements.css" // css by ID + SECONDARY COMPONENTS
@@ -23,7 +24,8 @@ const defaultOps = [
         vari_score: 0,
         moves: [{ from: "d2", to: "d4", promotion: undefined, san: "d4", comment: "That's the first move, don't forget it."}] // , fen: "" 
       }
-    ]
+    ],
+    favorite: false
   }
 ]
 
@@ -46,6 +48,7 @@ class App extends Component {
     this.getUserData = this.getUserData.bind(this)
     this.setBearer = this.setBearer.bind(this)
     this.logout = this.logout.bind(this)
+    this.deleteOpening = this.deleteOpening.bind(this)
 
     // write the remember me part
   }
@@ -127,7 +130,8 @@ class App extends Component {
     return {
       op_name: op_name,
       op_color: op_color,
-      variations: []
+      variations: [],
+      favorite: false,
     }
   }
 
@@ -175,11 +179,21 @@ class App extends Component {
     return this.addVariation(this.newVariation(new_vari_name, vari_moves), op_index)
   }
 
+  deleteOpening(op_index){
+    this.setState(old => {
+      let new_user_ops = old.user_ops
+      new_user_ops.splice(op_index, 1)
+      this.updateDB(new_user_ops)
+      return {user_ops: new_user_ops}
+    })
+  }
+
   /* ---------------------------- RENDER ---------------------------- */
   render() {
-    const opsListPage = ({ history }) => <OpsListPage ops={this.state.user_ops} history={history} updateDB={this.updateUserData}/>
+    const opsListPage = ({ history }) => <OpsListPage ops={this.state.user_ops} history={history} updateDB={this.updateUserData} deleteOpening={this.deleteOpening} />
     const opPage = ({ match, history }) => <OpeningPage ops={this.state.user_ops} history={history} match={match} />
     const variPage = ({ match, history }) => <VariationPage ops={this.state.user_ops} history={history} match={match} createVari={this.createVari}/>
+    const newVariPage = ({ match, history }) => <NewVariPage ops={this.state.user_ops} history={history} match={match} createVari={this.createVari}/>
     const newOpPage = ({ match, history }) => <NewOpPage history={history} match={match} createOp={this.createOp}/>
     const loginPage = ({ match, history }) => <LoginPage history={history} match={match} setBearer={this.setBearer}/>
 
@@ -193,6 +207,7 @@ class App extends Component {
               <Route path="/newOpening" component={newOpPage} />
               <Route path="/createVariation" component={CreateVariPage} />
               <Route path="/revise" component={RevisePage} />
+              <Route path="/newVariation/:op_index" component={newVariPage} />
               <Route path="/openings/:op_index/:vari_index" component={variPage} />
               <Route path="/openings/:op_index" component={opPage} />
               <Route path="/" component={() => <p>Error 404! Page not found</p>} />

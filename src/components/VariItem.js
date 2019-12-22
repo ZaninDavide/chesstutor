@@ -8,7 +8,7 @@ class VariItem extends Component {
   }
 
   openVari() {
-    this.props.history.push("/openings/" + this.props.op_index.toString() + "/" + this.props.vari_index.toString())
+    /*this.props.history.push("/openings/" + this.props.op_index.toString() + "/" + this.props.vari_index.toString())*/
   }
 
   render() {

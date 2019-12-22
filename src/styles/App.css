@@ -54,7 +54,6 @@
 }
 
 #App {
-  outline: none;
   /* GRID */
   display: grid;
   grid-template-areas: "header" "page";
@@ -69,6 +68,14 @@
   color: var(--textColor);
   font-weight: var(--textWeight);
   font-size: var(--textSize);
+  /* no selction */
+  -moz-user-select: none;
+  -khtml-user-select: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  outline: none;
+  outline-style: none; /* Internet Explorer  */
 }
 
 .page {

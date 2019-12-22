@@ -8,10 +8,15 @@ class OpeningPage extends Component {
     if (props.ops.length < props.match.params.op_index) {
       console.log("OpeningPage: constructor: This opening do not exists.")
     }
+    this.newVariClick = this.newVariClick.bind(this)
   }
 
   getVariItems(vars, op_index) {
     return vars.map((cur, index) => <VariItem vari={cur} vari_index={index} op_index={op_index} history={this.props.history} key={`variItem_${op_index}_${index}`} />)
+  }
+
+  newVariClick(){
+    this.props.history.push("/newVariation/" + this.props.match.params.op_index)
   }
 
   render() {
@@ -21,7 +26,7 @@ class OpeningPage extends Component {
       <React.Fragment>
         <Header title={op.op_name} headerButtonContent={<span className="iconText">school</span>} /> {/* play_arrow */}
         <div className="page">{this.getVariItems(op.variations, op_index)}</div>
-        <button id="newVariButton" className="importantButton">
+        <button id="newVariButton" className="importantButton" onClick={this.newVariClick}>
           +
         </button>
       </React.Fragment>

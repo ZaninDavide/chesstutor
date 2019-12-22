@@ -132,6 +132,20 @@
   line-height: var(--uiElementSmallHeight);
 }
 
+.hMenuButton{
+  margin: 0px !important; /* overwrite simpleButton */
+  flex-grow: 1;
+  /* TEXT */
+  color: var(--buttonColor) !important; /* overwrite simpleButton */
+  font-family: "Material Icons" !important; /* overwrite simpleButton */
+  font-size: var(--iconsFontSize) !important; /* overwrite simpleButton */
+  text-align: center;
+  vertical-align: middle;
+  height: calc(var(--uiElementHeight) + var(--mediumMargin)) !important; /* overwrite simpleButton */
+  line-height: calc(var(--uiElementHeight) + var(--mediumMargin)) !important; /* overwrite simpleButton */ /* = height*/
+}
+
+
 #newOpPageBody, #loginPageBody{
   margin-left: var(--mediumMargin);
   margin-right: var(--mediumMargin);
