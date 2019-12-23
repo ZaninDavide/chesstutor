@@ -20,7 +20,12 @@ class OpItem extends Component {
 
   render() {
     return (
-      <div className="opItem" onClick={this.openOp} onContextMenu={this.rightClick}>
+      <div 
+        className="opItem" 
+        onClick={this.openOp}
+        onContextMenu={this.rightClick}
+        style={{borderColor: this.props.op.favorite ? "var(--importantButtonBackColor)" : "transparent"}}
+      >
         <h2>{this.props.op.op_name}</h2>
         <p>
           <Translator text={this.props.op.op_color} />, {this.props.op.variations.length} <Translator text={this.props.op.variations.length === 1 ? "variation" : "variations"} />

@@ -20,12 +20,13 @@ class Modal extends Component {
         <div className="modalContent" onClick={e => e.stopPropagation()}>
           {this.props.children}
           <div className="modalButtons">
-            <button className="modalButton simpleButton" 
+            <button className="modalButton simpleButton"
+              disabled={this.props.disabledDoneButton}
               onClick={() => {
-                this.props.onDoneClick()
-                this.props.close()
+                  this.props.onDoneClick()
+                  this.props.close()
               }}
-            >done</button>
+            >{this.props.doneButtonText ? this.props.doneButtonText : "done"}</button>
           </div>
         </div>
       </div>

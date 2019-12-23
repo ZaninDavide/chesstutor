@@ -66,18 +66,27 @@ class OpsListPage extends Component {
           </button>
         </div>
         <HangingMenu visible={this.state.hMenuVisible} close={this.hMenuClose}>
+          {/* EDIT BUTTON */}
           <button className="simpleButton hMenuButton">
             edit
           </button> 
+          {/* STATS BUTTON */}
           <button className="simpleButton hMenuButton">
             emoji_events 
           </button> 
+          {/* SHARE BUTTON */}
           <button className="simpleButton hMenuButton">
             share
           </button>
-          <button className="simpleButton hMenuButton">
-            favorite_border {/*bookmark_border*/}
+          {/* FAVORITE BUTTON */}
+          <button className="simpleButton hMenuButton" 
+            onClick={() => {this.hMenuClose(); this.props.switchFavoriteOpening(this.state.hMenuOpIndex);}}
+          >
+            <span style={this.state.hMenuOpIndex !== null ? (this.props.ops[this.state.hMenuOpIndex].favorite ? {color: "var(--importantButtonBackColor)"} : {}) : {}}>
+              {this.state.hMenuOpIndex !== null ? (this.props.ops[this.state.hMenuOpIndex].favorite ? "star" : "star_border") : null} {/*bookmark_border*/}
+            </span>
           </button> 
+          {/* DELETE BUTTON */}
           <button className="simpleButton hMenuButton" onClick={() => {this.hMenuClose(); this.openOpDeleteModal();}}>
             delete
           </button>
@@ -85,12 +94,13 @@ class OpsListPage extends Component {
         <Modal 
           id="deleteOpModal" 
           visible={this.state.opDeleteVisible} 
-          close={this.closeOpDeleteModal} 
+          close={this.closeOpDeleteModal}
+          doneButtonText={<span className="alertText">delete</span>}
           onDoneClick={() => this.props.deleteOpening(this.state.hMenuOpIndex)}>
             { this.state.opDeleteVisible ? 
-              <React.Fragment><h2><Translator text={"Delete permanently:"} />&nbsp;<span style={{color: "var(--importantButtonBackColor)"}}>{this.props.ops[this.state.hMenuOpIndex].op_name}</span>{"?"}</h2></React.Fragment> : null
+              <React.Fragment><h2><Translator text={"Delete permanently:"} />&nbsp;<span className="alertText">{this.props.ops[this.state.hMenuOpIndex].op_name}</span>{"?"}</h2></React.Fragment> : null
             }     
-          </Modal>
+        </Modal>
       </React.Fragment>
     )
   }

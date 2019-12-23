@@ -154,19 +154,24 @@ class Board extends Component {
             Comments: ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao 
           </div>
         </div>
-        <Modal visible={this.state.variNameModalVisible} close={this.closeVariNameModal} onDoneClick={this.createThisVariation}>
-              <Translator text={"New variation name"} />:
-              <input type="text" 
-                className="textBox"
-                value={this.state.new_vari_name} 
-                onChange={e => this.setState({new_vari_name: e.target.value})}
-                onKeyPress={e => {
-                  if (e.which === 13 || e.keyCode === 13) {
-                    this.createThisVariation()
-                  }
-                }}
-              />
-          </Modal>
+        <Modal 
+          visible={this.state.variNameModalVisible} 
+          close={this.closeVariNameModal} 
+          onDoneClick={this.createThisVariation} 
+          disabledDoneButton={this.state.new_vari_name.length === 0}
+        >
+          <Translator text={"New variation name"} />:
+          <input type="text" 
+            className="textBox"
+            value={this.state.new_vari_name} 
+            onChange={e => this.setState({new_vari_name: e.target.value})}
+            onKeyPress={e => {
+              if (e.which === 13 || e.keyCode === 13) {
+                this.createThisVariation()
+              }
+            }}
+          />
+        </Modal>
       </React.Fragment>
     )
   }
@@ -384,8 +389,15 @@ class Board extends Component {
 
   boardButtons(){
     return <React.Fragment>
+      {/* BACK */}
       <button className="simpleButton boardButton" onClick={this.try_undo}>keyboard_arrow_left</button>
-      <button className="simpleButton boardButton" onClick={this.openVariNameModal}>done</button>
+      {/* CREATE VARIATION BUTTON */}
+      <button 
+        className="simpleButton boardButton" 
+        onClick={this.openVariNameModal} 
+        style={{color: "var(--importantButtonBackColor)"}}
+      >done</button>
+      {/* HELP */}
       <button className="simpleButton boardButton">emoji_objects</button>
     </React.Fragment>
   }

@@ -49,6 +49,7 @@ class App extends Component {
     this.setBearer = this.setBearer.bind(this)
     this.logout = this.logout.bind(this)
     this.deleteOpening = this.deleteOpening.bind(this)
+    this.switchFavoriteOpening = this.switchFavoriteOpening.bind(this)
 
     // write the remember me part
   }
@@ -188,9 +189,24 @@ class App extends Component {
     })
   }
 
+  switchFavoriteOpening(op_index){
+    this.setState(old => {
+      let new_user_ops = old.user_ops
+      new_user_ops[op_index].favorite = !new_user_ops[op_index].favorite
+      this.updateDB(new_user_ops)
+      return {user_ops: new_user_ops}
+    })
+  }
+
   /* ---------------------------- RENDER ---------------------------- */
   render() {
-    const opsListPage = ({ history }) => <OpsListPage ops={this.state.user_ops} history={history} updateDB={this.updateUserData} deleteOpening={this.deleteOpening} />
+    const opsListPage = ({ history }) =>  <OpsListPage 
+                                            ops={this.state.user_ops} 
+                                            history={history} 
+                                            updateDB={this.updateUserData} 
+                                            deleteOpening={this.deleteOpening} 
+                                            switchFavoriteOpening={this.switchFavoriteOpening}
+                                          />
     const opPage = ({ match, history }) => <OpeningPage ops={this.state.user_ops} history={history} match={match} />
     const variPage = ({ match, history }) => <VariationPage ops={this.state.user_ops} history={history} match={match} createVari={this.createVari}/>
     const newVariPage = ({ match, history }) => <NewVariPage ops={this.state.user_ops} history={history} match={match} createVari={this.createVari}/>

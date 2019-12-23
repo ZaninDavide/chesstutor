@@ -26,8 +26,7 @@
   --backColor: #3a4151;
   --borderColor: rgb(204, 204, 204);
   --textColor: #949dac;
-  --titleColor: white;
-  --borderColor: rgb(146, 146, 146);
+  --titleColor: #65f0b6;
   --buttonColor: rgb(245, 245, 245);
   --textColorHighlighted: white;
   --importantButtonColor: #3a4151;
@@ -35,6 +34,7 @@
   --backColorImportantButtonHover: hsl(156, 35%, 50%);
   --headerBackColor: #3a4151;
   --makeDarkerColor: rgba(22, 22, 22, 0.2);
+  --alertColor: #f06585;
 }
 
 .boardStandardTheme {
@@ -101,7 +101,7 @@ h1 {
 
 h2 {
   /* TEXT */
-  color: var(--titleColor);
+  color: var(--textColorHighlighted);
   font-weight: var(--mediumWeight);
   font-size: var(--mediumTextSize);
   /* SPACES */
@@ -121,6 +121,10 @@ p {
   margin-bottom: var(--smallMargin);
   margin-left: var(--mediumMargin);
   margin-right: var(--mediumMargin);
+}
+
+.alertText{
+  color: var(--alertColor);
 }
 
 /* ---------------------------- BUTTONS ---------------------------- */
@@ -259,6 +263,12 @@ a {
   /* SPACES */
   padding-top: var(--smallMargin);
   padding-bottom: var(--smallMargin);
+  border-style: solid;
+  border-left-width: var(--smallMargin);
+  border-top-width: 0px;
+  border-bottom-width: 0px;
+  border-right-width: 0px;
+  border-left-color: transparent;
 }
 
 .opItem:hover,
