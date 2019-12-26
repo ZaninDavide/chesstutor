@@ -1,5 +1,7 @@
 import React, { Component } from "react"
 import Header from "../components/Header"
+import Board from "../components/Board"
+import Translator from "../components/Translator"
 
 class VariationPage extends Component {
   constructor(props) {
@@ -13,12 +15,11 @@ class VariationPage extends Component {
   render() {
     const op_index = this.props.match.params.op_index
     const op = this.props.ops[op_index]
-    const vari_index = this.props.match.params.vari_index
-    const vari = op.variations[vari_index]
+
     return (
       <React.Fragment>
-        <Header title={vari.vari_name} />
-        Stats
+        <Header title={op.op_name} />
+        <Board history={this.props.history} op_index={op_index} />
       </React.Fragment>
     )
   }

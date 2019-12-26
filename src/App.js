@@ -9,6 +9,7 @@ import VariationPage from "./pages/VariationPage"
 import NewOpPage from "./pages/NewOpPage"
 import LoginPage from "./pages/LoginPage"
 import NewVariPage from "./pages/NewVariPage"
+import TrainingPage from "./pages/TrainingPage"
 
 import "./styles/App.css" // css by CLASSES + MAIN COMPONENTS
 import "./styles/Elements.css" // css by ID + SECONDARY COMPONENTS
@@ -22,6 +23,7 @@ const defaultOps = [
       {
         vari_name: "Classic",
         vari_score: 0,
+        active: true,
         moves: [{ from: "d2", to: "d4", promotion: undefined, san: "d4", comment: "That's the first move, don't forget it."}] // , fen: "" 
       }
     ],
@@ -50,6 +52,8 @@ class App extends Component {
     this.logout = this.logout.bind(this)
     this.deleteOpening = this.deleteOpening.bind(this)
     this.switchFavoriteOpening = this.switchFavoriteOpening.bind(this)
+    this.switchVariActive = this.switchVariActive.bind(this)
+    this.renameOp = this.renameOp.bind(this)
 
     // write the remember me part
   }
@@ -70,7 +74,7 @@ class App extends Component {
 
       this.setState(() => {
         let ops = userData.user_ops
-
+        console.log(ops)
         // NEW USER
         // if this is a new user give it the default openings 
         if (ops === undefined){
@@ -153,13 +157,43 @@ class App extends Component {
     return this.addOpening(this.newOpening(new_op_name, studyAs))
   }
 
+  deleteOpening(op_index){
+    this.setState(old => {
+      let new_user_ops = old.user_ops
+      new_user_ops.splice(op_index, 1)
+      this.updateDB(new_user_ops)
+      return {user_ops: new_user_ops}
+    })
+  }
+
+  switchFavoriteOpening(op_index){
+    this.setState(old => {
+      let new_user_ops = old.user_ops
+      new_user_ops[op_index].favorite = !new_user_ops[op_index].favorite
+      this.updateDB(new_user_ops)
+      return {user_ops: new_user_ops}
+    })
+  }
+
+  renameOp(op_index, op_new_name){
+    this.setState(old => {
+      let new_user_ops = old.user_ops
+      new_user_ops[op_index].op_name = op_new_name
+      this.updateDB(new_user_ops)
+      return {user_ops: new_user_ops}
+    })
+  }
+
+  /* ---------------------------- VARIATIONS ---------------------------- */
+
   newVariation(vari_name = "Classic", vari_moves = []){
     // generates a new variation (returns a vari_object)
     // WARN: it doesn't add it. To do that use addVariation
     return {
       vari_name: vari_name,
       vari_score: 0,
-      moves: vari_moves
+      moves: vari_moves,
+      active: true,
     }
   }
 
@@ -180,19 +214,10 @@ class App extends Component {
     return this.addVariation(this.newVariation(new_vari_name, vari_moves), op_index)
   }
 
-  deleteOpening(op_index){
+  switchVariActive(op_index, vari_index){
     this.setState(old => {
       let new_user_ops = old.user_ops
-      new_user_ops.splice(op_index, 1)
-      this.updateDB(new_user_ops)
-      return {user_ops: new_user_ops}
-    })
-  }
-
-  switchFavoriteOpening(op_index){
-    this.setState(old => {
-      let new_user_ops = old.user_ops
-      new_user_ops[op_index].favorite = !new_user_ops[op_index].favorite
+      new_user_ops[op_index].variations[vari_index].active = !new_user_ops[op_index].variations[vari_index].active
       this.updateDB(new_user_ops)
       return {user_ops: new_user_ops}
     })
@@ -206,12 +231,14 @@ class App extends Component {
                                             updateDB={this.updateUserData} 
                                             deleteOpening={this.deleteOpening} 
                                             switchFavoriteOpening={this.switchFavoriteOpening}
+                                            renameOp={this.renameOp}
                                           />
-    const opPage = ({ match, history }) => <OpeningPage ops={this.state.user_ops} history={history} match={match} />
+    const opPage = ({ match, history }) => <OpeningPage ops={this.state.user_ops} history={history} match={match} switchVariActive={this.switchVariActive}/>
     const variPage = ({ match, history }) => <VariationPage ops={this.state.user_ops} history={history} match={match} createVari={this.createVari}/>
     const newVariPage = ({ match, history }) => <NewVariPage ops={this.state.user_ops} history={history} match={match} createVari={this.createVari}/>
     const newOpPage = ({ match, history }) => <NewOpPage history={history} match={match} createOp={this.createOp}/>
     const loginPage = ({ match, history }) => <LoginPage history={history} match={match} setBearer={this.setBearer}/>
+    const trainingPage = ({ match, history }) => <TrainingPage history={history} match={match} ops={this.state.user_ops}/>
 
     return (
       <LanguageProvider lang={this.state.language}>
@@ -226,6 +253,7 @@ class App extends Component {
               <Route path="/newVariation/:op_index" component={newVariPage} />
               <Route path="/openings/:op_index/:vari_index" component={variPage} />
               <Route path="/openings/:op_index" component={opPage} />
+              <Route path="/training/:op_index" component={trainingPage} />
               <Route path="/" component={() => <p>Error 404! Page not found</p>} />
             </Switch>
           </div>

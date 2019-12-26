@@ -10,11 +10,20 @@ class OpeningPage extends Component {
       console.log("OpeningPage: constructor: This opening do not exists.")
     }
     this.newVariClick = this.newVariClick.bind(this)
+    this.startGame = this.startGame.bind(this)
   }
 
   getVariItems(vars, op_index) {
     if (vars.length > 0) {
-      return vars.map((cur, index) => <VariItem vari={cur} vari_index={index} op_index={op_index} history={this.props.history} key={`variItem_${op_index}_${index}`} />)
+      return vars.map((cur, index) => <VariItem 
+                                        vari={cur} 
+                                        vari_index={index} 
+                                        op_index={op_index} 
+                                        history={this.props.history} 
+                                        key={`variItem_${op_index}_${index}`} 
+                                        switchVariActive={this.props.switchVariActive}
+                                      />
+      )
     } else {
       return <p><Translator text={"No variations yet! Use the + button in the right bottom corner to create a new one."}/></p>
     }
@@ -24,15 +33,22 @@ class OpeningPage extends Component {
     this.props.history.push("/newVariation/" + this.props.match.params.op_index)
   }
 
+  startGame(){
+    this.props.history.push("/training/" + this.props.match.params.op_index)
+  }
+
   render() {
     const op_index = this.props.match.params.op_index
     const op = this.props.ops[op_index]
     return (
       <React.Fragment>
         <Header title={op.op_name} /*headerButtonContent={<span className="iconText">school</span>}*/ /> {/* play_arrow */}
-        <div className="page">{this.getVariItems(op.variations, op_index)}</div>
-        <button id="newVariButton" className="importantButton" onClick={this.newVariClick}>
-          +
+        <div id="openingPage"  className="page">{this.getVariItems(op.variations, op_index)}</div>
+        <button id="playVarsButton" className="importantButton iconButton" onClick={this.startGame}>
+          play_arrow
+        </button>
+        <button id="newVariButton" className="importantButton iconButton" onClick={this.newVariClick}>
+          add
         </button>
       </React.Fragment>
     )

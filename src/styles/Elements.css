@@ -7,37 +7,22 @@
   margin-left: 0px;
 }
 
-#opsListPage {
+#opsListPage, #openingPage {
   overflow-y: auto;
   overflow-x: hidden;
 }
 
-#newOpButton {
+#newOpButton, #newVariButton {
   position: absolute;
   margin: 0px;
   padding: 0px;
-  padding-top: 1px;
   right: var(--mediumMargin);
   bottom: var(--mediumMargin);
   height: var(--uiElementHeight);
   width: var(--uiElementHeight);
   text-align: center;
   line-height: var(--uiElementHeight);
-  font-size: 30px;
-}
-
-#newVariButton {
-  position: absolute;
-  margin: 0px;
-  padding: 0px;
-  padding-top: 1px;
-  right: var(--mediumMargin);
-  bottom: var(--mediumMargin);
-  height: var(--uiElementHeight);
-  width: var(--uiElementHeight);
-  text-align: center;
-  line-height: var(--uiElementHeight);
-  font-size: 30px;
+  font-size: var(--iconsFontSize);
 }
 
 #boardContainer {
@@ -57,6 +42,7 @@
   max-width: calc((100vh - var(--headerHeight) - var(--uiElementHeight) - var(--uiElementHeight)) / 8);
   position: absolute;
   transition: transform 0.25s;
+  will-change: transform;
 }
 
 .selection {
@@ -186,4 +172,17 @@
 
 #headerRightSide{
   grid-area: headerRightSide;
+}
+
+#playVarsButton {
+  position: absolute;
+  margin: 0px;
+  padding: 0px;
+  right: var(--mediumMargin);
+  bottom: calc(var(--uiElementHeight) + 2 * var(--mediumMargin));
+  height: var(--uiElementHeight);
+  width: var(--uiElementHeight);
+  text-align: center;
+  line-height: var(--uiElementHeight);
+  font-size: var(--iconsFontSize);
 }

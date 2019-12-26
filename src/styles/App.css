@@ -34,7 +34,7 @@
   --backColorImportantButtonHover: hsl(156, 35%, 50%);
   --headerBackColor: #3a4151;
   --makeDarkerColor: rgba(22, 22, 22, 0.2);
-  --alertColor: #f06585;
+  --alertColor: #f65c78;
 }
 
 .boardStandardTheme {
@@ -274,4 +274,26 @@ a {
 .opItem:hover,
 .variItem:hover {
   background-color: var(--makeDarkerColor);
+}
+
+.variItem{
+  display: grid;
+  grid-template-columns: auto 1fr;
+  grid-template-rows: auto;
+  grid-template-areas: "checkbox content";
+}
+
+.variItemCheckbox{
+  margin-top: auto;
+  margin-bottom: auto;
+  margin-left: calc(var(--mediumMargin) - 5px); /* 5px = favorite bar */
+  margin-right: 0;
+  vertical-align: middle;
+  overflow: hidden;
+  grid-area: checkbox;
+  width: var(--iconsFontSize);
+}
+
+.variItemContent{
+  grid-area: content;
 }

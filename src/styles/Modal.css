@@ -40,6 +40,7 @@
     transition-property: background-color;
     transition-property: 0.1s;
     z-index: 1;
+    will-change: background-color;
 }
 
 .hMenuContent{
@@ -53,6 +54,7 @@
     transition-property: background-color, margin-bottom;
     transition-timing-function: linear, ease-in-out;
     transition-duration: .2s, .2s;
+    will-change: background-color, margin-bottom;
     border-top: 10px;
     border-radius: 10px 10px 0px 0px;
     display: flex;

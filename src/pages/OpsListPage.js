@@ -12,6 +12,7 @@ class OpsListPage extends Component {
       hMenuVisible: false,
       hMenuOpIndex: null,
       opDeleteVisible: false,
+      opNewName: "",
     }
     this.getOpItems = this.getOpItems.bind(this)
     this.newOpButton = this.newOpButton.bind(this)
@@ -19,6 +20,7 @@ class OpsListPage extends Component {
     this.hMenuOpen = this.hMenuOpen.bind(this)
     this.closeOpDeleteModal = this.closeOpDeleteModal.bind(this)
     this.openOpDeleteModal = this.openOpDeleteModal.bind(this)
+    this.renameThisOpening = this.renameThisOpening.bind(this)
   }
 
   getOpItems(ops) {
@@ -55,19 +57,23 @@ class OpsListPage extends Component {
     this.setState({opDeleteVisible: true})
   }
 
+  renameThisOpening(){
+    this.props.renameOp(this.state.hMenuOpIndex, this.state.opNewName)
+  }
+
   render() {
     return (
       <React.Fragment>
         <Header title={<Translator text={"Openings"}/>} goTo={"/"}/>
         <div id="opsListPage" className="page">
           {this.getOpItems(this.props.ops)}
-          <button id="newOpButton" className="importantButton" onClick={this.newOpButton}>
-            +
+          <button id="newOpButton" className="importantButton iconButton" onClick={this.newOpButton}>
+            add
           </button>
         </div>
         <HangingMenu visible={this.state.hMenuVisible} close={this.hMenuClose}>
           {/* EDIT BUTTON */}
-          <button className="simpleButton hMenuButton">
+          <button className="simpleButton hMenuButton" onClick={() => this.setState({renameOpVisible: true, opNewName: "", hMenuVisible: false})}>
             edit
           </button> 
           {/* STATS BUTTON */}
@@ -91,6 +97,7 @@ class OpsListPage extends Component {
             delete
           </button>
         </HangingMenu>
+        {/* DELETE OP MODAL */}
         <Modal 
           id="deleteOpModal" 
           visible={this.state.opDeleteVisible} 
@@ -100,6 +107,31 @@ class OpsListPage extends Component {
             { this.state.opDeleteVisible ? 
               <React.Fragment><h2><Translator text={"Delete permanently:"} />&nbsp;<span className="alertText">{this.props.ops[this.state.hMenuOpIndex].op_name}</span>{"?"}</h2></React.Fragment> : null
             }     
+        </Modal>
+        {/* RENAME OP MODAL */}
+        <Modal 
+          visible={this.state.renameOpVisible} 
+          close={() => this.setState({renameOpVisible: false})} 
+          onDoneClick={this.renameThisOpening} 
+          disabledDoneButton={this.state.opNewName.length === 0}
+        >
+          { this.state.renameOpVisible ? 
+            <React.Fragment>
+              <Translator text={"Rename "} />
+              <span style={{color: "var(--importantButtonBackColor)"}}>{this.props.ops[this.state.hMenuOpIndex].op_name}</span>
+              <Translator text={" to: "} />
+              <input type="text" 
+                className="textBox"
+                value={this.state.opNewName} 
+                onChange={e => this.setState({opNewName: e.target.value})}
+                onKeyPress={e => {
+                  if (e.which === 13 || e.keyCode === 13) {
+                    this.renameThisOpening()
+                  }
+                }}
+              />
+            </React.Fragment> : null
+          }
         </Modal>
       </React.Fragment>
     )
