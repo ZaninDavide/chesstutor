@@ -111,10 +111,6 @@ const piecesName = {
   p: "black_pawn"
 }
 
-let clientX_down = 0
-let clientY_down = 0
-let on_drag = false
-
 class Board extends Component {
   constructor(props) {
     super(props)
@@ -126,7 +122,7 @@ class Board extends Component {
       variNameModalVisible: false,
       new_vari_name: "",
     }
-    /* functions */
+
     this.newGame = this.newGame.bind(this)
     this.testChess = this.testChess.bind(this)
     this.selectCell = this.selectCell.bind(this)
@@ -137,11 +133,6 @@ class Board extends Component {
     this.closeVariNameModal = this.closeVariNameModal.bind(this);
     this.openVariNameModal = this.openVariNameModal.bind(this);
     this.createThisVariation = this.createThisVariation.bind(this);
-    this.boardDown = this.boardDown.bind(this);
-    this.boardUp = this.boardUp.bind(this);
-    this.boardDrag = this.boardDrag.bind(this);
-    /* refs */
-    this.selectedPiece = React.createRef()
   }
 
   /* ---------------------------- COMPONENT ---------------------------- */
@@ -152,13 +143,11 @@ class Board extends Component {
       <React.Fragment>
         <div id="boardGrid">
           <div id="boardContainer" 
-            onClick={this.boardClick}
-            onTouchStart={this.boardDown}
-            onTouchEnd={this.boardUp}
-            onTouchMove={this.boardDrag}
-            ref={"bContainer"} 
+            onClick={this.boardClick} 
+            onDragOver={ev => ev.preventDefault()} 
+            onDrop={this.boardClick} ref={"bContainer"} 
             key="boardContainer"
-
+            style={{cursor: "/static/media/black_pawn.1c52d8c4.svg"}}
           >
             {this.selection()}
             {this.pieces()}
@@ -312,27 +301,11 @@ class Board extends Component {
 
   pieceObj(type, cell, id) {
     let coor = cell // cell can be {x: "100%", y: "300%"} or "d4"
-    let cell_str
     if (typeof cell === "string") {
       coor = this.cellCoordinates(cell)
-      cell_str = cell
-    }else{
-      cell_str = this.cellFromCoor(coor, false)
     }
-
     const svg = this.getPieceSrc(type)
-    const is_selected = this.state.selected_cell === cell_str
-    return  <img 
-              style={{ transform: `translate(${coor.x}%, ${coor.y}%)` }} 
-              src={svg} 
-              id={"piece" + id} 
-              key={"piece" + id}
-              className={is_selected && on_drag ? "pieceSVG dragging" : "pieceSVG"} 
-              alt={"Piece file missing"} 
-              /*draggable="true" 
-              onDragStart={this.boardClick}*/
-              ref={is_selected ? this.selectedPiece : null}
-            />
+    return <img style={{ transform: `translate(${coor.x}%, ${coor.y}%)` }} src={svg} id={"piece" + id} key={"piece" + id} className="pieceSVG" alt={"Piece file missing"} draggable="true" onDragStart={this.boardClick} />
   }
 
   pieces() {
@@ -415,70 +388,6 @@ class Board extends Component {
       // inside the board
       const cell = this.cellFromCoor(coor)
       this.clickCell(cell)
-    }
-  }
-
-  boardDown(e){
-    let clientX = e.clientX
-    let clientY = e.clientY
-    if(e.type === "touchstart"){
-      clientX = e.touches[0].clientX;
-      clientY = e.touches[0].clientY;
-    }
-    clientX_down = clientX
-    clientY_down = clientY
-    const coor = { x: clientX - this.refs.bContainer.offsetLeft, y: clientY - this.refs.bContainer.offsetTop }
-    coor.x = Math.floor((coor.x / this.refs.board.width) * 8) * 100
-    coor.y = Math.floor((coor.y / this.refs.board.width) * 8) * 100
-    if (coor.x <= 700 && coor.y <= 700) {
-      // inside the board
-      const cell = this.cellFromCoor(coor)
-      this.try_select_cell(cell)
-      on_drag = true
-    }
-  }
-
-  boardUp(e){
-    if(this.state.selected_cell && this.selectedPiece){
-      let clientX = e.clientX
-      let clientY = e.clientY
-      if(e.type === "touchend"){
-        clientX = e.changedTouches[0].clientX;
-        clientY = e.changedTouches[0].clientY;
-      }
-      const coor = { x: clientX - this.refs.bContainer.offsetLeft, y: clientY - this.refs.bContainer.offsetTop }
-      coor.x = Math.floor((coor.x / this.refs.board.width) * 8) * 100
-      coor.y = Math.floor((coor.y / this.refs.board.width) * 8) * 100
-      if (coor.x <= 700 && coor.y <= 700) {
-        // inside the board
-        const cell = this.cellFromCoor(coor)
-        // try to move there
-        this.clickCell(cell)
-      }
-      // reset dragging
-      clientX_down = 0
-      clientY_down = 0
-      this.selectedPiece.current.style.left = "0px"
-      this.selectedPiece.current.style.top = "0px"
-      on_drag = false
-    }
-  }
-
-  boardDrag(e){
-    if(this.state.selected_cell && this.selectedPiece){
-      let clientX = e.clientX
-      let clientY = e.clientY
-      
-      if(e.type === "touchmove"){
-        clientX = e.touches[0].clientX;
-        clientY = e.touches[0].clientY;
-      }
-      
-      let deltaX = clientX - clientX_down
-      let deltaY = clientY - clientY_down
-
-      this.selectedPiece.current.style.left = deltaX + "px"
-      this.selectedPiece.current.style.top = deltaY + "px"
     }
   }
 

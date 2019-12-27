@@ -41,8 +41,14 @@
   max-height: calc((100vh - var(--headerHeight) - var(--uiElementHeight) - var(--uiElementHeight)) / 8);
   max-width: calc((100vh - var(--headerHeight) - var(--uiElementHeight) - var(--uiElementHeight)) / 8);
   position: absolute;
-  transition: transform 0.25s;
-  will-change: transform;
+  transition: transform, top, left;
+  transition: 0.25s, 0.25s, 0.25s;
+  will-change: transform, top, left;
+}
+
+.pieceSVG.dragging{
+  transition: transform 0s !important;
+  z-index: 2;
 }
 
 .selection {
