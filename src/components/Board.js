@@ -113,6 +113,7 @@ const piecesName = {
 
 let clientX_down = 0
 let clientY_down = 0
+let left_mouse_down = false
 let on_drag = false
 
 class Board extends Component {
@@ -152,17 +153,20 @@ class Board extends Component {
       <React.Fragment>
         <div id="boardGrid">
           <div id="boardContainer" 
-            onClick={this.boardClick}
-            onTouchStart={this.boardDown}
-            onTouchEnd={this.boardUp}
-            onTouchMove={this.boardDrag}
             ref={"bContainer"} 
             key="boardContainer"
 
+            onTouchStart={this.boardDown}
+            onTouchEnd={this.boardUp}
+            onTouchMove={this.boardDrag}
+            onMouseDown={this.boardDown}
+            onMouseMove={this.boardDrag}
+            onMouseUp={this.boardUp}
+            draggable={false}
           >
             {this.selection()}
             {this.pieces()}
-            <img id="boardSVG" src={boardSVG} alt={"Board file missing"} ref="board" key="board" />
+            <img id="boardSVG" src={boardSVG} alt={"Board file missing"} ref="board" key="board" draggable={false} />
           </div>
           <div id="boardUI">
             {this.boardButtons()}
@@ -244,6 +248,17 @@ class Board extends Component {
     )
   }
 
+  is_move_legal(move_data){
+    // as default move_data.from = this.state.selectedCell
+    if(move_data.from === undefined){
+      if(this.state.selected_cell === undefined){return false}
+      move_data.from = this.state.selected_cell
+    }
+    // is it legal?
+    let legal_moves = this.state.game.moves({ square: move_data.from, verbose: true }).map(cur => cur.to)
+    return legal_moves.includes(move_data.to)
+  }
+
   make_move(move_data) {
     // move data can be a string(SAN): "Nxd4"
     // or an object: {from: "d2", to: "d5", promotion: undefined}
@@ -265,11 +280,21 @@ class Board extends Component {
 
   try_move(move_data) {
     // move data is an object: {from: "d2", to: "d5", promotion: undefined}
-    if (this.is_move_promotion(move_data)) {
-      let promotion = "q"
-      move_data.promotion = promotion
+    // as default move_data.from = this.state.selectedCell
+    if(move_data.from === undefined){
+      if(this.state.selected_cell === undefined){return false}
+      move_data.from = this.state.selected_cell
     }
-    this.make_move(move_data)
+    if(this.is_move_legal(move_data)){
+      if (this.is_move_promotion(move_data)) {
+        let promotion = "q" /* TODO -- decide which piece to promote to */
+        move_data.promotion = promotion
+      }
+      this.make_move(move_data)
+      return true
+    }else{
+      return false
+    }
   }
 
   is_move_promotion(move_data) {
@@ -327,11 +352,10 @@ class Board extends Component {
               src={svg} 
               id={"piece" + id} 
               key={"piece" + id}
-              className={is_selected && on_drag ? "pieceSVG dragging" : "pieceSVG"} 
-              alt={"Piece file missing"} 
-              /*draggable="true" 
-              onDragStart={this.boardClick}*/
               ref={is_selected ? this.selectedPiece : null}
+              className={is_selected && on_drag ? "pieceSVG dragging" : "pieceSVG"} 
+              alt={"Piece file missing"}
+              draggable={false}
             />
   }
 
@@ -380,25 +404,25 @@ class Board extends Component {
 
   try_select_cell(cell) {
     let cell_obj = this.state.game.get(cell)
-    if (cell_obj === null) {
-      this.deselectCells()
-    } else {
+    if (cell_obj !== null) {
       if (cell_obj.color === this.state.game.turn()) {
         this.selectCell(cell)
+        return true
       }
     }
+    this.deselectCells()
+    return false
   }
 
   clickCell(cell) {
     // if something is selected try to move there
     if (this.state.selected_cell !== undefined) {
-      let legal_moves = this.state.game.moves({ square: this.state.selected_cell, verbose: true }).map(cur => cur.to)
-      if (legal_moves.includes(cell)) {
-        // if i have a piece selected and i can move there
-        this.try_move({ from: this.state.selected_cell, to: cell })
+      let res = this.try_move({ from: this.state.selected_cell, to: cell }) // true = move done; false = move not done because illegal
+      if(res){
+        // if i have a piece selected and i moved there
         this.deselectCells()
       } else {
-        // if i have a piece selected but i can't move there
+        // if i have a piece selected but i couldn't move there
         this.try_select_cell(cell)
       }
     } else {
@@ -433,8 +457,14 @@ class Board extends Component {
     if (coor.x <= 700 && coor.y <= 700) {
       // inside the board
       const cell = this.cellFromCoor(coor)
-      this.try_select_cell(cell)
-      on_drag = true
+
+      if(this.state.selected_cell && this.is_move_legal){
+        this.try_move({to: cell})
+      }
+
+      const selection_res = this.try_select_cell(cell)
+      on_drag = selection_res ? true : false
+      left_mouse_down = true
     }
   }
 
@@ -453,19 +483,27 @@ class Board extends Component {
         // inside the board
         const cell = this.cellFromCoor(coor)
         // try to move there
-        this.clickCell(cell)
+        const try_move_res = this.try_move({to: cell})
+        if(!try_move_res){
+          this.try_select_cell(cell)
+        }else{
+          this.deselectCells()
+        }
       }
       // reset dragging
       clientX_down = 0
       clientY_down = 0
-      this.selectedPiece.current.style.left = "0px"
-      this.selectedPiece.current.style.top = "0px"
-      on_drag = false
+      if(this.selectedPiece.current){
+        this.selectedPiece.current.style.left = "0px"
+        this.selectedPiece.current.style.top = "0px"
+      }
     }
+    on_drag = false
+    left_mouse_down = false
   }
 
   boardDrag(e){
-    if(this.state.selected_cell && this.selectedPiece){
+    if(this.state.selected_cell && this.selectedPiece.current && left_mouse_down && on_drag){
       let clientX = e.clientX
       let clientY = e.clientY
       
