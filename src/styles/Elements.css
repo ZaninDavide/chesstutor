@@ -59,6 +59,17 @@
   background-color: rgba(0, 0, 0, 0.15);
 }
 
+.moveCircle {
+  width: 12.5%;
+  height: 12.5%;
+  max-height: calc((100vh - var(--headerHeight) - var(--uiElementHeight) - var(--uiElementHeight)) / 8);
+  max-width: calc((100vh - var(--headerHeight) - var(--uiElementHeight) - var(--uiElementHeight)) / 8);
+  position: absolute;
+  will-change: transform;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.15);
+}
+
 #boardGrid{
   display: grid;
   width: 100vw;

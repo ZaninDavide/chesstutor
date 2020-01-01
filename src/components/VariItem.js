@@ -2,13 +2,20 @@ import React, { Component } from "react"
 import Translator from "./Translator"
 
 class VariItem extends Component {
-  constructor(props) {
+  /*constructor(props) {
     super(props)
-  }
+  }*/
 
   render() {
     return (
-      <div className="variItem" onClick={() => this.props.switchVariActive(this.props.op_index, this.props.vari_index)}>
+      <div 
+        className="variItem" 
+        onClick={() => this.props.switchVariActive(this.props.op_index, this.props.vari_index)}
+        onContextMenu={e => {
+          e.preventDefault();
+          this.props.hMenuOpen(this.props.vari_index)
+        }}
+      >
         <div className="variItemContent">
           <h2>{this.props.vari.vari_name}</h2>
           <p>

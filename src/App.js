@@ -54,7 +54,8 @@ class App extends Component {
     this.switchFavoriteOpening = this.switchFavoriteOpening.bind(this)
     this.switchVariActive = this.switchVariActive.bind(this)
     this.renameOp = this.renameOp.bind(this)
-
+    this.renameVari = this.renameVari.bind(this)
+    this.deleteVari = this.deleteVari.bind(this)
     // write the remember me part
   }
 
@@ -223,6 +224,24 @@ class App extends Component {
     })
   }
 
+  renameVari(op_index, vari_index, vari_new_name){
+    this.setState(old => {
+      let new_user_ops = old.user_ops
+      new_user_ops[op_index].variations[vari_index].vari_name = vari_new_name
+      this.updateDB(new_user_ops)
+      return {user_ops: new_user_ops}
+    })
+  }
+
+  deleteVari(op_index, vari_index){
+    this.setState(old => {
+      let new_user_ops = old.user_ops
+      new_user_ops[op_index].variations.splice(vari_index, 1)
+      this.updateDB(new_user_ops)
+      return {user_ops: new_user_ops}
+    })
+  }
+
   /* ---------------------------- RENDER ---------------------------- */
   render() {
     const opsListPage = ({ history }) =>  <OpsListPage 
@@ -233,7 +252,14 @@ class App extends Component {
                                             switchFavoriteOpening={this.switchFavoriteOpening}
                                             renameOp={this.renameOp}
                                           />
-    const opPage = ({ match, history }) => <OpeningPage ops={this.state.user_ops} history={history} match={match} switchVariActive={this.switchVariActive}/>
+    const opPage = ({ match, history }) =>  <OpeningPage 
+                                              ops={this.state.user_ops} 
+                                              history={history} 
+                                              match={match} 
+                                              switchVariActive={this.switchVariActive}
+                                              renameVari={this.renameVari}
+                                              deleteVari={this.deleteVari}
+                                            />
     const variPage = ({ match, history }) => <VariationPage ops={this.state.user_ops} history={history} match={match} createVari={this.createVari}/>
     const newVariPage = ({ match, history }) => <NewVariPage ops={this.state.user_ops} history={history} match={match} createVari={this.createVari}/>
     const newOpPage = ({ match, history }) => <NewOpPage history={history} match={match} createOp={this.createOp}/>

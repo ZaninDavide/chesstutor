@@ -115,6 +115,7 @@ let clientX_down = 0
 let clientY_down = 0
 let left_mouse_down = false
 let on_drag = false
+let drag_coor = {x: 0, y: 0}
 
 class Board extends Component {
   constructor(props) {
@@ -141,6 +142,7 @@ class Board extends Component {
     this.boardDown = this.boardDown.bind(this);
     this.boardUp = this.boardUp.bind(this);
     this.boardDrag = this.boardDrag.bind(this);
+    this.moveCircle = this.moveCircle.bind(this)
     /* refs */
     this.selectedPiece = React.createRef()
   }
@@ -165,6 +167,7 @@ class Board extends Component {
             draggable={false}
           >
             {this.selection()}
+            {/*this.moveCircle()*/}
             {this.pieces()}
             <img id="boardSVG" src={boardSVG} alt={"Board file missing"} ref="board" key="board" draggable={false} />
           </div>
@@ -384,6 +387,11 @@ class Board extends Component {
     return <img style={{ transform: `translate(${coor.x}%, ${coor.y}%)` }} src={selectionSVG} className="selection" key="selection" id="selection" alt="selection" />
   }
 
+  moveCircle(){
+    let coor = this.cellCoordinates(this.cellFromCoor(drag_coor))
+    return on_drag ? <div id="moveCircle" style={{ transform: `translate(${coor.x}%, ${coor.y}%)` }} /> : <div id="moveCircle" />
+  }
+
   cellFromCoor(coor, rotated = this.state.rotated || false) {
     // coor: {x: "100", y: "700"}
     if (!rotated) {
@@ -511,7 +519,18 @@ class Board extends Component {
         clientX = e.touches[0].clientX;
         clientY = e.touches[0].clientY;
       }
+
+      // moveCircle
+      const coor = { x: clientX - this.refs.bContainer.offsetLeft, y: clientY - this.refs.bContainer.offsetTop }
+      coor.x = Math.floor((coor.x / this.refs.board.width) * 8) * 100
+      coor.y = Math.floor((coor.y / this.refs.board.width) * 8) * 100
+      coor.x = coor.x > 700 ? 700 : coor.x
+      coor.y = coor.y > 700 ? 700 : coor.y
+      coor.x = coor.x < 0 ? 0 : coor.x
+      coor.y = coor.y < 0 ? 0 : coor.y
+      drag_coor = coor
       
+      //move piece
       let deltaX = clientX - clientX_down
       let deltaY = clientY - clientY_down
 

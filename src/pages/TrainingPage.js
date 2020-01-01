@@ -1,7 +1,6 @@
 import React, { Component } from "react"
 import Header from "../components/Header"
 import Board from "../components/Board"
-import Translator from "../components/Translator"
 
 class VariationPage extends Component {
   constructor(props) {
