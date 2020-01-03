@@ -1,7 +1,6 @@
 import React, { Component } from "react"
 import Header from "../components/Header"
 import Translator from "../components/Translator"
-import "../styles/Pages.css"
 
 class NewOpPage extends Component {
   constructor(props){

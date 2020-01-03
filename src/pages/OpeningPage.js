@@ -25,6 +25,7 @@ class OpeningPage extends Component {
     this.openVariDeleteModal = this.openVariDeleteModal.bind(this)
     this.renameThisVari = this.renameThisVari.bind(this)
     this.deleteThisVari = this.deleteThisVari.bind(this)
+    this.switchActiveThisVari = this.switchActiveThisVari.bind(this)
   }
 
   getVariItems(vars, op_index) {
@@ -78,9 +79,15 @@ class OpeningPage extends Component {
     this.props.deleteVari(op_index, this.state.hMenuVariIndex)
   }
 
+  switchActiveThisVari(){
+    const op_index = this.props.match.params.op_index
+    this.props.switchVariActive(op_index, this.state.hMenuVariIndex)
+  }
+
   render() {
     const op_index = this.props.match.params.op_index
     const op = this.props.ops[op_index]
+    const thisVari = this.state.hMenuVariIndex !== undefined ? this.props.ops[op_index].variations[this.state.hMenuVariIndex] : null
     return (
       <React.Fragment>
         <Header title={op.op_name} /*headerButtonContent={<span className="iconText">school</span>}*/ /> {/* play_arrow */}
@@ -101,6 +108,14 @@ class OpeningPage extends Component {
           <button className="simpleButton hMenuButton" onClick={() => {this.hMenuClose(); this.openVariDeleteModal();}}>
             delete
           </button>
+          {/* ACTIVE BUTTON */}
+          <button className="simpleButton hMenuButton" onClick={() => {this.hMenuClose(); this.switchActiveThisVari();}}>
+            <span style={{
+              color: thisVari ? (thisVari.active ? "default" : "var(--alertColor)") : null
+            }}>
+              {thisVari ? (thisVari.active ? "visibility" : "visibility_off") : null}
+            </span>
+          </button>
         </HangingMenu>
         
         {/* DELETE VARI MODAL */}
@@ -111,7 +126,7 @@ class OpeningPage extends Component {
           doneButtonText={<span className="alertText">delete</span>}
           onDoneClick={this.deleteThisVari}>
             { this.state.variDeleteVisible ? 
-              <React.Fragment><h2><Translator text={"Delete permanently:"} />&nbsp;<span className="alertText">{this.props.ops[op_index].variations[this.state.hMenuVariIndex].vari_name}</span>{"?"}</h2></React.Fragment> : null
+              <React.Fragment><h2><Translator text={"Delete permanently:"} />&nbsp;<span className="alertText">{thisVari.vari_name}</span>{"?"}</h2></React.Fragment> : null
             }     
         </Modal>
         {/* RENAME VARI MODAL */}
@@ -124,7 +139,7 @@ class OpeningPage extends Component {
           { this.state.renameVariVisible ? 
             <React.Fragment>
               <Translator text={"Rename "} />
-              <span style={{color: "var(--importantButtonBackColor)"}}>{this.props.ops[op_index].variations[this.state.hMenuVariIndex].vari_name}</span>
+              <span style={{color: "var(--importantButtonBackColor)"}}>{thisVari.vari_name}</span>
               <Translator text={" to: "} />
               <input type="text" 
                 className="textBox"
