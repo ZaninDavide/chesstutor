@@ -23,11 +23,11 @@ const defaultOps = [
       {
         vari_name: "Classic",
         vari_score: 0,
-        active: true,
+        archived: true,
         moves: [{ from: "d2", to: "d4", promotion: undefined, san: "d4", comment: "That's the first move, don't forget it."}] // , fen: "" 
       }
     ],
-    favorite: false
+    archived: false
   }
 ]
 
@@ -51,8 +51,8 @@ class App extends Component {
     this.setBearer = this.setBearer.bind(this)
     this.logout = this.logout.bind(this)
     this.deleteOpening = this.deleteOpening.bind(this)
-    this.switchFavoriteOpening = this.switchFavoriteOpening.bind(this)
-    this.switchVariActive = this.switchVariActive.bind(this)
+    this.switchArchivedOpening = this.switchArchivedOpening.bind(this)
+    this.switchVariArchived = this.switchVariArchived.bind(this)
     this.renameOp = this.renameOp.bind(this)
     this.renameVari = this.renameVari.bind(this)
     this.deleteVari = this.deleteVari.bind(this)
@@ -137,7 +137,7 @@ class App extends Component {
       op_name: op_name,
       op_color: op_color,
       variations: [],
-      favorite: false,
+      archived: false,
     }
   }
 
@@ -167,10 +167,10 @@ class App extends Component {
     })
   }
 
-  switchFavoriteOpening(op_index){
+  switchArchivedOpening(op_index){
     this.setState(old => {
       let new_user_ops = old.user_ops
-      new_user_ops[op_index].favorite = !new_user_ops[op_index].favorite
+      new_user_ops[op_index].archived = !new_user_ops[op_index].archived
       this.updateDB(new_user_ops)
       return {user_ops: new_user_ops}
     })
@@ -194,7 +194,7 @@ class App extends Component {
       vari_name: vari_name,
       vari_score: 0,
       moves: vari_moves,
-      active: true,
+      archived: false,
     }
   }
 
@@ -215,10 +215,10 @@ class App extends Component {
     return this.addVariation(this.newVariation(new_vari_name, vari_moves), op_index)
   }
 
-  switchVariActive(op_index, vari_index){
+  switchVariArchived(op_index, vari_index){
     this.setState(old => {
       let new_user_ops = old.user_ops
-      new_user_ops[op_index].variations[vari_index].active = !new_user_ops[op_index].variations[vari_index].active
+      new_user_ops[op_index].variations[vari_index].archived = !new_user_ops[op_index].variations[vari_index].archived
       this.updateDB(new_user_ops)
       return {user_ops: new_user_ops}
     })
@@ -249,14 +249,14 @@ class App extends Component {
                                             history={history} 
                                             updateDB={this.updateUserData} 
                                             deleteOpening={this.deleteOpening} 
-                                            switchFavoriteOpening={this.switchFavoriteOpening}
+                                            switchArchivedOpening={this.switchArchivedOpening}
                                             renameOp={this.renameOp}
                                           />
     const opPage = ({ match, history }) =>  <OpeningPage 
                                               ops={this.state.user_ops} 
                                               history={history} 
                                               match={match} 
-                                              switchVariActive={this.switchVariActive}
+                                              switchVariArchived={this.switchVariArchived}
                                               renameVari={this.renameVari}
                                               deleteVari={this.deleteVari}
                                             />

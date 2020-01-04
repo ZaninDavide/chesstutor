@@ -203,3 +203,9 @@
   line-height: var(--uiElementHeight);
   font-size: var(--iconsFontSize);
 }
+
+#archivedOpsSeparator, #archivedVarsSeparator{
+  width: 100%;
+  height: 2px;
+  background-color: var(--makeDarkerColor);
+}

@@ -25,21 +25,41 @@ class OpeningPage extends Component {
     this.openVariDeleteModal = this.openVariDeleteModal.bind(this)
     this.renameThisVari = this.renameThisVari.bind(this)
     this.deleteThisVari = this.deleteThisVari.bind(this)
-    this.switchActiveThisVari = this.switchActiveThisVari.bind(this)
+    this.switchArchivedThisVari = this.switchArchivedThisVari.bind(this)
+  }
+
+  getArchivedSeparator(){
+    return <div id="archivedVarsSeparator" />
   }
 
   getVariItems(vars, op_index) {
     if (vars.length > 0) {
-      return vars.map((cur, index) => <VariItem 
-                                        vari={cur} 
-                                        vari_index={index} 
-                                        op_index={op_index} 
-                                        history={this.props.history} 
-                                        key={`variItem_${op_index}_${index}`} 
-                                        switchVariActive={this.props.switchVariActive}
-                                        hMenuOpen={this.hMenuOpen}
-                                      />
-      )
+      let not_archived = []
+      let archived = []
+      // populate not_archived and archived
+      vars.map((cur, index) => {
+        let item = <VariItem 
+          vari={cur} 
+          vari_index={index} 
+          op_index={op_index} 
+          history={this.props.history} 
+          key={`variItem_${op_index}_${index}`} 
+          switchVariArchived={this.props.switchVariArchived}
+          hMenuOpen={this.hMenuOpen}
+        />
+        if(cur.archived){ // add item to archived
+          archived.push(item)
+        }else{ // add item to not_archived
+          not_archived.push(item)
+        }
+      })
+      // connect all together: not_archived + separator + archived
+      let all = not_archived
+      if(archived.length > 0){
+        all.push(this.getArchivedSeparator())
+        all = all.concat(archived)
+      }
+      return all
     } else {
       return <p><Translator text={"No variations yet! Use the + button in the right bottom corner to create a new one."}/></p>
     }
@@ -79,9 +99,9 @@ class OpeningPage extends Component {
     this.props.deleteVari(op_index, this.state.hMenuVariIndex)
   }
 
-  switchActiveThisVari(){
+  switchArchivedThisVari(){
     const op_index = this.props.match.params.op_index
-    this.props.switchVariActive(op_index, this.state.hMenuVariIndex)
+    this.props.switchVariArchived(op_index, this.state.hMenuVariIndex)
   }
 
   render() {
@@ -104,17 +124,13 @@ class OpeningPage extends Component {
           <button className="simpleButton hMenuButton" onClick={() => this.setState({renameVariVisible: true, variNewName: "", hMenuVisible: false})}>
             edit
           </button>
+          {/* ARCHIVED BUTTON */}
+          <button className="simpleButton hMenuButton" onClick={() => {this.hMenuClose(); this.switchArchivedThisVari();}}>
+              {thisVari ? (thisVari.archived ? "unarchive" : "archive") : null}
+          </button>
           {/* DELETE BUTTON */}
           <button className="simpleButton hMenuButton" onClick={() => {this.hMenuClose(); this.openVariDeleteModal();}}>
-            delete
-          </button>
-          {/* ACTIVE BUTTON */}
-          <button className="simpleButton hMenuButton" onClick={() => {this.hMenuClose(); this.switchActiveThisVari();}}>
-            <span style={{
-              color: thisVari ? (thisVari.active ? "default" : "var(--alertColor)") : null
-            }}>
-              {thisVari ? (thisVari.active ? "visibility" : "visibility_off") : null}
-            </span>
+            <span style={{color: "var(--alertColor)"}}>delete</span>
           </button>
         </HangingMenu>
         

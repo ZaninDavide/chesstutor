@@ -23,15 +23,36 @@ class OpsListPage extends Component {
     this.renameThisOpening = this.renameThisOpening.bind(this)
   }
 
+  getArchivedSeparator(){
+    return <div id="archivedOpsSeparator" />
+  }
+
   getOpItems(ops) {
     if (ops.length > 0) {
-      return ops.map((cur, index) => <OpItem 
-        op={cur} 
-        op_index={index} 
-        history={this.props.history} 
-        key={`opItem_${index}`} 
-        hMenuOpen={this.hMenuOpen} 
-      />)
+      let not_archived = []
+      let archived = []
+      // populate not_archived and archived
+      ops.map((cur, index) => {
+        let item = <OpItem 
+          op={cur} 
+          op_index={index} 
+          history={this.props.history} 
+          key={`opItem_${index}`} 
+          hMenuOpen={this.hMenuOpen} 
+        />
+        if(cur.archived){ // add item to archived
+          archived.push(item)
+        }else{ // add item to not_archived
+          not_archived.push(item)
+        }
+      })
+      // connect all together: not_archived + separator + archived
+      let all = not_archived
+      if(archived.length > 0){
+        all.push(this.getArchivedSeparator())
+        all = all.concat(archived)
+      }
+      return all
     } else {
       return <p><Translator text={"No openings yet! Use the + button in the right bottom corner to create a new one."}/></p>
     }
@@ -84,17 +105,15 @@ class OpsListPage extends Component {
           <button className="simpleButton hMenuButton">
             share
           </button>
-          {/* FAVORITE BUTTON */}
+          {/* ARCHIVE BUTTON */}
           <button className="simpleButton hMenuButton" 
-            onClick={() => {this.hMenuClose(); this.props.switchFavoriteOpening(this.state.hMenuOpIndex);}}
+            onClick={() => {this.hMenuClose(); this.props.switchArchivedOpening(this.state.hMenuOpIndex);}}
           >
-            <span style={this.state.hMenuOpIndex !== null ? (this.props.ops[this.state.hMenuOpIndex].favorite ? {color: "var(--importantButtonBackColor)"} : {}) : {}}>
-              {this.state.hMenuOpIndex !== null ? (this.props.ops[this.state.hMenuOpIndex].favorite ? "star" : "star_border") : null} {/*bookmark_border*/}
-            </span>
+            {this.state.hMenuOpIndex !== null ? (this.props.ops[this.state.hMenuOpIndex].archived ? "unarchive" : "archive") : null}
           </button> 
           {/* DELETE BUTTON */}
           <button className="simpleButton hMenuButton" onClick={() => {this.hMenuClose(); this.openOpDeleteModal();}}>
-            delete
+            <span style={{color: "var(--alertColor)"}}>delete</span>
           </button>
         </HangingMenu>
         {/* DELETE OP MODAL */}

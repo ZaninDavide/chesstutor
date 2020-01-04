@@ -24,7 +24,6 @@ class OpItem extends Component {
         className="opItem" 
         onClick={this.openOp}
         onContextMenu={this.rightClick}
-        style={{borderColor: this.props.op.favorite ? "var(--importantButtonBackColor)" : "transparent"}}
       >
         <h2>{this.props.op.op_name}</h2>
         <p>
