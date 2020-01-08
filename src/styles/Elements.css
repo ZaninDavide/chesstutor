@@ -42,7 +42,7 @@
   max-width: calc((100vh - var(--headerHeight) - var(--uiElementHeight) - var(--uiElementHeight)) / 8);
   position: absolute;
   transition: transform, top, left;
-  transition: 0.25s, 0.25s, 0.25s;
+  transition: 0.15s, 0.15s, 0.15s;
   will-change: transform, top, left;
 }
 

@@ -17,6 +17,9 @@ import blackPawnSVG from "../files/black_pawn.svg"
 import blackBishopSVG from "../files/black_bishop.svg"
 import selectionSVG from "../files/selection.svg"
 
+import sound_capture from "../files/sound_capture.mp3"
+import sound_move from "../files/sound_move.mp3"
+
 import Modal from "../components/Modal"
 import Translator from "../components/Translator"
 
@@ -266,6 +269,7 @@ class Board extends Component {
     // move data can be a string(SAN): "Nxd4"
     // or an object: {from: "d2", to: "d5", promotion: undefined}
     let move = this.state.game.move(move_data)
+    this.play_move_sound(move)
     this.setState(old => {
       let moves_list = old.json_moves
       // adding the new move to the history array in the correct format
@@ -536,6 +540,14 @@ class Board extends Component {
 
       this.selectedPiece.current.style.left = deltaX + "px"
       this.selectedPiece.current.style.top = deltaY + "px"
+    }
+  }
+
+  async play_move_sound(move){
+    // move is what the game.move() function returns
+    if(move){
+      let audio = new Audio(move.flags.indexOf("c") !== -1 || move.flags.indexOf("e") !== -1 ? sound_capture : sound_move)
+      audio.play()
     }
   }
 

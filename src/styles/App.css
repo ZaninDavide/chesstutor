@@ -44,11 +44,16 @@
 
 /* ---------------------------- CONTAINERS ---------------------------- */
 
+html, body{
+  width: 100%;
+  height: 100%;
+}
+
 #root {
   display: grid;
   /* SIZE */
-  width: 100vw;
-  height: 100vh;
+  width: 100%;
+  height: 100%;
   /* SPACES */
   padding: var(--largeMargin);
 }
@@ -57,7 +62,7 @@
   /* GRID */
   display: grid;
   grid-template-areas: "header" "page";
-  grid-template-rows: var(--headerHeight) auto;
+  grid-template-rows: var(--headerHeight) 1fr;
   /* SIZE */
   width: 100%;
   height: 100%;

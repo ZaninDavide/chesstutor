@@ -503,9 +503,11 @@ var Chess = function(fen) {
     if (board[to]) {
       move.captured = board[to].type;
       move.captured_id = board[to].id;
-    } else if (flags & BITS.EP_CAPTURE) {
+    } else if (flags & BITS.EP_CAPTURE) { // this capture was an "en passant"
       move.captured = PAWN;
-      move.captured_id = board[to + 16].id; // move.captured_id = board[to].id; DONE
+      /* to find the piece to take move up or down depending on which player moves */
+      let color_sign = move.color === "w" ? 1 : -1
+      move.captured_id = board[to + 16 * color_sign].id; // DONE
     }
     return move;
   }
