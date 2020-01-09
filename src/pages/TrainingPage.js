@@ -18,7 +18,12 @@ class VariationPage extends Component {
     return (
       <React.Fragment>
         <Header title={op.op_name} />
-        <Board history={this.props.history} op_index={op_index} />
+        <Board 
+          history={this.props.history} 
+          op_index={op_index}
+          buttons={["back", "help"]}
+          is_move_allowed={this.props.is_move_allowed}
+        />
       </React.Fragment>
     )
   }

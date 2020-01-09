@@ -146,6 +146,7 @@ class Board extends Component {
     this.boardUp = this.boardUp.bind(this);
     this.boardDrag = this.boardDrag.bind(this);
     this.moveCircle = this.moveCircle.bind(this)
+    this.boardButtons = this.boardButtons.bind(this)
     /* refs */
     this.selectedPiece = React.createRef()
   }
@@ -292,12 +293,22 @@ class Board extends Component {
       if(this.state.selected_cell === undefined){return false}
       move_data.from = this.state.selected_cell
     }
+
     if(this.is_move_legal(move_data)){
       if (this.is_move_promotion(move_data)) {
         let promotion = "q" /* TODO -- decide which piece to promote to */
         move_data.promotion = promotion
       }
-      this.make_move(move_data)
+
+      let move_allowed = true
+      if(this.props.is_move_allowed){
+        // if the function exists try and see if this move is allowed(i don't mean illegal, if the move cannot be done for other reasons)
+        move_allowed = this.props.is_move_allowed(this.props.op_index, this.state.json_moves, move_data)
+      }
+      if(move_allowed){ // allowed as default
+        this.make_move(move_data)
+      }
+
       return true
     }else{
       return false
@@ -554,18 +565,34 @@ class Board extends Component {
   /* ---------------------------- UI ELEMENTS ---------------------------- */
 
   boardButtons(){
-    return <React.Fragment>
-      {/* BACK */}
-      <button className="simpleButton boardButton" onClick={this.try_undo}>keyboard_arrow_left</button>
-      {/* CREATE VARIATION BUTTON */}
-      <button 
-        className="simpleButton boardButton" 
-        onClick={this.openVariNameModal} 
-        style={{color: "var(--importantButtonBackColor)"}}
-      >done</button>
-      {/* HELP */}
-      <button className="simpleButton boardButton">live_help</button> {/* wb_incandescent */}
-    </React.Fragment>
+    let b_objects = []
+    if(this.props.buttons){
+      // BACK
+      if(this.props.buttons.indexOf("back") !== -1){
+        b_objects.push(
+          <button id="backButton" key="backButton" className="simpleButton boardButton" onClick={this.try_undo}>keyboard_arrow_left</button>
+        )
+      }
+      // CREATE VARIATION BUTTON - DONE
+      if(this.props.buttons.indexOf("done") !== -1){
+        b_objects.push(
+          <button 
+            id="doneButton" 
+            key="doneButton" 
+            className="simpleButton boardButton" 
+            onClick={this.openVariNameModal} 
+            style={{color: "var(--importantButtonBackColor)"}}
+          >done</button>
+        )
+      }
+      // HELP
+      if(this.props.buttons.indexOf("help") !== -1){
+        b_objects.push(
+          <button id="helpButton" key="helpButton" className="simpleButton boardButton">live_help</button>
+        )
+      }
+    }
+    return b_objects
   }
 
   closeVariNameModal(){

@@ -18,7 +18,12 @@ class VariationPage extends Component {
     return (
       <React.Fragment>
         <Header title={<Translator text={"New variation"} />} />
-        <Board history={this.props.history} createVari={this.props.createVari} op_index={op_index} />
+        <Board 
+          history={this.props.history} 
+          createVari={this.props.createVari} 
+          op_index={op_index} 
+          buttons={["back", "done"]}
+        />
       </React.Fragment>
     )
   }

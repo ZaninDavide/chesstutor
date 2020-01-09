@@ -56,6 +56,7 @@ class App extends Component {
     this.renameOp = this.renameOp.bind(this)
     this.renameVari = this.renameVari.bind(this)
     this.deleteVari = this.deleteVari.bind(this)
+    this.is_move_allowed = this.is_move_allowed.bind(this)
     // write the remember me part
   }
 
@@ -242,6 +243,39 @@ class App extends Component {
     })
   }
 
+  /* --------------------------- TRAINING --------------------------- */
+
+  is_move_allowed(op_index, json_moves, move_data){
+    let is_allowed = false
+    let finished_training = true
+    let op = this.state.user_ops[op_index]
+    for(let vari_index = 0; vari_index<op.variations.length; vari_index++){
+      // loop through all variations 
+      let vari = op.variations[vari_index]
+      if(vari.moves.length > json_moves.length && !vari.archived){ // this variation is long enougth and not archived
+        let first_moves = vari.moves.slice(0, json_moves.length)
+
+        // is the variation compatible with the already done moves?
+        if(JSON.stringify(first_moves) === JSON.stringify(json_moves)){
+          finished_training = false // there is at least one move to do
+          let vari_next_move = vari.moves[json_moves.length] // take the next move
+
+          // is it the move I'm going to do?
+          if(vari_next_move.from === move_data.from && vari_next_move.to === move_data.to && vari_next_move.promotion === move_data.promotion){
+            is_allowed = true
+            break;
+          }
+        }
+
+      }
+    }
+    if(finished_training){
+      alert("training finished") // TODO
+      return false
+    }
+    return is_allowed
+  }
+
   /* ---------------------------- RENDER ---------------------------- */
   render() {
     const opsListPage = ({ history }) =>  <OpsListPage 
@@ -260,11 +294,16 @@ class App extends Component {
                                               renameVari={this.renameVari}
                                               deleteVari={this.deleteVari}
                                             />
+    const trainingPage = ({ match, history }) =>  <TrainingPage 
+                                                    history={history} 
+                                                    match={match} 
+                                                    ops={this.state.user_ops}
+                                                    is_move_allowed={this.is_move_allowed}
+                                                  />
     const variPage = ({ match, history }) => <VariationPage ops={this.state.user_ops} history={history} match={match} createVari={this.createVari}/>
     const newVariPage = ({ match, history }) => <NewVariPage ops={this.state.user_ops} history={history} match={match} createVari={this.createVari}/>
     const newOpPage = ({ match, history }) => <NewOpPage history={history} match={match} createOp={this.createOp}/>
     const loginPage = ({ match, history }) => <LoginPage history={history} match={match} setBearer={this.setBearer}/>
-    const trainingPage = ({ match, history }) => <TrainingPage history={history} match={match} ops={this.state.user_ops}/>
 
     return (
       <LanguageProvider lang={this.state.language}>
