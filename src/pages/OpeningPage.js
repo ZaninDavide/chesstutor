@@ -29,7 +29,7 @@ class OpeningPage extends Component {
   }
 
   getArchivedSeparator(){
-    return <div id="archivedVarsSeparator" />
+    return <div id="archivedVarsSeparator" key="archivedVarsSeparator"/>
   }
 
   getVariItems(vars, op_index) {
@@ -52,6 +52,7 @@ class OpeningPage extends Component {
         }else{ // add item to not_archived
           not_archived.push(item)
         }
+        return true
       })
       // connect all together: not_archived + separator + archived
       let all = not_archived

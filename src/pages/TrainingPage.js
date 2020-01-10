@@ -23,6 +23,8 @@ class VariationPage extends Component {
           op_index={op_index}
           buttons={["back", "help"]}
           is_move_allowed={this.props.is_move_allowed}
+          get_pc_move_data={this.props.get_pc_move_data}
+          autoAnswer={true}
         />
       </React.Fragment>
     )

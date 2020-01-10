@@ -24,7 +24,7 @@ class OpsListPage extends Component {
   }
 
   getArchivedSeparator(){
-    return <div id="archivedOpsSeparator" />
+    return <div id="archivedOpsSeparator" key="archivedOpsSeparator"/>
   }
 
   getOpItems(ops) {
@@ -45,6 +45,7 @@ class OpsListPage extends Component {
         }else{ // add item to not_archived
           not_archived.push(item)
         }
+        return true
       })
       // connect all together: not_archived + separator + archived
       let all = not_archived
@@ -54,7 +55,7 @@ class OpsListPage extends Component {
       }
       return all
     } else {
-      return <p><Translator text={"No openings yet! Use the + button in the right bottom corner to create a new one."}/></p>
+      return <p><Translator text={"no_openings"}/></p>
     }
   }
 

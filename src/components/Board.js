@@ -19,6 +19,7 @@ import selectionSVG from "../files/selection.svg"
 
 import sound_capture from "../files/sound_capture.mp3"
 import sound_move from "../files/sound_move.mp3"
+import sound_error from "../files/sound_error.mp3"
 
 import Modal from "../components/Modal"
 import Translator from "../components/Translator"
@@ -147,6 +148,7 @@ class Board extends Component {
     this.boardDrag = this.boardDrag.bind(this);
     this.moveCircle = this.moveCircle.bind(this)
     this.boardButtons = this.boardButtons.bind(this)
+    this.pc_move = this.pc_move.bind(this)
     /* refs */
     this.selectedPiece = React.createRef()
   }
@@ -154,7 +156,7 @@ class Board extends Component {
   /* ---------------------------- COMPONENT ---------------------------- */
 
   render() {
-    console.log("render")
+    // console.log("render")
     return (
       <React.Fragment>
         <div id="boardGrid">
@@ -266,10 +268,37 @@ class Board extends Component {
     return legal_moves.includes(move_data.to)
   }
 
-  make_move(move_data) {
+  async make_move(move_data){
+    let move = this.state.game.move(move_data)
+
+    this.play_move_sound(move)
+
+    return new Promise(res => {
+      this.setState(old => {
+        let moves_list = old.json_moves
+        // adding the new move to the history array in the correct format
+        moves_list.push({
+          from: move.from,
+          to: move.to,
+          promotion: move.promotion,
+          san: move.san,
+        })
+        // store moves_list to return it later
+        res(moves_list)
+        return {
+          json_moves: moves_list
+        }
+      })
+    })
+
+  }
+
+  make_move_old(move_data) {
     // move data can be a string(SAN): "Nxd4"
     // or an object: {from: "d2", to: "d5", promotion: undefined}
     let move = this.state.game.move(move_data)
+    let json_moves_after
+
     this.play_move_sound(move)
     this.setState(old => {
       let moves_list = old.json_moves
@@ -280,15 +309,20 @@ class Board extends Component {
         promotion: move.promotion,
         san: move.san,
       })
+      // store moves_list to return it later
+      console.log(json_moves_after)
+      json_moves_after = moves_list
       return {
         json_moves: moves_list
       }
     })
+    return json_moves_after
   }
 
-  try_move(move_data) {
+  async try_move(move_data) {
     // move data is an object: {from: "d2", to: "d5", promotion: undefined}
     // as default move_data.from = this.state.selectedCell
+
     if(move_data.from === undefined){
       if(this.state.selected_cell === undefined){return false}
       move_data.from = this.state.selected_cell
@@ -299,14 +333,21 @@ class Board extends Component {
         let promotion = "q" /* TODO -- decide which piece to promote to */
         move_data.promotion = promotion
       }
-
+      
       let move_allowed = true
-      if(this.props.is_move_allowed){
+      if(this.props.is_move_allowed){ // TODO - should check if it is not the turn of the computer
         // if the function exists try and see if this move is allowed(i don't mean illegal, if the move cannot be done for other reasons)
         move_allowed = this.props.is_move_allowed(this.props.op_index, this.state.json_moves, move_data)
       }
       if(move_allowed){ // allowed as default
-        this.make_move(move_data)
+        // MAKE THE MOVE
+        let moves_list_after = await this.make_move(move_data)
+        if(this.props.autoAnswer){
+          this.pc_move(this.props.op_index, moves_list_after)
+        }
+      }else{
+        this.play_error_sound()
+        return false
       }
 
       return true
@@ -338,6 +379,15 @@ class Board extends Component {
       })
     }else{
       console.log("Cannot undo before any move is done")
+    }
+  }
+
+  pc_move(op_index, json_moves){
+    let move_data = this.props.get_pc_move_data(op_index, json_moves)
+    if(move_data !== null){
+      setTimeout(() => this.make_move(move_data), 300)
+    }else{
+      alert("training finished")
     }
   }
 
@@ -437,10 +487,10 @@ class Board extends Component {
     return false
   }
 
-  clickCell(cell) {
+  async clickCell(cell) {
     // if something is selected try to move there
     if (this.state.selected_cell !== undefined) {
-      let res = this.try_move({ from: this.state.selected_cell, to: cell }) // true = move done; false = move not done because illegal
+      let res = await this.try_move({ from: this.state.selected_cell, to: cell }) // true = move done; false = move not done because illegal
       if(res){
         // if i have a piece selected and i moved there
         this.deselectCells()
@@ -465,7 +515,7 @@ class Board extends Component {
     }
   }
 
-  boardDown(e){
+  async boardDown(e){
     let clientX = e.clientX
     let clientY = e.clientY
     if(e.type === "touchstart"){
@@ -482,7 +532,7 @@ class Board extends Component {
       const cell = this.cellFromCoor(coor)
 
       if(this.state.selected_cell && this.is_move_legal){
-        this.try_move({to: cell})
+        await this.try_move({to: cell})
       }
 
       const selection_res = this.try_select_cell(cell)
@@ -491,8 +541,12 @@ class Board extends Component {
     }
   }
 
-  boardUp(e){
-    if(this.state.selected_cell && this.selectedPiece){
+  async boardUp(e){
+    if(this.state.selected_cell && this.selectedPiece.current){
+       // (both variables) stored here to avoid losing it, before resetting piece offset, by deselecting
+      const draggedPiece = this.selectedPiece.current
+
+      // find the coordinates of the mouse
       let clientX = e.clientX
       let clientY = e.clientY
       if(e.type === "touchend"){
@@ -502,24 +556,25 @@ class Board extends Component {
       const coor = { x: clientX - this.refs.bContainer.offsetLeft, y: clientY - this.refs.bContainer.offsetTop }
       coor.x = Math.floor((coor.x / this.refs.board.width) * 8) * 100
       coor.y = Math.floor((coor.y / this.refs.board.width) * 8) * 100
+      
+      // inside the board?
       if (coor.x <= 700 && coor.y <= 700) {
-        // inside the board
-        const cell = this.cellFromCoor(coor)
         // try to move there
-        const try_move_res = this.try_move({to: cell})
-        if(!try_move_res){
+        const cell = this.cellFromCoor(coor)
+        const try_move_res = await this.try_move({to: cell})
+        if(!try_move_res && cell){
           this.try_select_cell(cell)
-        }else{
+        }else if(cell){
           this.deselectCells()
         }
       }
-      // reset dragging
+
+      // reset dragging (it has to be done after everithing otherwise you see the piece come back)
       clientX_down = 0
       clientY_down = 0
-      if(this.selectedPiece.current){
-        this.selectedPiece.current.style.left = "0px"
-        this.selectedPiece.current.style.top = "0px"
-      }
+      draggedPiece.style.left = "0px"
+      draggedPiece.style.top = "0px"
+
     }
     on_drag = false
     left_mouse_down = false
@@ -561,6 +616,12 @@ class Board extends Component {
       audio.play()
     }
   }
+
+  async play_error_sound(){
+    let audio = new Audio(sound_error)
+    audio.play()
+  }
+
 
   /* ---------------------------- UI ELEMENTS ---------------------------- */
 

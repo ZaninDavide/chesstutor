@@ -57,6 +57,8 @@ class App extends Component {
     this.renameVari = this.renameVari.bind(this)
     this.deleteVari = this.deleteVari.bind(this)
     this.is_move_allowed = this.is_move_allowed.bind(this)
+    this.get_pc_move_data = this.get_pc_move_data.bind(this)
+    this.get_correct_moves_data = this.get_correct_moves_data.bind(this)
     // write the remember me part
   }
 
@@ -276,6 +278,32 @@ class App extends Component {
     return is_allowed
   }
 
+  get_correct_moves_data(op_index, json_moves){
+    let correct_moves = []
+    let op = this.state.user_ops[op_index]
+    for(let vari_index = 0; vari_index<op.variations.length; vari_index++){
+      // loop through all variations 
+      let vari = op.variations[vari_index]
+      if(vari.moves.length > json_moves.length && !vari.archived){ // this variation is long enougth and not archived
+        let first_moves = vari.moves.slice(0, json_moves.length)
+
+        // is the variation compatible with the already done moves?
+        if(JSON.stringify(first_moves) === JSON.stringify(json_moves)){
+          let vari_next_move = vari.moves[json_moves.length] // take the next move
+          correct_moves.push(vari_next_move) // add the move to the list
+        }
+
+      }
+    }
+    return correct_moves
+  }
+
+  get_pc_move_data(op_index, json_moves){
+    let correct_moves = this.get_correct_moves_data(op_index, json_moves)
+    let random = Math.round(Math.random() * (correct_moves.length - 1));
+    return correct_moves[random]
+  }
+
   /* ---------------------------- RENDER ---------------------------- */
   render() {
     const opsListPage = ({ history }) =>  <OpsListPage 
@@ -299,6 +327,7 @@ class App extends Component {
                                                     match={match} 
                                                     ops={this.state.user_ops}
                                                     is_move_allowed={this.is_move_allowed}
+                                                    get_pc_move_data={this.get_pc_move_data}
                                                   />
     const variPage = ({ match, history }) => <VariationPage ops={this.state.user_ops} history={history} match={match} createVari={this.createVari}/>
     const newVariPage = ({ match, history }) => <NewVariPage ops={this.state.user_ops} history={history} match={match} createVari={this.createVari}/>
