@@ -14,7 +14,6 @@ class VariationPage extends Component {
   render() {
     const op_index = this.props.match.params.op_index
     const op = this.props.ops[op_index]
-
     return (
       <React.Fragment>
         <Header title={op.op_name} />
@@ -25,6 +24,7 @@ class VariationPage extends Component {
           is_move_allowed={this.props.is_move_allowed}
           get_pc_move_data={this.props.get_pc_move_data}
           autoAnswer={true}
+          playColor={op.op_color}
         />
       </React.Fragment>
     )

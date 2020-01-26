@@ -24,10 +24,11 @@ const defaultOps = [
         vari_name: "Classic",
         vari_score: 0,
         archived: true,
-        moves: [{ from: "d2", to: "d4", promotion: undefined, san: "d4", comment: "That's the first move, don't forget it."}] // , fen: "" 
+        moves: [{ from: "d2", to: "d4", promotion: undefined, san: "d4"}] // , fen: "" 
       }
     ],
-    archived: false
+    comments: {},
+    archived: false,
   }
 ]
 
@@ -140,6 +141,7 @@ class App extends Component {
       op_name: op_name,
       op_color: op_color,
       variations: [],
+      comments: [],
       archived: false,
     }
   }
@@ -245,6 +247,16 @@ class App extends Component {
     })
   }
 
+  editComment(op_index, move_history, text){
+    // move_history = "san1-san2-san3"
+    this.setState(old => {
+      let new_user_ops = old.user_ops
+      new_user_ops[op_index].comments[move_history] = text
+      this.updateDB(new_user_ops)
+      return {user_ops: new_user_ops}
+    })
+  }
+
   /* --------------------------- TRAINING --------------------------- */
 
   is_move_allowed(op_index, json_moves, move_data){
@@ -329,7 +341,7 @@ class App extends Component {
                                                     is_move_allowed={this.is_move_allowed}
                                                     get_pc_move_data={this.get_pc_move_data}
                                                   />
-    const variPage = ({ match, history }) => <VariationPage ops={this.state.user_ops} history={history} match={match} createVari={this.createVari}/>
+    const variPage = ({ match, history }) => <VariationPage ops={this.state.user_ops} history={history} match={match}/>
     const newVariPage = ({ match, history }) => <NewVariPage ops={this.state.user_ops} history={history} match={match} createVari={this.createVari}/>
     const newOpPage = ({ match, history }) => <NewOpPage history={history} match={match} createOp={this.createOp}/>
     const loginPage = ({ match, history }) => <LoginPage history={history} match={match} setBearer={this.setBearer}/>

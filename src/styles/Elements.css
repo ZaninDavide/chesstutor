@@ -147,6 +147,10 @@
   line-height: calc(var(--uiElementHeight) + var(--mediumMargin)) !important; /* overwrite simpleButton */ /* = height*/
 }
 
+.promotionButton{
+  width: 100%;
+}
+
 
 #newOpPageBody, #loginPageBody{
   margin-left: var(--mediumMargin);

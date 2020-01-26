@@ -23,6 +23,7 @@ import sound_error from "../files/sound_error.mp3"
 
 import Modal from "../components/Modal"
 import Translator from "../components/Translator"
+import PromotionModal from "../components/PromotionModal"
 
 const cells = {
   "1": "700",
@@ -124,13 +125,16 @@ let drag_coor = {x: 0, y: 0}
 class Board extends Component {
   constructor(props) {
     super(props)
-
+    
     this.state = {
       game: new Chess(),
       json_moves: [], // moves' history in the correct format (see vari.moves)
       selected_cell: undefined, // undefined or "d4"
       variNameModalVisible: false,
       new_vari_name: "",
+      rotated: this.props.playColor === "black" ? true : false,
+      promotionModalVisible: false,
+      promotionPromiseResRes: undefined,
     }
     /* functions */
     this.newGame = this.newGame.bind(this)
@@ -149,6 +153,8 @@ class Board extends Component {
     this.moveCircle = this.moveCircle.bind(this)
     this.boardButtons = this.boardButtons.bind(this)
     this.pc_move = this.pc_move.bind(this)
+    this.try_select_cell = this.try_select_cell.bind(this)
+    this.getPromotion = this.getPromotion.bind(this)
     /* refs */
     this.selectedPiece = React.createRef()
   }
@@ -202,6 +208,12 @@ class Board extends Component {
             }}
           />
         </Modal>
+        <PromotionModal 
+          color={this.state.game.turn()}
+          visible={this.state.promotionModalVisible} 
+          close={() => this.setState({promotionModalVisible: false})}
+          promotionPromiseRes={this.state.promotionPromiseRes}
+        />
       </React.Fragment>
     )
   }
@@ -293,32 +305,6 @@ class Board extends Component {
 
   }
 
-  make_move_old(move_data) {
-    // move data can be a string(SAN): "Nxd4"
-    // or an object: {from: "d2", to: "d5", promotion: undefined}
-    let move = this.state.game.move(move_data)
-    let json_moves_after
-
-    this.play_move_sound(move)
-    this.setState(old => {
-      let moves_list = old.json_moves
-      // adding the new move to the history array in the correct format
-      moves_list.push({
-        from: move.from,
-        to: move.to,
-        promotion: move.promotion,
-        san: move.san,
-      })
-      // store moves_list to return it later
-      console.log(json_moves_after)
-      json_moves_after = moves_list
-      return {
-        json_moves: moves_list
-      }
-    })
-    return json_moves_after
-  }
-
   async try_move(move_data) {
     // move data is an object: {from: "d2", to: "d5", promotion: undefined}
     // as default move_data.from = this.state.selectedCell
@@ -330,7 +316,10 @@ class Board extends Component {
 
     if(this.is_move_legal(move_data)){
       if (this.is_move_promotion(move_data)) {
-        let promotion = "q" /* TODO -- decide which piece to promote to */
+        let promotion = await this.getPromotion() // "q" TODO -- decide which piece to promote to
+        if(!promotion){
+          return false
+        }
         move_data.promotion = promotion
       }
       
@@ -364,6 +353,12 @@ class Board extends Component {
     return false
   }
 
+  getPromotion(){
+      return new Promise((res, rej) => {
+        this.setState({promotionPromiseRes: res, promotionModalVisible: true})
+      })
+  }
+
   try_undo(){
     /* I can undo if there is some move to undo */
     if(this.state.json_moves.length > 0){
@@ -385,7 +380,7 @@ class Board extends Component {
   pc_move(op_index, json_moves){
     let move_data = this.props.get_pc_move_data(op_index, json_moves)
     if(move_data !== null){
-      setTimeout(() => this.make_move(move_data), 300)
+      setTimeout(() => this.make_move(move_data), 500)
     }else{
       alert("training finished")
     }
@@ -410,7 +405,7 @@ class Board extends Component {
       coor = this.cellCoordinates(cell)
       cell_str = cell
     }else{
-      cell_str = this.cellFromCoor(coor, false)
+      cell_str = this.cellFromCoor(coor) /* , false */
     }
 
     const svg = this.getPieceSrc(type)
@@ -427,7 +422,7 @@ class Board extends Component {
             />
   }
 
-  pieces() {
+  pieces(rotated = this.state.rotated || false) {
     let objects = []
     let board = this.state.game.board()
     for (let line = 0; line < 8; line++) {
@@ -437,7 +432,11 @@ class Board extends Component {
         if (piece !== null) {
           // if the cell is not empty
           let type = piecesName[piece.color === "b" ? piece.type : piece.type.toUpperCase()] // get the type in this form: "white_king"
-          objects.push({ collumn, line, type, id: piece.id })
+          if(!rotated){
+            objects.push({ collumn, line, type, id: piece.id })
+          }else{
+            objects.push({ collumn: 7 - collumn, line: 7 - line, type, id: piece.id })
+          }
         }
       }
     }
@@ -479,8 +478,10 @@ class Board extends Component {
     let cell_obj = this.state.game.get(cell)
     if (cell_obj !== null) {
       if (cell_obj.color === this.state.game.turn()) {
-        this.selectCell(cell)
-        return true
+        if(this.props.playColor === "both" || this.props.playColor[0] === cell_obj.color){ // for example "white"[0] === "w" => true
+          this.selectCell(cell)
+          return true
+        }
       }
     }
     this.deselectCells()
@@ -611,7 +612,7 @@ class Board extends Component {
 
   async play_move_sound(move){
     // move is what the game.move() function returns
-    if(move){
+    if(move){ /* TODO CAN BE OPTIMESED */
       let audio = new Audio(move.flags.indexOf("c") !== -1 || move.flags.indexOf("e") !== -1 ? sound_capture : sound_move)
       audio.play()
     }
