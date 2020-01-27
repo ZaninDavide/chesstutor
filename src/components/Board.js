@@ -132,7 +132,7 @@ class Board extends Component {
       selected_cell: undefined, // undefined or "d4"
       variNameModalVisible: false,
       new_vari_name: "",
-      rotated: this.props.playColor === "black" ? true : false,
+      rotated: this.props.rotation === "black" ? true : false,
       promotionModalVisible: false,
       promotionPromiseResRes: undefined,
     }
@@ -220,20 +220,18 @@ class Board extends Component {
 
   componentDidMount() {
     // called when the component is first created
-    this.testChess() // test
-
-    // detect the back button click
-    window.onpopstate = e => {
-      // this.props.history.go(1);
-      e.preventDefault()
-      return false
-    };
+    // this.testChess() // test
+    
+    // pc make first move if the player playes as black
+    if(this.props.playColor === "black"){
+      this.pc_move(this.props.op_index, [])
+    }
   }
 
   /* ---------------------------- DEBUG ---------------------------- */
 
   testChess() {
-    /*this.make_move("d4")
+    this.make_move("d4")
     this.make_move("d5")
     this.make_move("e4")
     this.make_move("dxe4")
@@ -245,7 +243,7 @@ class Board extends Component {
     this.make_move("h5")
     this.state.game.undo()
     this.logBoard()
-    console.log(this.state.game.board())*/
+    console.log(this.state.game.board())
   }
 
   logBoard() {
@@ -331,7 +329,7 @@ class Board extends Component {
       if(move_allowed){ // allowed as default
         // MAKE THE MOVE
         let moves_list_after = await this.make_move(move_data)
-        if(this.props.autoAnswer){
+        if(this.props.playColor !== "both"){
           this.pc_move(this.props.op_index, moves_list_after)
         }
       }else{

@@ -23,7 +23,8 @@ class VariationPage extends Component {
           createVari={this.props.createVari} 
           op_index={op_index} 
           buttons={["back", "done"]}
-          playColor={op.op_color}
+          rotation={op.op_color}
+          playColor={"both"}
         />
       </React.Fragment>
     )

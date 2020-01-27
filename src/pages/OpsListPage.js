@@ -99,13 +99,9 @@ class OpsListPage extends Component {
             edit
           </button> 
           {/* STATS BUTTON */}
-          <button className="simpleButton hMenuButton">
-            emoji_events 
-          </button> 
+          {/*<button className="simpleButton hMenuButton">emoji_events</button>*/}
           {/* SHARE BUTTON */}
-          <button className="simpleButton hMenuButton">
-            share
-          </button>
+          {/*<button className="simpleButton hMenuButton">share</button>*/}
           {/* ARCHIVE BUTTON */}
           <button className="simpleButton hMenuButton" 
             onClick={() => {this.hMenuClose(); this.props.switchArchivedOpening(this.state.hMenuOpIndex);}}

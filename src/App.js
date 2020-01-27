@@ -312,6 +312,9 @@ class App extends Component {
 
   get_pc_move_data(op_index, json_moves){
     let correct_moves = this.get_correct_moves_data(op_index, json_moves)
+    // return false if there is no correct move
+    if (correct_moves.length === 0) return null
+    // choose which move to do
     let random = Math.round(Math.random() * (correct_moves.length - 1));
     return correct_moves[random]
   }

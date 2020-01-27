@@ -1,7 +1,6 @@
 import React, { Component } from "react"
 import "../styles/Modal.css"
 
-import boardSVG from "../files/chessboard.svg"
 import whiteKingSVG from "../files/white_king.svg"
 import whiteQueenSVG from "../files/white_queen.svg"
 import whiteRookSVG from "../files/white_rook.svg"
@@ -14,7 +13,6 @@ import blackRookSVG from "../files/black_rook.svg"
 import blackKnightSVG from "../files/black_knight.svg"
 import blackPawnSVG from "../files/black_pawn.svg"
 import blackBishopSVG from "../files/black_bishop.svg"
-import selectionSVG from "../files/selection.svg"
 
 class PromotionModal extends Component {
   constructor(props) {
