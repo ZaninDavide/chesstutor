@@ -4,9 +4,10 @@
 
 .layout {
   font-family: "Quicksand", "Segoe UI";
+  --smallTextSize: 14px;
   --textSize: 16px;
   --mediumTextSize: 19px;
-  --titleSize: 22px;
+  --titleSize: 21px; /*22px*/
   --textWeight: 300;
   --mediumWeight: 400;
   --titleWeight: 500;

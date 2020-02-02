@@ -24,6 +24,7 @@ import sound_error from "../files/sound_error.mp3"
 import Modal from "../components/Modal"
 import Translator from "../components/Translator"
 import PromotionModal from "../components/PromotionModal"
+import CommentModal from "../components/CommentModal"
 
 const cells = {
   "1": "700",
@@ -135,6 +136,7 @@ class Board extends Component {
       rotated: this.props.rotation === "black" ? true : false,
       promotionModalVisible: false,
       promotionPromiseResRes: undefined,
+      commentModalVisible: false,
     }
     /* functions */
     this.newGame = this.newGame.bind(this)
@@ -186,10 +188,11 @@ class Board extends Component {
           <div id="boardUI">
             {this.boardButtons()}
           </div>
-          <div id="boardData">
-            Comments: ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao ciao 
+          <div id="boardData" onClick={() => this.setState({commentModalVisible: true})}>{ /* TODO - DO NOT OPEN IN TRAINING */}
+            Comments: {this.comment()}
           </div>
         </div>
+        {/* CREATE NEW VARIATION MODAL */}
         <Modal 
           visible={this.state.variNameModalVisible} 
           close={this.closeVariNameModal} 
@@ -208,12 +211,21 @@ class Board extends Component {
             }}
           />
         </Modal>
+        {/* CHOOSE PROMOTION PIECE MODAL */}
         <PromotionModal 
           color={this.state.game.turn()}
           visible={this.state.promotionModalVisible} 
           close={() => this.setState({promotionModalVisible: false})}
           promotionPromiseRes={this.state.promotionPromiseRes}
         />
+        {this.state.commentModalVisible ? <CommentModal
+          visible={this.state.commentModalVisible} 
+          close={() => this.setState({commentModalVisible: false})}
+          editComment={this.props.editComment}
+          getComment={this.props.getComment}
+          op_index={this.props.op_index}
+          json_moves={this.state.json_moves}
+        /> : null}
       </React.Fragment>
     )
   }
@@ -414,7 +426,7 @@ class Board extends Component {
               id={"piece" + id} 
               key={"piece" + id}
               ref={is_selected ? this.selectedPiece : null}
-              className={is_selected && on_drag ? "pieceSVG dragging" : "pieceSVG"} 
+              className={is_selected ? "pieceSVG noAnimationPiece" : "pieceSVG"} /* && on_drag  */
               alt={"Piece file missing"}
               draggable={false}
             />
@@ -655,13 +667,18 @@ class Board extends Component {
     return b_objects
   }
 
+  comment(){
+    console.log()
+    if (this.props.op_index === undefined || !this.state.json_moves) return ""
+    let text = this.props.getComment(this.props.op_index, this.state.json_moves)
+    return <span>{text}</span>
+  }
+
   closeVariNameModal(){
-    console.log("close")
     this.setState({variNameModalVisible: false})
   }
 
   openVariNameModal(){
-    console.log("open")
     this.setState({variNameModalVisible: true})
   }
 

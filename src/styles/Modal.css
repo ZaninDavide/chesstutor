@@ -60,3 +60,29 @@
     display: flex;
     overflow: hidden; /* avoids buttons to display in the rounded corner area */
 }
+
+.commentModalButton{
+    /* TEXT */
+    color: var(--buttonColor) !important;
+    font-family: "Material Icons" !important;
+    font-size: var(--iconsFontSize) !important;
+    margin: 0px !important;
+    width: 100px;
+}
+
+.commentTextBox{
+    margin-top: var(--smallMargin);
+    padding: 10px;
+    border: 0px;
+    background-color: var(--makeDarkerColor);
+    color: var(--textColorHighlighted);
+    font-size: var(--textSize);
+    font-family: inherit;
+    width: calc(100% - 20px);
+    resize: none;
+    border: 0; 
+    border-radius: 0;
+    outline: none;
+    outline-style: none; /* Internet Explorer  */
+    height: 170px;
+}

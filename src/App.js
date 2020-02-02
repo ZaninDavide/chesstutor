@@ -60,6 +60,8 @@ class App extends Component {
     this.is_move_allowed = this.is_move_allowed.bind(this)
     this.get_pc_move_data = this.get_pc_move_data.bind(this)
     this.get_correct_moves_data = this.get_correct_moves_data.bind(this)
+    this.editComment = this.editComment.bind(this)
+    this.getComment = this.getComment.bind(this)
     // write the remember me part
   }
 
@@ -141,7 +143,7 @@ class App extends Component {
       op_name: op_name,
       op_color: op_color,
       variations: [],
-      comments: [],
+      comments: {},
       archived: false,
     }
   }
@@ -247,14 +249,27 @@ class App extends Component {
     })
   }
 
-  editComment(op_index, move_history, text){
-    // move_history = "san1-san2-san3"
+  editComment(op_index, json_moves, text){
+    console.log(op_index, json_moves, text)
     this.setState(old => {
       let new_user_ops = old.user_ops
-      new_user_ops[op_index].comments[move_history] = text
-      this.updateDB(new_user_ops)
-      return {user_ops: new_user_ops}
+      let str = "|"
+      json_moves.forEach(elem => {
+        str += elem.san + "|"
+      });
+      new_user_ops[op_index].comments[str] = text
+      /*this.updateDB(new_user_ops)
+      return {user_ops: new_user_ops}*/
+      return
     })
+  }
+
+  getComment(op_index, json_moves){
+    let str = "|"
+    json_moves.forEach(elem => {
+      str += elem.san + "|"
+    });
+    return this.state.user_ops[op_index].comments[str]    
   }
 
   /* --------------------------- TRAINING --------------------------- */
@@ -343,9 +358,18 @@ class App extends Component {
                                                     ops={this.state.user_ops}
                                                     is_move_allowed={this.is_move_allowed}
                                                     get_pc_move_data={this.get_pc_move_data}
+                                                    getComment={this.getComment}
+                                                    editComment={this.editComment}
                                                   />
+    const newVariPage = ({ match, history }) => <NewVariPage 
+                                                  ops={this.state.user_ops} 
+                                                  history={history} 
+                                                  match={match} 
+                                                  createVari={this.createVari}
+                                                  getComment={this.getComment}
+                                                  editComment={this.editComment}
+                                                />
     const variPage = ({ match, history }) => <VariationPage ops={this.state.user_ops} history={history} match={match}/>
-    const newVariPage = ({ match, history }) => <NewVariPage ops={this.state.user_ops} history={history} match={match} createVari={this.createVari}/>
     const newOpPage = ({ match, history }) => <NewOpPage history={history} match={match} createOp={this.createOp}/>
     const loginPage = ({ match, history }) => <LoginPage history={history} match={match} setBearer={this.setBearer}/>
 

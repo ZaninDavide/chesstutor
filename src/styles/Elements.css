@@ -32,8 +32,10 @@
 
 #boardSVG {
   width: 100%;
-  max-height: calc(100vh - var(--headerHeight) - var(--uiElementHeight) - var(--uiElementHeight));
-  max-width: calc(100vh - var(--headerHeight) - var(--uiElementHeight) - var(--uiElementHeight));
+  /*
+  max-height: calc(100vh - var(--headerHeight) - var(--uiElementHeight) - 80px);
+  max-width: calc(100vh - var(--headerHeight) - var(--uiElementHeight) - 80px);
+  */
 }
 
 .pieceSVG {
@@ -44,10 +46,15 @@
   transition: transform, top, left;
   transition: 0.15s, 0.15s, 0.15s;
   will-change: transform, top, left;
+  left: 0px;
+  top: 0px;
 }
 
-.pieceSVG.dragging{
-  transition: transform 0s !important;
+.pieceSVG.noAnimationPiece{
+  -webkit-transition-property: none !important;
+  -moz-transition-property: none !important;
+  -o-transition-property: none !important;
+  transition-property: none !important;
   z-index: 2;
 }
 
@@ -74,7 +81,7 @@
   display: grid;
   width: 100vw;
   height:  calc(100vh - var(--headerHeight));
-  max-width: calc(100vh - var(--headerHeight) - var(--uiElementHeight) - var(--uiElementHeight));
+  max-width: calc(100vh - var(--headerHeight) - var(--uiElementHeight) - 80px);
   grid-template-rows: auto var(--uiElementHeight) 1fr;
   grid-template-areas: "boardContainer" "boardUI" "boardData";
 }
@@ -92,7 +99,7 @@
   padding-left: var(--mediumMargin);
   padding-top: var(--smallMargin);
   overflow-y: auto;
-  font-size: calc(var(--textSize) * 3 / 4);
+  font-size: var(--smallTextSize);
 }
 
 .boardButton{

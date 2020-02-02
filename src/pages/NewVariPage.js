@@ -17,7 +17,7 @@ class VariationPage extends Component {
     const op = this.props.ops[op_index]
     return (
       <React.Fragment>
-        <Header title={<Translator text={"New variation"} />} />
+        <Header title={<React.Fragment>{op.op_name}<Translator text={": New variation"} /></React.Fragment>} />
         <Board 
           history={this.props.history} 
           createVari={this.props.createVari} 
@@ -25,6 +25,8 @@ class VariationPage extends Component {
           buttons={["back", "done"]}
           rotation={op.op_color}
           playColor={"both"}
+          editComment={this.props.editComment}
+          getComment={this.props.getComment}
         />
       </React.Fragment>
     )

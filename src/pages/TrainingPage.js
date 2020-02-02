@@ -1,6 +1,7 @@
 import React, { Component } from "react"
 import Header from "../components/Header"
 import Board from "../components/Board"
+import Translator from "../components/Translator"
 
 class VariationPage extends Component {
   constructor(props) {
@@ -16,8 +17,9 @@ class VariationPage extends Component {
     const op = this.props.ops[op_index]
     return (
       <React.Fragment>
-        <Header title={op.op_name} />
+        <Header title={<React.Fragment><Translator text={"Training"} />{": " + op.op_name}</React.Fragment>} />
         <Board 
+          key="trainingBoard"
           history={this.props.history} 
           op_index={op_index}
           buttons={["back", "help"]}
@@ -25,6 +27,8 @@ class VariationPage extends Component {
           get_pc_move_data={this.props.get_pc_move_data}
           rotation={op.op_color}
           playColor={op.op_color}
+          editComment={this.props.editComment}
+          getComment={this.props.getComment}
         />
       </React.Fragment>
     )
