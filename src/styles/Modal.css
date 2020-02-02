@@ -10,38 +10,49 @@
 
 .modalContent{
     margin-top: 30vh;
-    height: 30vh;
-    width: calc(100vw - var(--mediumMargin) * 2);
+    height: 30%;
+    width: 100%;
     background-color: var(--backColor);
-    padding: var(--mediumMargin);
+    display: grid;
+    grid-template-rows: auto max-content;
 }
 
-.modalButton{
-    /* TEXT */
+.insideModal{
+    width: 100%;
+}
+
+.commentTextBox{
+    padding: 10px;
+    border: 0px;
+    background-color: var(--makeDarkerColor);
+    color: var(--textColorHighlighted);
+    font-size: var(--textSize);
+    font-family: inherit;
+    width: calc(100% - 20px - var(--mediumMargin) * 2);
+    resize: none;
+    border: 0; 
+    border-radius: 0;
+    outline: none;
+    outline-style: none; /* Internet Explorer  */
+    height: 170px;
+    margin-top: var(--mediumMargin);
+    margin-left: var(--mediumMargin);
+    margin-right: var(--mediumMargin);
+}
+
+/*.modalButton{
     margin: 0px !important;
     color: var(--buttonColor) !important;
     font-family: "Material Icons" !important;
     font-size: var(--iconsFontSize) !important;
     text-align: center;
     vertical-align: middle;
-    line-height: var(--uiElementHeight); /* = height*/
+    line-height: var(--uiElementHeight);  = height
     right: 0px;
     top: calc(60vh - var(--uiElementHeight) + var(--mediumMargin) * 2);
     position: absolute;
     width: 100px;
-}
-
-
-.hMenuBack{
-    position: fixed;
-    left:0px;
-    width: 100vw;
-    height: 100vh;
-    transition-property: background-color;
-    transition-property: 0.1s;
-    z-index: 1;
-    will-change: background-color;
-}
+}*/
 
 .hMenuContent{
     background-color: var(--backColor);
@@ -61,28 +72,26 @@
     overflow: hidden; /* avoids buttons to display in the rounded corner area */
 }
 
-.commentModalButton{
+.modalButton .commentModalButton{
     /* TEXT */
     color: var(--buttonColor) !important;
-    font-family: "Material Icons" !important;
-    font-size: var(--iconsFontSize) !important;
-    margin: 0px !important;
+    margin: 0px;
     width: 100px;
 }
 
-.commentTextBox{
-    margin-top: var(--smallMargin);
-    padding: 10px;
-    border: 0px;
-    background-color: var(--makeDarkerColor);
-    color: var(--textColorHighlighted);
-    font-size: var(--textSize);
-    font-family: inherit;
-    width: calc(100% - 20px);
-    resize: none;
-    border: 0; 
-    border-radius: 0;
-    outline: none;
-    outline-style: none; /* Internet Explorer  */
-    height: 170px;
+
+.hMenuBack{
+    position: fixed;
+    left:0px;
+    width: 100vw;
+    height: 100vh;
+    transition-property: background-color;
+    transition-property: 0.1s;
+    z-index: 1;
+    will-change: background-color;
+}
+
+.modalButtons{
+    text-align: right;
+    margin: 0px;
 }

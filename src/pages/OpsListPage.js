@@ -118,7 +118,7 @@ class OpsListPage extends Component {
           id="deleteOpModal" 
           visible={this.state.opDeleteVisible} 
           close={this.closeOpDeleteModal}
-          doneButtonText={<span className="alertText">delete</span>}
+          doneButtonText={<span className="alertText iconText">delete</span>}
           onDoneClick={() => this.props.deleteOpening(this.state.hMenuOpIndex)}>
             { this.state.opDeleteVisible ? 
               <React.Fragment><h2><Translator text={"Delete permanently:"} />&nbsp;<span className="alertText">{this.props.ops[this.state.hMenuOpIndex].op_name}</span>{"?"}</h2></React.Fragment> : null

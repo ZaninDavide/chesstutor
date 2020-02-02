@@ -27,10 +27,11 @@ class CommentModal extends Component {
     return (
       <div id="commentModal" className="modal" onClick={this.props.close} style={this.getStyle()}>
         <div className="modalContent" onClick={e => e.stopPropagation()} style={{height: "auto"}}>
-          <textarea placeholder={"Comment"} onChange={e => this.setState({text: e.target.value})} className="commentTextBox" type="text" value={this.state.text}></textarea>
-          <br/>
+          <div className="insideModal" onClick={e => e.stopPropagation()}>
+            <textarea placeholder={"Comment"} onChange={e => this.setState({text: e.target.value})} className="commentTextBox" type="text" value={this.state.text}></textarea>
+          </div>
           <div className="modalButtons" style={{textAlign: "right"}}>
-            <button className="commentModalButton simpleButton"
+            <button className="commentModalButton simpleButton iconText"
               disabled={this.props.disabledDoneButton}
               onClick={this.onDone}
             >done</button>

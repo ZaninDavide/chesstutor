@@ -13,6 +13,7 @@ import TrainingPage from "./pages/TrainingPage"
 
 import "./styles/App.css" // css by CLASSES + MAIN COMPONENTS
 import "./styles/Elements.css" // css by ID + SECONDARY COMPONENTS
+import "./styles/Modal.css"
 import { LanguageProvider } from "./components/LanguageContext"
 
 const defaultOps = [
@@ -41,7 +42,7 @@ class App extends Component {
       bearer: undefined,
       user_ops: [],
       language: "eng",
-      colorTheme: "defaultTheme"
+      colorTheme: "darkTheme"
     }
     this.createOp = this.createOp.bind(this)
     this.addOpening = this.addOpening.bind(this)

@@ -18,9 +18,11 @@ class Modal extends Component {
     return (
       <div className="modal" onClick={this.props.close} style={this.getStyle()}>
         <div className="modalContent" onClick={e => e.stopPropagation()}>
-          {this.props.children}
+          <div className="insideModal" onClick={e => e.stopPropagation()}>
+            {this.props.children} 
+          </div>
           <div className="modalButtons">
-            <button className="modalButton simpleButton"
+            <button className="simpleButton modalButton"
               disabled={this.props.disabledDoneButton}
               onClick={() => {
                   this.props.onDoneClick()

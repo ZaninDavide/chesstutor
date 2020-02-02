@@ -3,7 +3,6 @@ import React, { Component } from "react"
 import Chess from "../chessjs-chesstutor/chess.js"
 
 import boardSVG from "../files/chessboard.svg"
-import darkBoardSVG from "../files/chessboard_dark.svg"
 import whiteKingSVG from "../files/white_king.svg"
 import whiteQueenSVG from "../files/white_queen.svg"
 import whiteRookSVG from "../files/white_rook.svg"
@@ -172,7 +171,7 @@ class Board extends Component {
           <div id="boardContainer" 
             ref={"bContainer"} 
             key="boardContainer"
-
+            className={this.state.rotated ? "black_side" : "white_side"}
             onTouchStart={this.boardDown}
             onTouchEnd={this.boardUp}
             onTouchMove={this.boardDrag}
@@ -184,7 +183,7 @@ class Board extends Component {
             {this.selection()}
             {/*this.moveCircle()*/}
             {this.pieces()}
-            <img id="boardSVG" src={darkBoardSVG} alt={"Board file missing"} ref="board" key="board" draggable={false} />
+            <img id="boardSVG" src={boardSVG} alt={"Board file missing"} ref="board" key="board" draggable={false} />
           </div>
           <div id="boardUI">
             {this.boardButtons()}
@@ -413,7 +412,7 @@ class Board extends Component {
     let coor = cell // cell can be {x: "100%", y: "300%"} or "d4"
     let cell_str
     if (typeof cell === "string") {
-      coor = this.cellCoordinates(cell)
+      //coor = this.cellCoordinates(cell)
       cell_str = cell
     }else{
       cell_str = this.cellFromCoor(coor) /* , false */
@@ -422,7 +421,7 @@ class Board extends Component {
     const svg = this.getPieceSrc(type)
     const is_selected = this.state.selected_cell === cell_str
     return  <img 
-              style={{ transform: `translate(${coor.x}%, ${coor.y}%)` }} 
+              style={{ gridArea: cell_str}} 
               src={svg} 
               id={"piece" + id} 
               key={"piece" + id}
@@ -458,8 +457,9 @@ class Board extends Component {
   selection() {
     let sel = this.state.selected_cell
     if (sel === undefined) return <div key="selection" id="selection" />
-    let coor = this.cellCoordinates(sel)
-    return <img style={{ transform: `translate(${coor.x}%, ${coor.y}%)` }} src={selectionSVG} className="selection" key="selection" id="selection" alt="selection" />
+    /*let coor = this.cellCoordinates(sel)*/
+    return <img style={{ gridArea: sel }} src={selectionSVG} className="selection" key="selection" id="selection" alt="selection" />
+    /*return <img style={{ transform: `translate(${coor.x}%, ${coor.y}%)` }} src={selectionSVG} className="selection" key="selection" id="selection" alt="selection" />*/
   }
 
   moveCircle(){
@@ -654,7 +654,7 @@ class Board extends Component {
             key="doneButton" 
             className="simpleButton boardButton" 
             onClick={this.openVariNameModal} 
-            style={{color: "var(--importantButtonColor)", backgroundColor: "var(--importantButtonBackColor)"}}
+            style={{color: "var(--importantButtonBackColor)"}}
           >done</button>
         )
       }
