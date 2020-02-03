@@ -39,16 +39,16 @@
 }
 
 .darkTheme {
-  --backColor: #292827;
+  --backColor: #1f1f1e; /* 292827 */
   --borderColor: rgb(204, 204, 204);
   --textColor: #a2a099;
   --titleColor: #a3f7bf;
   --buttonColor: rgb(245, 245, 245);
   --textColorHighlighted: white;
-  --importantButtonColor: #292827;
+  --importantButtonColor: #1f1f1e;
   --importantButtonBackColor: #a3f7bf;
   --backColorImportantButtonHover: hsl(140, 34%, 60%);
-  --headerBackColor: #292827;
+  --headerBackColor: #1f1f1e;
   --makeDarkerColor: rgba(100, 100, 100, 0.3);
   --alertColor: #f06b65;
 }
@@ -65,7 +65,7 @@ html, body{
   height: 100%;
   overflow: hidden;
   /* Disables pull-to-refresh but allows overscroll glow effects. */
-  overscroll-behavior-y: contain;
+  /*overscroll-behavior-y: contain;*/
 }
 
 #root {

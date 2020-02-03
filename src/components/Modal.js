@@ -28,7 +28,7 @@ class Modal extends Component {
                   this.props.onDoneClick()
                   this.props.close()
               }}
-            >{this.props.doneButtonText ? this.props.doneButtonText : "done"}</button>
+            >{this.props.doneButtonText ? this.props.doneButtonText : <span className="iconText">done</span>}</button>
           </div>
         </div>
       </div>

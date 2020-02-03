@@ -23,13 +23,14 @@ class OpsListPage extends Component {
     this.renameThisOpening = this.renameThisOpening.bind(this)
   }
 
-  getArchivedSeparator(){
-    return <div id="archivedOpsSeparator" key="archivedOpsSeparator"/>
+  getSeparator(text){
+    return <div id="opsSeparator" key="opsSeparator"><p style={{textAlign: "center"}}>{text}</p></div>
   }
 
   getOpItems(ops) {
     if (ops.length > 0) {
-      let not_archived = []
+      let not_archived_white = []
+      let not_archived_black = []
       let archived = []
       // populate not_archived and archived
       ops.map((cur, index) => {
@@ -43,14 +44,26 @@ class OpsListPage extends Component {
         if(cur.archived){ // add item to archived
           archived.push(item)
         }else{ // add item to not_archived
-          not_archived.push(item)
+          if(cur.op_color === "white"){
+            not_archived_white.push(item)
+          }else{
+            not_archived_black.push(item)
+          }
         }
         return true
       })
-      // connect all together: not_archived + separator + archived
-      let all = not_archived
+      // connect all together: not_archived_white + separator + not_archived_black + separator + archived
+      let all = []
+      if(not_archived_white.length > 0){
+        all.push(this.getSeparator("White"))
+        all = all.concat(not_archived_white)
+      }
+      if(not_archived_black.length > 0){
+        all.push(this.getSeparator("Black"))
+        all = all.concat(not_archived_black)
+      }
       if(archived.length > 0){
-        all.push(this.getArchivedSeparator())
+        all.push(this.getSeparator("Archived openings"))
         all = all.concat(archived)
       }
       return all
@@ -86,7 +99,7 @@ class OpsListPage extends Component {
   render() {
     return (
       <React.Fragment>
-        <Header title={<Translator text={"Openings"}/>} goTo={"/"}/>
+        <Header title={<Translator text={"Openings"}/>} goTo={"/"} mainButtonText="account_circle"/>
         <div id="opsListPage" className="page">
           {this.getOpItems(this.props.ops)}
           <button id="newOpButton" className="importantButton iconButton" onClick={this.newOpButton}>
@@ -133,11 +146,11 @@ class OpsListPage extends Component {
         >
           { this.state.renameOpVisible ? 
             <React.Fragment>
-              <Translator text={"Rename "} />
+              <h2><Translator text={"Rename "} />
               <span style={{color: "var(--importantButtonBackColor)"}}>{this.props.ops[this.state.hMenuOpIndex].op_name}</span>
-              <Translator text={" to: "} />
+              <Translator text={" to: "} /></h2>
               <input type="text" 
-                className="textBox"
+                className="textBox renameTextBox"
                 value={this.state.opNewName} 
                 onChange={e => this.setState({opNewName: e.target.value})}
                 onKeyPress={e => {

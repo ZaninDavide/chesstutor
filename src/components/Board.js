@@ -2,7 +2,7 @@ import React, { Component } from "react"
 //import Chess from "chess.js"
 import Chess from "../chessjs-chesstutor/chess.js"
 
-import boardSVG from "../files/chessboard.svg"
+// import boardSVG from "../files/chessboard.svg"
 import darkBoardSVG from "../files/chessboard_dark.svg"
 import whiteKingSVG from "../files/white_king.svg"
 import whiteQueenSVG from "../files/white_queen.svg"
@@ -16,7 +16,7 @@ import blackRookSVG from "../files/black_rook.svg"
 import blackKnightSVG from "../files/black_knight.svg"
 import blackPawnSVG from "../files/black_pawn.svg"
 import blackBishopSVG from "../files/black_bishop.svg"
-import selectionSVG from "../files/selection.svg"
+// import selectionSVG from "../files/selection.svg"
 
 import sound_capture from "../files/sound_capture.mp3"
 import sound_move from "../files/sound_move.mp3"
@@ -122,7 +122,7 @@ let clientX_down = 0
 let clientY_down = 0
 let left_mouse_down = false
 let on_drag = false
-let drag_coor = {x: 0, y: 0}
+let dragged_away = false
 
 class Board extends Component {
   constructor(props) {
@@ -153,7 +153,7 @@ class Board extends Component {
     this.boardDown = this.boardDown.bind(this);
     this.boardUp = this.boardUp.bind(this);
     this.boardDrag = this.boardDrag.bind(this);
-    this.moveCircle = this.moveCircle.bind(this)
+    this.touchCircle = this.touchCircle.bind(this)
     this.boardButtons = this.boardButtons.bind(this)
     this.pc_move = this.pc_move.bind(this)
     this.try_select_cell = this.try_select_cell.bind(this)
@@ -182,7 +182,7 @@ class Board extends Component {
             draggable={false}
           >
             {this.selection()}
-            {/*this.moveCircle()*/}
+            {this.touchCircle()}
             {this.pieces()}
             <img id="boardSVG" src={darkBoardSVG} alt={"Board file missing"} ref="board" key="board" draggable={false} />
           </div>
@@ -456,15 +456,27 @@ class Board extends Component {
   }
 
   selection() {
-    let sel = this.state.selected_cell
-    if (sel === undefined) return <div key="selection" id="selection" />
+    let sel = this.state.selected_cell    
+    let piece = this.state.game.get(sel)
+    if (sel === undefined || !piece) return <div key="selection" id="selection" />
+    
     let coor = this.cellCoordinates(sel)
-    return <img style={{ transform: `translate(${coor.x}%, ${coor.y}%)` }} src={selectionSVG} className="selection" key="selection" id="selection" alt="selection" />
+    let type =  piecesName[piece.color === "b" ? piece.type : piece.type.toUpperCase()]
+    return <img style={{ transform: `translate(${coor.x}%, ${coor.y}%)` }} src={this.getPieceSrc(type)} className="selection" key="selection" id="selection" alt="selection" />
   }
 
-  moveCircle(){
-    let coor = this.cellCoordinates(this.cellFromCoor(drag_coor))
-    return on_drag ? <div id="moveCircle" style={{ transform: `translate(${coor.x}%, ${coor.y}%)` }} /> : <div id="moveCircle" />
+  touchCircle(){
+    let over = this.state.mouse_over_cell
+    let sel = this.state.selected_cell
+    if (over === undefined || sel === undefined || !dragged_away) return <div key="touchCircle"/>
+    
+    let coor = this.cellCoordinates(over)
+
+    return <div style={{ transform: `translate(${coor.x/1.5 - 17.25}%, ${coor.y/1.5 - 19.75}%)` }} key="touchCircle" id="touchCircle" />
+
+    /*if(!this.state.selected_cell || !on_drag) return <div key="touchCircle" ref={this.touchCircleRef} />
+    let coor = this.cellCoordinates(this.cellFromCoor(this.state.selected_cell))
+    return <div id="touchCircle" ref={this.touchCircleRef} key="touchCircle" style={{ transform: `translate(${coor.x}%, ${coor.y}%)` }} />*/
   }
 
   cellFromCoor(coor, rotated = this.state.rotated || false) {
@@ -550,6 +562,7 @@ class Board extends Component {
       const selection_res = this.try_select_cell(cell)
       on_drag = selection_res ? true : false
       left_mouse_down = true
+      this.setState({mouse_over_cell: cell})
     }
   }
 
@@ -582,14 +595,18 @@ class Board extends Component {
       }
 
       // reset dragging (it has to be done after everithing otherwise you see the piece come back)
-      clientX_down = 0
-      clientY_down = 0
       draggedPiece.style.left = "0px"
       draggedPiece.style.top = "0px"
+      /*this.touchCircleRef.current.style.left = "0px"
+      this.touchCircleRef.current.style.top = "0px"*/
 
     }
+    clientX_down = 0
+    clientY_down = 0
     on_drag = false
     left_mouse_down = false
+    dragged_away = false
+    this.forceUpdate()
   }
 
   boardDrag(e){
@@ -601,23 +618,28 @@ class Board extends Component {
         clientX = e.touches[0].clientX;
         clientY = e.touches[0].clientY;
       }
-
-      // moveCircle
-      const coor = { x: clientX - this.refs.bContainer.offsetLeft, y: clientY - this.refs.bContainer.offsetTop }
-      coor.x = Math.floor((coor.x / this.refs.board.width) * 8) * 100
-      coor.y = Math.floor((coor.y / this.refs.board.width) * 8) * 100
-      coor.x = coor.x > 700 ? 700 : coor.x
-      coor.y = coor.y > 700 ? 700 : coor.y
-      coor.x = coor.x < 0 ? 0 : coor.x
-      coor.y = coor.y < 0 ? 0 : coor.y
-      drag_coor = coor
       
       //move piece
       let deltaX = clientX - clientX_down
       let deltaY = clientY - clientY_down
+      dragged_away = deltaX !== 0 || deltaY !== 0 || dragged_away
 
       this.selectedPiece.current.style.left = deltaX + "px"
       this.selectedPiece.current.style.top = deltaY + "px"
+
+      /*this.touchCircleRef.current.style.left = deltaX + "px"
+      this.touchCircleRef.current.style.top = deltaY + "px"*/
+      // find the coordinates of the mouse
+      const coor = { x: clientX - this.refs.bContainer.offsetLeft, y: clientY - this.refs.bContainer.offsetTop }
+      coor.x = Math.floor((coor.x / this.refs.board.width) * 8) * 100
+      coor.y = Math.floor((coor.y / this.refs.board.width) * 8) * 100
+      
+      // inside the board?
+      if (coor.x <= 700 && coor.y <= 700) {
+        // try to move there
+        const cell = this.cellFromCoor(coor)
+        this.setState({mouse_over_cell: cell})
+      }
     }
   }
 
