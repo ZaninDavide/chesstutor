@@ -231,7 +231,14 @@
   font-size: var(--iconsFontSize);
 }
 
-#opsSeparator, #archivedVarsSeparator{
+#title{
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;  
+  overflow: hidden;
+}
+
+.opsSeparator, #archivedVarsSeparator{
   width: 100%;
   border-bottom: solid 5px var(--makeDarkerColor);
 }

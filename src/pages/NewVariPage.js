@@ -27,6 +27,7 @@ class VariationPage extends Component {
           playColor={"both"}
           editComment={this.props.editComment}
           getComment={this.props.getComment}
+          allowCommentEdit={true}
         />
       </React.Fragment>
     )

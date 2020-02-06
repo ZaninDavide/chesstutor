@@ -1,4 +1,5 @@
 import React, { Component } from "react"
+import { Link } from "react-router-dom"
 import Translator from "./Translator"
 
 class VariItem extends Component {
@@ -15,12 +16,12 @@ class VariItem extends Component {
           this.props.hMenuOpen(this.props.vari_index)
         }}
       >
-        <div className="variItemContent">
+        <Link to={"/openings/" + this.props.op_index + "/" + this.props.vari_index} className="variItemContent">
           <h2>{this.props.vari.vari_name}</h2>
           <p>
             {this.props.vari.moves.length} <Translator text={this.props.vari.moves.length === 1 ? "move" : "moves"} />
           </p>
-        </div>
+        </Link>
       </div>
     )
   }

@@ -124,6 +124,10 @@ let left_mouse_down = false
 let on_drag = false
 let dragged_away = false
 
+let move_audio
+let capture_audio
+let error_audio
+
 class Board extends Component {
   constructor(props) {
     super(props)
@@ -158,8 +162,14 @@ class Board extends Component {
     this.pc_move = this.pc_move.bind(this)
     this.try_select_cell = this.try_select_cell.bind(this)
     this.getPromotion = this.getPromotion.bind(this)
+    this.onBoardDataClick = this.onBoardDataClick.bind(this)
+    this.next_button_click = this.next_button_click.bind(this)
     /* refs */
     this.selectedPiece = React.createRef()
+
+    move_audio = new Audio(sound_move)
+    capture_audio = new Audio(sound_capture)
+    error_audio = new Audio(sound_error)
   }
 
   /* ---------------------------- COMPONENT ---------------------------- */
@@ -189,7 +199,7 @@ class Board extends Component {
           <div id="boardUI">
             {this.boardButtons()}
           </div>
-          <div id="boardData" onClick={() => this.setState({commentModalVisible: true})}>{ /* TODO - DO NOT OPEN IN TRAINING */}
+          <div id="boardData" onClick={this.onBoardDataClick}>{ /* TODO - DO NOT OPEN IN TRAINING */}
             Comments: {this.comment()}
           </div>
         </div>
@@ -645,19 +655,28 @@ class Board extends Component {
 
   async play_move_sound(move){
     // move is what the game.move() function returns
-    if(move){ /* TODO CAN BE OPTIMESED */
-      let audio = new Audio(move.flags.indexOf("c") !== -1 || move.flags.indexOf("e") !== -1 ? sound_capture : sound_move)
-      audio.play()
+    if(move){
+      if(move.flags.indexOf("c") !== -1 || move.flags.indexOf("e") !== -1){
+        capture_audio.play()
+      }else{
+        move_audio.play()
+      }
     }
   }
 
   async play_error_sound(){
-    let audio = new Audio(sound_error)
-    audio.play()
+    error_audio.play()
   }
 
 
   /* ---------------------------- UI ELEMENTS ---------------------------- */
+
+  next_button_click(){
+    let move_data = this.props.get_vari_next_move_data(this.props.op_index, this.props.vari_index, this.state.json_moves)
+    if(move_data !== null){
+      this.make_move(move_data)
+    }
+  }
 
   boardButtons(){
     let b_objects = []
@@ -675,7 +694,7 @@ class Board extends Component {
             id="doneButton" 
             key="doneButton" 
             className="simpleButton boardButton" 
-            onClick={this.openVariNameModal} 
+            onClick={this.openVariNameModal}
             style={{color: "var(--importantButtonColor)", backgroundColor: "var(--importantButtonBackColor)"}}
           >done</button>
         )
@@ -684,6 +703,12 @@ class Board extends Component {
       if(this.props.buttons.indexOf("help") !== -1){
         b_objects.push(
           <button id="helpButton" key="helpButton" className="simpleButton boardButton">live_help</button>
+        )
+      }
+      // NEXT
+      if(this.props.buttons.indexOf("next") !== -1){
+        b_objects.push(
+          <button id="nextButton" key="nextButton" className="simpleButton boardButton" onClick={this.next_button_click} >keyboard_arrow_right</button>
         )
       }
     }
@@ -708,6 +733,12 @@ class Board extends Component {
   createThisVariation(){
     /*let vari_index = */this.props.createVari(this.state.new_vari_name, this.state.json_moves, this.props.op_index)
     this.props.history.push("/openings/" + this.props.op_index)
+  }
+
+  onBoardDataClick(){
+    if(this.props.allowCommentEdit){
+      this.setState({commentModalVisible: true})
+    }
   }
 
   /* ---------------------------- TEDEOUS JOB ---------------------------- */

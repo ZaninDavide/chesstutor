@@ -51,7 +51,7 @@ class PromotionModal extends Component {
     piece_names.forEach(piece_name => {
       objects.push(
         <button onClick={() => this.choosePiece(piece_name)} className="simpleButton promotionButton" id={"promotionButton" + piece_name} key={"promotionButton" + piece_name} >
-          <img className="promotionPiece" src={this.getPieceSrc(color + "_" + piece_name)} />
+          <img className="promotionPiece" src={this.getPieceSrc(color + "_" + piece_name)} alt="Promotion Piece" />
         </button>
       )
     });

@@ -41,7 +41,7 @@ class OpeningPage extends Component {
         let item = <VariItem 
           vari={cur} 
           vari_index={index} 
-          op_index={op_index} 
+          op_index={op_index}
           history={this.props.history} 
           key={`variItem_${op_index}_${index}`} 
           switchVariArchived={this.props.switchVariArchived}

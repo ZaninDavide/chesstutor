@@ -63,6 +63,7 @@ class App extends Component {
     this.get_correct_moves_data = this.get_correct_moves_data.bind(this)
     this.editComment = this.editComment.bind(this)
     this.getComment = this.getComment.bind(this)
+    this.get_vari_next_move_data = this.get_vari_next_move_data.bind(this)
     // write the remember me part
   }
 
@@ -335,6 +336,16 @@ class App extends Component {
     return correct_moves[random]
   }
 
+  get_vari_next_move_data(op_index, vari_index, json_moves){
+    let op = this.state.user_ops[op_index]
+    let vari = op.variations[vari_index]
+
+    if(vari.moves.length <= json_moves.length) return null // this variation is NOT long enougth
+    
+    let vari_next_move = vari.moves[json_moves.length] // take the next move
+    return vari_next_move
+  }
+
   /* ---------------------------- RENDER ---------------------------- */
   render() {
     const opsListPage = ({ history }) =>  <OpsListPage 
@@ -370,7 +381,23 @@ class App extends Component {
                                                   getComment={this.getComment}
                                                   editComment={this.editComment}
                                                 />
-    const variPage = ({ match, history }) => <VariationPage ops={this.state.user_ops} history={history} match={match}/>
+    const revisePage = ({ match, history }) =>  <RevisePage 
+                                              ops={this.state.user_ops} 
+                                              history={history} 
+                                              match={match} 
+                                              createVari={this.createVari}
+                                              getComment={this.getComment}
+                                              editComment={this.editComment}
+                                            />
+    const variPage = ({ match, history }) =>  <VariationPage 
+                                              ops={this.state.user_ops} 
+                                              history={history} 
+                                              match={match} 
+                                              createVari={this.createVari}
+                                              getComment={this.getComment}
+                                              editComment={this.editComment}
+                                              get_vari_next_move_data={this.get_vari_next_move_data}
+                                            />
     const newOpPage = ({ match, history }) => <NewOpPage history={history} match={match} createOp={this.createOp}/>
     const loginPage = ({ match, history }) => <LoginPage history={history} match={match} setBearer={this.setBearer}/>
 
@@ -383,7 +410,7 @@ class App extends Component {
               <Route path="/home" component={opsListPage} />
               <Route path="/newOpening" component={newOpPage} />
               <Route path="/createVariation" component={CreateVariPage} />
-              <Route path="/revise" component={RevisePage} />
+              <Route path="/revise/:op_index" component={revisePage} />
               <Route path="/newVariation/:op_index" component={newVariPage} />
               <Route path="/openings/:op_index/:vari_index" component={variPage} />
               <Route path="/openings/:op_index" component={opPage} />

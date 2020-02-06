@@ -27,8 +27,8 @@ class VariationPage extends Component {
           get_pc_move_data={this.props.get_pc_move_data}
           rotation={op.op_color}
           playColor={op.op_color}
-          editComment={this.props.editComment}
           getComment={this.props.getComment}
+          allowCommentEdit={false}
         />
       </React.Fragment>
     )
