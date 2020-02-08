@@ -240,7 +240,7 @@
 
 .opsSeparator, #archivedVarsSeparator{
   width: 100%;
-  border-bottom: solid 5px var(--makeDarkerColor);
+  /*border-bottom: solid 5px var(--makeDarkerColor);*/
 }
 
 .renameTextBox{

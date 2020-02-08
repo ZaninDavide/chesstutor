@@ -29,7 +29,7 @@ class OpeningPage extends Component {
   }
 
   getArchivedSeparator(){
-    return <div id="archivedVarsSeparator" key="archivedVarsSeparator"><p style={{textAlign: "center"}}>Archived variations</p></div>
+    return <div id="archivedVarsSeparator" key="archivedVarsSeparator"><p style={{textAlign: "center", color: "var(--titleColor)"}}>Archived variations</p></div>
   }
 
   getVariItems(vars, op_index) {

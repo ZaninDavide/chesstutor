@@ -347,13 +347,14 @@ class Board extends Component {
       let move_allowed = true
       if(this.props.is_move_allowed){ // TODO - should check if it is not the turn of the computer
         // if the function exists try and see if this move is allowed(i don't mean illegal, if the move cannot be done for other reasons)
-        move_allowed = this.props.is_move_allowed(this.props.op_index, this.state.json_moves, move_data)
+        console.log(this.props.vari_index)
+        move_allowed = this.props.is_move_allowed(this.props.op_index, this.state.json_moves, move_data, this.props.vari_index) // if var_index exists it looks only into it
       }
       if(move_allowed){ // allowed as default
         // MAKE THE MOVE
         let moves_list_after = await this.make_move(move_data)
         if(this.props.playColor !== "both"){
-          this.pc_move(this.props.op_index, moves_list_after)
+          this.pc_move(this.props.op_index, moves_list_after, this.props.vari_index)
         }
       }else{
         this.play_error_sound()
@@ -398,8 +399,8 @@ class Board extends Component {
     }
   }
 
-  pc_move(op_index, json_moves){
-    let move_data = this.props.get_pc_move_data(op_index, json_moves)
+  pc_move(op_index, json_moves, vari_index = undefined){
+    let move_data = this.props.get_pc_move_data(op_index, json_moves, vari_index)
     if(move_data !== null){
       setTimeout(() => this.make_move(move_data), 500)
     }else{
@@ -699,10 +700,42 @@ class Board extends Component {
           >done</button>
         )
       }
+      // STOP TRAINING THIS OPENING
+      if(this.props.buttons.indexOf("stopTrainThis") !== -1){
+        b_objects.push(
+          <button 
+            id="stopTrainThisButton" 
+            key="stopTrainThisButton" 
+            style={{color: "var(--importantButtonColor)", backgroundColor: "var(--alertColor)"}}
+            className="simpleButton boardButton"
+            onClick={() => this.props.set_in_training(false)}
+          >stop</button>
+        )
+      }
       // HELP
       if(this.props.buttons.indexOf("help") !== -1){
         b_objects.push(
           <button id="helpButton" key="helpButton" className="simpleButton boardButton">live_help</button>
+        )
+      }
+      // TRAIN THIS OPENING
+      if(this.props.buttons.indexOf("trainThis") !== -1){
+        b_objects.push(
+          <button 
+            id="trainThisButton" 
+            key="trainThisButton" 
+            style={{color: "var(--importantButtonColor)", backgroundColor: "var(--importantButtonBackColor)"}}
+            className="simpleButton boardButton"
+            onClick={() => {
+              let newPlayColor = this.props.set_in_training(true)
+              if(
+                (newPlayColor === "black" && this.state.json_moves.length % 2 === 0) ||
+                (newPlayColor === "white" && this.state.json_moves.length % 2 === 1)
+              ){ // if it's the turn of the pc to move
+                this.pc_move(this.props.op_index, this.state.json_moves, this.props.vari_index)
+              }
+            }}
+          >play_arrow</button>
         )
       }
       // NEXT

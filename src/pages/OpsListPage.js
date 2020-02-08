@@ -24,7 +24,9 @@ class OpsListPage extends Component {
   }
 
   getSeparator(text){
-    return <div id={"opsSeparator" + text} className="opsSeparator" key={"opsSeparator" + text}><p style={{textAlign: "center"}}>{text}</p></div>
+    return  <div id={"opsSeparator" + text} className="opsSeparator" key={"opsSeparator" + text}>
+              <p style={{textAlign: "center", color: "var(--titleColor)"}}>{text}</p>
+            </div>
   }
 
   getOpItems(ops) {

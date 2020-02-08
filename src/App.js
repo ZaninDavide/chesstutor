@@ -276,28 +276,40 @@ class App extends Component {
 
   /* --------------------------- TRAINING --------------------------- */
 
-  is_move_allowed(op_index, json_moves, move_data){
+  is_move_allowed(op_index, json_moves, move_data, vari_index = undefined){
     let is_allowed = false
     let finished_training = true
     let op = this.state.user_ops[op_index]
-    for(let vari_index = 0; vari_index<op.variations.length; vari_index++){
-      // loop through all variations 
-      let vari = op.variations[vari_index]
-      if(vari.moves.length > json_moves.length && !vari.archived){ // this variation is long enougth and not archived
-        let first_moves = vari.moves.slice(0, json_moves.length)
-
-        // is the variation compatible with the already done moves?
-        if(JSON.stringify(first_moves) === JSON.stringify(json_moves)){
-          finished_training = false // there is at least one move to do
-          let vari_next_move = vari.moves[json_moves.length] // take the next move
-
-          // is it the move I'm going to do?
-          if(vari_next_move.from === move_data.from && vari_next_move.to === move_data.to && vari_next_move.promotion === move_data.promotion){
-            is_allowed = true
-            break;
+    if(vari_index === undefined){
+      // look into all variations(not archived)
+      for(let vari_index = 0; vari_index<op.variations.length; vari_index++){
+        // loop through all variations 
+        let vari = op.variations[vari_index]
+        if(vari.moves.length > json_moves.length && !vari.archived){ // this variation is long enougth and not archived
+          let first_moves = vari.moves.slice(0, json_moves.length)
+  
+          // is the variation compatible with the already done moves?
+          if(JSON.stringify(first_moves) === JSON.stringify(json_moves)){
+            finished_training = false // there is at least one move to do
+            let vari_next_move = vari.moves[json_moves.length] // take the next move
+  
+            // is it the move I'm going to do?
+            if(vari_next_move.from === move_data.from && vari_next_move.to === move_data.to && vari_next_move.promotion === move_data.promotion){
+              is_allowed = true
+              break;
+            }
           }
+  
         }
-
+      }
+    }else{
+      // look only into this variation
+      let vari_next_move = this.get_vari_next_move_data(op_index, vari_index, json_moves)
+      if(vari_next_move !== null){
+        finished_training = false
+        if(vari_next_move.from === move_data.from && vari_next_move.to === move_data.to && vari_next_move.promotion === move_data.promotion){
+          is_allowed = true
+        }
       }
     }
     if(finished_training){
@@ -327,7 +339,11 @@ class App extends Component {
     return correct_moves
   }
 
-  get_pc_move_data(op_index, json_moves){
+  get_pc_move_data(op_index, json_moves, vari_index = undefined){
+    if(vari_index !== undefined){
+      let vari_next_move = this.get_vari_next_move_data(op_index, vari_index, json_moves)
+      return vari_next_move
+    }
     let correct_moves = this.get_correct_moves_data(op_index, json_moves)
     // return false if there is no correct move
     if (correct_moves.length === 0) return null
@@ -397,6 +413,8 @@ class App extends Component {
                                               getComment={this.getComment}
                                               editComment={this.editComment}
                                               get_vari_next_move_data={this.get_vari_next_move_data}
+                                              get_pc_move_data={this.get_pc_move_data}
+                                              is_move_allowed={this.is_move_allowed}
                                             />
     const newOpPage = ({ match, history }) => <NewOpPage history={history} match={match} createOp={this.createOp}/>
     const loginPage = ({ match, history }) => <LoginPage history={history} match={match} setBearer={this.setBearer}/>
