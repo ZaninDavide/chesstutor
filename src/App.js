@@ -36,10 +36,15 @@ const defaultOps = [
 class App extends Component {
   constructor(props) {
     super(props)
+
+    // get saved username and bearer from local storage
+    let saved_username = localStorage.getItem("username")
+    let saved_bearer = localStorage.getItem("bearer")
+
     this.state = {
       _id: undefined,
-      username: undefined,
-      bearer: undefined,
+      username: saved_username,
+      bearer: saved_bearer,
       user_ops: [],
       language: "eng",
       colorTheme: "darkTheme"
@@ -135,6 +140,11 @@ class App extends Component {
       console.log("updateDB: database and state won't match. the database will be updated aniway")
     }*/
     this.updateUserData({user_ops: new_ops}, this.state.bearer)
+  }
+
+  rememberMeLocally(username, bearer){
+    localStorage.setItem("username", username);
+    localStorage.setItem("bearer", bearer);
   }
 
   /* ---------------------------- OPENINGS ---------------------------- */
@@ -319,7 +329,12 @@ class App extends Component {
     return is_allowed
   }
 
-  get_correct_moves_data(op_index, json_moves){
+  get_correct_moves_data(op_index, json_moves, vari_index = undefined){
+    if(vari_index !== undefined){
+      let correct_move = this.get_vari_next_move_data(op_index, vari_index, json_moves)
+      return correct_move === null ? [] : [correct_move]
+    }
+
     let correct_moves = []
     let op = this.state.user_ops[op_index]
     for(let vari_index = 0; vari_index<op.variations.length; vari_index++){
@@ -388,6 +403,7 @@ class App extends Component {
                                                     get_pc_move_data={this.get_pc_move_data}
                                                     getComment={this.getComment}
                                                     editComment={this.editComment}
+                                                    get_correct_moves_data={this.get_correct_moves_data}
                                                   />
     const newVariPage = ({ match, history }) => <NewVariPage 
                                                   ops={this.state.user_ops} 
@@ -415,9 +431,10 @@ class App extends Component {
                                               get_vari_next_move_data={this.get_vari_next_move_data}
                                               get_pc_move_data={this.get_pc_move_data}
                                               is_move_allowed={this.is_move_allowed}
+                                              get_correct_moves_data={this.get_correct_moves_data}
                                             />
     const newOpPage = ({ match, history }) => <NewOpPage history={history} match={match} createOp={this.createOp}/>
-    const loginPage = ({ match, history }) => <LoginPage history={history} match={match} setBearer={this.setBearer}/>
+    const loginPage = ({ match, history }) => <LoginPage history={history} match={match} setBearer={this.setBearer} username={this.state.username}/>
 
     return (
       <LanguageProvider lang={this.state.language}>

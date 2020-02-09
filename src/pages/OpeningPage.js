@@ -114,7 +114,7 @@ class OpeningPage extends Component {
         <Header title={op.op_name} mainButtonText="keyboard_backspace"/*headerButtonContent={<span className="iconText">school</span>}*/ /> {/* play_arrow */}
         <div id="openingPage"  className="page">{this.getVariItems(op.variations, op_index)}</div>
         <button id="playVarsButton" className="importantButton iconButton" onClick={this.startGame}>
-          play_arrow
+          school
         </button>
         <button id="newVariButton" className="importantButton iconButton" onClick={this.newVariClick}>
           add
@@ -140,7 +140,7 @@ class OpeningPage extends Component {
           id="deleteVaripModal" 
           visible={this.state.variDeleteVisible} 
           close={this.closeVariDeleteModal}
-          doneButtonText={<span className="alertText">delete</span>}
+          doneButtonText={<span className="alertText iconText">delete</span>}
           onDoneClick={this.deleteThisVari}>
             { this.state.variDeleteVisible ? 
               <React.Fragment><h2><Translator text={"Delete permanently:"} />&nbsp;<span className="alertText">{thisVari.vari_name}</span>{"?"}</h2></React.Fragment> : null

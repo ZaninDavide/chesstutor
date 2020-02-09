@@ -39,6 +39,7 @@ class VariationPage extends Component {
           }}
           get_pc_move_data={this.props.get_pc_move_data}
           is_move_allowed={this.props.is_move_allowed}
+          get_correct_moves_data={this.props.get_correct_moves_data}
         />
       </React.Fragment>
     )

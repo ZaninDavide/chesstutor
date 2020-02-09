@@ -19,6 +19,7 @@
 
 .insideModal{
     width: 100%;
+    padding-top: calc(var(--mediumMargin) - var(--smallMargin));
 }
 
 .commentTextBox{
@@ -35,7 +36,7 @@
     outline: none;
     outline-style: none; /* Internet Explorer  */
     height: 170px;
-    margin-top: var(--mediumMargin);
+    margin-top: var(--smallMargin);
     margin-left: var(--mediumMargin);
     margin-right: var(--mediumMargin);
 }

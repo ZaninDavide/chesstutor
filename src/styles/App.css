@@ -343,3 +343,7 @@ a {
 .variItemContent{
   grid-area: content;
 }
+
+.chessText{
+  font-family: "Segoe UI Symbol" ,Arial, Helvetica, sans-serif;
+}

@@ -22,7 +22,7 @@
   width: var(--uiElementHeight);
   text-align: center;
   line-height: var(--uiElementHeight);
-  font-size: var(--iconsFontSize);
+  font-size: 30px; /* var(--iconsFontSize) */
 }
 
 #boardContainer {

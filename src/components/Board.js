@@ -26,6 +26,7 @@ import Modal from "../components/Modal"
 import Translator from "../components/Translator"
 import PromotionModal from "../components/PromotionModal"
 import CommentModal from "../components/CommentModal"
+import HelpModal from "../components/HelpModal"
 
 const cells = {
   "1": "700",
@@ -142,6 +143,8 @@ class Board extends Component {
       promotionModalVisible: false,
       promotionPromiseResRes: undefined,
       commentModalVisible: false,
+      helpModalVisible: false,
+      helpModalCorrectMoves: [],
     }
     /* functions */
     this.newGame = this.newGame.bind(this)
@@ -164,6 +167,8 @@ class Board extends Component {
     this.getPromotion = this.getPromotion.bind(this)
     this.onBoardDataClick = this.onBoardDataClick.bind(this)
     this.next_button_click = this.next_button_click.bind(this)
+    this.help_button_click = this.help_button_click.bind(this)
+    this.make_move = this.make_move.bind(this)
     /* refs */
     this.selectedPiece = React.createRef()
 
@@ -236,6 +241,13 @@ class Board extends Component {
           getComment={this.props.getComment}
           op_index={this.props.op_index}
           json_moves={this.state.json_moves}
+        /> : null}
+        {/* HELP MODAL */}
+        {this.props.buttons.indexOf("help") !== -1 && this.state.helpModalVisible ? <HelpModal 
+          visible={this.state.helpModalVisible}
+          close={() => this.setState({helpModalVisible: false})}
+          correct_moves={this.state.helpModalCorrectMoves}
+          make_move={this.make_move}
         /> : null}
       </React.Fragment>
     )
@@ -347,7 +359,6 @@ class Board extends Component {
       let move_allowed = true
       if(this.props.is_move_allowed){ // TODO - should check if it is not the turn of the computer
         // if the function exists try and see if this move is allowed(i don't mean illegal, if the move cannot be done for other reasons)
-        console.log(this.props.vari_index)
         move_allowed = this.props.is_move_allowed(this.props.op_index, this.state.json_moves, move_data, this.props.vari_index) // if var_index exists it looks only into it
       }
       if(move_allowed){ // allowed as default
@@ -679,6 +690,30 @@ class Board extends Component {
     }
   }
 
+  help_button_click(){
+    // get moves data [{from: "d2", to: "d4", san: "d4"}, ...]
+    let correct_moves_repetitive = this.props.get_correct_moves_data(this.props.op_index, this.state.json_moves, this.props.vari_index)
+
+    // remove doubles ([d4, d4, e4] -> [d4, e4])
+    let correct_moves_names = []
+    let correct_moves = []
+    correct_moves_repetitive.forEach(element => {
+      if(correct_moves_names.indexOf(element.san) === -1){
+        correct_moves_names.push(element.san)
+        correct_moves.push(element)
+      }
+    });
+
+    if(correct_moves.length > 1){
+      this.setState({
+        helpModalVisible: true,
+        helpModalCorrectMoves: correct_moves
+      })
+    }else if(correct_moves.length === 1){
+      this.make_move(correct_moves[0])
+    }
+  }
+
   boardButtons(){
     let b_objects = []
     if(this.props.buttons){
@@ -709,13 +744,13 @@ class Board extends Component {
             style={{color: "var(--importantButtonColor)", backgroundColor: "var(--alertColor)"}}
             className="simpleButton boardButton"
             onClick={() => this.props.set_in_training(false)}
-          >stop</button>
+          >clear</button>
         )
       }
       // HELP
       if(this.props.buttons.indexOf("help") !== -1){
         b_objects.push(
-          <button id="helpButton" key="helpButton" className="simpleButton boardButton">live_help</button>
+          <button onClick={this.help_button_click} id="helpButton" key="helpButton" className="simpleButton boardButton">help</button>
         )
       }
       // TRAIN THIS OPENING
@@ -735,7 +770,7 @@ class Board extends Component {
                 this.pc_move(this.props.op_index, this.state.json_moves, this.props.vari_index)
               }
             }}
-          >play_arrow</button>
+          >school</button>
         )
       }
       // NEXT

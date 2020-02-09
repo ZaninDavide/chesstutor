@@ -6,8 +6,8 @@ class LoginPage extends Component {
   constructor(props){
     super(props)
     this.state = {
-      username: "asiago4",
-      password: "formaggiomorbido",
+      username: this.props.username ? this.props.username : "asiago4",
+      password: this.props.username ? "" : "asiago4",
       rememberMe: false,
     }
     this.checkBoxClick = this.checkBoxClick.bind(this)
@@ -28,9 +28,16 @@ class LoginPage extends Component {
             },
             method: "POST",
         }
-    ).then(res => res.text())
+    )
 
-    this.props.setBearer(res)
+    if(await res.status !== 200){
+      // gestisci errore
+      alert(await res.text())
+      return false
+    }else{
+      this.props.setBearer(await res.text())
+      return true
+    }
   }
 
   signup = async () => {
@@ -58,8 +65,11 @@ class LoginPage extends Component {
           // crasha
           console.log("errore sconosciuto")
         }
+        alert(textRes)
+        return false
       }else{
         this.props.setBearer(textRes)
+        return true
       }
 
   }
@@ -72,8 +82,11 @@ class LoginPage extends Component {
 
   async signUpClick(){
     if(this.state.username !== "" & this.state.password !== ""){
-      await this.signup()
-      this.props.history.push("/home")
+      let signup_res = await this.signup()
+      if(signup_res){
+        // this.props.history.push("/home")
+        this.loginClick()
+      }
     }else{
       console.log("signUpClick: missing username or password")
     }
@@ -81,8 +94,10 @@ class LoginPage extends Component {
 
   async loginClick(){
     if(this.state.username !== "" & this.state.password !== ""){
-      await this.login()
-      this.props.history.push("/home")
+      let login_res = await this.login()
+      if(login_res){
+        this.props.history.push("/home")
+      }
     }else{
       console.log("signUpClick: missing username or password")
     }
