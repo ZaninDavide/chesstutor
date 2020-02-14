@@ -25,7 +25,8 @@ const languages = {
     "New variation name" : "New variation name",
     "New variation" : "New variation",
     no_openings: "No openings yet! Use the + button in the right bottom corner to create a new one.",
-    Training: "Training"
+    Training: "Training",
+    Comments: "Comments"
   },
   ita: {
     Openings: "Aperture",
@@ -50,7 +51,8 @@ const languages = {
     "New variation name" : "Nome della nuova variante",
     "New variation" : "Nuova variante",
     no_openings: "Non hai ancora aperture! Usa il pulsante + in basso a destra per crearne una nuova.",
-    Training: "Allenamento"
+    Training: "Allenamento",
+    Comments: "Commento"
   }
 }
 

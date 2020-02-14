@@ -155,11 +155,13 @@ class OpeningPage extends Component {
         >
           { this.state.renameVariVisible ? 
             <React.Fragment>
-              <Translator text={"Rename "} />
-              <span style={{color: "var(--importantButtonBackColor)"}}>{thisVari.vari_name}</span>
-              <Translator text={" to: "} />
+              <h2>
+                <Translator text={"Rename "} />
+                <span style={{color: "var(--importantButtonBackColor)"}}>{thisVari.vari_name}</span>
+                <Translator text={" to: "} />
+              </h2>
               <input type="text" 
-                className="textBox"
+                className="textBox renameTextBox"
                 value={this.state.variNewName} 
                 onChange={e => this.setState({variNewName: e.target.value})}
                 onKeyPress={e => {

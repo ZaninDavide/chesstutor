@@ -101,7 +101,7 @@ class OpsListPage extends Component {
   render() {
     return (
       <React.Fragment>
-        <Header title={<Translator text={"Openings"}/>} goTo={"/"} mainButtonText="account_circle"/>
+        <Header title={<Translator text={"Openings"}/>} goTo={"/login"} mainButtonText="account_circle"/>
         <div id="opsListPage" className="page">
           {this.getOpItems(this.props.ops)}
           <button id="newOpButton" className="importantButton iconButton" onClick={this.newOpButton}>

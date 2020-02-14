@@ -6,8 +6,8 @@ class LoginPage extends Component {
   constructor(props){
     super(props)
     this.state = {
-      username: this.props.username ? this.props.username : "asiago4",
-      password: this.props.username ? "" : "asiago4",
+      username: this.props.username ? this.props.username : "",
+      password: "",
       rememberMe: false,
     }
     this.checkBoxClick = this.checkBoxClick.bind(this)
@@ -35,7 +35,9 @@ class LoginPage extends Component {
       alert(await res.text())
       return false
     }else{
-      this.props.setBearer(await res.text())
+      let bearer = await res.text()
+      this.props.setBearer(bearer)
+      this.props.rememberMeLocally(this.state.username, bearer)
       return true
     }
   }
@@ -84,7 +86,7 @@ class LoginPage extends Component {
     if(this.state.username !== "" & this.state.password !== ""){
       let signup_res = await this.signup()
       if(signup_res){
-        // this.props.history.push("/home")
+        // this.props.history.push("/")
         this.loginClick()
       }
     }else{
@@ -96,7 +98,7 @@ class LoginPage extends Component {
     if(this.state.username !== "" & this.state.password !== ""){
       let login_res = await this.login()
       if(login_res){
-        this.props.history.push("/home")
+        this.props.history.push("/")
       }
     }else{
       console.log("signUpClick: missing username or password")

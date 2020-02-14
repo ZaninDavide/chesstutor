@@ -24,7 +24,7 @@ class PromotionModal extends Component {
   getStyle(){
     return {
       display: this.props.visible ? "block" : "none",
-      backgroundColor: this.props.visible ? "rgba(0, 0, 0, 0.4)" : "rgba(0, 0, 0, 0)",
+      backgroundColor: this.props.visible ? "rgba(0, 0, 0, 0.8)" : "rgba(0, 0, 0, 0)",
     }
   }
 

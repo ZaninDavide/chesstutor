@@ -205,7 +205,7 @@ class Board extends Component {
             {this.boardButtons()}
           </div>
           <div id="boardData" onClick={this.onBoardDataClick}>{ /* TODO - DO NOT OPEN IN TRAINING */}
-            Comments: {this.comment()}
+          <Translator text={"Comments"} />: {this.comment()}
           </div>
         </div>
         {/* CREATE NEW VARIATION MODAL */}
@@ -783,11 +783,30 @@ class Board extends Component {
     return b_objects
   }
 
+  escapeHtml(text) {
+    return text
+         .replace(/&/g, "&amp;")
+         .replace(/</g, "&lt;")
+         .replace(/>/g, "&gt;")
+         .replace(/"/g, "&quot;")
+         .replace(/'/g, "&#039;");
+ }
+
   comment(){
     console.log()
     if (this.props.op_index === undefined || !this.state.json_moves) return ""
     let text = this.props.getComment(this.props.op_index, this.state.json_moves)
-    return <span>{text}</span>
+    text = this.escapeHtml(text)
+
+    const regex_bold = /\*(.*?)\*/gm;
+    const subst_bold = `<b>$1</b>`;
+    let mark_down_text = text ? text.replace(regex_bold, subst_bold) : "";
+
+    const regex_line = /_(.*?)_/gm;
+    const subst_line = `<u>$1</u>`;
+    mark_down_text = mark_down_text ? mark_down_text.replace(regex_line, subst_line) : "";
+
+    return <span dangerouslySetInnerHTML={{__html: mark_down_text}} />
   }
 
   closeVariNameModal(){

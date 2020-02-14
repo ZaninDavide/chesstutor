@@ -12,7 +12,7 @@ const Header = props => {
   return (
     <div id="header">
       <div id="headerLeftSide">
-        <Link to={props.goTo !== undefined ? props.goTo : "/home"} id="home_button" className="iconButton">
+        <Link to={props.goTo !== undefined ? props.goTo : "/"} id="home_button" className="iconButton">
           {props.mainButtonText !== undefined ? props.mainButtonText : "home"}
         </Link>
         <h1 id="title">{props.title}</h1>

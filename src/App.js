@@ -16,22 +16,7 @@ import "./styles/Elements.css" // css by ID + SECONDARY COMPONENTS
 import "./styles/Modal.css"
 import { LanguageProvider } from "./components/LanguageContext"
 
-const defaultOps = [
-  {
-    op_name: "Formaggio",
-    op_color: "white",
-    variations: [
-      {
-        vari_name: "Classic",
-        vari_score: 0,
-        archived: true,
-        moves: [{ from: "d2", to: "d4", promotion: undefined, san: "d4"}] // , fen: "" 
-      }
-    ],
-    comments: {},
-    archived: false,
-  }
-]
+const defaultOps = []
 
 class App extends Component {
   constructor(props) {
@@ -69,7 +54,14 @@ class App extends Component {
     this.editComment = this.editComment.bind(this)
     this.getComment = this.getComment.bind(this)
     this.get_vari_next_move_data = this.get_vari_next_move_data.bind(this)
-    // write the remember me part
+  }
+
+  componentDidMount(){
+    // remember me
+    if(this.state.username && this.state.bearer){
+      this.setBearer(this.state.bearer)
+      // this.updateDB([]) // clear database of this user
+    }
   }
 
   /* ----------------------------     FUNCTIONS     ---------------------------- */
@@ -110,11 +102,12 @@ class App extends Component {
 
   setBearer = async (bearer, redirectTo = "/") => {
     this.setState({ bearer, redirectTo })
-    localStorage.setItem("bearer", bearer)
+    // localStorage.setItem("bearer", bearer)
     this.getUserData()
   }
 
   logout = () => {
+    localStorage.removeItem("username")
     localStorage.removeItem("bearer")
     this.setState({ bearer: null, redirectTo: "/login", decks: [] })
   }
@@ -262,7 +255,6 @@ class App extends Component {
   }
 
   editComment(op_index, json_moves, text){
-    console.log(op_index, json_moves, text)
     this.setState(old => {
       let new_user_ops = old.user_ops
       let str = "|"
@@ -270,9 +262,8 @@ class App extends Component {
         str += elem.san + "|"
       });
       new_user_ops[op_index].comments[str] = text
-      /*this.updateDB(new_user_ops)
-      return {user_ops: new_user_ops}*/
-      return
+      this.updateDB(new_user_ops)
+      return {user_ops: new_user_ops}
     })
   }
 
@@ -434,15 +425,15 @@ class App extends Component {
                                               get_correct_moves_data={this.get_correct_moves_data}
                                             />
     const newOpPage = ({ match, history }) => <NewOpPage history={history} match={match} createOp={this.createOp}/>
-    const loginPage = ({ match, history }) => <LoginPage history={history} match={match} setBearer={this.setBearer} username={this.state.username}/>
+    const loginPage = ({ match, history }) => <LoginPage history={history} match={match} setBearer={this.setBearer} username={this.state.username} rememberMeLocally={this.rememberMeLocally}/>
 
     return (
       <LanguageProvider lang={this.state.language}>
         <Router>
           <div id="App" className={`layout ${this.state.colorTheme}`}>
             <Switch>
-              <Route path="/" component={loginPage} exact/>
-              <Route path="/home" component={opsListPage} />
+              <Route path="/" component={opsListPage} exact/>
+              <Route path="/login" component={loginPage} exact/>
               <Route path="/newOpening" component={newOpPage} />
               <Route path="/createVariation" component={CreateVariPage} />
               <Route path="/revise/:op_index" component={revisePage} />
