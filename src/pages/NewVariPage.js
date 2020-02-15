@@ -22,12 +22,13 @@ class VariationPage extends Component {
           history={this.props.history} 
           createVari={this.props.createVari} 
           op_index={op_index} 
-          buttons={["back", "done"]}
+          buttons={["back", "done", "multi_next"]}
           rotation={op.op_color}
           playColor={"both"}
           editComment={this.props.editComment}
           getComment={this.props.getComment}
           allowCommentEdit={true}
+          get_correct_moves_data={this.props.get_correct_moves_data}
         />
       </React.Fragment>
     )

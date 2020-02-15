@@ -23,10 +23,11 @@ class VariationPage extends Component {
       <React.Fragment>
         <Header mainButtonText="keyboard_backspace" goTo={"/openings/" + op_index} title={<React.Fragment>{op.op_name + ": " + vari.vari_name}</React.Fragment>} />
         <Board 
+          key="variationBoard"
           history={this.props.history} 
           op_index={op_index} 
           vari_index={vari_index} 
-          buttons={in_training ? ["back", "help", "stopTrainThis"] : ["back", "next", "trainThis"]}
+          buttons={in_training ? ["back", "help", "stopTrainThis"] : ["back", "single_next", "trainThis"]}
           rotation={op.op_color}
           playColor={in_training ? op.op_color : "none"}
           editComment={this.props.editComment}

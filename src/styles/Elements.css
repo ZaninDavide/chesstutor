@@ -243,7 +243,7 @@
   /*border-bottom: solid 5px var(--makeDarkerColor);*/
 }
 
-.renameTextBox{
+.renameTextBox, .newVariNameTextBox{
   margin-left: var(--mediumMargin);
   margin-right: var(--mediumMargin);
   width: calc(100% - 2 * var(--mediumMargin) - 10px); /* 10px = padding */

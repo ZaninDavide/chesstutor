@@ -25,7 +25,9 @@ class OpsListPage extends Component {
 
   getSeparator(text){
     return  <div id={"opsSeparator" + text} className="opsSeparator" key={"opsSeparator" + text}>
-              <p style={{textAlign: "center", color: "var(--titleColor)"}}>{text}</p>
+              <p style={{textAlign: "center", color: "var(--titleColor)"}}>
+                <Translator text={text} />
+              </p>
             </div>
   }
 
@@ -148,9 +150,9 @@ class OpsListPage extends Component {
         >
           { this.state.renameOpVisible ? 
             <React.Fragment>
-              <h2><Translator text={"Rename "} />
-              <span style={{color: "var(--importantButtonBackColor)"}}>{this.props.ops[this.state.hMenuOpIndex].op_name}</span>
-              <Translator text={" to: "} /></h2>
+              <h2><Translator text={"Rename"} />&nbsp;
+              <span style={{color: "var(--importantButtonBackColor)"}}>{this.props.ops[this.state.hMenuOpIndex].op_name}</span>&nbsp;
+              <Translator text={"to:"} /></h2>&nbsp;
               <input type="text" 
                 className="textBox renameTextBox"
                 value={this.state.opNewName} 

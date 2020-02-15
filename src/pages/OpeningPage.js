@@ -29,7 +29,9 @@ class OpeningPage extends Component {
   }
 
   getArchivedSeparator(){
-    return <div id="archivedVarsSeparator" key="archivedVarsSeparator"><p style={{textAlign: "center", color: "var(--titleColor)"}}>Archived variations</p></div>
+    return  <div id="archivedVarsSeparator" key="archivedVarsSeparator"><p style={{textAlign: "center", color: "var(--titleColor)"}}>
+              <Translator text="Archived variations" />
+            </p></div>
   }
 
   getVariItems(vars, op_index) {
@@ -62,7 +64,7 @@ class OpeningPage extends Component {
       }
       return all
     } else {
-      return <p><Translator text={"No variations yet! Use the + button in the right bottom corner to create a new one."}/></p>
+      return <p><Translator text={"no_variations"}/></p>
     }
   }
 
@@ -156,9 +158,9 @@ class OpeningPage extends Component {
           { this.state.renameVariVisible ? 
             <React.Fragment>
               <h2>
-                <Translator text={"Rename "} />
-                <span style={{color: "var(--importantButtonBackColor)"}}>{thisVari.vari_name}</span>
-                <Translator text={" to: "} />
+                <Translator text={"Rename"} />&nbsp;
+                <span style={{color: "var(--importantButtonBackColor)"}}>{thisVari.vari_name}</span>&nbsp;
+                <Translator text={"to:"} />&nbsp;
               </h2>
               <input type="text" 
                 className="textBox renameTextBox"

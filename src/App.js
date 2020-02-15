@@ -403,6 +403,7 @@ class App extends Component {
                                                   createVari={this.createVari}
                                                   getComment={this.getComment}
                                                   editComment={this.editComment}
+                                                  get_correct_moves_data={this.get_correct_moves_data}
                                                 />
     const revisePage = ({ match, history }) =>  <RevisePage 
                                               ops={this.state.user_ops} 
@@ -432,16 +433,16 @@ class App extends Component {
         <Router>
           <div id="App" className={`layout ${this.state.colorTheme}`}>
             <Switch>
-              <Route path="/" component={opsListPage} exact/>
-              <Route path="/login" component={loginPage} exact/>
-              <Route path="/newOpening" component={newOpPage} />
-              <Route path="/createVariation" component={CreateVariPage} />
-              <Route path="/revise/:op_index" component={revisePage} />
-              <Route path="/newVariation/:op_index" component={newVariPage} />
-              <Route path="/openings/:op_index/:vari_index" component={variPage} />
-              <Route path="/openings/:op_index" component={opPage} />
-              <Route path="/training/:op_index" component={trainingPage} />
-              <Route path="/" component={() => <p>Error 404! Page not found</p>} />
+              <Route path="/" render={opsListPage} exact/>
+              <Route path="/login" render={loginPage} exact/>
+              <Route path="/newOpening" render={newOpPage} />
+              <Route path="/createVariation" render={CreateVariPage} />
+              <Route path="/revise/:op_index" render={revisePage} />
+              <Route path="/newVariation/:op_index" render={newVariPage} />
+              <Route path="/openings/:op_index/:vari_index" render={variPage} />
+              <Route path="/openings/:op_index" render={opPage} />
+              <Route path="/training/:op_index" render={trainingPage} />
+              <Route path="/" render={() => <p>Error 404! Page not found</p>} />
             </Switch>
           </div>
         </Router>

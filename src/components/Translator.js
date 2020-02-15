@@ -25,8 +25,14 @@ const languages = {
     "New variation name" : "New variation name",
     "New variation" : "New variation",
     no_openings: "No openings yet! Use the + button in the right bottom corner to create a new one.",
+    no_variations: "No variations yet! Use the + button in the right bottom corner to create a new one.",
     Training: "Training",
-    Comments: "Comments"
+    Comments: "Comments",
+    "Archived openings": "Archived openings",
+    "Archived variations": "Archived variations",
+    "Delete permanently:": "Delete permanently:",
+    "Rename": "Rename",
+    "to:": "to:",
   },
   ita: {
     Openings: "Aperture",
@@ -51,8 +57,14 @@ const languages = {
     "New variation name" : "Nome della nuova variante",
     "New variation" : "Nuova variante",
     no_openings: "Non hai ancora aperture! Usa il pulsante + in basso a destra per crearne una nuova.",
+    no_variations: "Non hai ancora varianti in questa apertura! Usa il pulsante + in basso a destra per crearne una nuova.",
     Training: "Allenamento",
-    Comments: "Commento"
+    Comments: "Commento",
+    "Archived openings": "Aperture archiviate",
+    "Archived variations": "Varianti archiviate",
+    "Delete permanently:": "Eliminare definitivamente:",
+    "Rename": "Rinominare",
+    "to:": "come:",
   }
 }
 

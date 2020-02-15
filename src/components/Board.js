@@ -132,7 +132,7 @@ let error_audio
 class Board extends Component {
   constructor(props) {
     super(props)
-    
+    console.log("ca")
     this.state = {
       game: new Chess(),
       json_moves: [], // moves' history in the correct format (see vari.moves)
@@ -183,7 +183,7 @@ class Board extends Component {
     // console.log("render")
     return (
       <React.Fragment>
-        <div id="boardGrid">
+        <div id="boardGrid" key="boardGrid">
           <div id="boardContainer" 
             ref={"bContainer"} 
             key="boardContainer"
@@ -201,10 +201,10 @@ class Board extends Component {
             {this.pieces()}
             <img id="boardSVG" src={darkBoardSVG} alt={"Board file missing"} ref="board" key="board" draggable={false} />
           </div>
-          <div id="boardUI">
+          <div id="boardUI" key="boardUI">
             {this.boardButtons()}
           </div>
-          <div id="boardData" onClick={this.onBoardDataClick}>{ /* TODO - DO NOT OPEN IN TRAINING */}
+          <div id="boardData" key="boardData" onClick={this.onBoardDataClick}>{ /* TODO - DO NOT OPEN IN TRAINING */}
           <Translator text={"Comments"} />: {this.comment()}
           </div>
         </div>
@@ -214,10 +214,11 @@ class Board extends Component {
           close={this.closeVariNameModal} 
           onDoneClick={this.createThisVariation} 
           disabledDoneButton={this.state.new_vari_name.length === 0}
+          key="new_variation_modal"
         >
-          <Translator text={"New variation name"} />:
+          <h2><Translator text={"New variation name"} />:</h2>
           <input type="text" 
-            className="textBox"
+            className="textBox newVariNameTextBox"
             value={this.state.new_vari_name} 
             onChange={e => this.setState({new_vari_name: e.target.value})}
             onKeyPress={e => {
@@ -243,7 +244,7 @@ class Board extends Component {
           json_moves={this.state.json_moves}
         /> : null}
         {/* HELP MODAL */}
-        {this.props.buttons.indexOf("help") !== -1 && this.state.helpModalVisible ? <HelpModal 
+        {(this.props.buttons.indexOf("help") !== -1 || this.props.buttons.indexOf("multi_next") !== -1) && this.state.helpModalVisible ? <HelpModal 
           visible={this.state.helpModalVisible}
           close={() => this.setState({helpModalVisible: false})}
           correct_moves={this.state.helpModalCorrectMoves}
@@ -773,10 +774,16 @@ class Board extends Component {
           >school</button>
         )
       }
-      // NEXT
-      if(this.props.buttons.indexOf("next") !== -1){
+      // SINGLE NEXT
+      if(this.props.buttons.indexOf("single_next") !== -1){
         b_objects.push(
           <button id="nextButton" key="nextButton" className="simpleButton boardButton" onClick={this.next_button_click} >keyboard_arrow_right</button>
+        )
+      }
+      // MULTI NEXT
+      if(this.props.buttons.indexOf("multi_next") !== -1){
+        b_objects.push(
+          <button onClick={this.help_button_click} id="helpButton" key="helpButton" className="simpleButton boardButton">keyboard_arrow_right</button>
         )
       }
     }
@@ -784,6 +791,7 @@ class Board extends Component {
   }
 
   escapeHtml(text) {
+    if(text === undefined) return ""
     return text
          .replace(/&/g, "&amp;")
          .replace(/</g, "&lt;")
@@ -793,7 +801,6 @@ class Board extends Component {
  }
 
   comment(){
-    console.log()
     if (this.props.op_index === undefined || !this.state.json_moves) return ""
     let text = this.props.getComment(this.props.op_index, this.state.json_moves)
     text = this.escapeHtml(text)
