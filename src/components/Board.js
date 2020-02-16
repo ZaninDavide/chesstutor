@@ -4,6 +4,7 @@ import Chess from "../chessjs-chesstutor/chess.js"
 
 // import boardSVG from "../files/chessboard.svg"
 import darkBoardSVG from "../files/chessboard_dark.svg"
+import darkBoardRotatedSVG from "../files/chessboard_dark_rotated.svg"
 import whiteKingSVG from "../files/white_king.svg"
 import whiteQueenSVG from "../files/white_queen.svg"
 import whiteRookSVG from "../files/white_rook.svg"
@@ -169,6 +170,7 @@ class Board extends Component {
     this.next_button_click = this.next_button_click.bind(this)
     this.help_button_click = this.help_button_click.bind(this)
     this.make_move = this.make_move.bind(this)
+    this.back_button_click = this.back_button_click.bind(this)
     /* refs */
     this.selectedPiece = React.createRef()
 
@@ -199,7 +201,7 @@ class Board extends Component {
             {this.selection()}
             {this.touchCircle()}
             {this.pieces()}
-            <img id="boardSVG" src={darkBoardSVG} alt={"Board file missing"} ref="board" key="board" draggable={false} />
+            <img id="boardSVG" src={this.state.rotated ? darkBoardRotatedSVG : darkBoardSVG} alt={"Board file missing"} ref="board" key="board" draggable={false} />
           </div>
           <div id="boardUI" key="boardUI">
             {this.boardButtons()}
@@ -249,6 +251,11 @@ class Board extends Component {
           close={() => this.setState({helpModalVisible: false})}
           correct_moves={this.state.helpModalCorrectMoves}
           make_move={this.make_move}
+          playColor={this.props.playColor}
+          pc_move={this.pc_move}
+          op_index={this.props.op_index}
+          vari_index={this.props.vari_index}
+          json_moves_length={this.state.json_moves.length}
         /> : null}
       </React.Fragment>
     )
@@ -413,6 +420,7 @@ class Board extends Component {
 
   pc_move(op_index, json_moves, vari_index = undefined){
     let move_data = this.props.get_pc_move_data(op_index, json_moves, vari_index)
+    
     if(move_data !== null){
       setTimeout(() => this.make_move(move_data), 500)
     }else{
@@ -691,7 +699,14 @@ class Board extends Component {
     }
   }
 
-  help_button_click(){
+  back_button_click(){
+    this.try_undo()
+    if(this.props.playColor !== "both"){
+      this.try_undo()
+    }
+  }
+
+  async help_button_click(){
     // get moves data [{from: "d2", to: "d4", san: "d4"}, ...]
     let correct_moves_repetitive = this.props.get_correct_moves_data(this.props.op_index, this.state.json_moves, this.props.vari_index)
 
@@ -711,7 +726,12 @@ class Board extends Component {
         helpModalCorrectMoves: correct_moves
       })
     }else if(correct_moves.length === 1){
-      this.make_move(correct_moves[0])
+      // MAKE MOVE
+      const moves_list_after = await this.make_move(correct_moves[0])
+      // COMPUTER ANSWER IF NECESSARY
+      if(this.props.playColor !== "both"){
+        this.pc_move(this.props.op_index, moves_list_after, this.props.vari_index)
+      }
     }
   }
 
@@ -721,7 +741,7 @@ class Board extends Component {
       // BACK
       if(this.props.buttons.indexOf("back") !== -1){
         b_objects.push(
-          <button id="backButton" key="backButton" className="simpleButton boardButton" onClick={this.try_undo}>keyboard_arrow_left</button>
+          <button id="backButton" key="backButton" className="simpleButton boardButton" onClick={this.back_button_click}>keyboard_arrow_left</button>
         )
       }
       // CREATE VARIATION BUTTON - DONE
@@ -748,12 +768,6 @@ class Board extends Component {
           >clear</button>
         )
       }
-      // HELP
-      if(this.props.buttons.indexOf("help") !== -1){
-        b_objects.push(
-          <button onClick={this.help_button_click} id="helpButton" key="helpButton" className="simpleButton boardButton">help</button>
-        )
-      }
       // TRAIN THIS OPENING
       if(this.props.buttons.indexOf("trainThis") !== -1){
         b_objects.push(
@@ -772,6 +786,12 @@ class Board extends Component {
               }
             }}
           >school</button>
+        )
+      }
+      // HELP
+      if(this.props.buttons.indexOf("help") !== -1){
+        b_objects.push(
+          <button onClick={this.help_button_click} id="helpButton" key="helpButton" className="simpleButton boardButton">help</button>
         )
       }
       // SINGLE NEXT

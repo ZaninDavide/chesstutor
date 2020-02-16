@@ -17,7 +17,7 @@ class VariationPage extends Component {
     const op = this.props.ops[op_index]
     return (
       <React.Fragment>
-        <Header mainButtonText="keyboard_backspace" goTo={"/openings/" + op_index} title={<React.Fragment>{op.op_name}<Translator text={": New variation"} /></React.Fragment>} />
+        <Header mainButtonText="keyboard_backspace" goTo={"/openings/" + op_index} title={<React.Fragment>{op.op_name}:&nbsp;<Translator text={"New variation"} /></React.Fragment>} />
         <Board 
           history={this.props.history} 
           createVari={this.props.createVari} 

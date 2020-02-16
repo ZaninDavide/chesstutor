@@ -22,7 +22,11 @@ class HelpModal extends Component {
   }
 
   async chooseMove(move){
-    await this.props.make_move(move)
+    let moves_list_after = await this.props.make_move(move)
+    // COMPUTER ANSWER IF NECESSARY
+    if(this.props.playColor !== "both"){
+      this.props.pc_move(this.props.op_index, moves_list_after, this.props.vari_index)
+    }
     this.props.close()
   }
 
@@ -34,15 +38,17 @@ class HelpModal extends Component {
     new_san = new_san.replace("B", this.getPieceText(color + "_bishop"))
     new_san = new_san.replace("R", this.getPieceText(color + "_rook"))
     new_san = new_san.replace("P", this.getPieceText(color + "_pawn"))
-    return <h2 className="chessText" style={{lineHeight: "100%"}}>{new_san}</h2>
+    return new_san
   }
 
-  getMovesButtons(correct_moves){
+  getMovesButtons(correct_moves, json_moves_length){
     let objects = []
     correct_moves.forEach(move => {
       objects.push(
         <button onClick={() => this.chooseMove(move)} className="simpleButton helpModalButton" id={"helpModalButton_" + move.san} key={"helpModalButton_" + move.san} >
-          {this.make_san_nicer(move.san)}
+          <h2 className="chessText" style={{lineHeight: "100%"}}>
+            {json_moves_length + 1}{". "}{this.make_san_nicer(move.san)}
+          </h2>
         </button>
       )
     });
@@ -53,7 +59,7 @@ class HelpModal extends Component {
     return (
       <div id="helpModal" className="modal" onClick={this.close} style={this.getStyle()}>
         <div className="modalContent" onClick={e => e.stopPropagation()} style={{height: "auto"}}>
-          {this.getMovesButtons(this.props.correct_moves)}
+          {this.getMovesButtons(this.props.correct_moves, this.props.json_moves_length)}
         </div>
       </div>
     )
