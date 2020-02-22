@@ -171,6 +171,7 @@ class Board extends Component {
     this.help_button_click = this.help_button_click.bind(this)
     this.make_move = this.make_move.bind(this)
     this.back_button_click = this.back_button_click.bind(this)
+    this.is_my_turn = this.is_my_turn.bind(this)
     /* refs */
     this.selectedPiece = React.createRef()
 
@@ -308,6 +309,17 @@ class Board extends Component {
         return
       }
     )
+  }
+
+  is_my_turn(turn = this.state.game.turn(), both_allowed = true){
+    if(
+      this.props.playColor === "black" && turn === "b" ||
+      this.props.playColor === "white" && turn === "w" ||
+      this.props.playColor === "both" && both_allowed
+    ){
+      return true
+    }
+    return false
   }
 
   is_move_legal(move_data){
@@ -532,7 +544,8 @@ class Board extends Component {
     let cell_obj = this.state.game.get(cell)
     if (cell_obj !== null) {
       if (cell_obj.color === this.state.game.turn()) {
-        if(this.props.playColor === "both" || this.props.playColor[0] === cell_obj.color){ // for example "white"[0] === "w" => true
+        // for example "black"[0] === "b" => true NB: also "both"[0] works but it's not a problem here
+        if(this.props.playColor === "both" || this.props.playColor[0] === cell_obj.color){ 
           this.selectCell(cell)
           return true
         }
@@ -693,20 +706,24 @@ class Board extends Component {
   /* ---------------------------- UI ELEMENTS ---------------------------- */
 
   next_button_click(){
-    let move_data = this.props.get_vari_next_move_data(this.props.op_index, this.props.vari_index, this.state.json_moves)
-    if(move_data !== null){
-      this.make_move(move_data)
+    if(this.props.playColor === "none" || this.is_my_turn()){
+      let move_data = this.props.get_vari_next_move_data(this.props.op_index, this.props.vari_index, this.state.json_moves)
+      if(move_data !== null){
+        this.make_move(move_data)
+      }
     }
   }
 
   back_button_click(){
+    const before_turn = this.state.game.turn()
     this.try_undo()
-    if(this.props.playColor !== "both"){
+    if(this.is_my_turn(before_turn, false)){ // undo twice
       this.try_undo()
     }
   }
 
   async help_button_click(){
+    if(!this.is_my_turn()) return false
     // get moves data [{from: "d2", to: "d4", san: "d4"}, ...]
     let correct_moves_repetitive = this.props.get_correct_moves_data(this.props.op_index, this.state.json_moves, this.props.vari_index)
 
@@ -791,19 +808,28 @@ class Board extends Component {
       // HELP
       if(this.props.buttons.indexOf("help") !== -1){
         b_objects.push(
-          <button onClick={this.help_button_click} id="helpButton" key="helpButton" className="simpleButton boardButton">help</button>
+          <button id="helpButton" key="helpButton" className="simpleButton boardButton" 
+            onClick={this.help_button_click}
+            disabled={!this.is_my_turn()}
+          >help</button>
         )
       }
       // SINGLE NEXT
       if(this.props.buttons.indexOf("single_next") !== -1){
         b_objects.push(
-          <button id="nextButton" key="nextButton" className="simpleButton boardButton" onClick={this.next_button_click} >keyboard_arrow_right</button>
+          <button id="nextButton" key="nextButton" className="simpleButton boardButton" 
+            onClick={this.next_button_click} 
+            disabled={!this.is_my_turn() && !this.props.playColor === "none"}
+          >keyboard_arrow_right</button>
         )
       }
-      // MULTI NEXT
+      // MULTI NEXT - search in all non archived variations
       if(this.props.buttons.indexOf("multi_next") !== -1){
         b_objects.push(
-          <button onClick={this.help_button_click} id="helpButton" key="helpButton" className="simpleButton boardButton">keyboard_arrow_right</button>
+          <button id="helpButton" key="helpButton" className="simpleButton boardButton" 
+            onClick={this.help_button_click} 
+            disabled={!this.is_my_turn()}
+          >keyboard_arrow_right</button>
         )
       }
     }

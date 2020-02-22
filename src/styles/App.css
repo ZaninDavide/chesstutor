@@ -254,7 +254,7 @@ button.importantButton {
   transition-delay: 0s;
 }
 
-button.importantButton:hover {
+button.importantButton:hover:enabled {
   /* COLORS */
   background-color: var(--backColorImportantButtonHover);
   /* TEXT */
@@ -291,7 +291,7 @@ button.simpleButton{
   transition-delay: 0s;
 }
 
-button.simpleButton:hover {
+button.simpleButton:hover:enabled {
   /* COLORS */
   background-color: var(--makeDarkerColor);
 }
