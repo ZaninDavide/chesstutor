@@ -313,9 +313,9 @@ class Board extends Component {
 
   is_my_turn(turn = this.state.game.turn(), both_allowed = true){
     if(
-      this.props.playColor === "black" && turn === "b" ||
-      this.props.playColor === "white" && turn === "w" ||
-      this.props.playColor === "both" && both_allowed
+      (this.props.playColor === "black" && turn === "b") ||
+      (this.props.playColor === "white" && turn === "w") ||
+      (this.props.playColor === "both" && both_allowed)
     ){
       return true
     }

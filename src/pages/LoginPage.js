@@ -101,7 +101,7 @@ class LoginPage extends Component {
         this.props.history.push("/")
       }
     }else{
-      console.log("signUpClick: missing username or password")
+      console.log("loginClick: missing username or password")
     }
   }
 
@@ -115,11 +115,23 @@ class LoginPage extends Component {
             <input type="text" className="textBox" value={this.state.username} onChange={e => this.setState({username: e.target.value})}/>
             <br/><br/>
             <Translator text={"Password"} />:
-            <input type="password" className="textBox" value={this.state.password} onChange={e => this.setState({password: e.target.value})}/>
+            <input 
+              type="password" className="textBox" 
+              value={this.state.password} 
+              onChange={e => this.setState({password: e.target.value})}
+              onKeyPress={e => {
+                if (e.which === 13 || e.keyCode === 13) {
+                  this.loginClick()
+                }
+              }}
+            />
             <br/><br/>
             <div className="checkBoxContainer">
-              <div className={"checkBox" + (this.state.rememberMe ? " checked" : "")}  onClick={this.checkBoxClick} />&nbsp;
-              <Translator text={"Remember me"} />
+              <span onClick={this.checkBoxClick} style={{display: "flex"}} >
+                <div className={"checkBox" + (this.state.rememberMe ? " checked" : "")}/>
+                &nbsp;
+                <Translator text={"Remember me"}/>
+              </span>
             </div>
           </div>
           <button onClick={this.signUpClick} className="importantButton" style={{position: "absolute", bottom: "calc(var(--uiElementHeight) + 2 * var(--mediumMargin))", marginBottom: 0, width: "calc(100% - 30px)"}}><Translator text={"Sign up"} /></button>

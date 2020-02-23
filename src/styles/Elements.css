@@ -142,9 +142,11 @@
 }
 
 .checkBox{
-  width: var(--uiElementSmallHeight);
-  height: var(--uiElementSmallHeight);
+  width: calc(var(--uiElementSmallHeight) - 2 * var(--smallMargin));
+  height: calc(var(--uiElementSmallHeight) - 2 * var(--smallMargin));
   background-color: var(--makeDarkerColor);
+  outline: var(--smallMargin) solid  var(--makeDarkerColor);
+  margin: var(--smallMargin);
 }
 
 .checkBox.checked{

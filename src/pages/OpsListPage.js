@@ -152,7 +152,7 @@ class OpsListPage extends Component {
             <React.Fragment>
               <h2><Translator text={"Rename"} />&nbsp;
               <span style={{color: "var(--importantButtonBackColor)"}}>{this.props.ops[this.state.hMenuOpIndex].op_name}</span>&nbsp;
-              <Translator text={"to:"} /></h2>&nbsp;
+              <Translator text={"to:"} /></h2>
               <input type="text" 
                 className="textBox renameTextBox"
                 value={this.state.opNewName} 

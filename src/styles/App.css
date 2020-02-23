@@ -42,15 +42,15 @@
   --backColor: #1f1f1e; /* 292827 */
   --borderColor: rgb(204, 204, 204);
   --textColor: #a2a099;
-  --titleColor: #a3f7bf;
+  --titleColor: #3cf17e; /*#a3f7bf*/
   --buttonColor: rgb(245, 245, 245);
   --textColorHighlighted: white;
   --importantButtonColor: #1f1f1e;
-  --importantButtonBackColor: #a3f7bf;
-  --backColorImportantButtonHover: hsl(140, 34%, 60%);
+  --importantButtonBackColor: #3cf17e; /*#a3f7bf*/
+  --backColorImportantButtonHover: #32804d; /*hsl(140, 34%, 60%)*/
   --headerBackColor: #1f1f1e;
   --makeDarkerColor: rgba(100, 100, 100, 0.3);
-  --alertColor: #f06b65;
+  --alertColor: #f14b4b; /*#f06b65*/
 }
 
 .boardStandardTheme {
