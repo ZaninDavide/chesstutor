@@ -169,6 +169,7 @@ class OpeningPage extends Component {
                 onKeyPress={e => {
                   if (e.which === 13 || e.keyCode === 13) {
                     this.renameThisVari()
+                    this.setState({renameVariVisible: false})
                   }
                 }}
               />

@@ -16,6 +16,8 @@ import "./styles/Elements.css" // css by ID + SECONDARY COMPONENTS
 import "./styles/Modal.css"
 import { LanguageProvider } from "./components/LanguageContext"
 
+const SERVER_URI = "http://localhost:5000" // "https://chesstutorserver.herokuapp.com"
+
 const defaultOps = []
 
 class App extends Component {
@@ -54,6 +56,7 @@ class App extends Component {
     this.editComment = this.editComment.bind(this)
     this.getComment = this.getComment.bind(this)
     this.get_vari_next_move_data = this.get_vari_next_move_data.bind(this)
+    this.serverRequest = this.serverRequest.bind(this)
   }
 
   componentDidMount(){
@@ -70,7 +73,7 @@ class App extends Component {
   async getUserData(){
     if(this.state.bearer){
       let userData = await fetch(
-          "https://chesstutorserver.herokuapp.com/user",
+          SERVER_URI + "/user",
           {
               headers: {
                   Authorization: "Bearer " + this.state.bearer,
@@ -113,7 +116,7 @@ class App extends Component {
   }
 
   updateUserData = (newUserData, bearer, refresh = true) => {
-    fetch("https://chesstutorserver.herokuapp.com/user", {
+    fetch(SERVER_URI + "/user", {
         body: JSON.stringify(newUserData),
         headers: {
             "content-type": "application/json",
@@ -126,6 +129,16 @@ class App extends Component {
     // if (refresh) this.forceUpdate()
   }
 
+  serverRequest(type, relative_url, body, bearer = this.state.bearer){
+    fetch(SERVER_URI + relative_url, {
+        body: JSON.stringify(body),
+        headers: {
+            "content-type": "application/json",
+            Authorization: "Bearer " + bearer,
+        },
+        method: type,
+    })
+  }
 
   updateDB(new_ops = this.state.user_ops) {
     /*if (new_ops.toString() !== this.state.user_ops.toString()) {
@@ -158,7 +171,8 @@ class App extends Component {
       /* Update state and database */
       const op_index = this.state.user_ops.length // index of the new opening
       this.state.user_ops.push(op_object)
-      this.updateDB()
+
+      this.serverRequest("POST", "/addOpening", op_object)
       return op_index
     } else {
       console.log("addOpening: Can't add an opening without op_name or user_color")
@@ -174,7 +188,8 @@ class App extends Component {
     this.setState(old => {
       let new_user_ops = old.user_ops
       new_user_ops.splice(op_index, 1)
-      this.updateDB(new_user_ops)
+
+      this.serverRequest("POST", "/deleteOpening/" + op_index)
       return {user_ops: new_user_ops}
     })
   }
@@ -183,7 +198,8 @@ class App extends Component {
     this.setState(old => {
       let new_user_ops = old.user_ops
       new_user_ops[op_index].archived = !new_user_ops[op_index].archived
-      this.updateDB(new_user_ops)
+
+      this.serverRequest("POST", "/setOpeningArchived/" + op_index, {archived: new_user_ops[op_index].archived})
       return {user_ops: new_user_ops}
     })
   }
@@ -192,7 +208,8 @@ class App extends Component {
     this.setState(old => {
       let new_user_ops = old.user_ops
       new_user_ops[op_index].op_name = op_new_name
-      this.updateDB(new_user_ops)
+
+      this.serverRequest("POST", "/renameOpening/" + op_index, {new_name: op_new_name})
       return {user_ops: new_user_ops}
     })
   }
@@ -215,7 +232,8 @@ class App extends Component {
       /* Update state and database */
       const vari_index = this.state.user_ops[op_index].variations.length // index of the new variation
       this.state.user_ops[op_index].variations.push(vari_object)
-      this.updateDB()
+
+      this.serverRequest("POST", "/addVariation/" + op_index, vari_object)
       return vari_index
     }else {
       console.log("addVariation: Can't add an variation without its name")
@@ -231,7 +249,12 @@ class App extends Component {
     this.setState(old => {
       let new_user_ops = old.user_ops
       new_user_ops[op_index].variations[vari_index].archived = !new_user_ops[op_index].variations[vari_index].archived
-      this.updateDB(new_user_ops)
+
+      this.serverRequest(
+        "POST", 
+        "/setVariationArchived/" + op_index + "/" + vari_index, 
+        {archived: new_user_ops[op_index].variations[vari_index].archived}
+      )
       return {user_ops: new_user_ops}
     })
   }
@@ -240,7 +263,8 @@ class App extends Component {
     this.setState(old => {
       let new_user_ops = old.user_ops
       new_user_ops[op_index].variations[vari_index].vari_name = vari_new_name
-      this.updateDB(new_user_ops)
+
+      this.serverRequest("POST", "/renameVariation/" + op_index + "/" + vari_index, {new_name: vari_new_name})
       return {user_ops: new_user_ops}
     })
   }
@@ -249,7 +273,8 @@ class App extends Component {
     this.setState(old => {
       let new_user_ops = old.user_ops
       new_user_ops[op_index].variations.splice(vari_index, 1)
-      this.updateDB(new_user_ops)
+
+      this.serverRequest("POST", "/deleteVariation/" + op_index + "/" + vari_index)
       return {user_ops: new_user_ops}
     })
   }
@@ -262,7 +287,8 @@ class App extends Component {
         str += elem.san + "|"
       });
       new_user_ops[op_index].comments[str] = text
-      this.updateDB(new_user_ops)
+
+      this.serverRequest("POST", "/editComment/" + op_index + "/" + str, {text})
       return {user_ops: new_user_ops}
     })
   }

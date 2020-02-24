@@ -160,6 +160,7 @@ class OpsListPage extends Component {
                 onKeyPress={e => {
                   if (e.which === 13 || e.keyCode === 13) {
                     this.renameThisOpening()
+                    this.setState({renameOpVisible: false})
                   }
                 }}
               />

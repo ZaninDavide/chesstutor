@@ -133,7 +133,6 @@ let error_audio
 class Board extends Component {
   constructor(props) {
     super(props)
-    console.log("ca")
     this.state = {
       game: new Chess(),
       json_moves: [], // moves' history in the correct format (see vari.moves)
