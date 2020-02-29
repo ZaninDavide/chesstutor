@@ -5,6 +5,8 @@ import Translator from "../components/Translator"
 import HangingMenu from "../components/HangingMenu"
 import Modal from "../components/Modal"
 
+import no_variations_svg from "../files/no_variations.svg"
+
 class OpeningPage extends Component {
   constructor(props) {
     super(props)
@@ -26,6 +28,7 @@ class OpeningPage extends Component {
     this.renameThisVari = this.renameThisVari.bind(this)
     this.deleteThisVari = this.deleteThisVari.bind(this)
     this.switchArchivedThisVari = this.switchArchivedThisVari.bind(this)
+    this.no_variations_style = this.no_variations_style.bind(this)
   }
 
   getArchivedSeparator(){
@@ -107,6 +110,16 @@ class OpeningPage extends Component {
     this.props.switchVariArchived(op_index, this.state.hMenuVariIndex)
   }
 
+  no_variations_style(len){
+    if(len > 0) return {}
+    return {
+      background: `url(${no_variations_svg})`,
+      backgroundRepeat: "no-repeat",
+      backgroundSize: "contain",
+      backgroundPosition: "center"
+    }
+  }
+
   render() {
     const op_index = this.props.match.params.op_index
     const op = this.props.ops[op_index]
@@ -114,7 +127,7 @@ class OpeningPage extends Component {
     return (
       <React.Fragment>
         <Header title={op.op_name} mainButtonText="keyboard_backspace"/*headerButtonContent={<span className="iconText">school</span>}*/ /> {/* play_arrow */}
-        <div id="openingPage"  className="page">{this.getVariItems(op.variations, op_index)}</div>
+        <div id="openingPage" className="page" style={this.no_variations_style(op.variations.length)}>{this.getVariItems(op.variations, op_index)}</div>
         <button id="playVarsButton" className="importantButton iconButton" onClick={this.startGame}>
           school
         </button>

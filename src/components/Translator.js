@@ -33,6 +33,8 @@ const languages = {
     "Delete permanently:": "Delete permanently:",
     "Rename": "Rename",
     "to:": "to:",
+    "Name": "Name",
+    "Language": "Language",
   },
   ita: {
     Openings: "Aperture",
@@ -65,6 +67,8 @@ const languages = {
     "Delete permanently:": "Eliminare definitivamente:",
     "Rename": "Rinominare",
     "to:": "come:",
+    "Name": "Nome",
+    "Language": "Lingua(Language)",
   }
 }
 
@@ -78,7 +82,7 @@ const Translator = props => {
     console.log("Translator: missing '" + props.text + "' in '" + lang + "'")
     return <React.Fragment>{props.text}</React.Fragment>
   }
-  return <React.Fragment>{languages[lang][props.text]}</React.Fragment>
+  return languages[lang][props.text]
 }
 
 export default Translator

@@ -20,7 +20,7 @@
   --uiElementHeight: 50px; /* like buttons height */
   --uiElementSmallHeight: 28px; /* like textBox height */
   --headerHeight: calc(var(--uiElementHeight) + var(--smallMargin) * 2);
-  --iconsFontSize: 26px;
+  --iconsFontSize: 30px; /* 26px */
 }
 
 .defaultTheme {
@@ -39,20 +39,19 @@
 }
 
 .darkTheme {
-  --backColor: #1f1f1e; /* 292827 */
+  --backColor: #1d1d1b; /*#1f1f1e*/ /* 292827 */
   --borderColor: rgb(204, 204, 204);
   --textColor: #a2a099;
   --titleColor: #3cf17e; /*#a3f7bf*/
   --buttonColor: rgb(245, 245, 245);
   --textColorHighlighted: white;
-  --importantButtonColor: #1f1f1e;
+  --importantButtonColor: #1d1d1b;
   --importantButtonBackColor: #3cf17e; /*#a3f7bf*/
   --backColorImportantButtonHover: #32804d; /*hsl(140, 34%, 60%)*/
-  --headerBackColor: #1f1f1e;
+  --headerBackColor: #1d1d1b;
   --makeDarkerColor: rgba(100, 100, 100, 0.3);
   --alertColor: #f14b4b; /*#f06b65*/
 }
-
 .boardStandardTheme {
   --blackColor: rgb(121, 92, 69);
   --whiteColor: rgb(204, 178, 95);
@@ -102,15 +101,29 @@ html, body{
   outline-style: none; /* Internet Explorer  */
 }
 
+.page:not([scrollY='0']) #App{
+  background-color: red;
+}
+
 .page {
   /* GRID */
   grid-area: page;
 }
 
-::-webkit-scrollbar
-{
-  width: 12px;  /* for vertical scrollbars */
-  height: 12px; /* for horizontal scrollbars */
+@media (pointer: coarse) { /* touch screen */
+  ::-webkit-scrollbar
+  {
+    width: 6px;  /* for vertical scrollbars */
+    height: 6px; /* for horizontal scrollbars */
+  }
+}
+
+@media (pointer: fine) { /* mouse input */
+  ::-webkit-scrollbar
+  {
+    width: 12px;  /* for vertical scrollbars */
+    height: 12px; /* for horizontal scrollbars */
+  }
 }
 
 ::-webkit-scrollbar-track
@@ -252,6 +265,10 @@ button.importantButton {
   transition-duration: 50ms;
   transition-timing-function: cubic-bezier(0.3, 0, 0.7, 1);
   transition-delay: 0s;
+  /* SHADOWS */
+  -moz-box-shadow: 2px 3px 4px rgba(0, 0, 0,0.25);
+  -webkit-box-shadow: 2px 3px 4px rgba(0, 0, 0, .25);
+  box-shadow: 2px 3px 4px rgba(0, 0, 0, .25);
 }
 
 button.importantButton:hover:enabled {
@@ -259,6 +276,10 @@ button.importantButton:hover:enabled {
   background-color: var(--backColorImportantButtonHover);
   /* TEXT */
   text-align: center;
+  /* SHADOWS */
+  -moz-box-shadow: 0px 0px 1px rgba(0, 0, 0,0.15);
+  -webkit-box-shadow: 0px 0px 1px rgba(0, 0, 0, .15);
+  box-shadow: 0px 0px 1px rgba(0, 0, 0, .15);
 }
 
 button.simpleButton{

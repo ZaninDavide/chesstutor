@@ -4,7 +4,7 @@
   margin-top: auto;
   margin-bottom: auto;
   margin-right: 0px;
-  margin-left: 0px;
+  margin-left: var(--smallMargin);
 }
 
 #opsListPage, #openingPage {
@@ -196,8 +196,6 @@
   grid-area: header;
   /* COLORS */
   background-color: var(--headerBackColor);
-  /* SPACES */
-  margin-left: var(--smallMargin);
   /* CONTENT */
   vertical-align: middle;
   display: grid;
@@ -249,4 +247,19 @@
   margin-left: var(--mediumMargin);
   margin-right: var(--mediumMargin);
   width: calc(100% - 2 * var(--mediumMargin) - 10px); /* 10px = padding */
+}
+
+#loadingScreen{
+  background-color: rgba(0, 0, 0, 0.8);
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 100vw;
+  height: 100vh;
+  z-index: 10;
+}
+
+#loadingScreenBottom{
+  display: table-cell;
+  vertical-align: bottom;
 }

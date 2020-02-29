@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { BrowserRouter as Router, Switch, Route } from "react-router-dom"
+import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom"
 
 import OpeningPage from "./pages/OpeningPage"
 import CreateVariPage from "./pages/CreateVariPage"
@@ -10,13 +10,14 @@ import NewOpPage from "./pages/NewOpPage"
 import LoginPage from "./pages/LoginPage"
 import NewVariPage from "./pages/NewVariPage"
 import TrainingPage from "./pages/TrainingPage"
+import UserPage from "./pages/UserPage"
 
 import "./styles/App.css" // css by CLASSES + MAIN COMPONENTS
 import "./styles/Elements.css" // css by ID + SECONDARY COMPONENTS
 import "./styles/Modal.css"
 import { LanguageProvider } from "./components/LanguageContext"
 
-const SERVER_URI = "http://localhost:5000" // "https://chesstutorserver.herokuapp.com"
+const SERVER_URI = "https://chesstutorserver.herokuapp.com" // "http://localhost:5000"
 
 const defaultOps = []
 
@@ -34,7 +35,8 @@ class App extends Component {
       bearer: saved_bearer,
       user_ops: [],
       language: "eng",
-      colorTheme: "darkTheme"
+      colorTheme: "darkTheme",
+      loadingVisible: true,
     }
     this.createOp = this.createOp.bind(this)
     this.addOpening = this.addOpening.bind(this)
@@ -60,10 +62,12 @@ class App extends Component {
   }
 
   componentDidMount(){
-    // remember me
+    // REMEMBER ME
     if(this.state.username && this.state.bearer){
       this.setBearer(this.state.bearer)
-      // this.updateDB([]) // clear database of this user
+      // // // this.updateDB([]) // clear database of this user
+    }else{
+      this.setState({loadingVisible: false}) // LOADING SCREEN NOW HIDDEN
     }
   }
 
@@ -95,7 +99,9 @@ class App extends Component {
         return {
           user_ops: ops,
           _id: userData._id,
-          username: userData.email
+          username: userData.email,
+          language: userData.language,
+          loadingVisible: false, // LOADING SCREEN NOW HIDDEN
         }
       })
     }else{
@@ -112,7 +118,7 @@ class App extends Component {
   logout = () => {
     localStorage.removeItem("username")
     localStorage.removeItem("bearer")
-    this.setState({ bearer: null, redirectTo: "/login", decks: [] })
+    this.setState({ username: null, bearer: null, user_ops: [], _id: undefined })
   }
 
   updateUserData = (newUserData, bearer, refresh = true) => {
@@ -398,11 +404,11 @@ class App extends Component {
   render() {
     const opsListPage = ({ history }) =>  <OpsListPage 
                                             ops={this.state.user_ops} 
-                                            history={history} 
-                                            updateDB={this.updateUserData} 
+                                            history={history}
                                             deleteOpening={this.deleteOpening} 
                                             switchArchivedOpening={this.switchArchivedOpening}
                                             renameOp={this.renameOp}
+                                            username={this.state.username}
                                           />
     const opPage = ({ match, history }) =>  <OpeningPage 
                                               ops={this.state.user_ops} 
@@ -453,14 +459,29 @@ class App extends Component {
                                             />
     const newOpPage = ({ match, history }) => <NewOpPage history={history} match={match} createOp={this.createOp}/>
     const loginPage = ({ match, history }) => <LoginPage history={history} match={match} setBearer={this.setBearer} username={this.state.username} rememberMeLocally={this.rememberMeLocally}/>
+    const userPage = ({ match, history }) =>  <UserPage 
+                                                history={history} 
+                                                match={match} 
+                                                logout={this.logout}
+                                                username={this.state.username} 
+                                                language={this.state.language} 
+                                              />
+    const redirectToLogin = () => <Redirect to="/login" />
+    const redirectToHome = () => <Redirect to="/" />
+    const needLogin = (!this.state.username && !this.state.loadingVisible)
+
 
     return (
       <LanguageProvider lang={this.state.language}>
         <Router>
           <div id="App" className={`layout ${this.state.colorTheme}`}>
+            <div id="loadingScreen" style={{display: this.state.loadingVisible ? "table" : "none"}}>
+              <span id="loadingScreenBottom">&nbsp;{"Loading your data... Please wait."}</span>
+            </div>
             <Switch>
-              <Route path="/" render={opsListPage} exact/>
-              <Route path="/login" render={loginPage} exact/>
+              <Route path="/" render={needLogin ? redirectToLogin : opsListPage} exact/>
+              <Route path="/login" render={!needLogin ? redirectToHome : loginPage} exact/>
+              <Route path="/profile" render={needLogin ? redirectToLogin : userPage} exact/>
               <Route path="/newOpening" render={newOpPage} />
               <Route path="/createVariation" render={CreateVariPage} />
               <Route path="/revise/:op_index" render={revisePage} />

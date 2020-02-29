@@ -5,6 +5,8 @@ import Translator from "../components/Translator"
 import HangingMenu from "../components/HangingMenu"
 import Modal from "../components/Modal"
 
+import no_openings_svg from "../files/no_openings.svg"
+
 class OpsListPage extends Component {
   constructor(props){
     super(props)
@@ -21,6 +23,7 @@ class OpsListPage extends Component {
     this.closeOpDeleteModal = this.closeOpDeleteModal.bind(this)
     this.openOpDeleteModal = this.openOpDeleteModal.bind(this)
     this.renameThisOpening = this.renameThisOpening.bind(this)
+    this.no_openings_style = this.no_openings_style.bind(this)
   }
 
   getSeparator(text){
@@ -100,17 +103,27 @@ class OpsListPage extends Component {
     this.props.renameOp(this.state.hMenuOpIndex, this.state.opNewName)
   }
 
+  no_openings_style(len){
+    if(len > 0) return {}
+    return {
+      background: `url(${no_openings_svg})`,
+      backgroundRepeat: "no-repeat",
+      backgroundSize: "contain",
+      backgroundPosition: "center"
+    }
+  }
+
   render() {
     return (
       <React.Fragment>
-        <Header title={<Translator text={"Openings"}/>} goTo={"/login"} mainButtonText="account_circle"/>
-        <div id="opsListPage" className="page">
+        <Header title={<Translator text={"Openings"}/>} goTo={"/profile"} mainButtonText="account_circle"/>
+        <div id="opsListPage" className={"page"} style={this.no_openings_style(this.props.ops.length)}>
           {this.getOpItems(this.props.ops)}
           <button id="newOpButton" className="importantButton iconButton" onClick={this.newOpButton}>
             add
           </button>
         </div>
-        <HangingMenu visible={this.state.hMenuVisible} close={this.hMenuClose}>
+        <HangingMenu visible={this.state.hMenuVisible & this.props.ops.length > 0} close={this.hMenuClose}>
           {/* EDIT BUTTON */}
           <button className="simpleButton hMenuButton" onClick={() => this.setState({renameOpVisible: true, opNewName: "", hMenuVisible: false})}>
             edit
@@ -123,7 +136,7 @@ class OpsListPage extends Component {
           <button className="simpleButton hMenuButton" 
             onClick={() => {this.hMenuClose(); this.props.switchArchivedOpening(this.state.hMenuOpIndex);}}
           >
-            {this.state.hMenuOpIndex !== null ? (this.props.ops[this.state.hMenuOpIndex].archived ? "unarchive" : "archive") : null}
+            {(this.state.hMenuOpIndex !== null && this.props.ops[this.state.hMenuOpIndex] !== undefined) ? (this.props.ops[this.state.hMenuOpIndex].archived ? "unarchive" : "archive") : null}
           </button> 
           {/* DELETE BUTTON */}
           <button className="simpleButton hMenuButton" onClick={() => {this.hMenuClose(); this.openOpDeleteModal();}}>

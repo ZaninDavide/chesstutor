@@ -6,7 +6,7 @@ class LoginPage extends Component {
   constructor(props){
     super(props)
     this.state = {
-      username: this.props.username ? this.props.username : "",
+      username: "",
       password: "",
       rememberMe: false,
     }
@@ -37,7 +37,9 @@ class LoginPage extends Component {
     }else{
       let bearer = await res.text()
       this.props.setBearer(bearer)
-      this.props.rememberMeLocally(this.state.username, bearer)
+      if(this.state.rememberMe){
+        this.props.rememberMeLocally(this.state.username, bearer)
+      }
       return true
     }
   }
@@ -96,10 +98,10 @@ class LoginPage extends Component {
 
   async loginClick(){
     if(this.state.username !== "" & this.state.password !== ""){
-      let login_res = await this.login()
-      if(login_res){
+      await this.login() // let login_res = 
+      /*if(login_res){
         this.props.history.push("/")
-      }
+      }*/
     }else{
       console.log("loginClick: missing username or password")
     }
@@ -108,7 +110,7 @@ class LoginPage extends Component {
   render() {
     return (
       <React.Fragment>
-        <Header title={<Translator text={"Login"} />} />
+        <Header title={<Translator text={"Login"}/>}  goTo="/login" />
         <div id="loginPage" className="page">
           <div id="loginPageBody">
             <Translator text={"Username"} />:

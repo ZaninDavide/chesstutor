@@ -10,7 +10,8 @@
 
 .modalContent{
     margin-top: 20vh;
-    height: 30%;
+    height: auto;
+    min-height: 200px;
     width: 100%;
     background-color: var(--backColor);
     display: grid;
