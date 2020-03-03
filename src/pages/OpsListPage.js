@@ -26,8 +26,8 @@ class OpsListPage extends Component {
     this.no_openings_style = this.no_openings_style.bind(this)
   }
 
-  getSeparator(text){
-    return  <div id={"opsSeparator" + text} className="opsSeparator" key={"opsSeparator" + text}>
+  getSeparator(text, goTo){
+    return  <div id={"opsSeparator" + text} className="opsSeparator" key={"opsSeparator" + text} onClick={() => goTo ? this.props.history.push(goTo) : null}>
               <p style={{textAlign: "center", color: "var(--titleColor)"}}>
                 <Translator text={text} />
               </p>
@@ -62,11 +62,11 @@ class OpsListPage extends Component {
       // connect all together: not_archived_white + separator + not_archived_black + separator + archived
       let all = []
       if(not_archived_white.length > 0){
-        all.push(this.getSeparator("White"))
+        all.push(this.getSeparator("White", "/training/fullcolor/1"))
         all = all.concat(not_archived_white)
       }
       if(not_archived_black.length > 0){
-        all.push(this.getSeparator("Black"))
+        all.push(this.getSeparator("Black", "/training/fullcolor/0"))
         all = all.concat(not_archived_black)
       }
       if(archived.length > 0){
@@ -116,7 +116,7 @@ class OpsListPage extends Component {
   render() {
     return (
       <React.Fragment>
-        <Header title={<Translator text={"Openings"}/>} goTo={"/profile"} mainButtonText="account_circle"/>
+        <Header title={<Translator text={"Openings"}/>} goTo={"/profile"} mainButtonText="person"/>
         <div id="opsListPage" className={"page"} style={this.no_openings_style(this.props.ops.length)}>
           {this.getOpItems(this.props.ops)}
           <button id="newOpButton" className="importantButton iconButton" onClick={this.newOpButton}>

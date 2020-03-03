@@ -240,7 +240,17 @@
 
 .opsSeparator, #archivedVarsSeparator{
   width: 100%;
+  height: calc(var(--uiElementHeight) * 0.8);
+  line-height: calc(var(--uiElementHeight) * 0.8);
   /*border-bottom: solid 5px var(--makeDarkerColor);*/
+}
+
+#opsSeparatorWhite, #opsSeparatorBlack{
+  cursor: pointer;
+}
+
+#opsSeparatorWhite:hover, #opsSeparatorBlack:hover{
+  background-color: var(--makeDarkerColor);
 }
 
 .renameTextBox, .newVariNameTextBox{

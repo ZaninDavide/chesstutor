@@ -26,9 +26,9 @@ class OpItem extends Component {
         onContextMenu={this.rightClick}
       >
         <h2>{this.props.op.op_name}</h2>
-        <p>
+        {<p className="smallText">
           <Translator text={this.props.op.op_color} />, {this.props.op.variations.length} <Translator text={this.props.op.variations.length === 1 ? "variation" : "variations"} />
-        </p>
+        </p>}
       </div>
     )
   }

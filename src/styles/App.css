@@ -6,8 +6,8 @@
   font-family: "Quicksand", "Segoe UI";
   --smallTextSize: 14px;
   --textSize: 16px;
-  --mediumTextSize: 19px;
-  --titleSize: 21px; /*22px*/
+  --mediumTextSize: 18px;
+  --titleSize: 19px; /*22px*/
   --textWeight: 300;
   --mediumWeight: 400;
   --titleWeight: 500;
@@ -52,9 +52,31 @@
   --makeDarkerColor: rgba(100, 100, 100, 0.3);
   --alertColor: #f14b4b; /*#f06b65*/
 }
+
 .boardStandardTheme {
   --blackColor: rgb(121, 92, 69);
   --whiteColor: rgb(204, 178, 95);
+}
+
+.layout_low_vision {
+  font-family: "Quicksand", "Segoe UI";
+  --smallTextSize: 24px;
+  --textSize: 24px;
+  --mediumTextSize: 24px;
+  --titleSize: 27px;
+  --textWeight: 500;
+  --mediumWeight: 500;
+  --titleWeight: 500;
+  --titleFont: "Muli", "Arial";
+  --smallMargin: 5px;
+  --mediumMargin: 15px;
+  --largeMargin: 25px;
+  --borderSize: 1px;
+  --borderRadius: 25px;
+  --uiElementHeight: 50px;
+  --uiElementSmallHeight: 28px;
+  --headerHeight: 70px;
+  --iconsFontSize: 40px;
 }
 
 /* ---------------------------- CONTAINERS ---------------------------- */
@@ -101,10 +123,6 @@ html, body{
   outline-style: none; /* Internet Explorer  */
 }
 
-.page:not([scrollY='0']) #App{
-  background-color: red;
-}
-
 .page {
   /* GRID */
   grid-area: page;
@@ -118,7 +136,7 @@ html, body{
   }
 }
 
-@media (pointer: fine) { /* mouse input */
+@media (pointer: fine), (pointer: none) { /* mouse input */
   ::-webkit-scrollbar
   {
     width: 12px;  /* for vertical scrollbars */
@@ -147,7 +165,7 @@ h1 {
   color: var(--titleColor);
   font-family: var(--titleFont);
   font-weight: var(--titleWeight);
-  font-size: var(--mediumTextSize); /* --titleSize */
+  font-size: var(--titleSize); /* --titleSize */
   letter-spacing: 0.5px;
   /* SPACES */
   margin-top: auto;
@@ -182,6 +200,10 @@ p {
 
 .alertText{
   color: var(--alertColor);
+}
+
+.smallText{
+  font-size: var(--smallTextSize);
 }
 
 /* ---------------------------- BUTTONS ---------------------------- */
@@ -366,5 +388,5 @@ a {
 }
 
 .chessText{
-  font-family: "Segoe UI Symbol" ,Arial, Helvetica, sans-serif;
+  font-family: "Segoe UI Symbol" , Arial, Helvetica, sans-serif;
 }

@@ -21,6 +21,19 @@
     margin-right: auto;
 }
 
+.helpModalContent{ 
+    margin-top: 20vh;
+    height: 100%;
+    max-height: 60vh;
+    width: 100%;
+    background-color: var(--backColor);
+    display: grid;
+    max-width: 500px;
+    margin-left: auto;
+    margin-right: auto;
+    overflow-y: auto;
+}
+
 .insideModal{
     width: 100%;
     padding-top: calc(var(--mediumMargin) - var(--smallMargin));

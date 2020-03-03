@@ -380,6 +380,11 @@ class Board extends Component {
         // if the function exists try and see if this move is allowed(i don't mean illegal, if the move cannot be done for other reasons)
         move_allowed = this.props.is_move_allowed(this.props.op_index, this.state.json_moves, move_data, this.props.vari_index) // if var_index exists it looks only into it
       }
+      // works in COLOR_TRAINING_MODE
+      if(this.props.is_move_allowed_color){
+        move_allowed = this.props.is_move_allowed_color(this.props.trainColor, this.state.json_moves, move_data)
+      }
+
       if(move_allowed){ // allowed as default
         // MAKE THE MOVE
         let moves_list_after = await this.make_move(move_data)
@@ -430,12 +435,17 @@ class Board extends Component {
   }
 
   pc_move(op_index, json_moves, vari_index = undefined){
-    let move_data = this.props.get_pc_move_data(op_index, json_moves, vari_index)
+    let move_data = null
+    if(this.props.trainColor === undefined){
+      move_data = this.props.get_pc_move_data(op_index, json_moves, vari_index)
+    }else{ // works with COLOR_TRAINING_MODE
+      move_data = this.props.get_pc_move_data_color(this.props.trainColor, json_moves)
+    }
     
     if(move_data !== null){
       setTimeout(() => this.make_move(move_data), 500)
     }else{
-      alert("training finished")
+      alert("Computer: training finished")
     }
   }
 
@@ -724,7 +734,12 @@ class Board extends Component {
   async help_button_click(){
     if(!this.is_my_turn()) return false
     // get moves data [{from: "d2", to: "d4", san: "d4"}, ...]
-    let correct_moves_repetitive = this.props.get_correct_moves_data(this.props.op_index, this.state.json_moves, this.props.vari_index)
+    let correct_moves_repetitive = []
+    if(this.props.trainColor === undefined){
+      correct_moves_repetitive = this.props.get_correct_moves_data(this.props.op_index, this.state.json_moves, this.props.vari_index)
+    }else{ // works with COLOR_TRAINING_MODE
+      correct_moves_repetitive = this.props.get_correct_moves_data_color(this.props.trainColor, this.state.json_moves)
+    }
 
     // remove doubles ([d4, d4, e4] -> [d4, e4])
     let correct_moves_names = []
@@ -843,12 +858,21 @@ class Board extends Component {
          .replace(/>/g, "&gt;")
          .replace(/"/g, "&quot;")
          .replace(/'/g, "&#039;");
- }
+  }
 
-  comment(){
-    if (this.props.op_index === undefined || !this.state.json_moves) return ""
-    let text = this.props.getComment(this.props.op_index, this.state.json_moves)
-    text = this.escapeHtml(text)
+  make_san_nicer(san, color = "white"){
+    let new_san = san
+    new_san = new_san.replace("Q", this.getPieceText(color + "_queen"))
+    new_san = new_san.replace("K", this.getPieceText(color + "_king"))
+    new_san = new_san.replace("N", this.getPieceText(color + "_knight"))
+    new_san = new_san.replace("B", this.getPieceText(color + "_bishop"))
+    new_san = new_san.replace("R", this.getPieceText(color + "_rook"))
+    new_san = new_san.replace("P", this.getPieceText(color + "_pawn"))
+    return new_san
+  }
+
+  processComment(comment_text){
+    let text = this.escapeHtml(comment_text)
 
     const regex_bold = /\*(.*?)\*/gm;
     const subst_bold = `<b>$1</b>`;
@@ -858,7 +882,30 @@ class Board extends Component {
     const subst_line = `<u>$1</u>`;
     mark_down_text = mark_down_text ? mark_down_text.replace(regex_line, subst_line) : "";
 
-    return <span dangerouslySetInnerHTML={{__html: mark_down_text}} />
+    /* MAKE MOVES LOOK NICER */
+    mark_down_text = mark_down_text.replace("$$Q", this.getPieceText("black_queen"))
+    mark_down_text = mark_down_text.replace("$$K", this.getPieceText("black_king"))
+    mark_down_text = mark_down_text.replace("$$N", this.getPieceText("black_knight"))
+    mark_down_text = mark_down_text.replace("$$B", this.getPieceText("black_bishop"))
+    mark_down_text = mark_down_text.replace("$$R", this.getPieceText("black_rook"))
+    mark_down_text = mark_down_text.replace("$$P", this.getPieceText("black_pawn"))
+
+    mark_down_text = mark_down_text.replace("$Q", this.getPieceText("white_queen"))
+    mark_down_text = mark_down_text.replace("$K", this.getPieceText("white_king"))
+    mark_down_text = mark_down_text.replace("$N", this.getPieceText("white_knight"))
+    mark_down_text = mark_down_text.replace("$B", this.getPieceText("white_bishop"))
+    mark_down_text = mark_down_text.replace("$R", this.getPieceText("white_rook"))
+    mark_down_text = mark_down_text.replace("$P", this.getPieceText("white_pawn"))
+
+    return mark_down_text
+  }
+
+  comment(){
+    if (this.props.op_index === undefined || !this.state.json_moves) return ""
+    let text = this.props.getComment(this.props.op_index, this.state.json_moves)
+    text = this.processComment(text)
+
+    return <span dangerouslySetInnerHTML={{__html: text}} />
   }
 
   closeVariNameModal(){
@@ -908,6 +955,37 @@ class Board extends Component {
         return blackKnightSVG
       case "black_pawn":
         return blackPawnSVG
+      default:
+        return undefined
+    }
+  }
+
+  getPieceText(name) {
+    switch (name) {
+      case "white_king":
+        return "♔"
+      case "white_queen":
+        return "♕"
+      case "white_rook":
+        return "♖"
+      case "white_bishop":
+        return "♗"
+      case "white_knight":
+        return "♘"
+      case "white_pawn":
+        return "♙"
+      case "black_king":
+        return "♚"
+      case "black_queen":
+        return "♛"
+      case "black_rook":
+        return "♜"
+      case "black_bishop":
+        return "♝"
+      case "black_knight":
+        return "♞"
+      case "black_pawn":
+        return "♟"
       default:
         return undefined
     }

@@ -18,9 +18,9 @@ class VariItem extends Component {
       >
         <Link to={"/openings/" + this.props.op_index + "/" + this.props.vari_index} className="variItemContent">
           <h2>{this.props.vari.vari_name}</h2>
-          <p>
+          {<p className="smallText">
             {this.props.vari.moves.length} <Translator text={this.props.vari.moves.length === 1 ? "move" : "moves"} />
-          </p>
+          </p>}
         </Link>
       </div>
     )

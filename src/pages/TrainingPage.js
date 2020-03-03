@@ -3,7 +3,7 @@ import Header from "../components/Header"
 import Board from "../components/Board"
 import Translator from "../components/Translator"
 
-class VariationPage extends Component {
+class TrainingPage extends Component {
   constructor(props) {
     super(props)
 
@@ -36,4 +36,4 @@ class VariationPage extends Component {
   }
 }
 
-export default VariationPage
+export default TrainingPage

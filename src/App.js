@@ -11,6 +11,7 @@ import LoginPage from "./pages/LoginPage"
 import NewVariPage from "./pages/NewVariPage"
 import TrainingPage from "./pages/TrainingPage"
 import UserPage from "./pages/UserPage"
+import ColorTrainingPage from "./pages/ColorTrainingPage"
 
 import "./styles/App.css" // css by CLASSES + MAIN COMPONENTS
 import "./styles/Elements.css" // css by ID + SECONDARY COMPONENTS
@@ -59,6 +60,9 @@ class App extends Component {
     this.getComment = this.getComment.bind(this)
     this.get_vari_next_move_data = this.get_vari_next_move_data.bind(this)
     this.serverRequest = this.serverRequest.bind(this)
+    this.get_correct_moves_data_color = this.get_correct_moves_data_color.bind(this)
+    this.get_pc_move_data_color = this.get_pc_move_data_color.bind(this)
+    this.is_move_allowed_color = this.is_move_allowed_color.bind(this)
   }
 
   componentDidMount(){
@@ -352,6 +356,47 @@ class App extends Component {
     return is_allowed
   }
 
+  is_move_allowed_color(color, json_moves, move_data){
+    let is_allowed = false
+    let finished_training = true
+    
+    for(let op_index = 0; op_index < this.state.user_ops.length; op_index++){
+      let op = this.state.user_ops[op_index]
+      
+      if(op.op_color === color && !op.archived){
+        // look into all variations(not archived)
+        for(let vari_index = 0; vari_index<op.variations.length; vari_index++){
+          // loop through all variations 
+          let vari = op.variations[vari_index]
+          
+          if(vari.moves.length > json_moves.length && !vari.archived){ // this variation is long enougth and not archived
+            let first_moves = vari.moves.slice(0, json_moves.length)
+            // is the variation compatible with the already done moves?
+            if(JSON.stringify(first_moves) === JSON.stringify(json_moves)){
+              finished_training = false // there is at least one move to do
+              let vari_next_move = vari.moves[json_moves.length] // take the next move
+    
+              // is it the move I'm going to do?
+              if(vari_next_move.from === move_data.from && vari_next_move.to === move_data.to && vari_next_move.promotion === move_data.promotion){
+                is_allowed = true
+                break;
+              }
+            }
+    
+          }
+        }
+      }
+      if(is_allowed){
+        break;
+      }
+    }
+    if(finished_training){
+      alert("training finished") // TODO
+      return false
+    }
+    return is_allowed
+  }
+
   get_correct_moves_data(op_index, json_moves, vari_index = undefined){
     if(vari_index !== undefined){
       let correct_move = this.get_vari_next_move_data(op_index, vari_index, json_moves)
@@ -377,12 +422,47 @@ class App extends Component {
     return correct_moves
   }
 
+  get_correct_moves_data_color(color, json_moves){
+    let correct_moves = []
+    console.log(JSON.stringify(this.state))
+    for(let op_index = 0; op_index < this.state.user_ops.length; op_index++){
+      let op = this.state.user_ops[op_index]
+      if(op.op_color === color && !op.archived){
+        for(let vari_index = 0; vari_index<op.variations.length; vari_index++){
+          // loop through all variations 
+          let vari = op.variations[vari_index]
+          if(vari.moves.length > json_moves.length && !vari.archived){ // this variation is long enougth and not archived
+            let first_moves = vari.moves.slice(0, json_moves.length)
+    
+            // is the variation compatible with the already done moves?
+            if(JSON.stringify(first_moves) === JSON.stringify(json_moves)){
+              let vari_next_move = vari.moves[json_moves.length] // take the next move
+              correct_moves.push(vari_next_move) // add the move to the list
+            }
+    
+          }
+        }
+      }
+    }
+    return correct_moves
+  }
+
   get_pc_move_data(op_index, json_moves, vari_index = undefined){
     if(vari_index !== undefined){
       let vari_next_move = this.get_vari_next_move_data(op_index, vari_index, json_moves)
       return vari_next_move
     }
     let correct_moves = this.get_correct_moves_data(op_index, json_moves)
+    // return false if there is no correct move
+    if (correct_moves.length === 0) return null
+    // choose which move to do
+    let random = Math.round(Math.random() * (correct_moves.length - 1));
+    return correct_moves[random]
+  }  
+  
+  get_pc_move_data_color(color, json_moves){
+    let correct_moves = this.get_correct_moves_data_color(color, json_moves)
+    
     // return false if there is no correct move
     if (correct_moves.length === 0) return null
     // choose which move to do
@@ -466,6 +546,15 @@ class App extends Component {
                                                 username={this.state.username} 
                                                 language={this.state.language} 
                                               />
+    const colorTrainingPage = ({ match, history }) =>  <ColorTrainingPage 
+                                                    history={history} 
+                                                    match={match} 
+                                                    ops={this.state.user_ops}
+                                                    is_move_allowed_color={this.is_move_allowed_color}
+                                                    get_pc_move_data_color={this.get_pc_move_data_color}
+                                                    get_correct_moves_data_color={this.get_correct_moves_data_color}
+                                                    getComment={this.getComment}
+                                                  />
     const redirectToLogin = () => <Redirect to="/login" />
     const redirectToHome = () => <Redirect to="/" />
     const needLogin = (!this.state.username && !this.state.loadingVisible)
@@ -488,6 +577,7 @@ class App extends Component {
               <Route path="/newVariation/:op_index" render={newVariPage} />
               <Route path="/openings/:op_index/:vari_index" render={variPage} />
               <Route path="/openings/:op_index" render={opPage} />
+              <Route path="/training/fullcolor/:color_number" render={colorTrainingPage} />
               <Route path="/training/:op_index" render={trainingPage} />
               <Route path="/" render={() => <p>Error 404! Page not found</p>} />
             </Switch>
