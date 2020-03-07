@@ -3,7 +3,6 @@ import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-d
 
 import OpeningPage from "./pages/OpeningPage"
 import CreateVariPage from "./pages/CreateVariPage"
-import RevisePage from "./pages/RevisePage"
 import OpsListPage from "./pages/OpsListPage"
 import VariationPage from "./pages/VariationPage"
 import NewOpPage from "./pages/NewOpPage"
@@ -63,6 +62,8 @@ class App extends Component {
     this.get_correct_moves_data_color = this.get_correct_moves_data_color.bind(this)
     this.get_pc_move_data_color = this.get_pc_move_data_color.bind(this)
     this.is_move_allowed_color = this.is_move_allowed_color.bind(this)
+    this.switchDrawBoardPDF = this.switchDrawBoardPDF.bind(this)
+    this.getDrawBoardPDF = this.getDrawBoardPDF.bind(this)
   }
 
   componentDidMount(){
@@ -172,6 +173,7 @@ class App extends Component {
       op_color: op_color,
       variations: [],
       comments: {},
+      pdfBoards: {},
       archived: false,
     }
   }
@@ -309,6 +311,29 @@ class App extends Component {
       str += elem.san + "|"
     });
     return this.state.user_ops[op_index].comments[str]    
+  }
+
+  switchDrawBoardPDF(op_index, json_moves){
+    this.setState(old => {
+      let new_user_ops = old.user_ops
+      let str = "|"
+      json_moves.forEach(elem => {
+        str += elem.san + "|"
+      });
+      new_user_ops[op_index].pdfBoards[str] = !new_user_ops[op_index].pdfBoards[str]
+
+      let value = new_user_ops[op_index].pdfBoards[str]
+      this.serverRequest("POST", "/setDrawBoardPDF/" + op_index + "/" + str, {value})
+      return {user_ops: new_user_ops}
+    }) 
+  }
+
+  getDrawBoardPDF(op_index, json_moves){
+    let str = "|"
+    json_moves.forEach(elem => {
+      str += elem.san + "|"
+    });
+    return this.state.user_ops[op_index].pdfBoards[str]    
   }
 
   /* --------------------------- TRAINING --------------------------- */
@@ -506,6 +531,8 @@ class App extends Component {
                                                     get_pc_move_data={this.get_pc_move_data}
                                                     getComment={this.getComment}
                                                     editComment={this.editComment}
+                                                    switchDrawBoardPDF={this.switchDrawBoardPDF}
+                                                    getDrawBoardPDF={this.getDrawBoardPDF}
                                                     get_correct_moves_data={this.get_correct_moves_data}
                                                   />
     const newVariPage = ({ match, history }) => <NewVariPage 
@@ -515,16 +542,10 @@ class App extends Component {
                                                   createVari={this.createVari}
                                                   getComment={this.getComment}
                                                   editComment={this.editComment}
+                                                  switchDrawBoardPDF={this.switchDrawBoardPDF}
+                                                  getDrawBoardPDF={this.getDrawBoardPDF}
                                                   get_correct_moves_data={this.get_correct_moves_data}
                                                 />
-    const revisePage = ({ match, history }) =>  <RevisePage 
-                                              ops={this.state.user_ops} 
-                                              history={history} 
-                                              match={match} 
-                                              createVari={this.createVari}
-                                              getComment={this.getComment}
-                                              editComment={this.editComment}
-                                            />
     const variPage = ({ match, history }) =>  <VariationPage 
                                               ops={this.state.user_ops} 
                                               history={history} 
@@ -532,6 +553,8 @@ class App extends Component {
                                               createVari={this.createVari}
                                               getComment={this.getComment}
                                               editComment={this.editComment}
+                                              switchDrawBoardPDF={this.switchDrawBoardPDF}
+                                              getDrawBoardPDF={this.getDrawBoardPDF}
                                               get_vari_next_move_data={this.get_vari_next_move_data}
                                               get_pc_move_data={this.get_pc_move_data}
                                               is_move_allowed={this.is_move_allowed}
@@ -573,7 +596,6 @@ class App extends Component {
               <Route path="/profile" render={needLogin ? redirectToLogin : userPage} exact/>
               <Route path="/newOpening" render={newOpPage} />
               <Route path="/createVariation" render={CreateVariPage} />
-              <Route path="/revise/:op_index" render={revisePage} />
               <Route path="/newVariation/:op_index" render={newVariPage} />
               <Route path="/openings/:op_index/:vari_index" render={variPage} />
               <Route path="/openings/:op_index" render={opPage} />

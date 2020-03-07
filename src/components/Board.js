@@ -241,6 +241,8 @@ class Board extends Component {
           visible={this.state.commentModalVisible} 
           close={() => this.setState({commentModalVisible: false})}
           editComment={this.props.editComment}
+          switchDrawBoardPDF={this.props.switchDrawBoardPDF}
+          getDrawBoardPDF={this.props.getDrawBoardPDF}
           getComment={this.props.getComment}
           op_index={this.props.op_index}
           json_moves={this.state.json_moves}

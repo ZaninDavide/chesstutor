@@ -160,51 +160,72 @@ html, body{
 
 /* ---------------------------- TEXT LABELS ---------------------------- */
 
-h1 {
-  /* TEXT */
-  color: var(--titleColor);
-  font-family: var(--titleFont);
-  font-weight: var(--titleWeight);
-  font-size: var(--titleSize); /* --titleSize */
-  letter-spacing: 0.5px;
-  /* SPACES */
-  margin-top: auto;
-  margin-bottom: auto;
-  margin-left: var(--smallMargin);
-  margin-right: var(--smallMargin);
+@media not print{
+
+  body{
+    background-color: #1d1d1b;
+  }
+
+  h1 {
+    /* TEXT */
+    color: var(--titleColor);
+    font-family: var(--titleFont);
+    font-weight: var(--titleWeight);
+    font-size: var(--titleSize); /* --titleSize */
+    letter-spacing: 0.5px;
+    /* SPACES */
+    margin-top: auto;
+    margin-bottom: auto;
+    margin-left: var(--smallMargin);
+    margin-right: var(--smallMargin);
+  }
+  
+  h2 {
+    /* TEXT */
+    color: var(--textColorHighlighted);
+    font-weight: var(--mediumWeight);
+    font-size: var(--mediumTextSize);
+    /* SPACES */
+    margin-top: var(--smallMargin);
+    margin-bottom: var(--smallMargin);
+    margin-left: var(--mediumMargin);
+    margin-right: var(--mediumMargin);
+  }
+  
+  p {
+    /* TEXT */
+    color: var(--textColor);
+    font-weight: var(--textWeight);
+    font-size: var(--textSize);
+    /* SPACES */
+    margin-top: var(--smallMargin);
+    margin-bottom: var(--smallMargin);
+    margin-left: var(--mediumMargin);
+    margin-right: var(--mediumMargin);
+  }
+  
+  .alertText{
+    color: var(--alertColor);
+  }
+  
+  .smallText{
+    font-size: var(--smallTextSize);
+  }
+
+  .contentPDF{
+    display: none;
+  }
 }
 
-h2 {
-  /* TEXT */
-  color: var(--textColorHighlighted);
-  font-weight: var(--mediumWeight);
-  font-size: var(--mediumTextSize);
-  /* SPACES */
-  margin-top: var(--smallMargin);
-  margin-bottom: var(--smallMargin);
-  margin-left: var(--mediumMargin);
-  margin-right: var(--mediumMargin);
-}
+/* ---------------------------- PRINT ---------------------------- */
 
-p {
-  /* TEXT */
-  color: var(--textColor);
-  font-weight: var(--textWeight);
-  font-size: var(--textSize);
-  /* SPACES */
-  margin-top: var(--smallMargin);
-  margin-bottom: var(--smallMargin);
-  margin-left: var(--mediumMargin);
-  margin-right: var(--mediumMargin);
-}
-
-.alertText{
-  color: var(--alertColor);
-}
-
-.smallText{
-  font-size: var(--smallTextSize);
-}
+@media print{
+  #sheet {
+    column-count: 2;
+    margin: 10mm;
+    /*font-size: 23px;*/
+  }
+} 
 
 /* ---------------------------- BUTTONS ---------------------------- */
 

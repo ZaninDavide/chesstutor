@@ -7,6 +7,8 @@ import Modal from "../components/Modal"
 
 import no_openings_svg from "../files/no_openings.svg"
 
+import generatePDF from "../generatePDF/generatePDF.js"
+
 class OpsListPage extends Component {
   constructor(props){
     super(props)
@@ -103,6 +105,28 @@ class OpsListPage extends Component {
     this.props.renameOp(this.state.hMenuOpIndex, this.state.opNewName)
   }
 
+  printPDF_old(html){
+    document.getElementById('App').style.display = "none";
+    let content = document.createElement("div")
+    content.classList.add("contentPDF");
+    content.innerHTML = html
+    document.getElementById('App').before(content);
+    window.print();
+    content.parentNode.removeChild(content);
+    document.getElementById('App').style.display = "";
+  }
+
+  printPDF(html){
+    document.getElementById('App').style.display = "none";
+    let content = document.createElement("div")
+    content.classList.add("contentPDF");
+    content.innerHTML = html
+    document.getElementById('App').before(content);
+    window.print();
+    content.parentNode.removeChild(content);
+    document.getElementById('App').style.display = "";
+  }
+
   no_openings_style(len){
     if(len > 0) return {}
     return {
@@ -132,6 +156,16 @@ class OpsListPage extends Component {
           {/*<button className="simpleButton hMenuButton">emoji_events</button>*/}
           {/* SHARE BUTTON */}
           {/*<button className="simpleButton hMenuButton">share</button>*/}
+          {/* PRINT BUTTON */}
+          <button 
+            className="simpleButton hMenuButton" 
+            onClick={() => {
+              this.hMenuClose();
+              this.printPDF(generatePDF(this.props.ops[this.state.hMenuOpIndex]))
+            }}
+          >
+            print
+          </button>
           {/* ARCHIVE BUTTON */}
           <button className="simpleButton hMenuButton" 
             onClick={() => {this.hMenuClose(); this.props.switchArchivedOpening(this.state.hMenuOpIndex);}}

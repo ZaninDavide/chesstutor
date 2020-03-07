@@ -30,6 +30,8 @@ class TrainingPage extends Component {
           getComment={this.props.getComment}
           allowCommentEdit={false}
           get_correct_moves_data={this.props.get_correct_moves_data}
+          switchDrawBoardPDF={this.props.switchDrawBoardPDF}
+          getDrawBoardPDF={this.props.getDrawBoardPDF}
         />
       </React.Fragment>
     )
