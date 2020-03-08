@@ -2,32 +2,32 @@ import React, { Component } from "react"
 //import Chess from "chess.js"
 import Chess from "../chessjs-chesstutor/chess.js"
 
-// import boardSVG from "../files/chessboard.svg"
-import darkBoardSVG from "../files/chessboard_dark.svg"
-import darkBoardRotatedSVG from "../files/chessboard_dark_rotated.svg"
-import whiteKingSVG from "../files/white_king.svg"
-import whiteQueenSVG from "../files/white_queen.svg"
-import whiteRookSVG from "../files/white_rook.svg"
-import whiteKnightSVG from "../files/white_knight.svg"
-import whitePawnSVG from "../files/white_pawn.svg"
-import whiteBishopSVG from "../files/white_bishop.svg"
-import blackKingSVG from "../files/black_king.svg"
-import blackQueenSVG from "../files/black_queen.svg"
-import blackRookSVG from "../files/black_rook.svg"
-import blackKnightSVG from "../files/black_knight.svg"
-import blackPawnSVG from "../files/black_pawn.svg"
-import blackBishopSVG from "../files/black_bishop.svg"
-// import selectionSVG from "../files/selection.svg"
-
-import sound_capture from "../files/sound_capture.mp3"
-import sound_move from "../files/sound_move.mp3"
-import sound_error from "../files/sound_error.mp3"
-
 import Modal from "../components/Modal"
 import Translator from "../components/Translator"
 import PromotionModal from "../components/PromotionModal"
 import CommentModal from "../components/CommentModal"
 import HelpModal from "../components/HelpModal"
+
+// import boardSVG from "../files/chessboard.svg"
+const darkBoardSVG = "/files/chessboard_dark.svg"
+const darkBoardRotatedSVG = "/files/chessboard_dark_rotated.svg"
+const whiteKingSVG = "/files/white_king.svg"
+const whiteQueenSVG = "/files/white_queen.svg"
+const whiteRookSVG = "/files/white_rook.svg"
+const whiteKnightSVG = "/files/white_knight.svg"
+const whitePawnSVG = "/files/white_pawn.svg"
+const whiteBishopSVG = "/files/white_bishop.svg"
+const blackKingSVG = "/files/black_king.svg"
+const blackQueenSVG = "/files/black_queen.svg"
+const blackRookSVG = "/files/black_rook.svg"
+const blackKnightSVG = "/files/black_knight.svg"
+const blackPawnSVG = "/files/black_pawn.svg"
+const blackBishopSVG = "/files/black_bishop.svg"
+// import selectionSVG from "../files/selection.svg"
+
+const sound_capture = "/files/sound_capture.mp3"
+const sound_move = "/files/sound_move.mp3"
+const sound_error = "/files/sound_error.mp3"
 
 const cells = {
   "1": "700",
@@ -853,7 +853,7 @@ class Board extends Component {
   }
 
   escapeHtml(text) {
-    if(text === undefined) return ""
+    if(!text) return ""
     return text
          .replace(/&/g, "&amp;")
          .replace(/</g, "&lt;")

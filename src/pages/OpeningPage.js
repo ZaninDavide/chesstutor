@@ -5,8 +5,6 @@ import Translator from "../components/Translator"
 import HangingMenu from "../components/HangingMenu"
 import Modal from "../components/Modal"
 
-import no_variations_svg from "../files/no_variations.svg"
-
 class OpeningPage extends Component {
   constructor(props) {
     super(props)
@@ -113,7 +111,7 @@ class OpeningPage extends Component {
   no_variations_style(len){
     if(len > 0) return {}
     return {
-      background: `url(${no_variations_svg})`,
+      background: `url("/files/no_variations.svg")`,
       backgroundRepeat: "no-repeat",
       backgroundSize: "contain",
       backgroundPosition: "center"

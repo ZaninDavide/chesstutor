@@ -273,3 +273,7 @@
   display: table-cell;
   vertical-align: bottom;
 }
+
+#opsSeparatorWhite, #opsSeparatorBlack{
+  -webkit-tap-highlight-color: var(--makeDarkerColor)
+}

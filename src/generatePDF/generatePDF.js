@@ -1,10 +1,12 @@
 import Chess from "../chessjs-chesstutor/chess.js"
+const printBoardSVG = "/files/chessboard_print.svg"
 
 let start = (text_size = "large", title_size = "Large") => `
 <div id="sheet">
 `
 
 let end = () => `
+<p id="watermarkPDF">Made with chessUp - Repertoire trainer</p>
 </div>
 `
 
@@ -93,24 +95,29 @@ let intro = (op_name, intro_text) => {
     return `<h2 id="introTitle">${op_name}</h2><p id="introText">${processComment(intro_text)}</p>`
 }
 
-let variTitle = vari_name => `<h3 id="variTitle">${vari_name}</h3>`
+let variTitle = vari_name => `<h3 class="variTitle">${vari_name}</h3>`
 
-let line_moves = (moves_array, last_index) => {
+let line_moves = (moves_array, last_index, discussed_count) => {
     let index = last_index - (moves_array.length - 1)
     let text = ""
 
     moves_array.forEach((move, offset) => {
+        if(discussed_count === offset){
+            text += "<b>"
+        }
         let final_index = index + offset
         if(final_index % 2 === 0){
             text += (Math.floor(final_index / 2) + 1).toString() + ". "
         }
-        text += nicer_san(move.san) + " "
+        text += nicer_san(move.san) + " " 
     })
 
-    return `<h4 id="lineMoves">${text}</h4>`
-}
+    if(discussed_count !== moves_array.length){
+        text += "</b>"
+    }
 
-let fenBoard = fen => `<div>fen</div>`
+    return `<p class="lineMoves">${text}</p>`
+}
 
 let boardFromMoveName = move_name => {
     // generate fen
@@ -120,11 +127,12 @@ let boardFromMoveName = move_name => {
             game.move(san)
         }
     })
-    return fenBoard(game.fen())
+    let boardHTML = `<div class='boardContainerPDF'><img class='boardSVG_PDF' src='${printBoardSVG}'/></div>`
+    return boardHTML
 }
 
 let comment = text => {
-    return `<p id="comment">${processComment(text)}</p>` // \subsubsection*{\large{1. e4 - c5 2. \knight f6}}
+    return `<p class="commentPDF">${processComment(text)}</p>` // \subsubsection*{\large{1. e4 - c5 2. \knight f6}}
 }
 
 let moveName = json_moves => {
@@ -146,56 +154,65 @@ let generatePDF = function (op, settings){
     html += intro(op.op_name, op.comments["|"] || "")
     
     op.variations.forEach((vari, id) => {
-        // add the title if the variation
-        blocks.push([
-            "variTitle", vari.vari_name
-        ])
+        if(!vari.archived){
+            // add the title if the variation
+            blocks.push([
+                "variTitle", vari.vari_name
+            ])
 
-        let one_line_moves = []
-        
-        vari.moves.forEach((move, index) => {
-            // add this move to the stack of moves to draw on one line
-            one_line_moves.push(move)
+            let one_line_moves = []
+            let one_line_moves_discussed_count = 0
+            
+            vari.moves.forEach((move, index) => {
+                // add this move to the stack of moves to draw on one line
+                one_line_moves.push(move)
 
-            let move_name = moveName(vari.moves.slice(0, index + 1))
-            if(movesAdded.indexOf(move_name) === -1){ // if move not discussed already
-                // sign this as already discussed move
-                movesAdded.push(move_name)
-                if(op.pdfBoards[move_name]){ 
-                    // stop stacking moves on one line
-                    blocks.push([
-                        "line_moves", one_line_moves, index
-                    ])
-                    // restart stacking moves on one line
-                    one_line_moves = []
-                    // draw this board position here
-                    blocks.push([
-                        "board", move_name
-                    ])
-                }
-                if(op.comments[move_name]){
-                    // stop stacking moves on one line
-                    if(one_line_moves.length > 0){
+                let move_name = moveName(vari.moves.slice(0, index + 1))
+                if(movesAdded.indexOf(move_name) === -1){ // if move not discussed already
+                    // sign this as already discussed move
+                    movesAdded.push(move_name)
+                    if(op.pdfBoards[move_name]){ 
+                        // stop stacking moves on one line
                         blocks.push([
-                            "line_moves", one_line_moves, index
+                            "line_moves", one_line_moves, index, one_line_moves_discussed_count
                         ])
                         // restart stacking moves on one line
                         one_line_moves = []
+                        one_line_moves_discussed_count = 0
+                        // draw this board position here
+                        blocks.push([
+                            "board", move_name
+                        ])
                     }
-                    // write this comment here
-                    blocks.push([
-                        "comment", move_name
-                    ])
+                    if(op.comments[move_name]){
+                        // stop stacking moves on one line
+                        if(one_line_moves.length > 0){
+                            blocks.push([
+                                "line_moves", one_line_moves, index, one_line_moves_discussed_count
+                            ])
+                            // restart stacking moves on one line
+                            one_line_moves = []
+                            one_line_moves_discussed_count = 0
+                        }
+                        // write this comment here
+                        blocks.push([
+                            "comment", move_name
+                        ])
+                    }
+                }else{
+                    // this move was already discussed
+                    one_line_moves_discussed_count += 1
                 }
-            }
-        })
+            })
             
-        if(one_line_moves.length > 0){
-            blocks.push([
-                "line_moves", one_line_moves, vari.moves.length - 1
-            ])
-            // restart stacking moves on one line
-            one_line_moves = []
+            if(one_line_moves.length > 0){
+                blocks.push([
+                    "line_moves", one_line_moves, vari.moves.length - 1, one_line_moves_discussed_count
+                ])
+                // restart stacking moves on one line
+                one_line_moves = []
+                one_line_moves_discussed_count = 0
+            }
         }
     })
 
@@ -205,7 +222,7 @@ let generatePDF = function (op, settings){
             html += variTitle(b[1]) 
         }
         if(b[0] === "line_moves"){
-            html += line_moves(b[1], b[2]) 
+            html += line_moves(b[1], b[2], b[3]) 
         }
         if(b[0] === "board"){
             html += boardFromMoveName(b[1]) 

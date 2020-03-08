@@ -5,8 +5,6 @@ import Translator from "../components/Translator"
 import HangingMenu from "../components/HangingMenu"
 import Modal from "../components/Modal"
 
-import no_openings_svg from "../files/no_openings.svg"
-
 import generatePDF from "../generatePDF/generatePDF.js"
 
 class OpsListPage extends Component {
@@ -105,32 +103,21 @@ class OpsListPage extends Component {
     this.props.renameOp(this.state.hMenuOpIndex, this.state.opNewName)
   }
 
-  printPDF_old(html){
-    document.getElementById('App').style.display = "none";
-    let content = document.createElement("div")
-    content.classList.add("contentPDF");
-    content.innerHTML = html
-    document.getElementById('App').before(content);
-    window.print();
-    content.parentNode.removeChild(content);
-    document.getElementById('App').style.display = "";
-  }
-
   printPDF(html){
-    document.getElementById('App').style.display = "none";
-    let content = document.createElement("div")
-    content.classList.add("contentPDF");
+    let content = document.getElementById("contentPDF")
+    if(!content){
+      content = document.createElement("div")
+      content.id = "contentPDF"
+      document.getElementById('App').before(content);
+    }
     content.innerHTML = html
-    document.getElementById('App').before(content);
     window.print();
-    content.parentNode.removeChild(content);
-    document.getElementById('App').style.display = "";
   }
 
   no_openings_style(len){
     if(len > 0) return {}
     return {
-      background: `url(${no_openings_svg})`,
+      background: `url("/files/no_openings.svg")`,
       backgroundRepeat: "no-repeat",
       backgroundSize: "contain",
       backgroundPosition: "center"
