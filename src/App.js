@@ -449,7 +449,6 @@ class App extends Component {
 
   get_correct_moves_data_color(color, json_moves){
     let correct_moves = []
-    console.log(JSON.stringify(this.state))
     for(let op_index = 0; op_index < this.state.user_ops.length; op_index++){
       let op = this.state.user_ops[op_index]
       if(op.op_color === color && !op.archived){

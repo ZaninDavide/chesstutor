@@ -242,22 +242,35 @@
     text-align: justify;
   }
 
-  #sheet .lineMoves{
-    /*font-weight: bold;*/
-  }
+  /*#sheet .lineMoves{
+    font-weight: bold;
+  }*/
 
   #sheet .boardContainerPDF{
     width: 100%;
     text-align: center;
   }
 
+  #sheet .boardGridPDF{
+    position: relative;
+  }
+
   #sheet .boardSVG_PDF{
     width: 60mm;
+  }
+
+  #sheet .piecePDF{
+    position: absolute;
+    width: calc(60mm / 8);
   }
 
   #sheet #watermarkPDF{
     font-size: 10px;
     text-align: right;
+  }
+
+  #sheet .inlineCommentPDF{
+    font-weight: normal;
   }
 } 
 

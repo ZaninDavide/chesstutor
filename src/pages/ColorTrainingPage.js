@@ -4,16 +4,16 @@ import Board from "../components/Board"
 import Translator from "../components/Translator"
 
 class ColorTrainingPage extends Component {
-  constructor(props) {
+  /*constructor(props) {
     super(props)
-  }
+  }*/
 
   render() {
     const color = parseInt(this.props.match.params.color_number) === 0 ? "black" : "white"
     
     return (
       <React.Fragment>
-        <Header mainButtonText="keyboard_backspace" goTo={"/"} title={<React.Fragment><Translator text={"Training"} />{": "}<Translator text={color} />{" "}<Translator text={"openings"} /></React.Fragment>} />
+        <Header mainButtonText="keyboard_backspace" goTo={"/"} title={<React.Fragment><Translator text={"Training"} />{": "}<Translator text={color + " openings"} /></React.Fragment>} />
         <Board 
           key="colorTrainingBoard"
           history={this.props.history} 

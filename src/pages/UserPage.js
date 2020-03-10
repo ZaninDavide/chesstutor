@@ -3,9 +3,9 @@ import Header from "../components/Header"
 import Translator from "../components/Translator"
 
 class userPage extends Component {
-  constructor(props){
+  /*constructor(props){
     super(props)
-  }
+  }*/
 
   render() {
     if(!this.props.username){

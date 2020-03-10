@@ -35,6 +35,8 @@ const languages = {
     "to:": "to:",
     "Name": "Name",
     "Language": "Language",
+    "white openings": "white openings",
+    "black openings": "black openings",
   },
   ita: {
     Openings: "Aperture",
@@ -69,6 +71,8 @@ const languages = {
     "to:": "come:",
     "Name": "Nome",
     "Language": "Lingua(Language)",
+    "white openings": "aperture del bianco",
+    "black openings": "aperture del nero",
   }
 }
 

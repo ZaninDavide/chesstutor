@@ -1,5 +1,20 @@
 import Chess from "../chessjs-chesstutor/chess.js"
 const printBoardSVG = "/files/chessboard_print.svg"
+// const printBoardRotatedSVG = "/files/chessboard_print_rotated.svg"
+const whiteKingSVG = "/files/white_king.svg"
+const whiteQueenSVG = "/files/white_queen.svg"
+const whiteRookSVG = "/files/white_rook.svg"
+const whiteKnightSVG = "/files/white_knight.svg"
+const whitePawnSVG = "/files/white_pawn.svg"
+const whiteBishopSVG = "/files/white_bishop.svg"
+const blackKingSVG = "/files/black_king.svg"
+const blackQueenSVG = "/files/black_queen.svg"
+const blackRookSVG = "/files/black_rook.svg"
+const blackKnightSVG = "/files/black_knight.svg"
+const blackPawnSVG = "/files/black_pawn.svg"
+const blackBishopSVG = "/files/black_bishop.svg"
+
+let max_inline_comment_length = 35
 
 let start = (text_size = "large", title_size = "Large") => `
 <div id="sheet">
@@ -36,6 +51,52 @@ let getPieceText = name => {
         return "♞"
       case "black_pawn":
         return "♟"
+      default:
+        return undefined
+    }
+}
+
+const piecesName = {
+    K: "white_king",
+    Q: "white_queen",
+    R: "white_rook",
+    N: "white_knight",
+    B: "white_bishop",
+    P: "white_pawn",
+    k: "black_king",
+    q: "black_queen",
+    r: "black_rook",
+    n: "black_knight",
+    b: "black_bishop",
+    p: "black_pawn"
+}
+
+let getPieceSrc = (name) => {
+    switch (name) {
+      case "white_king":
+        return whiteKingSVG
+      case "white_queen":
+        return whiteQueenSVG
+      case "white_rook":
+        return whiteRookSVG
+      case "white_bishop":
+        return whiteBishopSVG
+      case "white_knight":
+        return whiteKnightSVG
+      case "white_pawn":
+        return whitePawnSVG
+      case "black_king":
+        return blackKingSVG
+      case "black_queen":
+        return blackQueenSVG
+      case "black_rook":
+        return blackRookSVG
+      case "black_bishop":
+        return blackBishopSVG
+      case "black_knight":
+        return blackKnightSVG
+      case "black_pawn":
+        return blackPawnSVG
       default:
         return undefined
     }
@@ -97,19 +158,38 @@ let intro = (op_name, intro_text) => {
 
 let variTitle = vari_name => `<h3 class="variTitle">${vari_name}</h3>`
 
+let canCommentBeInline = comment => {
+    if(comment){
+        return comment.length <= max_inline_comment_length && comment.indexOf("\n") === -1
+    }else{
+        return false
+    }
+}
+
 let line_moves = (moves_array, last_index, discussed_count) => {
     let index = last_index - (moves_array.length - 1)
     let text = ""
 
-    moves_array.forEach((move, offset) => {
+    let discussed = true
+
+    moves_array.forEach((cur, offset) => {
+        let move = cur[0]
+        let comment = cur[1]
         if(discussed_count === offset){
             text += "<b>"
+            discussed = false
         }
         let final_index = index + offset
         if(final_index % 2 === 0){
             text += (Math.floor(final_index / 2) + 1).toString() + ". "
         }
         text += nicer_san(move.san) + " " 
+        // inline comments
+        if(!discussed && comment){
+            if(canCommentBeInline(comment)){
+                text += "<i class='inlineCommentPDF'>" + comment + "</i>&nbsp;"
+            }
+        }
     })
 
     if(discussed_count !== moves_array.length){
@@ -119,7 +199,7 @@ let line_moves = (moves_array, last_index, discussed_count) => {
     return `<p class="lineMoves">${text}</p>`
 }
 
-let boardFromMoveName = move_name => {
+let boardFromMoveName = (move_name, op_color) => {
     // generate fen
     let game = new Chess()
     move_name.split("|").forEach(san => {
@@ -127,7 +207,23 @@ let boardFromMoveName = move_name => {
             game.move(san)
         }
     })
-    let boardHTML = `<div class='boardContainerPDF'><img class='boardSVG_PDF' src='${printBoardSVG}'/></div>`
+    let piecesHTML = ""   
+    let board = game.board()
+    for (let line = 0; line < 8; line++) {
+        for (let collumn = 0; collumn < 8; collumn++) {
+        // get the piece from the array
+        let piece = board[line][collumn]
+            if (piece !== null) {
+                // if the cell is not empty
+                let type = piecesName[piece.color === "b" ? piece.type : piece.type.toUpperCase()] // get the type in this form: "white_king"
+                let px = op_color === "black" ? ((7 - collumn) * 100) : (collumn * 100)
+                let py = op_color === "black" ? ((7 - line) * 100) : (line * 100)
+                piecesHTML += `<img src="${getPieceSrc(type)}" class="piecePDF" style="transform: translate(${px}%, ${py}%" />` //${cellCoords[(collumn * 100).toString() + "x"] + cellCoords[(line * 100).toString() + "y"]}
+            }
+        }
+    }
+
+    let boardHTML = `<div class='boardContainerPDF'><div class="boardGridPDF">${piecesHTML}<img class='boardSVG_PDF' src='${printBoardSVG}'/></div></div>`
     return boardHTML
 }
 
@@ -164,10 +260,10 @@ let generatePDF = function (op, settings){
             let one_line_moves_discussed_count = 0
             
             vari.moves.forEach((move, index) => {
-                // add this move to the stack of moves to draw on one line
-                one_line_moves.push(move)
-
                 let move_name = moveName(vari.moves.slice(0, index + 1))
+                // add this move to the stack of moves to draw on one line
+                one_line_moves.push([move, op.comments[move_name]])
+
                 if(movesAdded.indexOf(move_name) === -1){ // if move not discussed already
                     // sign this as already discussed move
                     movesAdded.push(move_name)
@@ -185,19 +281,21 @@ let generatePDF = function (op, settings){
                         ])
                     }
                     if(op.comments[move_name]){
-                        // stop stacking moves on one line
-                        if(one_line_moves.length > 0){
+                        if(!canCommentBeInline(op.comments[move_name])){
+                            // stop stacking moves on one line
+                            if(one_line_moves.length > 0){
+                                blocks.push([
+                                    "line_moves", one_line_moves, index, one_line_moves_discussed_count
+                                ])
+                                // restart stacking moves on one line
+                                one_line_moves = []
+                                one_line_moves_discussed_count = 0
+                            }
+                            // write this comment here
                             blocks.push([
-                                "line_moves", one_line_moves, index, one_line_moves_discussed_count
+                                "comment", move_name
                             ])
-                            // restart stacking moves on one line
-                            one_line_moves = []
-                            one_line_moves_discussed_count = 0
                         }
-                        // write this comment here
-                        blocks.push([
-                            "comment", move_name
-                        ])
                     }
                 }else{
                     // this move was already discussed
@@ -225,7 +323,7 @@ let generatePDF = function (op, settings){
             html += line_moves(b[1], b[2], b[3]) 
         }
         if(b[0] === "board"){
-            html += boardFromMoveName(b[1]) 
+            html += boardFromMoveName(b[1], op.op_color) 
         }
         if(b[0] === "comment"){
             html += comment(op.comments[b[1]]) 
