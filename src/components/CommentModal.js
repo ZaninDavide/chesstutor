@@ -7,6 +7,7 @@ class CommentModal extends Component {
     super(props)
     this.state = {
       text: this.props.getComment(this.props.op_index, this.props.json_moves),
+      invertDrawBoardPDF: false
     }
     this.getStyle = this.getStyle.bind(this);
     this.onDone = this.onDone.bind(this);
@@ -21,31 +22,46 @@ class CommentModal extends Component {
 
   onDone(){
     this.props.editComment(this.props.op_index, this.props.json_moves, this.state.text)
+    if(this.state.invertDrawBoardPDF){
+      let value = this.props.getDrawBoardPDF(this.props.op_index, this.props.json_moves)
+      if(this.state.invertDrawBoardPDF){
+        value = !value
+      }
+      this.props.setDrawBoardPDF(this.props.op_index, this.props.json_moves, value)
+    }
     this.props.close()
   }
 
   render() {
     return (
       <div id="commentModal" className="modal" onClick={this.props.close} style={this.getStyle()}>
-        <div className="modalContent" onClick={e => e.stopPropagation()} style={{height: "auto"}}>
-          <div className="insideModal" onClick={e => e.stopPropagation()}>
+        <div className="modalContent tallModalContent" onClick={e => e.stopPropagation()}>
+          <div className="insideModal insideCommentModal" onClick={e => e.stopPropagation()}>
             <textarea placeholder={"Comment"} onChange={e => this.setState({text: e.target.value})} className="commentTextBox" type="text" value={this.state.text}></textarea>
-            <div className="checkBoxContainer" style={{marginLeft: "var(--mediumMargin)"}}>
+            <div className="checkBoxContainer commentCheckBox" style={{marginLeft: "var(--mediumMargin)"}}>
               <span 
-                onClick={() => this.props.switchDrawBoardPDF(this.props.op_index, this.props.json_moves)} 
+                onClick={() => this.setState(old => {return {invertDrawBoardPDF: !old.invertDrawBoardPDF}})} 
                 style={{display: "flex"}} 
               >
-                <div className={"checkBox" + (this.props.getDrawBoardPDF(this.props.op_index, this.props.json_moves) ? " checked" : "")}/>
+                <div className={"checkBox" + 
+                  ((this.state.invertDrawBoardPDF ? !this.props.getDrawBoardPDF(this.props.op_index, this.props.json_moves) : this.props.getDrawBoardPDF(this.props.op_index, this.props.json_moves)) 
+                  ? " checked" : "")}
+                />
                 &nbsp;
-                <Translator text={"Draw this board position on PDF"}/>
+                <Translator text={"draw_board_pdf"}/>
               </span>
             </div>
           </div>
           <div className="modalButtons" style={{textAlign: "right"}}>
-            <button className="commentModalButton simpleButton iconText"
+            <button className="modalButton simpleButton iconText"
               disabled={this.props.disabledDoneButton}
               onClick={this.onDone}
             >done</button>
+            <button className="simpleButton modalBackButton"
+              onClick={() => {
+                  this.props.close()
+              }}
+            ><span className="iconText">close</span></button>
           </div>
         </div>
       </div>

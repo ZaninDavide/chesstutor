@@ -5,7 +5,7 @@ const Header = props => {
 
   const headerButton = () => {
     if(props.headerButtonContent !== undefined){
-      return <button id="headerButton" className="importantButton" onClick={props.headerButtonClick}>{props.headerButtonContent}</button>
+      return <button id="headerButton" className="roundButton" onClick={props.headerButtonClick}>{props.headerButtonContent}</button>
     }
   }
 

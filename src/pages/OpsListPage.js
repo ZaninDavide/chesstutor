@@ -4,6 +4,7 @@ import OpItem from "../components/OpItem"
 import Translator from "../components/Translator"
 import HangingMenu from "../components/HangingMenu"
 import Modal from "../components/Modal"
+import ShareModal from "../components/ShareModal"
 
 import generatePDF from "../generatePDF/generatePDF.js"
 
@@ -15,6 +16,7 @@ class OpsListPage extends Component {
       hMenuOpIndex: null,
       opDeleteVisible: false,
       opNewName: "",
+      shareVisible: false,
     }
     this.getOpItems = this.getOpItems.bind(this)
     this.newOpButton = this.newOpButton.bind(this)
@@ -24,11 +26,13 @@ class OpsListPage extends Component {
     this.openOpDeleteModal = this.openOpDeleteModal.bind(this)
     this.renameThisOpening = this.renameThisOpening.bind(this)
     this.no_openings_style = this.no_openings_style.bind(this)
+    this.closeShareModal = this.closeShareModal.bind(this)
+    this.openShareModal = this.openShareModal.bind(this)
   }
 
   getSeparator(text, goTo){
     return  <div id={"opsSeparator" + text} className="opsSeparator" key={"opsSeparator" + text} onClick={() => goTo ? this.props.history.push(goTo) : null}>
-              <p style={{textAlign: "center", color: "var(--titleColor)"}}>
+              <p style={{textAlign: "center", color: "var(--impText)"}}>
                 <Translator text={text} />
               </p>
             </div>
@@ -99,6 +103,14 @@ class OpsListPage extends Component {
     this.setState({opDeleteVisible: true})
   }
 
+  closeShareModal(){
+    this.setState({shareVisible: false})
+  }
+
+  openShareModal(){
+    this.setState({shareVisible: true})
+  }
+
   renameThisOpening(){
     this.props.renameOp(this.state.hMenuOpIndex, this.state.opNewName)
   }
@@ -130,7 +142,7 @@ class OpsListPage extends Component {
         <Header title={<Translator text={"Openings"}/>} goTo={"/profile"} mainButtonText="person"/>
         <div id="opsListPage" className={"page"} style={this.no_openings_style(this.props.ops.length)}>
           {this.getOpItems(this.props.ops)}
-          <button id="newOpButton" className="importantButton iconButton" onClick={this.newOpButton}>
+          <button id="newOpButton" className="roundButton iconButton impButton" onClick={this.newOpButton}>
             add
           </button>
         </div>
@@ -141,8 +153,6 @@ class OpsListPage extends Component {
           </button> 
           {/* STATS BUTTON */}
           {/*<button className="simpleButton hMenuButton">emoji_events</button>*/}
-          {/* SHARE BUTTON */}
-          {/*<button className="simpleButton hMenuButton">share</button>*/}
           {/* PRINT BUTTON */}
           <button 
             className="simpleButton hMenuButton" 
@@ -152,6 +162,11 @@ class OpsListPage extends Component {
             }}
           >
             print
+          </button>
+          {/* SHARE BUTTON */}
+          <button className="simpleButton hMenuButton"
+            onClick={() => {this.hMenuClose();  this.openShareModal();}}
+          >share
           </button>
           {/* ARCHIVE BUTTON */}
           <button className="simpleButton hMenuButton" 
@@ -175,6 +190,14 @@ class OpsListPage extends Component {
               <React.Fragment><h2><Translator text={"Delete permanently:"} />&nbsp;<span className="alertText">{this.props.ops[this.state.hMenuOpIndex].op_name}</span>{"?"}</h2></React.Fragment> : null
             }     
         </Modal>
+        {/* SHARE OP MODAL */}
+        <ShareModal 
+          visible={this.state.shareVisible} 
+          close={this.closeShareModal}
+          hMenuOpIndex={this.state.hMenuOpIndex}
+          op={this.props.ops[this.state.hMenuOpIndex]}
+          op_index={this.state.hMenuOpIndex}
+        />
         {/* RENAME OP MODAL */}
         <Modal 
           visible={this.state.renameOpVisible} 
@@ -185,7 +208,7 @@ class OpsListPage extends Component {
           { this.state.renameOpVisible ? 
             <React.Fragment>
               <h2><Translator text={"Rename"} />&nbsp;
-              <span style={{color: "var(--importantButtonBackColor)"}}>{this.props.ops[this.state.hMenuOpIndex].op_name}</span>&nbsp;
+              <span style={{color: "var(--impButtonBack)"}}>{this.props.ops[this.state.hMenuOpIndex].op_name}</span>&nbsp;
               <Translator text={"to:"} /></h2>
               <input type="text" 
                 className="textBox renameTextBox"

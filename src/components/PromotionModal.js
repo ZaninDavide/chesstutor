@@ -61,7 +61,7 @@ class PromotionModal extends Component {
   render() {
     return (
       <div id="promotionModal" className="modal" onClick={this.close} style={this.getStyle()}>
-        <div className="modalContent" onClick={e => e.stopPropagation()} style={{height: "auto"}}>
+        <div id="promotionModalContent" onClick={e => e.stopPropagation()}>
           {this.getPieceButtons()}
         </div>
       </div>

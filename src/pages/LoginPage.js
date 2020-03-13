@@ -86,10 +86,14 @@ class LoginPage extends Component {
 
   async signUpClick(){
     if(this.state.username !== "" & this.state.password !== ""){
-      let signup_res = await this.signup()
-      if(signup_res){
-        // this.props.history.push("/")
-        this.loginClick()
+      if(this.state.username.indexOf(",") === -1) {
+        let signup_res = await this.signup()
+        if(signup_res){
+          // this.props.history.push("/")
+          this.loginClick()
+        }
+      }else{
+        console.log("signUpClick: username cannot contain the ','(comma) character")
       }
     }else{
       console.log("signUpClick: missing username or password")
@@ -136,8 +140,8 @@ class LoginPage extends Component {
               </span>
             </div>
           </div>
-          <button onClick={this.signUpClick} className="importantButton" style={{position: "absolute", bottom: "calc(var(--uiElementHeight) + 2 * var(--mediumMargin))", marginBottom: 0, width: "calc(100% - 30px)"}}><Translator text={"Sign up"} /></button>
-          <button onClick={this.loginClick} className="importantButton" style={{position: "absolute", bottom: "var(--mediumMargin)", marginBottom: 0, width: "calc(100% - 30px)"}}><Translator text={"Login"} /></button>
+          <button onClick={this.signUpClick} className="roundButton impButton" style={{position: "absolute", bottom: "calc(var(--uiElementHeight) + 2 * var(--mediumMargin))", marginBottom: 0, width: "calc(100% - 30px)"}}><Translator text={"Sign up"} /></button>
+          <button onClick={this.loginClick} className="roundButton impButton" style={{position: "absolute", bottom: "var(--mediumMargin)", marginBottom: 0, width: "calc(100% - 30px)"}}><Translator text={"Login"} /></button>
         </div>
       </React.Fragment>
     )

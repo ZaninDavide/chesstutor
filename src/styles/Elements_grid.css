@@ -145,8 +145,8 @@
   border: 0px;
   height: var(--uiElementSmallHeight);
   width: calc(100% - 10px); /*10px = padding-left;*/
-  background-color: var(--makeDarkerColor);
-  color: var(--textColorHighlighted);
+  background-color: var(--hoverBackColor);
+  color: var(--primaryText);
   font-size: var(--textSize);
   font-family: inherit;
 }
@@ -154,11 +154,11 @@
 .checkBox{
   width: var(--uiElementSmallHeight);
   height: var(--uiElementSmallHeight);
-  background-color: var(--makeDarkerColor);
+  background-color: var(--hoverBackColor);
 }
 
 .checkBox.checked{
-  background-color: var(--textColorHighlighted);
+  background-color: var(--primaryText);
 }
 
 .checkBoxContainer{
@@ -171,7 +171,7 @@
   margin: 0px !important; /* overwrite simpleButton */
   flex-grow: 1;
   /* TEXT */
-  color: var(--buttonColor) !important; /* overwrite simpleButton */
+  color: var(--buttonText) !important; /* overwrite simpleButton */
   font-family: "Material Icons" !important; /* overwrite simpleButton */
   font-size: var(--iconsFontSize) !important; /* overwrite simpleButton */
   text-align: center;
@@ -203,7 +203,7 @@
   /* GRID */
   grid-area: header;
   /* COLORS */
-  background-color: var(--headerBackColor);
+  background-color: var(--headerBack);
   /* SPACES */
   margin-left: var(--smallMargin);
   /* CONTENT */
@@ -244,5 +244,5 @@
 #archivedOpsSeparator, #archivedVarsSeparator{
   width: 100%;
   height: 2px;
-  background-color: var(--makeDarkerColor);
+  background-color: var(--hoverBackColor);
 }

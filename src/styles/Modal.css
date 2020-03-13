@@ -6,95 +6,159 @@
     height: 100vh;
     /*transition: background-color 0.1s;*/
     z-index: 3;
+    overflow-y: hidden;
 }
 
 .modalContent{
-    margin-top: 20vh;
-    height: auto;
-    min-height: 200px;
     width: 100%;
-    background-color: var(--backColor);
-    display: grid;
-    grid-template-rows: auto max-content;
     max-width: 500px;
+    min-height: 200px;
+    max-height: 60vh;
+    overflow-y: hidden;
+
+    display: grid;
+    grid-template-rows: 1fr auto;
+
     margin-left: auto;
     margin-right: auto;
+    border-radius: var(--borderRadius);
+
+    background-color: var(--backColor);
+
+    /* SHADOWS */
+    -moz-box-shadow: 2px 3px 4px rgba(0, 0, 0,0.25);
+    -webkit-box-shadow: 2px 3px 4px rgba(0, 0, 0, .25);
+    box-shadow: 2px 3px 4px rgba(0, 0, 0, .25);
 }
 
-.helpModalContent{ 
+.tallModalContent{
+    min-height: 250px;
+}
+
+
+@media screen and (max-height: 350px) {
+    .modalContent{
+        /* small windows */
+        height: 100vh;
+        margin-top: 0;
+        margin-bottom: 0;
+        min-height: 0;
+        max-height: unset;
+        border-radius: 0;
+    }
+}
+
+@media screen and (min-height: 351px) {
+    .modalContent{
+        /* tall window */
+        margin-top: 20vh;
+        height: auto;
+    }
+}
+
+.helpModalButton, .promotionButton{
+    flex-grow: 1;
+    height: unset !important;
+    margin: 0px !important;
+    min-height: var(--uiElementHeight);
+}
+
+.promotionPiece{
+    vertical-align: middle;
+}
+
+.helpModalContent, #promotionModalContent{ 
     margin-top: 20vh;
     height: 100%;
     max-height: 60vh;
     width: 100%;
     background-color: var(--backColor);
-    display: grid;
     max-width: 500px;
     margin-left: auto;
     margin-right: auto;
     overflow-y: auto;
+    border-radius: var(--borderRadius);
+
+    display: flex;
+    flex-direction: column;
 }
 
 .insideModal{
     width: 100%;
     padding-top: calc(var(--mediumMargin) - var(--smallMargin));
+    overflow-y: auto;
+}
+
+.insideCommentModal{
+    display: grid;
+    grid-template-rows: 1fr auto;
+    grid-template-areas: "commentBoxModal" "commentCheckBox";
 }
 
 .commentTextBox{
-    padding: 10px;
-    border: 0px;
-    background-color: var(--makeDarkerColor);
-    color: var(--textColorHighlighted);
-    font-size: var(--textSize);
-    font-family: inherit;
+    grid-area: "commentBoxModal";
+    height: calc(100% - 20px - var(--smallMargin));
     width: calc(100% - 20px - var(--mediumMargin) * 2);
-    resize: none;
-    border: 0; 
-    border-radius: 0;
-    outline: none;
-    outline-style: none; /* Internet Explorer  */
-    height: 170px;
+
     margin-top: var(--smallMargin);
     margin-left: var(--mediumMargin);
     margin-right: var(--mediumMargin);
+    padding: 10px;
+    border: 0px;
+    border: 0; 
+    border-radius: 0;
+
+    background-color: var(--hoverBackColor);
+    color: var(--primaryText);
+    font-size: var(--textSize);
+    font-family: inherit;
+    resize: none;
+    outline: none;
+    outline-style: none; /* Internet Explorer  */
 }
 
-/*.modalButton{
-    margin: 0px !important;
-    color: var(--buttonColor) !important;
-    font-family: "Material Icons" !important;
-    font-size: var(--iconsFontSize) !important;
-    text-align: center;
-    vertical-align: middle;
-    line-height: var(--uiElementHeight);  = height
-    right: 0px;
-    top: calc(60vh - var(--uiElementHeight) + var(--mediumMargin) * 2);
-    position: absolute;
-    width: 100px;
-}*/
+.commentCheckBox{
+    grid-template-areas: "commentCheckBox";
+}
 
 .hMenuContent{
     background-color: var(--backColor);
+
     position: fixed;
     left:0px;
     bottom:0px;
+    z-index: 1;
+
     width: 100vw;
     height: calc(var(--uiElementHeight) + var(--mediumMargin));
-    z-index: 1;
+
+    display: flex;
+    overflow: hidden; /* avoids buttons to display in the rounded corner area */
+
+    border-top: 10px;
+    border-radius: var(--borderRadius) var(--borderRadius) 0px 0px;
+    
     transition-property: background-color, margin-bottom;
     transition-timing-function: linear, ease-in-out;
     transition-duration: .2s, .2s;
     will-change: background-color, margin-bottom;
-    border-top: 10px;
-    border-radius: 10px 10px 0px 0px;
-    display: flex;
-    overflow: hidden; /* avoids buttons to display in the rounded corner area */
+    
 }
 
-.modalButton .commentModalButton{
-    /* TEXT */
-    color: var(--buttonColor) !important;
+.modalButton{
     margin: 0px;
-    width: 100px;
+    width: calc(var(--uiElementHeight) + 2*var(--mediumMargin));
+    padding: 0 !important;
+    margin: 0 !important;
+    float: right;
+}
+
+.modalBackButton{
+    margin: 0px;
+    width: calc(var(--uiElementHeight) + 2*var(--mediumMargin));
+    padding: 0 !important;
+    margin: 0 !important;
+    float: left;
 }
 
 
@@ -110,6 +174,32 @@
 }
 
 .modalButtons{
-    text-align: right;
     margin: 0px;
+}
+
+#newShareButton{
+    padding: 0;
+    margin: 0;
+    width: var(--uiElementHeight);
+    height: var(--uiElementHeight);
+    line-height: var(--uiElementHeight);
+}
+
+#shareTextbox{
+    margin-left: var(--mediumMargin);
+    margin-right: var(--smallMargin);
+    width: calc(100% - 2 * var(--mediumMargin) - 10px - var(--uiElementHeight) - var(--smallMargin)); /* 10px = padding */
+    margin-top: calc((var(--uiElementHeight) - var(--uiElementSmallHeight)) / 2);
+}
+
+#shareNamesList{
+    width: 100%;
+    display: grid;
+}
+
+.shareNameItem{
+    /*height: var(--uiElementHeight);*/
+    line-height: var(--uiElementHeight);
+    margin-left: var(--mediumMargin);
+    margin-right: var(--mediumMargin);
 }

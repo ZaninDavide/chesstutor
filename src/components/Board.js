@@ -241,7 +241,7 @@ class Board extends Component {
           visible={this.state.commentModalVisible} 
           close={() => this.setState({commentModalVisible: false})}
           editComment={this.props.editComment}
-          switchDrawBoardPDF={this.props.switchDrawBoardPDF}
+          setDrawBoardPDF={this.props.setDrawBoardPDF}
           getDrawBoardPDF={this.props.getDrawBoardPDF}
           getComment={this.props.getComment}
           op_index={this.props.op_index}
@@ -417,9 +417,9 @@ class Board extends Component {
         this.setState({promotionPromiseRes: res, promotionModalVisible: true})
       })
   }
-
+  
   try_undo(){
-    /* I can undo if there is some move to undo */
+  /* I can undo if there is some move to undo */
     if(this.state.json_moves.length > 0){
       // actually undo
       this.state.game.undo()
@@ -774,7 +774,10 @@ class Board extends Component {
       // BACK
       if(this.props.buttons.indexOf("back") !== -1){
         b_objects.push(
-          <button id="backButton" key="backButton" className="simpleButton boardButton" onClick={this.back_button_click}>keyboard_arrow_left</button>
+          <button id="backButton" key="backButton" className="simpleButton boardButton" 
+            onClick={this.back_button_click}
+            disabled={this.state.json_moves.length === 0}
+          >keyboard_arrow_left</button>
         )
       }
       // CREATE VARIATION BUTTON - DONE
@@ -785,7 +788,7 @@ class Board extends Component {
             key="doneButton" 
             className="simpleButton boardButton" 
             onClick={this.openVariNameModal}
-            style={{color: "var(--importantButtonColor)", backgroundColor: "var(--importantButtonBackColor)"}}
+            style={{color: "var(--impButtonText)", backgroundColor: "var(--impButtonBack)"}}
           >done</button>
         )
       }
@@ -794,9 +797,8 @@ class Board extends Component {
         b_objects.push(
           <button 
             id="stopTrainThisButton" 
-            key="stopTrainThisButton" 
-            style={{color: "var(--importantButtonColor)", backgroundColor: "var(--alertColor)"}}
-            className="simpleButton boardButton"
+            key="stopTrainThisButton"
+            className="simpleButton boardButton alertButton"
             onClick={() => this.props.set_in_training(false)}
           >clear</button>
         )
@@ -806,9 +808,8 @@ class Board extends Component {
         b_objects.push(
           <button 
             id="trainThisButton" 
-            key="trainThisButton" 
-            style={{color: "var(--importantButtonColor)", backgroundColor: "var(--importantButtonBackColor)"}}
-            className="simpleButton boardButton"
+            key="trainThisButton"
+            className="simpleButton boardButton impButton"
             onClick={() => {
               let newPlayColor = this.props.set_in_training(true)
               if(

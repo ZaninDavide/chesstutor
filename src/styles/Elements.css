@@ -135,27 +135,29 @@
   border: 0px;
   height: var(--uiElementSmallHeight);
   width: calc(100% - 10px); /*10px = padding-left;*/
-  background-color: var(--makeDarkerColor);
-  color: var(--textColorHighlighted);
+  background-color: var(--hoverBackColor);
+  color: var(--primaryText);
   font-size: var(--textSize);
   font-family: inherit;
+  border-radius: var(--borderRadius);
 }
 
 .checkBox{
   width: calc(var(--uiElementSmallHeight) - 2 * var(--smallMargin));
   height: calc(var(--uiElementSmallHeight) - 2 * var(--smallMargin));
-  background-color: var(--makeDarkerColor);
-  outline: var(--smallMargin) solid  var(--makeDarkerColor);
+  background-color: var(--hoverBackColor);
+  outline: var(--smallMargin) solid  var(--hoverBackColor);
   margin: var(--smallMargin);
 }
 
 .checkBox.checked{
-  background-color: var(--textColorHighlighted);
+  background-color: var(--primaryText);
 }
 
 .checkBoxContainer{
   display: flex;
   margin-top: var(--smallMargin);
+  margin-bottom: var(--smallMargin);
   line-height: var(--uiElementSmallHeight);
 }
 
@@ -163,17 +165,13 @@
   margin: 0px !important; /* overwrite simpleButton */
   flex-grow: 1;
   /* TEXT */
-  color: var(--buttonColor) !important; /* overwrite simpleButton */
+  color: var(--buttonText) !important; /* overwrite simpleButton */
   font-family: "Material Icons" !important; /* overwrite simpleButton */
   font-size: var(--iconsFontSize) !important; /* overwrite simpleButton */
   text-align: center;
   vertical-align: middle;
   height: calc(var(--uiElementHeight) + var(--mediumMargin)) !important; /* overwrite simpleButton */
   line-height: calc(var(--uiElementHeight) + var(--mediumMargin)) !important; /* overwrite simpleButton */ /* = height*/
-}
-
-.promotionButton{
-  width: 100%;
 }
 
 
@@ -195,7 +193,7 @@
   /* GRID */
   grid-area: header;
   /* COLORS */
-  background-color: var(--headerBackColor);
+  background-color: var(--headerBack);
   /* CONTENT */
   vertical-align: middle;
   display: grid;
@@ -242,7 +240,7 @@
   width: 100%;
   height: calc(var(--uiElementHeight) * 0.8);
   line-height: calc(var(--uiElementHeight) * 0.8);
-  /*border-bottom: solid 5px var(--makeDarkerColor);*/
+  /*border-bottom: solid 5px var(--hoverBackColor);*/
 }
 
 #opsSeparatorWhite, #opsSeparatorBlack{
@@ -250,7 +248,7 @@
 }
 
 #opsSeparatorWhite:hover, #opsSeparatorBlack:hover{
-  background-color: var(--makeDarkerColor);
+  background-color: var(--hoverBackColor);
 }
 
 .renameTextBox, .newVariNameTextBox{
@@ -275,5 +273,5 @@
 }
 
 #opsSeparatorWhite, #opsSeparatorBlack{
-  -webkit-tap-highlight-color: var(--makeDarkerColor)
+  -webkit-tap-highlight-color: var(--hoverBackColor)
 }

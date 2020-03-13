@@ -16,7 +16,7 @@
   --mediumMargin: 15px;
   --largeMargin: 25px;
   --borderSize: 1px;
-  --borderRadius: 25px; /* usually 50% of uiElementHeight */
+  --borderRadius: 5px;
   --uiElementHeight: 50px; /* like buttons height */
   --uiElementSmallHeight: 28px; /* like textBox height */
   --headerHeight: calc(var(--uiElementHeight) + var(--smallMargin) * 2);
@@ -25,32 +25,37 @@
 
 .defaultTheme {
   --backColor: #3a4151;
-  --borderColor: rgb(204, 204, 204);
-  --textColor: #949dac;
-  --titleColor: #65f0b6;
-  --buttonColor: rgb(245, 245, 245);
-  --textColorHighlighted: white;
-  --importantButtonColor: #3a4151;
-  --importantButtonBackColor: #65f0b6;
-  --backColorImportantButtonHover: hsl(156, 35%, 50%);
-  --headerBackColor: #3a4151;
-  --makeDarkerColor: rgba(22, 22, 22, 0.2);
+  --secondaryText: #949dac;
+  --impText: #65f0b6;
+  --buttonText: rgb(245, 245, 245);
+  --primaryText: white;
+  --impButtonText: #3a4151;
+  --impButtonBack: #65f0b6;
+  --hoverImpButtonBack: hsl(156, 35%, 50%);
+  --headerBack: #3a4151;
+  --hoverBackColor: rgba(22, 22, 22, 0.2);
   --alertColor: #f06b65;
+  --hoverAlertColor: #ce5d57; /*#f06b65*/
 }
 
 .darkTheme {
   --backColor: #1d1d1b; /*#1f1f1e*/ /* 292827 */
-  --borderColor: rgb(204, 204, 204);
-  --textColor: #a2a099;
-  --titleColor: #3cf17e; /*#a3f7bf*/
-  --buttonColor: rgb(245, 245, 245);
-  --textColorHighlighted: white;
-  --importantButtonColor: #1d1d1b;
-  --importantButtonBackColor: #3cf17e; /*#a3f7bf*/
-  --backColorImportantButtonHover: #32804d; /*hsl(140, 34%, 60%)*/
-  --headerBackColor: #1d1d1b;
-  --makeDarkerColor: rgba(100, 100, 100, 0.3);
   --alertColor: #f14b4b; /*#f06b65*/
+
+  --impText: #3cf17e; /*#a3f7bf*/
+  --primaryText: white;
+  --secondaryText: #a2a099;
+
+  --buttonText: rgb(245, 245, 245);
+  --hoverBackColor: rgba(100, 100, 100, 0.3);
+
+  --impButtonText: #1d1d1b;
+  --impButtonBack: #3cf17e; /*#a3f7bf*/
+  --hoverImpButtonBack: #32804d; /*hsl(140, 34%, 60%)*/
+
+  --hoverAlertColor: #b63737; /*#f06b65*/
+
+  --headerBack: #1d1d1b;
 }
 
 .boardStandardTheme {
@@ -112,7 +117,7 @@
   /* COLORS */
   background-color: var(--backColor);
   /* TEXT */
-  color: var(--textColor);
+  color: var(--secondaryText);
   font-weight: var(--textWeight);
   font-size: var(--textSize);
   /* no selction */
@@ -170,7 +175,7 @@
 
   h1 {
     /* TEXT */
-    color: var(--titleColor);
+    color: var(--impText);
     font-family: var(--titleFont);
     font-weight: var(--titleWeight);
     font-size: var(--titleSize); /* --titleSize */
@@ -184,7 +189,7 @@
   
   h2 {
     /* TEXT */
-    color: var(--textColorHighlighted);
+    color: var(--primaryText);
     font-weight: var(--mediumWeight);
     font-size: var(--mediumTextSize);
     /* SPACES */
@@ -196,7 +201,7 @@
   
   p {
     /* TEXT */
-    color: var(--textColor);
+    color: var(--secondaryText);
     font-weight: var(--textWeight);
     font-size: var(--textSize);
     /* SPACES */
@@ -302,7 +307,7 @@ input {
   height: var(--uiElementHeight);
   min-width: var(--uiElementHeight);
   /* TEXT */
-  color: var(--buttonColor);
+  color: var(--buttonText);
   font-family: "Material Icons";
   font-size: var(--iconsFontSize);
   text-align: center;
@@ -312,7 +317,7 @@ input {
   background-color: transparent;
   /* BORDERS */
   border: 0px;
-  border-radius: var(--borderRadius);
+  border-radius: calc(var(--uiElementHeight) / 2);
   /* SPACES */
   margin-top: var(--smallMargin);
   margin-bottom: var(--smallMargin);
@@ -328,20 +333,20 @@ input {
 
 .iconButton:hover {
   /* COLORS */
-  background-color: var(--makeDarkerColor);
+  background-color: var(--hoverBackColor);
 }
 
-button.importantButton {
+button.roundButton {
   /* SIZE */
   height: var(--uiElementHeight);
-  border-radius: var(--borderRadius);
+  border-radius: calc(var(--uiElementHeight) / 2);
   border: 0px;
   /* TEXT */
-  color: var(--importantButtonColor);
+  /*color: var(--impButtonText);*/
   font-weight: var(--textWeight);
   font-size: var(--mediumTextSize);
   /* COLORS */
-  background-color: var(--importantButtonBackColor);
+  /*background-color: var(--impButtonBack);*/
   /* SPACES */
   margin-top: var(--smallMargin);
   margin-bottom: var(--smallMargin);
@@ -361,9 +366,9 @@ button.importantButton {
   box-shadow: 2px 3px 4px rgba(0, 0, 0, .25);
 }
 
-button.importantButton:hover:enabled {
+button.roundButton:hover:enabled {
   /* COLORS */
-  background-color: var(--backColorImportantButtonHover);
+  /*background-color: var(--hoverImpButtonBack);*/
   /* TEXT */
   text-align: center;
   /* SHADOWS */
@@ -377,7 +382,7 @@ button.simpleButton{
   height: var(--uiElementHeight);
   min-width: var(--uiElementHeight);
   /* TEXT */
-  color: var(--buttonColor);
+  color: var(--buttonText);
   /*font-family: inherit;*/
   font-size: var(--textSize);
   text-align: center;
@@ -404,7 +409,29 @@ button.simpleButton{
 
 button.simpleButton:hover:enabled {
   /* COLORS */
-  background-color: var(--makeDarkerColor);
+  background-color: var(--hoverBackColor);
+}
+
+button:disabled, button[disabled]{
+  color: var(--hoverBackColor);
+}
+
+button.alertButton{
+  background-color: var(--alertColor) !important;
+  color: var(--backColor) !important;
+}
+
+button.alertButton:hover:enabled{
+  background-color: var(--hoverAlertColor) !important;
+}
+
+button.impButton{
+    color: var(--impButtonText);
+    background-color: var(--impButtonBack);
+}
+
+button.impButton:hover:enabled{
+  background-color: var(--hoverImpButtonBack);
 }
 
 /* OTHERS */
@@ -425,12 +452,12 @@ a {
   border-bottom-width: 0px;
   border-right-width: 0px;
   border-left-color: transparent;
-  -webkit-tap-highlight-color: var(--makeDarkerColor);
+  -webkit-tap-highlight-color: var(--hoverBackColor);
 }
 
 .opItem:hover,
 .variItem:hover {
-  background-color: var(--makeDarkerColor);
+  background-color: var(--hoverBackColor);
 }
 
 .variItem{

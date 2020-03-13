@@ -401,7 +401,7 @@ class Board extends Component {
       <button 
         className="simpleButton boardButton" 
         onClick={this.openVariNameModal} 
-        style={{color: "var(--importantButtonBackColor)"}}
+        style={{color: "var(--impButtonBack)"}}
       >done</button>
       {/* HELP */}
       <button className="simpleButton boardButton">live_help</button> {/* wb_incandescent */}

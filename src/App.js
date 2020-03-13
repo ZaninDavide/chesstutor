@@ -62,7 +62,7 @@ class App extends Component {
     this.get_correct_moves_data_color = this.get_correct_moves_data_color.bind(this)
     this.get_pc_move_data_color = this.get_pc_move_data_color.bind(this)
     this.is_move_allowed_color = this.is_move_allowed_color.bind(this)
-    this.switchDrawBoardPDF = this.switchDrawBoardPDF.bind(this)
+    this.setDrawBoardPDF = this.setDrawBoardPDF.bind(this)
     this.getDrawBoardPDF = this.getDrawBoardPDF.bind(this)
   }
 
@@ -313,14 +313,14 @@ class App extends Component {
     return this.state.user_ops[op_index].comments[str]    
   }
 
-  switchDrawBoardPDF(op_index, json_moves){
+  setDrawBoardPDF(op_index, json_moves, bool){
     this.setState(old => {
       let new_user_ops = old.user_ops
       let str = "|"
       json_moves.forEach(elem => {
         str += elem.san + "|"
       });
-      new_user_ops[op_index].pdfBoards[str] = !new_user_ops[op_index].pdfBoards[str]
+      new_user_ops[op_index].pdfBoards[str] = bool
 
       let value = new_user_ops[op_index].pdfBoards[str]
       this.serverRequest("POST", "/setDrawBoardPDF/" + op_index + "/" + str, {value})
@@ -530,7 +530,7 @@ class App extends Component {
                                                     get_pc_move_data={this.get_pc_move_data}
                                                     getComment={this.getComment}
                                                     editComment={this.editComment}
-                                                    switchDrawBoardPDF={this.switchDrawBoardPDF}
+                                                    setDrawBoardPDF={this.setDrawBoardPDF}
                                                     getDrawBoardPDF={this.getDrawBoardPDF}
                                                     get_correct_moves_data={this.get_correct_moves_data}
                                                   />
@@ -541,7 +541,7 @@ class App extends Component {
                                                   createVari={this.createVari}
                                                   getComment={this.getComment}
                                                   editComment={this.editComment}
-                                                  switchDrawBoardPDF={this.switchDrawBoardPDF}
+                                                  setDrawBoardPDF={this.setDrawBoardPDF}
                                                   getDrawBoardPDF={this.getDrawBoardPDF}
                                                   get_correct_moves_data={this.get_correct_moves_data}
                                                 />
@@ -552,7 +552,7 @@ class App extends Component {
                                               createVari={this.createVari}
                                               getComment={this.getComment}
                                               editComment={this.editComment}
-                                              switchDrawBoardPDF={this.switchDrawBoardPDF}
+                                              setDrawBoardPDF={this.setDrawBoardPDF}
                                               getDrawBoardPDF={this.getDrawBoardPDF}
                                               get_vari_next_move_data={this.get_vari_next_move_data}
                                               get_pc_move_data={this.get_pc_move_data}

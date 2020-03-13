@@ -30,7 +30,7 @@ class OpeningPage extends Component {
   }
 
   getArchivedSeparator(){
-    return  <div id="archivedVarsSeparator" key="archivedVarsSeparator"><p style={{textAlign: "center", color: "var(--titleColor)"}}>
+    return  <div id="archivedVarsSeparator" key="archivedVarsSeparator"><p style={{textAlign: "center", color: "var(--impText)"}}>
               <Translator text="Archived variations" />
             </p></div>
   }
@@ -126,10 +126,10 @@ class OpeningPage extends Component {
       <React.Fragment>
         <Header title={op.op_name} mainButtonText="keyboard_backspace"/*headerButtonContent={<span className="iconText">school</span>}*/ /> {/* play_arrow */}
         <div id="openingPage" className="page" style={this.no_variations_style(op.variations.length)}>{this.getVariItems(op.variations, op_index)}</div>
-        <button id="playVarsButton" className="importantButton iconButton" onClick={this.startGame}>
+        <button id="playVarsButton" className="roundButton iconButton impButton" onClick={this.startGame}>
           school
         </button>
-        <button id="newVariButton" className="importantButton iconButton" onClick={this.newVariClick}>
+        <button id="newVariButton" className="roundButton iconButton impButton" onClick={this.newVariClick}>
           add
         </button>
         
@@ -170,7 +170,7 @@ class OpeningPage extends Component {
             <React.Fragment>
               <h2>
                 <Translator text={"Rename"} />&nbsp;
-                <span style={{color: "var(--importantButtonBackColor)"}}>{thisVari.vari_name}</span>&nbsp;
+                <span style={{color: "var(--impButtonBack)"}}>{thisVari.vari_name}</span>&nbsp;
                 <Translator text={"to:"} />&nbsp;
               </h2>
               <input type="text" 

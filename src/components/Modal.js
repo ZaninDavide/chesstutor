@@ -29,6 +29,11 @@ class Modal extends Component {
                   this.props.close()
               }}
             >{this.props.doneButtonText ? this.props.doneButtonText : <span className="iconText">done</span>}</button>
+            <button className="simpleButton modalBackButton"
+              onClick={() => {
+                  this.props.close()
+              }}
+            ><span className="iconText">close</span></button>
           </div>
         </div>
       </div>

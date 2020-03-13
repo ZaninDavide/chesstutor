@@ -9,7 +9,7 @@ function CreateVariPage() {
       <div className="page">
         <h2>CreateVariPage</h2>
         <p>White, 3 varietions</p>
-        <button className="importantButton">login</button>
+        <button className="roundButton">login</button>
       </div>
     </React.Fragment>
   )

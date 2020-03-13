@@ -31,7 +31,7 @@ class VariationPage extends Component {
           rotation={op.op_color}
           playColor={in_training ? op.op_color : "none"}
           editComment={this.props.editComment}
-          switchDrawBoardPDF={this.props.switchDrawBoardPDF}
+          setDrawBoardPDF={this.props.setDrawBoardPDF}
           getDrawBoardPDF={this.props.getDrawBoardPDF}
           getComment={this.props.getComment}
           allowCommentEdit={!in_training}

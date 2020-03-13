@@ -654,7 +654,7 @@ class Board extends Component {
             key="doneButton" 
             className="simpleButton boardButton" 
             onClick={this.openVariNameModal} 
-            style={{color: "var(--importantButtonBackColor)"}}
+            style={{color: "var(--impButtonBack)"}}
           >done</button>
         )
       }
