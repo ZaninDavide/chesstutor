@@ -37,9 +37,10 @@ const languages = {
     "Language": "Language",
     "white openings": "white openings",
     "black openings": "black openings",
-    "Share": "Share",
+    "Send": "Send",
+    "to": "to",
     "with": "with",
-    "draw_board_pdf": "Disegna posizione sul PDF",
+    "draw_board_pdf": "Draw position in PDF",
   },
   ita: {
     Openings: "Aperture",
@@ -76,9 +77,10 @@ const languages = {
     "Language": "Lingua(Language)",
     "white openings": "aperture del bianco",
     "black openings": "aperture del nero",
-    "Share": "Condividi",
+    "Send": "Condividi",
+    "to": "a",
     "with": "con",
-    "draw_board_pdf": "Draw position in PDF",
+    "draw_board_pdf": "Disegna posizione sul PDF",
   }
 }
 

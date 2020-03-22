@@ -22,7 +22,7 @@ class TrainingPage extends Component {
           key="trainingBoard"
           history={this.props.history} 
           op_index={op_index}
-          buttons={["back", "help"]}
+          buttons={["back", "help", "more"]}
           is_move_allowed={this.props.is_move_allowed}
           get_pc_move_data={this.props.get_pc_move_data}
           rotation={op.op_color}

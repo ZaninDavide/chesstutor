@@ -4,14 +4,14 @@ import "../styles/Modal.css"
 class HangingMenu extends Component {
   getStyle(){
     return {
-      marginBottom: this.props.visible ? 0 : -100,
+      marginBottom: this.props.visible ? 0 : "-100%",
     }
   }
 
   getBackStyle(){
     return {
       display: this.props.visible ? "initial" : "none",
-      backgroundColor: this.props.visible ? "rgba(0, 0, 0, .4)" : "rgba(0, 0, 0, 0)",
+      backgroundColor: this.props.visible ? "rgba(0, 0, 0, .8)" : "rgba(0, 0, 0, 0)",
     }
   }
 

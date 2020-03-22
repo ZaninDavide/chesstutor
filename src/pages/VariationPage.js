@@ -27,7 +27,7 @@ class VariationPage extends Component {
           history={this.props.history} 
           op_index={op_index} 
           vari_index={vari_index} 
-          buttons={in_training ? ["back", "help", "stopTrainThis"] : ["back", "single_next", "trainThis"]}
+          buttons={in_training ? ["back", "help", "stopTrainThis", "more"] : ["back", "single_next", "trainThis", "more"]}
           rotation={op.op_color}
           playColor={in_training ? op.op_color : "none"}
           editComment={this.props.editComment}

@@ -267,6 +267,12 @@ class Board extends Component {
     // called when the component is first created
     // this.testChess() // test
     
+    if(this.props.startFen){
+      const fen = this.props.startFen.split("_").join("/")
+      const turn = this.state.game.load(fen)
+      this.forceUpdate()
+    }
+
     // pc make first move if the player playes as black
     if(this.props.playColor === "black"){
       this.pc_move(this.props.op_index, [])
@@ -771,6 +777,16 @@ class Board extends Component {
   boardButtons(){
     let b_objects = []
     if(this.props.buttons){
+      // ANALIZE
+      if(this.props.buttons.indexOf("more") !== -1){
+        b_objects.push(
+          <button id="moreButton" key="moreButton" className="simpleButton boardButton" 
+            onClick={() => {
+              this.props.history.push("/analysis/white/" + this.state.game.fen().split("/").join("_"))
+            }}
+          >more_vert</button>
+        )
+      }
       // BACK
       if(this.props.buttons.indexOf("back") !== -1){
         b_objects.push(
@@ -778,6 +794,33 @@ class Board extends Component {
             onClick={this.back_button_click}
             disabled={this.state.json_moves.length === 0}
           >keyboard_arrow_left</button>
+        )
+      }
+      // HELP
+      if(this.props.buttons.indexOf("help") !== -1){
+        b_objects.push(
+          <button id="helpButton" key="helpButton" className="simpleButton boardButton" 
+            onClick={this.help_button_click}
+            disabled={!this.is_my_turn()}
+          >help</button>
+        )
+      }
+      // SINGLE NEXT
+      if(this.props.buttons.indexOf("single_next") !== -1){
+        b_objects.push(
+          <button id="nextButton" key="nextButton" className="simpleButton boardButton" 
+            onClick={this.next_button_click} 
+            disabled={!this.is_my_turn() && !this.props.playColor === "none"}
+          >keyboard_arrow_right</button>
+        )
+      }
+      // MULTI NEXT - search in all non archived variations
+      if(this.props.buttons.indexOf("multi_next") !== -1){
+        b_objects.push(
+          <button id="helpButton" key="helpButton" className="simpleButton boardButton" 
+            onClick={this.help_button_click} 
+            disabled={!this.is_my_turn()}
+          >keyboard_arrow_right</button>
         )
       }
       // CREATE VARIATION BUTTON - DONE
@@ -820,33 +863,6 @@ class Board extends Component {
               }
             }}
           >school</button>
-        )
-      }
-      // HELP
-      if(this.props.buttons.indexOf("help") !== -1){
-        b_objects.push(
-          <button id="helpButton" key="helpButton" className="simpleButton boardButton" 
-            onClick={this.help_button_click}
-            disabled={!this.is_my_turn()}
-          >help</button>
-        )
-      }
-      // SINGLE NEXT
-      if(this.props.buttons.indexOf("single_next") !== -1){
-        b_objects.push(
-          <button id="nextButton" key="nextButton" className="simpleButton boardButton" 
-            onClick={this.next_button_click} 
-            disabled={!this.is_my_turn() && !this.props.playColor === "none"}
-          >keyboard_arrow_right</button>
-        )
-      }
-      // MULTI NEXT - search in all non archived variations
-      if(this.props.buttons.indexOf("multi_next") !== -1){
-        b_objects.push(
-          <button id="helpButton" key="helpButton" className="simpleButton boardButton" 
-            onClick={this.help_button_click} 
-            disabled={!this.is_my_turn()}
-          >keyboard_arrow_right</button>
         )
       }
     }

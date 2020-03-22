@@ -140,8 +140,8 @@ class LoginPage extends Component {
               </span>
             </div>
           </div>
-          <button onClick={this.signUpClick} className="roundButton impButton" style={{position: "absolute", bottom: "calc(var(--uiElementHeight) + 2 * var(--mediumMargin))", marginBottom: 0, width: "calc(100% - 30px)"}}><Translator text={"Sign up"} /></button>
-          <button onClick={this.loginClick} className="roundButton impButton" style={{position: "absolute", bottom: "var(--mediumMargin)", marginBottom: 0, width: "calc(100% - 30px)"}}><Translator text={"Login"} /></button>
+          <button onClick={this.signUpClick} className="barButton impButton" style={{position: "absolute", bottom: "calc(var(--uiElementMediumHeight) + 2 * var(--mediumMargin))", marginBottom: 0, width: "calc(100% - 30px)"}}><Translator text={"Sign up"} /></button>
+          <button onClick={this.loginClick} className="barButton impButton" style={{position: "absolute", bottom: "var(--mediumMargin)", marginBottom: 0, width: "calc(100% - 30px)"}}><Translator text={"Login"} /></button>
         </div>
       </React.Fragment>
     )

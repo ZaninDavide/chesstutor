@@ -11,6 +11,7 @@ import NewVariPage from "./pages/NewVariPage"
 import TrainingPage from "./pages/TrainingPage"
 import UserPage from "./pages/UserPage"
 import ColorTrainingPage from "./pages/ColorTrainingPage"
+import AnalysisPage from "./pages/AnalysisPage"
 
 import "./styles/App.css" // css by CLASSES + MAIN COMPONENTS
 import "./styles/Elements.css" // css by ID + SECONDARY COMPONENTS
@@ -577,6 +578,10 @@ class App extends Component {
                                                     get_correct_moves_data_color={this.get_correct_moves_data_color}
                                                     getComment={this.getComment}
                                                   />
+    const analysisPage = ({ match, history }) =>  <AnalysisPage 
+                                                    history={history} 
+                                                    match={match} 
+                                                  />
     const redirectToLogin = () => <Redirect to="/login" />
     const redirectToHome = () => <Redirect to="/" />
     const needLogin = (!this.state.username && !this.state.loadingVisible)
@@ -600,6 +605,7 @@ class App extends Component {
               <Route path="/openings/:op_index" render={opPage} />
               <Route path="/training/fullcolor/:color_number" render={colorTrainingPage} />
               <Route path="/training/:op_index" render={trainingPage} />
+              <Route path="/analysis/:color/:fen" render={analysisPage} />
               <Route path="/" render={() => <p>Error 404! Page not found</p>} />
             </Switch>
           </div>

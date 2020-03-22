@@ -129,6 +129,13 @@
   line-height: var(--uiElementHeight); /* = height*/
 }
 
+#moreButton{
+  flex-grow: 1;
+  /*flex-grow: 0.4;
+  max-width: var(--uiElementHeight);
+  padding: 0px;*/
+}
+
 .textBox{
   margin-top: var(--smallMargin);
   padding-left: 10px;
@@ -159,19 +166,6 @@
   margin-top: var(--smallMargin);
   margin-bottom: var(--smallMargin);
   line-height: var(--uiElementSmallHeight);
-}
-
-.hMenuButton{
-  margin: 0px !important; /* overwrite simpleButton */
-  flex-grow: 1;
-  /* TEXT */
-  color: var(--buttonText) !important; /* overwrite simpleButton */
-  font-family: "Material Icons" !important; /* overwrite simpleButton */
-  font-size: var(--iconsFontSize) !important; /* overwrite simpleButton */
-  text-align: center;
-  vertical-align: middle;
-  height: calc(var(--uiElementHeight) + var(--mediumMargin)) !important; /* overwrite simpleButton */
-  line-height: calc(var(--uiElementHeight) + var(--mediumMargin)) !important; /* overwrite simpleButton */ /* = height*/
 }
 
 
@@ -238,8 +232,11 @@
 
 .opsSeparator, #archivedVarsSeparator{
   width: 100%;
-  height: calc(var(--uiElementHeight) * 0.8);
-  line-height: calc(var(--uiElementHeight) * 0.8);
+  height: var(--uiElementMediumHeight);
+  line-height: var(--uiElementMediumHeight);
+  margin: 0px;
+  overflow: hidden;
+  text-align: center;
   /*border-bottom: solid 5px var(--hoverBackColor);*/
 }
 

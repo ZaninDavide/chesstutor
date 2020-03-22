@@ -30,9 +30,11 @@ class OpeningPage extends Component {
   }
 
   getArchivedSeparator(){
-    return  <div id="archivedVarsSeparator" key="archivedVarsSeparator"><p style={{textAlign: "center", color: "var(--impText)"}}>
-              <Translator text="Archived variations" />
-            </p></div>
+    return  <div id="archivedVarsSeparator" key="archivedVarsSeparator">
+              <span className="alertText">
+                <Translator text="Archived variations" />
+              </span>
+            </div>
   }
 
   getVariItems(vars, op_index) {
@@ -134,17 +136,27 @@ class OpeningPage extends Component {
         </button>
         
         <HangingMenu visible={this.state.hMenuVisible} close={this.hMenuClose}>
-          {/* EDIT BUTTON */}
-          <button className="simpleButton hMenuButton" onClick={() => this.setState({renameVariVisible: true, variNewName: "", hMenuVisible: false})}>
-            edit
+          {/* DELETE BUTTON */}
+          <button className="simpleButton hMenuButton" onClick={() => {this.hMenuClose(); this.openVariDeleteModal();}}>
+            <div className="hMenuButtonContent">
+              <div className="hMenuButtonIcon"><span className="alertText">delete</span></div>
+              <div className="hMenuButtonLabel"><span className="alertText">Delete</span></div>
+            </div>
           </button>
           {/* ARCHIVED BUTTON */}
           <button className="simpleButton hMenuButton" onClick={() => {this.hMenuClose(); this.switchArchivedThisVari();}}>
-              {thisVari ? (thisVari.archived ? "unarchive" : "archive") : null}
+            <div className="hMenuButtonContent">
+              <div className="hMenuButtonIcon">{thisVari ? (thisVari.archived ? "unarchive" : "archive") : null}</div>
+              <div className="hMenuButtonLabel">{thisVari ? (thisVari.archived ? "Unarchive" : "Archive") : null}</div>
+            </div>
+              
           </button>
-          {/* DELETE BUTTON */}
-          <button className="simpleButton hMenuButton" onClick={() => {this.hMenuClose(); this.openVariDeleteModal();}}>
-            <span style={{color: "var(--alertColor)"}}>delete</span>
+          {/* EDIT BUTTON */}
+          <button className="simpleButton hMenuButton" onClick={() => this.setState({renameVariVisible: true, variNewName: "", hMenuVisible: false})}>
+            <div className="hMenuButtonContent">
+              <div className="hMenuButtonIcon">edit</div>
+              <div className="hMenuButtonLabel">Rename</div>
+            </div>
           </button>
         </HangingMenu>
         

@@ -4,7 +4,7 @@ import OpItem from "../components/OpItem"
 import Translator from "../components/Translator"
 import HangingMenu from "../components/HangingMenu"
 import Modal from "../components/Modal"
-import ShareModal from "../components/ShareModal"
+import SendModal from "../components/SendModal"
 
 import generatePDF from "../generatePDF/generatePDF.js"
 
@@ -16,7 +16,7 @@ class OpsListPage extends Component {
       hMenuOpIndex: null,
       opDeleteVisible: false,
       opNewName: "",
-      shareVisible: false,
+      sendVisible: false,
     }
     this.getOpItems = this.getOpItems.bind(this)
     this.newOpButton = this.newOpButton.bind(this)
@@ -26,15 +26,15 @@ class OpsListPage extends Component {
     this.openOpDeleteModal = this.openOpDeleteModal.bind(this)
     this.renameThisOpening = this.renameThisOpening.bind(this)
     this.no_openings_style = this.no_openings_style.bind(this)
-    this.closeShareModal = this.closeShareModal.bind(this)
-    this.openShareModal = this.openShareModal.bind(this)
+    this.closeSendModal = this.closeSendModal.bind(this)
+    this.openSendModal = this.openSendModal.bind(this)
   }
 
   getSeparator(text, goTo){
     return  <div id={"opsSeparator" + text} className="opsSeparator" key={"opsSeparator" + text} onClick={() => goTo ? this.props.history.push(goTo) : null}>
-              <p style={{textAlign: "center", color: "var(--impText)"}}>
+              <span className={text === "Archived openings" ? "alertText" : "impText"}>
                 <Translator text={text} />
-              </p>
+              </span>
             </div>
   }
 
@@ -103,12 +103,12 @@ class OpsListPage extends Component {
     this.setState({opDeleteVisible: true})
   }
 
-  closeShareModal(){
-    this.setState({shareVisible: false})
+  closeSendModal(){
+    this.setState({sendVisible: false})
   }
 
-  openShareModal(){
-    this.setState({shareVisible: true})
+  openSendModal(){
+    this.setState({sendVisible: true})
   }
 
   renameThisOpening(){
@@ -147,9 +147,21 @@ class OpsListPage extends Component {
           </button>
         </div>
         <HangingMenu visible={this.state.hMenuVisible & this.props.ops.length > 0} close={this.hMenuClose}>
-          {/* EDIT BUTTON */}
-          <button className="simpleButton hMenuButton" onClick={() => this.setState({renameOpVisible: true, opNewName: "", hMenuVisible: false})}>
-            edit
+          {/* DELETE BUTTON */}
+          <button className="simpleButton hMenuButton" onClick={() => {this.hMenuClose(); this.openOpDeleteModal();}}>
+          <div className="hMenuButtonContent">
+              <div className="hMenuButtonIcon"><span className="alertText">delete</span></div>
+              <div className="hMenuButtonLabel"><span className="alertText">Delete</span></div>
+            </div>
+          </button>
+          {/* ARCHIVE BUTTON */}
+          <button className="simpleButton hMenuButton" 
+            onClick={() => {this.hMenuClose(); this.props.switchArchivedOpening(this.state.hMenuOpIndex);}}
+          >
+            <div className="hMenuButtonContent">
+              <div className="hMenuButtonIcon">{(this.state.hMenuOpIndex !== null && this.props.ops[this.state.hMenuOpIndex] !== undefined) ? (this.props.ops[this.state.hMenuOpIndex].archived ? "unarchive" : "archive") : null}</div>
+              <div className="hMenuButtonLabel">{(this.state.hMenuOpIndex !== null && this.props.ops[this.state.hMenuOpIndex] !== undefined) ? (this.props.ops[this.state.hMenuOpIndex].archived ? "Unarchive" : "Archive") : null}</div>
+            </div>
           </button> 
           {/* STATS BUTTON */}
           {/*<button className="simpleButton hMenuButton">emoji_events</button>*/}
@@ -161,23 +173,27 @@ class OpsListPage extends Component {
               this.printPDF(generatePDF(this.props.ops[this.state.hMenuOpIndex]))
             }}
           >
-            print
+            <div className="hMenuButtonContent">
+              <div className="hMenuButtonIcon">print</div>
+              <div className="hMenuButtonLabel">Print PDF</div>
+            </div>
           </button>
-          {/* SHARE BUTTON */}
+          {/* SEND BUTTON */}
           <button className="simpleButton hMenuButton"
-            onClick={() => {this.hMenuClose();  this.openShareModal();}}
-          >share
-          </button>
-          {/* ARCHIVE BUTTON */}
-          <button className="simpleButton hMenuButton" 
-            onClick={() => {this.hMenuClose(); this.props.switchArchivedOpening(this.state.hMenuOpIndex);}}
+            onClick={() => {this.hMenuClose();  this.openSendModal();}}
           >
-            {(this.state.hMenuOpIndex !== null && this.props.ops[this.state.hMenuOpIndex] !== undefined) ? (this.props.ops[this.state.hMenuOpIndex].archived ? "unarchive" : "archive") : null}
-          </button> 
-          {/* DELETE BUTTON */}
-          <button className="simpleButton hMenuButton" onClick={() => {this.hMenuClose(); this.openOpDeleteModal();}}>
-            <span style={{color: "var(--alertColor)"}}>delete</span>
+            <div className="hMenuButtonContent">
+              <div className="hMenuButtonIcon">send</div>
+              <div className="hMenuButtonLabel">Send</div>
+            </div>
           </button>
+          {/* EDIT BUTTON */}
+          <button className="simpleButton hMenuButton" onClick={() => this.setState({renameOpVisible: true, opNewName: "", hMenuVisible: false})}>
+            <div className="hMenuButtonContent">
+              <div className="hMenuButtonIcon">edit</div>
+              <div className="hMenuButtonLabel">Rename</div>
+            </div>
+          </button> 
         </HangingMenu>
         {/* DELETE OP MODAL */}
         <Modal 
@@ -190,10 +206,10 @@ class OpsListPage extends Component {
               <React.Fragment><h2><Translator text={"Delete permanently:"} />&nbsp;<span className="alertText">{this.props.ops[this.state.hMenuOpIndex].op_name}</span>{"?"}</h2></React.Fragment> : null
             }     
         </Modal>
-        {/* SHARE OP MODAL */}
-        <ShareModal 
-          visible={this.state.shareVisible} 
-          close={this.closeShareModal}
+        {/* SEND OP MODAL */}
+        <SendModal 
+          visible={this.state.sendVisible} 
+          close={this.closeSendModal}
           hMenuOpIndex={this.state.hMenuOpIndex}
           op={this.props.ops[this.state.hMenuOpIndex]}
           op_index={this.state.hMenuOpIndex}

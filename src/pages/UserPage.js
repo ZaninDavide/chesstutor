@@ -19,7 +19,7 @@ class userPage extends Component {
           <p><Translator text="Language"/>:&nbsp;{this.props.language}</p>
           <button 
             onClick={this.props.logout} 
-            className="roundButton" 
+            className="barButton" 
             style={{position: "absolute", bottom: "var(--mediumMargin)", marginBottom: 0, width: "calc(100% - 30px)", backgroundColor: "var(--hoverBackColor)", color: "var(--highlightedTextColor)"}}
           >log out</button>
         </div>

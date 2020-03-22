@@ -1,12 +1,12 @@
 import React, { Component } from "react"
-import Translator from "../components/Translator"
+import Translator from "./Translator"
 import "../styles/Modal.css"
 
-class ShareModal extends Component {
+class SendModal extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      shareNames: []
+      sendNames: []
     }
     this.getStyle = this.getStyle.bind(this);
     this.onDone = this.onDone.bind(this);
@@ -23,15 +23,15 @@ class ShareModal extends Component {
   }
 
   onDone(){
-    // this.props.share()
+    // this.props.send()
     this.props.close()
   }
 
   addName(){
     this.setState(old => {
-      let old_names = old.shareNames
+      let old_names = old.sendNames
 
-      let new_names = old.shareName.split(", ").join(",").split(",")
+      let new_names = old.sendName.split(", ").join(",").split(",")
       new_names.forEach(name => {
         if(name && old_names.indexOf(name) === -1){
           // old_names.push(name)
@@ -42,19 +42,19 @@ class ShareModal extends Component {
       });
 
       return {
-        shareName: "",
-        shareNames: old_names,
+        sendName: "",
+        sendNames: old_names,
       }
     })
   }
 
   deleteName(index){
     this.setState(old => {
-      let old_names = old.shareNames
+      let old_names = old.sendNames
       if(index < old_names.length){
         old_names.splice(index, 1)
         return {
-          shareNames: old_names,
+          sendNames: old_names,
         }
       }else{
         return {}
@@ -63,42 +63,44 @@ class ShareModal extends Component {
   }
 
   getNameItems(){
-    return this.state.shareNames.map((name, index) => {
-      return <div key={"shareNameItem_" + name} className="shareNameItem">
-        <button id="newShareButton" className="simpleButton iconText"
-          onClick={() => this.deleteName(index)}
-        >delete</button>{name}</div>
+    return this.state.sendNames.map((name, index) => {
+      return <div key={"sendNameItem_" + name} className="sendNameItem">
+          <button className="simpleButton iconText"
+            onClick={() => this.deleteName(index)}
+          >delete</button>
+          <div className="sendNameLabel">{name}</div>
+        </div>
     })
   }
 
   render() {
     return (
-      <div id="shareModal" className="modal" onClick={this.props.close} style={this.getStyle()}>
-        <div className="modalContent shareModalContent" onClick={e => e.stopPropagation()}>
+      <div id="sendModal" className="modal" onClick={this.props.close} style={this.getStyle()}>
+        <div className="modalContent sendModalContent" onClick={e => e.stopPropagation()}>
           <div className="insideModal" onClick={e => e.stopPropagation()}>
-    <h2><Translator text={"Share"} />&nbsp;<span style={{color: "var(--impButtonBack)"}}>{this.props.op ? this.props.op.op_name : ""}</span>&nbsp;<Translator text={"with"} />{":"}</h2>
-            <input type="text" id="shareTextbox"
+    <h2><Translator text={"Send"} />&nbsp;<span style={{color: "var(--impButtonBack)"}}>{this.props.op ? this.props.op.op_name : ""}</span>&nbsp;<Translator text={"to"} />{":"}</h2>
+            <input type="text" id="sendTextbox"
                 className="textBox"
-                value={this.state.shareName}
-                onChange={e => {this.setState({shareName: e.target.value})}}
+                value={this.state.sendName}
+                onChange={e => {this.setState({sendName: e.target.value})}}
                 onKeyPress={e => {
                   if (e.which === 13 || e.keyCode === 13) {
                     this.addName()
                   }
                 }}
             />
-            <button id="newShareButton" className="simpleButton iconText" 
+            <button className="simpleButton iconText newSendButton" 
               onClick={this.addName}
             >add</button>
-            <div id="shareNamesList">
+            <div id="sendNamesList">
               {this.getNameItems()}
             </div>
           </div>
           <div className="modalButtons" style={{textAlign: "right"}}>
             <button className="modalButton simpleButton iconText"
               onClick={this.onDone}
-              disabled={this.state.shareNames.length === 0}
-            >share</button>
+              disabled={this.state.sendNames.length === 0}
+            >send</button>
             <button className="simpleButton modalBackButton"
               onClick={() => {
                   this.props.close()
@@ -112,4 +114,4 @@ class ShareModal extends Component {
 
 }
 
-export default ShareModal
+export default SendModal

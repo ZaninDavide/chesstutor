@@ -87,6 +87,7 @@
     width: 100%;
     padding-top: calc(var(--mediumMargin) - var(--smallMargin));
     overflow-y: auto;
+    padding-bottom: var(--smallMargin);
 }
 
 .insideCommentModal{
@@ -130,19 +131,71 @@
     z-index: 1;
 
     width: 100vw;
-    height: calc(var(--uiElementHeight) + var(--mediumMargin));
 
-    display: flex;
-    overflow: hidden; /* avoids buttons to display in the rounded corner area */
+    /*display: flex;*/
+    overflow-x: hidden; /* avoids buttons to display in the rounded corner area */
 
-    border-top: 10px;
     border-radius: var(--borderRadius) var(--borderRadius) 0px 0px;
     
-    transition-property: background-color, margin-bottom;
-    transition-timing-function: linear, ease-in-out;
+    transition-property: margin-bottom;
+    transition-timing-function: cubic-bezier(0.455, 0.03, 0.515, 0.955), ease-in-out;
     transition-duration: .2s, .2s;
-    will-change: background-color, margin-bottom;
+    will-change: margin-bottom;
+
+    max-height: 80vh;
+    overflow-y: auto;
     
+    padding-top: var(--smallMargin);
+}
+
+.hMenuButton{
+    width: 100%;
+    margin: 0px !important; /* overwrite simpleButton */
+    padding: 0px !important; /* overwrite simpleButton */
+    height: 100% !important;
+    /* BORDERS */
+    border: 0px;
+    border-radius: 0px;
+}
+
+.hMenuButtonContent{
+    display: grid;
+    grid-template-columns: auto 1fr;
+    grid-template-areas: "hMenuButtonIcon hMenuButtonLabel";
+    width: 100%;
+    height: var(--uiElementHeight);
+}
+
+.hMenuButtonIcon{
+    grid-area: "hMenuButtonIcon";
+    font-family: "Material Icons" !important; /* overwrite simpleButton */
+    font-size: var(--iconsFontSize) !important; /* overwrite simpleButton */
+    width: calc(var(--uiElementHeight));
+    margin-left: var(--mediumMargin);
+    margin-right: var(--mediumMargin);
+    height: var(--uiElementHeight);
+}
+
+.hMenuButtonLabel{
+    grid-area: "hMenuButtonLabel";
+    text-align: left;
+    line-height: var(--uiElementHeight);
+    /* TEXT */
+    color: var(--secondaryText);
+    font-family: var(--textFont);
+    font-weight: var(--textWeight);
+    font-size: var(--textSize);
+}
+
+.hMenuBack{
+    position: fixed;
+    left:0px;
+    width: 100vw;
+    height: 100vh;
+    z-index: 1;
+    transition-property: background-color;
+    transition-duration: 1s;
+    will-change: background-color;
 }
 
 .modalButton{
@@ -161,45 +214,41 @@
     float: left;
 }
 
-
-.hMenuBack{
-    position: fixed;
-    left:0px;
-    width: 100vw;
-    height: 100vh;
-    transition-property: background-color;
-    transition-property: 0.1s;
-    z-index: 1;
-    will-change: background-color;
-}
-
 .modalButtons{
-    margin: 0px;
+    margin-top: var(--smallMargin);
+    margin-bottom: 0px;
+    margin-left: 0px;
+    margin-right: 0px;
 }
 
-#newShareButton{
-    padding: 0;
-    margin: 0;
+.newSendButton{
+    padding: 0 !important;
     width: var(--uiElementHeight);
     height: var(--uiElementHeight);
     line-height: var(--uiElementHeight);
 }
 
-#shareTextbox{
+#sendTextbox{
     margin-left: var(--mediumMargin);
     margin-right: var(--smallMargin);
     width: calc(100% - 2 * var(--mediumMargin) - 10px - var(--uiElementHeight) - var(--smallMargin)); /* 10px = padding */
     margin-top: calc((var(--uiElementHeight) - var(--uiElementSmallHeight)) / 2);
 }
 
-#shareNamesList{
+#sendNamesList{
     width: 100%;
     display: grid;
 }
 
-.shareNameItem{
-    /*height: var(--uiElementHeight);*/
+.sendNameItem{
+    display: grid;
+    grid-template-columns: auto 1fr;
     line-height: var(--uiElementHeight);
     margin-left: var(--mediumMargin);
     margin-right: var(--mediumMargin);
+}
+
+.sendNameLabel{
+  text-overflow: ellipsis;
+  line-height: var(--uiElementHeight);
 }

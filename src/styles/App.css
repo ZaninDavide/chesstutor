@@ -4,6 +4,7 @@
 
 .layout {
   font-family: "Quicksand", "Segoe UI";
+  --textFont: "Quicksand", "Segoe UI";
   --smallTextSize: 14px;
   --textSize: 16px;
   --mediumTextSize: 18px;
@@ -18,9 +19,10 @@
   --borderSize: 1px;
   --borderRadius: 5px;
   --uiElementHeight: 50px; /* like buttons height */
+  --uiElementMediumHeight: 40px; /* like wide buttons height */
   --uiElementSmallHeight: 28px; /* like textBox height */
   --headerHeight: calc(var(--uiElementHeight) + var(--smallMargin) * 2);
-  --iconsFontSize: 30px; /* 26px */
+  --iconsFontSize: 28px; /* 26px */
 }
 
 .defaultTheme {
@@ -44,7 +46,7 @@
 
   --impText: #3cf17e; /*#a3f7bf*/
   --primaryText: white;
-  --secondaryText: #a2a099;
+  --secondaryText: hsl(0, 0%, 72%); /*a2a099*/
 
   --buttonText: rgb(245, 245, 245);
   --hoverBackColor: rgba(100, 100, 100, 0.3);
@@ -56,32 +58,6 @@
   --hoverAlertColor: #b63737; /*#f06b65*/
 
   --headerBack: #1d1d1b;
-}
-
-.boardStandardTheme {
-  --blackColor: rgb(121, 92, 69);
-  --whiteColor: rgb(204, 178, 95);
-}
-
-.layout_low_vision {
-  font-family: "Quicksand", "Segoe UI";
-  --smallTextSize: 24px;
-  --textSize: 24px;
-  --mediumTextSize: 24px;
-  --titleSize: 27px;
-  --textWeight: 500;
-  --mediumWeight: 500;
-  --titleWeight: 500;
-  --titleFont: "Muli", "Arial";
-  --smallMargin: 5px;
-  --mediumMargin: 15px;
-  --largeMargin: 25px;
-  --borderSize: 1px;
-  --borderRadius: 25px;
-  --uiElementHeight: 50px;
-  --uiElementSmallHeight: 28px;
-  --headerHeight: 70px;
-  --iconsFontSize: 40px;
 }
 
 /* ---------------------------- CONTAINERS ---------------------------- */
@@ -116,6 +92,7 @@
   overflow: hidden;
   /* COLORS */
   background-color: var(--backColor);
+  background-image: linear-gradient(var(--backColor) 50%, #131311); /*151513*/
   /* TEXT */
   color: var(--secondaryText);
   font-weight: var(--textWeight);
@@ -241,6 +218,7 @@
   #sheet {
     column-count: 2;
     height: 100%;
+    font-family: "Segoe UI", "Arial", "Calibri", "Roboto";
   }
 
   #sheet p{
@@ -342,11 +320,8 @@ button.roundButton {
   border-radius: calc(var(--uiElementHeight) / 2);
   border: 0px;
   /* TEXT */
-  /*color: var(--impButtonText);*/
   font-weight: var(--textWeight);
   font-size: var(--mediumTextSize);
-  /* COLORS */
-  /*background-color: var(--impButtonBack);*/
   /* SPACES */
   margin-top: var(--smallMargin);
   margin-bottom: var(--smallMargin);
@@ -367,8 +342,6 @@ button.roundButton {
 }
 
 button.roundButton:hover:enabled {
-  /* COLORS */
-  /*background-color: var(--hoverImpButtonBack);*/
   /* TEXT */
   text-align: center;
   /* SHADOWS */
@@ -394,23 +367,48 @@ button.simpleButton{
   border: 0px;
   border-radius: 0px;
   /* SPACES */
-  margin-top: var(--smallMargin);
-  margin-bottom: var(--smallMargin);
+  /*margin-top: var(--smallMargin);*/
+  /*margin-bottom: var(--smallMargin);*/
+  margin-top: 0px;
+  margin-bottom: 0px;
   margin-left: var(--smallMargin);
   margin-right: var(--smallMargin);
   padding-left: var(--mediumMargin);
   padding-right: var(--mediumMargin);
   /* TRANSITIONS */
-  transition-property: all;
+  /*transition-property: background-color;
   transition-duration: 50ms;
   transition-timing-function: cubic-bezier(0.3, 0, 0.7, 1);
-  transition-delay: 0s;
+  transition-delay: 0s;*/
 }
 
 button.simpleButton:hover:enabled {
   /* COLORS */
   background-color: var(--hoverBackColor);
 }
+
+.barButton{
+  width: calc(100% - 2*var(--mediumMargin));
+  min-width: var(--uiElementHeight);
+  height: var(--uiElementMediumHeight);
+  line-height: var(--uiElementMediumHeight); /* = height*/
+
+  margin-left: var(--mediumMargin);
+  margin-right: var(--mediumMargin);
+  margin-top: var(--smallMargin);
+
+  -moz-box-shadow: 0px 0px 1px rgba(0, 0, 0,0.15);
+  -webkit-box-shadow: 0px 0px 1px rgba(0, 0, 0, .15);
+  box-shadow: 0px 0px 1px rgba(0, 0, 0, .15);
+
+  border: 0px;
+  border-radius: var(--borderRadius);
+  
+  color: var(--buttonText);
+  font-weight: var(--textWeight);
+  font-size: var(--mediumTextSize);
+}
+
 
 button:disabled, button[disabled]{
   color: var(--hoverBackColor);
@@ -484,4 +482,8 @@ a {
 
 .chessText{
   font-family: "Segoe UI Symbol" , Arial, Helvetica, sans-serif;
+}
+
+.impText{
+  color: var(--impText);
 }

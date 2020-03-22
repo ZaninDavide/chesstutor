@@ -40,7 +40,7 @@ class NewOpPage extends Component {
             <button className="simpleButton" onClick={() => this.setStudyAs("white")} style={{marginRight: 0, color: this.getStudyAsButtonColor("white")}}><Translator text={"White"}/></button>
             <button className="simpleButton" onClick={() => this.setStudyAs("black")} style={{marginLeft:  0, color: this.getStudyAsButtonColor("black")}}><Translator text={"Black"}/></button>
           </div>
-          <button onClick={this.createButtonClick} className="roundButton" style={{position: "absolute", bottom: "var(--mediumMargin)", marginBottom: 0, width: "calc(100% - 30px)"}}><Translator text={"Create"} /></button>
+          <button onClick={this.createButtonClick} className="barButton impButton" style={{position: "absolute", bottom: "var(--mediumMargin)", marginBottom: 0, width: "calc(100% - 30px)"}}><Translator text={"Create"} /></button>
         </div>
       </React.Fragment>
     )
