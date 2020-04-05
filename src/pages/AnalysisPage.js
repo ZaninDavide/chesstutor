@@ -4,9 +4,9 @@ import Board from "../components/Board"
 import Translator from "../components/Translator"
 
 class TrainingPage extends Component {
-  constructor(props) {
+  /*constructor(props) {
     super(props)
-  }
+  }*/
 
   render() {
     const color = this.props.match.params.color
@@ -15,7 +15,7 @@ class TrainingPage extends Component {
         <Header mainButtonText="keyboard_backspace" title={<Translator text={"Analysis"} />} />
         <Board
           history={this.props.history}
-          buttons={["back"]}
+          buttons={["back", "forward_next"]}
           rotation={color}
           playColor={"both"}
           allowCommentEdit={false}

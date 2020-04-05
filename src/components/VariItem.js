@@ -6,20 +6,26 @@ class VariItem extends Component {
   /*constructor(props) {
     super(props)
   }*/
-
   render() {
-    return (
+  const thisVari = this.props.vari
+  return (
       <div 
-        className="variItem"
+        className={"variItem" + (thisVari.vari_subname ? " subvariItem" : "")}
         onContextMenu={e => {
           e.preventDefault();
           this.props.hMenuOpen(this.props.vari_index)
         }}
       >
         <Link to={"/openings/" + this.props.op_index + "/" + this.props.vari_index} className="variItemContent">
-          <h2>{this.props.vari.vari_name}</h2>
+          {(() => {
+            if(thisVari.vari_subname){
+              return <h2>{thisVari.vari_subname + ") " + thisVari.vari_name}</h2>
+            }else{
+              return <h2>{thisVari.vari_name}</h2>
+            }
+          })()}
           {<p className="smallText">
-            {this.props.vari.moves.length} <Translator text={this.props.vari.moves.length === 1 ? "move" : "moves"} />
+            {thisVari.moves.length} <Translator text={thisVari.moves.length === 1 ? "move" : "moves"} />
           </p>}
         </Link>
       </div>

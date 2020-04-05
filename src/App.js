@@ -65,6 +65,7 @@ class App extends Component {
     this.is_move_allowed_color = this.is_move_allowed_color.bind(this)
     this.setDrawBoardPDF = this.setDrawBoardPDF.bind(this)
     this.getDrawBoardPDF = this.getDrawBoardPDF.bind(this)
+    this.setVariSubname = this.setVariSubname.bind(this)
   }
 
   componentDidMount(){
@@ -166,11 +167,12 @@ class App extends Component {
   }
 
   /* ---------------------------- OPENINGS ---------------------------- */
-  newOpening(op_name = "New opening", op_color = "white") {
+  newOpening(op_name = "New opening", op_color = "white", op_subname = undefined) {
     // generates a new opening
     // WARN: it doesn't add it to user_ops. To do that use addOpening
     return {
       op_name: op_name,
+      op_subname: op_subname,
       op_color: op_color,
       variations: [],
       comments: {},
@@ -193,8 +195,8 @@ class App extends Component {
     }
   }
 
-  createOp(new_op_name, studyAs){
-    return this.addOpening(this.newOpening(new_op_name, studyAs))
+  createOp(new_op_name, studyAs, new_op_subname = undefined){
+    return this.addOpening(this.newOpening(new_op_name, studyAs, new_op_subname))
   }
 
   deleteOpening(op_index){
@@ -229,7 +231,7 @@ class App extends Component {
 
   /* ---------------------------- VARIATIONS ---------------------------- */
 
-  newVariation(vari_name = "Classic", vari_moves = []){
+  newVariation(vari_name = "Classic", vari_moves = [], vari_subname = undefined){
     // generates a new variation (returns a vari_object)
     // WARN: it doesn't add it. To do that use addVariation
     return {
@@ -237,6 +239,7 @@ class App extends Component {
       vari_score: 0,
       moves: vari_moves,
       archived: false,
+      vari_subname: vari_subname,
     }
   }
 
@@ -254,8 +257,8 @@ class App extends Component {
     }
   }
 
-  createVari(new_vari_name, vari_moves, op_index){
-    return this.addVariation(this.newVariation(new_vari_name, vari_moves), op_index)
+  createVari(new_vari_name, vari_moves, op_index, new_vari_subname){
+    return this.addVariation(this.newVariation(new_vari_name, vari_moves, new_vari_subname), op_index)
   }
 
   switchVariArchived(op_index, vari_index){
@@ -292,6 +295,18 @@ class App extends Component {
     })
   }
 
+  setVariSubname(op_index, vari_index, vari_new_subname){
+    this.setState(old => {
+      let new_user_ops = old.user_ops
+      new_user_ops[op_index].variations[vari_index].vari_subname = vari_new_subname
+
+      this.serverRequest("POST", "/setVariationSubname/" + op_index + "/" + vari_index, {new_subname: vari_new_subname})
+      return {user_ops: new_user_ops}
+    })
+  }
+
+  /* ---------------------------- COMMENTS ---------------------------- */
+
   editComment(op_index, json_moves, text){
     this.setState(old => {
       let new_user_ops = old.user_ops
@@ -313,6 +328,8 @@ class App extends Component {
     });
     return this.state.user_ops[op_index].comments[str]    
   }
+
+  /* ---------------------------- PDF ---------------------------- */
 
   setDrawBoardPDF(op_index, json_moves, bool){
     this.setState(old => {
@@ -521,7 +538,9 @@ class App extends Component {
                                               match={match} 
                                               switchVariArchived={this.switchVariArchived}
                                               renameVari={this.renameVari}
+                                              setVariSubname={this.setVariSubname}
                                               deleteVari={this.deleteVari}
+                                              setVariSubname={this.setVariSubname}
                                             />
     const trainingPage = ({ match, history }) =>  <TrainingPage 
                                                     history={history} 

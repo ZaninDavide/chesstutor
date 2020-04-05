@@ -4,6 +4,7 @@ import VariItem from "../components/VariItem"
 import Translator from "../components/Translator"
 import HangingMenu from "../components/HangingMenu"
 import Modal from "../components/Modal"
+import RenameVariModal from "../components/RenameVariModal"
 
 class OpeningPage extends Component {
   constructor(props) {
@@ -41,24 +42,33 @@ class OpeningPage extends Component {
     if (vars.length > 0) {
       let not_archived = []
       let archived = []
-      // populate not_archived and archived
-      vars.map((cur, index) => {
+      let sortedIndices = vars.map((c, i) => {return {vari_name: c.vari_name, vari_subname: c.vari_subname, index: i}})
+      sortedIndices.sort((a, b) => {
+        if(a.vari_name === b.vari_name){
+          if(a.vari_subname === undefined) return -1
+          if(b.vari_subname === undefined) return  1
+          return a.vari_subname.localeCompare(b.vari_subname)
+        }
+        return a.vari_name.localeCompare(b.vari_name);
+      })
+      sortedIndices.forEach(cur => {
+        // populate not_archived and archived
         let item = <VariItem 
-          vari={cur} 
-          vari_index={index} 
+          vari={vars[cur.index]} 
+          vari_index={cur.index} 
           op_index={op_index}
           history={this.props.history} 
-          key={`variItem_${op_index}_${index}`} 
+          key={`variItem_${op_index}_${cur.index}`} 
           switchVariArchived={this.props.switchVariArchived}
           hMenuOpen={this.hMenuOpen}
         />
-        if(cur.archived){ // add item to archived
+        if(vars[cur.index].archived){ // add item to archived
           archived.push(item)
         }else{ // add item to not_archived
           not_archived.push(item)
         }
-        return true
-      })
+      });
+      
       // connect all together: not_archived + separator + archived
       let all = not_archived
       if(archived.length > 0){
@@ -95,9 +105,10 @@ class OpeningPage extends Component {
     this.setState({variDeleteVisible: true})
   }
 
-  renameThisVari(){
+  renameThisVari(variNewName, variNewSubname){
     const op_index = this.props.match.params.op_index
-    this.props.renameVari(op_index, this.state.hMenuVariIndex, this.state.variNewName)
+    this.props.renameVari(op_index, this.state.hMenuVariIndex, variNewName)
+    this.props.setVariSubname(op_index, this.state.hMenuVariIndex, variNewSubname)
   }
 
   deleteThisVari(){
@@ -172,33 +183,12 @@ class OpeningPage extends Component {
             }     
         </Modal>
         {/* RENAME VARI MODAL */}
-        <Modal 
-          visible={this.state.renameVariVisible} 
-          close={() => this.setState({renameVariVisible: false})} 
-          onDoneClick={this.renameThisVari} 
-          disabledDoneButton={this.state.variNewName.length === 0}
-        >
-          { this.state.renameVariVisible ? 
-            <React.Fragment>
-              <h2>
-                <Translator text={"Rename"} />&nbsp;
-                <span style={{color: "var(--impButtonBack)"}}>{thisVari.vari_name}</span>&nbsp;
-                <Translator text={"to:"} />&nbsp;
-              </h2>
-              <input type="text" 
-                className="textBox renameTextBox"
-                value={this.state.variNewName} 
-                onChange={e => this.setState({variNewName: e.target.value})}
-                onKeyPress={e => {
-                  if (e.which === 13 || e.keyCode === 13) {
-                    this.renameThisVari()
-                    this.setState({renameVariVisible: false})
-                  }
-                }}
-              />
-            </React.Fragment> : null
-          }
-        </Modal>
+        {this.state.renameVariVisible ? <RenameVariModal
+          visible={this.state.renameVariVisible}
+          close={() => this.setState({renameVariVisible: false})}
+          thisVari={thisVari}
+          renameThisVari={this.renameThisVari}
+        /> : null /*i do this so that every time you open it the modal refreshes and takes new default values*/}
       </React.Fragment>
     )
   }

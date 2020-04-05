@@ -2,11 +2,12 @@ import React, { Component } from "react"
 //import Chess from "chess.js"
 import Chess from "../chessjs-chesstutor/chess.js"
 
-import Modal from "../components/Modal"
+//import Modal from "../components/Modal"
 import Translator from "../components/Translator"
 import PromotionModal from "../components/PromotionModal"
 import CommentModal from "../components/CommentModal"
 import HelpModal from "../components/HelpModal"
+import NewVariModal from "./NewVariModal.js"
 
 // import boardSVG from "../files/chessboard.svg"
 const darkBoardSVG = "/files/chessboard_dark.svg"
@@ -145,6 +146,7 @@ class Board extends Component {
       commentModalVisible: false,
       helpModalVisible: false,
       helpModalCorrectMoves: [],
+      moves_forward: [],
     }
     /* functions */
     this.newGame = this.newGame.bind(this)
@@ -171,6 +173,7 @@ class Board extends Component {
     this.make_move = this.make_move.bind(this)
     this.back_button_click = this.back_button_click.bind(this)
     this.is_my_turn = this.is_my_turn.bind(this)
+    this.forward_next_button_click = this.forward_next_button_click.bind(this)
     /* refs */
     this.selectedPiece = React.createRef()
 
@@ -211,25 +214,11 @@ class Board extends Component {
           </div>
         </div>
         {/* CREATE NEW VARIATION MODAL */}
-        <Modal 
-          visible={this.state.variNameModalVisible} 
-          close={this.closeVariNameModal} 
-          onDoneClick={this.createThisVariation} 
-          disabledDoneButton={this.state.new_vari_name.length === 0}
-          key="new_variation_modal"
-        >
-          <h2><Translator text={"New variation name"} />:</h2>
-          <input type="text" 
-            className="textBox newVariNameTextBox"
-            value={this.state.new_vari_name} 
-            onChange={e => this.setState({new_vari_name: e.target.value})}
-            onKeyPress={e => {
-              if (e.which === 13 || e.keyCode === 13) {
-                this.createThisVariation()
-              }
-            }}
-          />
-        </Modal>
+        <NewVariModal 
+          close={this.closeVariNameModal}
+          visible={this.state.variNameModalVisible}
+          createThisVariation={this.createThisVariation}
+        />
         {/* CHOOSE PROMOTION PIECE MODAL */}
         <PromotionModal 
           color={this.state.game.turn()}
@@ -269,7 +258,7 @@ class Board extends Component {
     
     if(this.props.startFen){
       const fen = this.props.startFen.split("_").join("/")
-      const turn = this.state.game.load(fen)
+      /*const turn = */this.state.game.load(fen)
       this.forceUpdate()
     }
 
@@ -357,8 +346,24 @@ class Board extends Component {
         })
         // store moves_list to return it later
         res(moves_list)
-        return {
-          json_moves: moves_list
+
+        // if the move is not the one you came back from clear the history otherwise remove that move from the history
+        let clearMovesForward = true
+        if(old.moves_forward[0]){
+          clearMovesForward = move.san !== old.moves_forward[0].san
+        }
+        if(clearMovesForward){
+          return {
+            json_moves: moves_list,
+            moves_forward: []
+          }
+        }else{
+          let new_moves_forward = old.moves_forward
+          new_moves_forward.shift() // remove first
+          return {
+            json_moves: moves_list,
+            moves_forward: new_moves_forward,
+          }
         }
       })
     })
@@ -428,13 +433,16 @@ class Board extends Component {
   /* I can undo if there is some move to undo */
     if(this.state.json_moves.length > 0){
       // actually undo
-      this.state.game.undo()
+      let move = this.state.game.undo()
       // pop the move out of the list of all moves of the game 
       this.setState(old => {
+        // add this move to moves_forward
+        // remove it from json_moves
         let moves_list = old.json_moves
         moves_list.pop()
         return{
-          json_moves: moves_list
+          json_moves: moves_list,
+          moves_forward: [move, ...old.moves_forward]
         }
       })
     }else{
@@ -731,6 +739,15 @@ class Board extends Component {
     }
   }
 
+  forward_next_button_click(){
+    if(this.state.moves_forward.length > 0){
+      let move_data = this.state.moves_forward[0]
+      if(move_data !== null){
+        this.make_move(move_data)
+      }
+    }
+  }
+
   back_button_click(){
     const before_turn = this.state.game.turn()
     this.try_undo()
@@ -782,7 +799,7 @@ class Board extends Component {
         b_objects.push(
           <button id="moreButton" key="moreButton" className="simpleButton boardButton" 
             onClick={() => {
-              this.props.history.push("/analysis/white/" + this.state.game.fen().split("/").join("_"))
+              this.props.history.push("/analysis/" + this.props.rotation + "/" + this.state.game.fen().split("/").join("_"))
             }}
           >more_vert</button>
         )
@@ -820,6 +837,15 @@ class Board extends Component {
           <button id="helpButton" key="helpButton" className="simpleButton boardButton" 
             onClick={this.help_button_click} 
             disabled={!this.is_my_turn()}
+          >keyboard_arrow_right</button>
+        )
+      }
+      // FORWARD NEXT
+      if(this.props.buttons.indexOf("forward_next") !== -1){
+        b_objects.push(
+          <button id="forwardNextButton" key="forwardNextButton" className="simpleButton boardButton" 
+            onClick={this.forward_next_button_click} 
+            disabled={this.state.moves_forward.length < 1}
           >keyboard_arrow_right</button>
         )
       }
@@ -935,9 +961,11 @@ class Board extends Component {
     this.setState({variNameModalVisible: true})
   }
 
-  createThisVariation(){
-    /*let vari_index = */this.props.createVari(this.state.new_vari_name, this.state.json_moves, this.props.op_index)
-    this.props.history.push("/openings/" + this.props.op_index)
+  createThisVariation(name, subname = undefined){
+    if(name.length !== 0){
+      /*let vari_index = */this.props.createVari(name, this.state.json_moves, this.props.op_index, subname)
+      this.props.history.push("/openings/" + this.props.op_index)
+    }
   }
 
   onBoardDataClick(){

@@ -140,8 +140,11 @@
   margin-top: var(--smallMargin);
   padding-left: 10px;
   border: 0px;
+
   height: var(--uiElementSmallHeight);
   width: calc(100% - 10px); /*10px = padding-left;*/
+  /*max-width: 400px;*/
+
   background-color: var(--hoverBackColor);
   color: var(--primaryText);
   font-size: var(--textSize);
@@ -248,10 +251,48 @@
   background-color: var(--hoverBackColor);
 }
 
-.renameTextBox, .newVariNameTextBox{
+.renameTextBox{
   margin-left: var(--mediumMargin);
   margin-right: var(--mediumMargin);
   width: calc(100% - 2 * var(--mediumMargin) - 10px); /* 10px = padding */
+}
+
+#newVariNameTextBox, #renameVariTextbox{
+  margin-left: var(--mediumMargin);
+  margin-right: 0;
+  width: calc(100% - 2 * var(--mediumMargin) - 10px - var(--uiElementHeight)); /* 10px = padding */
+  border-top-left-radius: var(--borderRadius);
+  border-bottom-left-radius: var(--borderRadius);
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+}
+
+#subNameSelector{
+  margin-left: 0;
+  margin-right: var(--mediumMargin);
+  width: var(--uiElementHeight);
+
+  height: calc(var(--uiElementSmallHeight) + 2px); /* 2px = textbox padding */
+  position: relative;
+
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  border-top-right-radius: var(--borderRadius);
+  border-bottom-right-radius: var(--borderRadius);
+  border: 0;
+  border-left: var(--smallMargin) solid var(--backColor);
+
+  padding-left: 2px;
+
+  outline: none;
+  background-color: var(--hoverBackColorNonAlpha);
+  color: var(--buttonText);
+  font-size: var(--textSize);
+  font-family: var(--textFont);
+}
+
+.subNameOption, select:active, select:hover {
+  outline: none;
 }
 
 #loadingScreen{
@@ -271,4 +312,20 @@
 
 #opsSeparatorWhite, #opsSeparatorBlack{
   -webkit-tap-highlight-color: var(--hoverBackColor)
+}
+
+#logoutButton{
+  bottom: var(--mediumMargin);
+  background-color: var(--hoverBackColor);
+  color: var(--alertColor);
+}
+
+#logoutButton:hover{
+  background-color: var(--alertColor);
+  color: var(--backColor);
+}
+
+#logoutButton:hover:focus{
+  background-color: var(--hoverAlertColor);
+  color: var(--backColor);
 }
