@@ -2,7 +2,7 @@ import React, { Component } from "react"
 import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom"
 
 import OpeningPage from "./pages/OpeningPage"
-import CreateVariPage from "./pages/CreateVariPage"
+// import CreateVariPage from "./pages/CreateVariPage"
 import OpsListPage from "./pages/OpsListPage"
 import VariationPage from "./pages/VariationPage"
 import NewOpPage from "./pages/NewOpPage"
@@ -66,6 +66,7 @@ class App extends Component {
     this.setDrawBoardPDF = this.setDrawBoardPDF.bind(this)
     this.getDrawBoardPDF = this.getDrawBoardPDF.bind(this)
     this.setVariSubname = this.setVariSubname.bind(this)
+    this.sendOpening = this.sendOpening.bind(this)
   }
 
   componentDidMount(){
@@ -94,7 +95,7 @@ class App extends Component {
 
       this.setState(() => {
         let ops = userData.user_ops
-        console.log(ops)
+        // console.log(ops)
         // NEW USER
         // if this is a new user give it the default openings 
         if (ops === undefined){
@@ -107,7 +108,8 @@ class App extends Component {
           user_ops: ops,
           _id: userData._id,
           username: userData.email,
-          language: userData.language,
+          language: userData.language || "eng",
+          inbox: userData.inbox,
           loadingVisible: false, // LOADING SCREEN NOW HIDDEN
         }
       })
@@ -164,6 +166,10 @@ class App extends Component {
   rememberMeLocally(username, bearer){
     localStorage.setItem("username", username);
     localStorage.setItem("bearer", bearer);
+  }
+
+  sendOpening(to_user_names, op_index){
+    this.serverRequest("POST", "/sendOpening", {emails: to_user_names, op: this.state.user_ops[op_index]})
   }
 
   /* ---------------------------- OPENINGS ---------------------------- */
@@ -528,8 +534,9 @@ class App extends Component {
                                             ops={this.state.user_ops} 
                                             history={history}
                                             deleteOpening={this.deleteOpening} 
-                                            switchArchivedOpening={this.switchArchivedOpening}
                                             renameOp={this.renameOp}
+                                            sendOpening={this.sendOpening}
+                                            switchArchivedOpening={this.switchArchivedOpening}
                                             username={this.state.username}
                                           />
     const opPage = ({ match, history }) =>  <OpeningPage 
@@ -540,7 +547,6 @@ class App extends Component {
                                               renameVari={this.renameVari}
                                               setVariSubname={this.setVariSubname}
                                               deleteVari={this.deleteVari}
-                                              setVariSubname={this.setVariSubname}
                                             />
     const trainingPage = ({ match, history }) =>  <TrainingPage 
                                                     history={history} 
@@ -586,7 +592,8 @@ class App extends Component {
                                                 match={match} 
                                                 logout={this.logout}
                                                 username={this.state.username} 
-                                                language={this.state.language} 
+                                                language={this.state.language}
+                                                inbox={this.state.inbox}
                                               />
     const colorTrainingPage = ({ match, history }) =>  <ColorTrainingPage 
                                                     history={history} 
@@ -603,8 +610,9 @@ class App extends Component {
                                                   />
     const redirectToLogin = () => <Redirect to="/login" />
     const redirectToHome = () => <Redirect to="/" />
-    const needLogin = (!this.state.username && !this.state.loadingVisible)
+    let needLogin = (!this.state.username && !this.state.loadingVisible)
 
+    let noOpenings = this.state.user_ops.length === 0
 
     return (
       <LanguageProvider lang={this.state.language}>
@@ -618,12 +626,11 @@ class App extends Component {
               <Route path="/login" render={!needLogin ? redirectToHome : loginPage} exact/>
               <Route path="/profile" render={needLogin ? redirectToLogin : userPage} exact/>
               <Route path="/newOpening" render={newOpPage} />
-              <Route path="/createVariation" render={CreateVariPage} />
               <Route path="/newVariation/:op_index" render={newVariPage} />
-              <Route path="/openings/:op_index/:vari_index" render={variPage} />
-              <Route path="/openings/:op_index" render={opPage} />
-              <Route path="/training/fullcolor/:color_number" render={colorTrainingPage} />
-              <Route path="/training/:op_index" render={trainingPage} />
+              <Route path="/openings/:op_index/:vari_index" render={noOpenings ? redirectToHome : variPage} />
+              <Route path="/openings/:op_index" render={/*noOpenings ? redirectToHome : */opPage} />
+              <Route path="/training/fullcolor/:color_number" render={noOpenings ? redirectToHome : colorTrainingPage} />
+              <Route path="/training/:op_index" render={noOpenings ? redirectToHome : trainingPage} />
               <Route path="/analysis/:color/:fen" render={analysisPage} />
               <Route path="/" render={() => <p>Error 404! Page not found</p>} />
             </Switch>

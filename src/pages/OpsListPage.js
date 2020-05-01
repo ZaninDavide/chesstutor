@@ -213,6 +213,7 @@ class OpsListPage extends Component {
           hMenuOpIndex={this.state.hMenuOpIndex}
           op={this.props.ops[this.state.hMenuOpIndex]}
           op_index={this.state.hMenuOpIndex}
+          sendOpening={this.props.sendOpening}
         />
         {/* RENAME OP MODAL */}
         <Modal 

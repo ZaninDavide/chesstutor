@@ -23,7 +23,9 @@ class SendModal extends Component {
   }
 
   onDone(){
-    // this.props.send()
+    if(this.state.sendNames.length > 0){
+      this.props.sendOpening(this.state.sendNames, this.props.op_index)
+    }
     this.props.close()
   }
 
@@ -78,7 +80,7 @@ class SendModal extends Component {
       <div id="sendModal" className="modal" onClick={this.props.close} style={this.getStyle()}>
         <div className="modalContent sendModalContent" onClick={e => e.stopPropagation()}>
           <div className="insideModal" onClick={e => e.stopPropagation()}>
-    <h2><Translator text={"Send"} />&nbsp;<span style={{color: "var(--impButtonBack)"}}>{this.props.op ? this.props.op.op_name : ""}</span>&nbsp;<Translator text={"to"} />{":"}</h2>
+            <h2><Translator text={"Send"} />&nbsp;<span style={{color: "var(--impButtonBack)"}}>{this.props.op ? this.props.op.op_name : ""}</span>&nbsp;<Translator text={"to"} />{":"}</h2>
             <input type="text" id="sendTextbox"
                 className="textBox"
                 value={this.state.sendName}

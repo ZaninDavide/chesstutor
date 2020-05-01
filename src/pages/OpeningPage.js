@@ -45,8 +45,8 @@ class OpeningPage extends Component {
       let sortedIndices = vars.map((c, i) => {return {vari_name: c.vari_name, vari_subname: c.vari_subname, index: i}})
       sortedIndices.sort((a, b) => {
         if(a.vari_name === b.vari_name){
-          if(a.vari_subname === undefined) return -1
-          if(b.vari_subname === undefined) return  1
+          if(a.vari_subname === undefined || a.vari_subname === null) return -1
+          if(b.vari_subname === undefined || b.vari_subname === null) return  1
           return a.vari_subname.localeCompare(b.vari_subname)
         }
         return a.vari_name.localeCompare(b.vari_name);

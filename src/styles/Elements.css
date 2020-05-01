@@ -254,7 +254,7 @@
 .renameTextBox{
   margin-left: var(--mediumMargin);
   margin-right: var(--mediumMargin);
-  width: calc(100% - 2 * var(--mediumMargin) - 10px); /* 10px = padding */
+  width: calc(100% - 2 * var(--mediumMargin) - 12px); /* 12px = padding left+right */
 }
 
 #newVariNameTextBox, #renameVariTextbox{
@@ -269,7 +269,7 @@
 
 #subNameSelector{
   margin-left: 0;
-  margin-right: var(--mediumMargin);
+  /*margin-right: var(--mediumMargin);*/
   width: var(--uiElementHeight);
 
   height: calc(var(--uiElementSmallHeight) + 2px); /* 2px = textbox padding */
@@ -328,4 +328,41 @@
 #logoutButton:hover:focus{
   background-color: var(--hoverAlertColor);
   color: var(--backColor);
+}
+
+#userPageTabContainer{
+  width: 100%;
+  display: flex;
+}
+
+.userPageTab{
+  width: 100%;
+  height: var(--uiElementHeight);
+  line-height: var(--uiElementHeight);
+  text-align: center;
+  background-color: rgba(0, 0, 0, 0.2);
+}
+
+.userPageTab:hover{
+  background-color: var(--hoverBackColor);
+}
+
+.userPageTabSelected{
+  color: var(--impText);
+  background-color: var(--backColor);
+  font-size: var(--mediumTextSize);
+}
+
+
+.mailItem{
+  padding-top: var(--smallMargin);
+  padding-bottom: var(--smallMargin);
+  display: grid;
+  grid-template-columns: 1fr auto;
+  width: 100%;
+}
+
+.mailItemButton{
+  margin-left: var(--smallMargin);
+  margin-right: var(--smallMargin);
 }
