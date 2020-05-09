@@ -49,7 +49,7 @@
   --secondaryText: hsl(0, 0%, 72%); /*a2a099*/
 
   --buttonText: rgb(245, 245, 245);
-  --hoverBackColor: rgba(100, 100, 100, 0.3);
+  --hoverBackColor: rgba(100, 100, 100, 0.15); /* rgba(100, 100, 100, 0.3) */
   --hoverBackColorNonAlpha: #323231;
 
   --impButtonText: #1d1d1b;
@@ -262,6 +262,7 @@
 
 button {
   outline: none;
+  cursor: pointer;
 }
 
 a {

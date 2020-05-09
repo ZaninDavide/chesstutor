@@ -8,6 +8,17 @@ class userPage extends Component {
     this.state = {
       tab: "profile"
     }
+    this.acceptMail = this.acceptMail.bind(this)
+    this.discardMail = this.discardMail.bind(this)
+  }
+
+  acceptMail(mail, mail_id){
+    this.props.addOpening(mail)
+    this.props.deleteMail(mail_id)
+  }
+
+  discardMail(mail_id){
+    this.props.deleteMail(mail_id)
   }
 
   render() {
@@ -26,17 +37,17 @@ class userPage extends Component {
     </>
 
     const inboxPage = () => <>
-      {this.props.inbox.map(mail => 
+      {this.props.inbox.map((mail, index) => 
         <div className="mailItem">
           <div className="mailItemLeft">
             <h2>{mail.op_name}</h2>
             <p>{mail.creator_email}</p>
           </div> 
           <div className="mailItemRight">
-            <button className="iconButton mailItemButton">
+            <button className="iconButton mailItemButton mailItemCloseButton" onClick={() => this.discardMail(index)}>
               close
             </button>
-            <button className="iconButton mailItemButton">
+            <button className="iconButton mailItemButton mailItemOpenButton" onClick={() => this.acceptMail(mail, index)}>
               done
             </button>
           </div>

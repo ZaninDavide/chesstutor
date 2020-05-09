@@ -67,6 +67,7 @@ class App extends Component {
     this.getDrawBoardPDF = this.getDrawBoardPDF.bind(this)
     this.setVariSubname = this.setVariSubname.bind(this)
     this.sendOpening = this.sendOpening.bind(this)
+    this.deleteMail = this.deleteMail.bind(this)
   }
 
   componentDidMount(){
@@ -232,6 +233,16 @@ class App extends Component {
 
       this.serverRequest("POST", "/renameOpening/" + op_index, {new_name: op_new_name})
       return {user_ops: new_user_ops}
+    })
+  }
+
+  deleteMail(mail_index){
+    this.setState(old => {
+      let new_inbox = old.inbox
+      new_inbox.splice(mail_index, 1)
+
+      this.serverRequest("POST", "/deleteMail/" + mail_index)
+      return {inbox: new_inbox}
     })
   }
 
@@ -594,6 +605,8 @@ class App extends Component {
                                                 username={this.state.username} 
                                                 language={this.state.language}
                                                 inbox={this.state.inbox}
+                                                addOpening={this.addOpening}
+                                                deleteMail={this.deleteMail}
                                               />
     const colorTrainingPage = ({ match, history }) =>  <ColorTrainingPage 
                                                     history={history} 

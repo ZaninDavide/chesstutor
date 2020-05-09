@@ -340,7 +340,8 @@
   height: var(--uiElementHeight);
   line-height: var(--uiElementHeight);
   text-align: center;
-  background-color: rgba(0, 0, 0, 0.2);
+  /*background-color: rgba(0, 0, 0, 0.2);*/
+  border-bottom: 2px solid transparent;
 }
 
 .userPageTab:hover{
@@ -351,6 +352,7 @@
   color: var(--impText);
   background-color: var(--backColor);
   font-size: var(--mediumTextSize);
+  border-bottom: 2px solid var(--impText);
 }
 
 
@@ -362,7 +364,13 @@
   width: 100%;
 }
 
-.mailItemButton{
+
+.mailItemCloseButton{
   margin-left: var(--smallMargin);
+  margin-right: 0px;
+}
+
+.mailItemOpenButton{
+  margin-left: 0px;
   margin-right: var(--smallMargin);
 }
