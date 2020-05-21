@@ -3,7 +3,7 @@ import React, { Component } from "react"
 import Chess from "../chessjs-chesstutor/chess.js"
 
 //import Modal from "../components/Modal"
-import Translator from "../components/Translator"
+//import Translator from "../components/Translator"
 import PromotionModal from "../components/PromotionModal"
 import CommentModal from "../components/CommentModal"
 import HelpModal from "../components/HelpModal"
@@ -185,7 +185,8 @@ class Board extends Component {
   /* ---------------------------- COMPONENT ---------------------------- */
 
   render() {
-    // console.log("render")
+    let thereIsComment = !(this.props.op_index === undefined || !this.state.json_moves) ? this.props.getComment(this.props.op_index, this.state.json_moves) : false
+
     return (
       <React.Fragment>
         <div id="boardGrid" key="boardGrid">
@@ -209,8 +210,12 @@ class Board extends Component {
           <div id="boardUI" key="boardUI">
             {this.boardButtons()}
           </div>
-          <div id="boardData" key="boardData" onClick={this.onBoardDataClick}>{ /* TODO - DO NOT OPEN IN TRAINING */}
-          <Translator text={"Comments"} />: {this.comment()}
+          <div 
+            id="boardData" 
+            key="boardData" 
+            onClick={this.onBoardDataClick}
+          >{ /* TODO - DO NOT OPEN IN TRAINING */}
+            {thereIsComment ? this.comment() : <div id="noCommentIcon" className="iconText">comment</div>}
           </div>
         </div>
         {/* CREATE NEW VARIATION MODAL */}
@@ -459,9 +464,26 @@ class Board extends Component {
     }
     
     if(move_data !== null){
-      setTimeout(() => this.make_move(move_data), 500)
+      setTimeout(async () => {
+        // the pc makes his move
+        let pc_move_data = await await this.make_move(move_data)
+
+        // now that pc has moved is the training finished?
+        let correct_moves_repetitive = []
+        if(this.props.trainColor === undefined){
+          correct_moves_repetitive = this.props.get_correct_moves_data(this.props.op_index, pc_move_data, this.props.vari_index)
+        }else{ // works with COLOR_TRAINING_MODE
+          correct_moves_repetitive = this.props.get_correct_moves_data_color(this.props.trainColor, pc_move_data)
+        }
+
+        if(correct_moves_repetitive.length === 0){
+          // training finished
+          this.props.notify("Congrats! Training finished", "important")
+        }
+
+      }, 500)
     }else{
-      alert("Computer: training finished")
+      this.props.notify("Congrats! Training finished", "important")
     }
   }
 
@@ -827,7 +849,7 @@ class Board extends Component {
         b_objects.push(
           <button id="nextButton" key="nextButton" className="simpleButton boardButton" 
             onClick={this.next_button_click} 
-            disabled={!this.is_my_turn() && !this.props.playColor === "none"}
+            disabled={(!this.is_my_turn() && !this.props.playColor === "none") || !this.props.get_vari_next_move_data(this.props.op_index, this.props.vari_index, this.state.json_moves)}
           >keyboard_arrow_right</button>
         )
       }
@@ -857,7 +879,7 @@ class Board extends Component {
             key="doneButton" 
             className="simpleButton boardButton" 
             onClick={this.openVariNameModal}
-            style={{color: "var(--impButtonText)", backgroundColor: "var(--impButtonBack)"}}
+            disabled={this.state.json_moves.length === 0}
           >done</button>
         )
       }

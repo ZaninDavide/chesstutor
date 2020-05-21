@@ -5,24 +5,30 @@
 .layout {
   font-family: "Quicksand", "Segoe UI";
   --textFont: "Quicksand", "Segoe UI";
+  --titleFont: "Muli", "Arial";
+
   --smallTextSize: 14px;
   --textSize: 16px;
   --mediumTextSize: 18px;
   --titleSize: 19px; /*22px*/
+  --iconsFontSize: 28px; /* 26px */
+
   --textWeight: 300;
   --mediumWeight: 400;
   --titleWeight: 500;
-  --titleFont: "Muli", "Arial";
+  
   --smallMargin: 5px;
   --mediumMargin: 15px;
   --largeMargin: 25px;
+
   --borderSize: 1px;
   --borderRadius: 5px;
+
   --uiElementHeight: 50px; /* like buttons height */
   --uiElementMediumHeight: 40px; /* like wide buttons height */
   --uiElementSmallHeight: 28px; /* like textBox height */
+
   --headerHeight: calc(var(--uiElementHeight) + var(--smallMargin) * 2);
-  --iconsFontSize: 28px; /* 26px */
 }
 
 .defaultTheme {
@@ -37,7 +43,9 @@
   --headerBack: #3a4151;
   --hoverBackColor: rgba(22, 22, 22, 0.2);
   --alertColor: #f06b65;
-  --hoverAlertColor: #ce5d57; /*#f06b65*/
+  --hoverAlertColor: #ce5d57; /*#f06b65*/  
+  --disabledColor: black;
+
 }
 
 .darkTheme {
@@ -59,6 +67,8 @@
   --hoverAlertColor: #b63737; /*#f06b65*/
 
   --headerBack: #1d1d1b;
+
+  --disabledColor: black;
 }
 
 /* ---------------------------- CONTAINERS ---------------------------- */
@@ -93,7 +103,7 @@
   overflow: hidden;
   /* COLORS */
   background-color: var(--backColor);
-  background-image: linear-gradient(var(--backColor) 50%, #131311); /*151513*/
+  /* background-image: linear-gradient(var(--backColor) 50%, #131311); */ /*151513*/
   /* TEXT */
   color: var(--secondaryText);
   font-weight: var(--textWeight);
@@ -295,6 +305,7 @@ input {
   line-height: var(--uiElementHeight); /* = height*/
   /* COLORS */
   background-color: transparent;
+  -webkit-tap-highlight-color: var(--hoverBackColor);
   /* BORDERS */
   border: 0px;
   border-radius: calc(var(--uiElementHeight) / 2);
@@ -372,6 +383,7 @@ button.simpleButton{
   line-height: var(--uiElementHeight); /* = height*/
   /* COLORS */
   background-color: transparent;
+  -webkit-tap-highlight-color: var(--hoverBackColor);
   /* BORDERS */
   border: 0px;
   border-radius: 0px;
@@ -431,7 +443,7 @@ button.simpleButton:hover:enabled {
 
 
 button:disabled, button[disabled]{
-  color: var(--hoverBackColor);
+  color: var(--disabledColor);
 }
 
 button.alertButton{
@@ -450,6 +462,18 @@ button.impButton{
 
 button.impButton:hover:enabled{
   background-color: var(--hoverImpButtonBack);
+}
+
+button.impButton:disabled, button.impButton[disabled]{
+  color: var(--disabledColor);
+  background-color: var(--hoverBackColor);
+  cursor: default;
+}
+
+button.simpleButton:disabled, button.simpleButton[disabled]{
+  color: var(--disabledColor) !important;
+  background-color: transparent !important;
+  cursor: default;
 }
 
 /* OTHERS */

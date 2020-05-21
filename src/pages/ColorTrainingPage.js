@@ -28,6 +28,7 @@ class ColorTrainingPage extends Component {
           get_correct_moves_data_color={this.props.get_correct_moves_data_color}
           getComment={this.props.getComment} 
           allowCommentEdit={false}
+          notify={this.props.notify}
         />
       </React.Fragment>
     )

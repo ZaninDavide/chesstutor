@@ -139,7 +139,10 @@ class OpeningPage extends Component {
       <React.Fragment>
         <Header title={op.op_name} mainButtonText="keyboard_backspace"/*headerButtonContent={<span className="iconText">school</span>}*/ /> {/* play_arrow */}
         <div id="openingPage" className="page" style={this.no_variations_style(op.variations.length)}>{this.getVariItems(op.variations, op_index)}</div>
-        <button id="playVarsButton" className="roundButton iconButton impButton" onClick={this.startGame}>
+        <button id="playVarsButton" className="roundButton iconButton impButton" 
+          onClick={this.startGame}
+          disabled={op.variations.length === 0}
+        >
           school
         </button>
         <button id="newVariButton" className="roundButton iconButton impButton" onClick={this.newVariClick}>

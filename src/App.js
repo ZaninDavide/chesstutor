@@ -13,12 +13,14 @@ import UserPage from "./pages/UserPage"
 import ColorTrainingPage from "./pages/ColorTrainingPage"
 import AnalysisPage from "./pages/AnalysisPage"
 
+import Notification from "./components/Notification"
+
 import "./styles/App.css" // css by CLASSES + MAIN COMPONENTS
 import "./styles/Elements.css" // css by ID + SECONDARY COMPONENTS
 import "./styles/Modal.css"
 import { LanguageProvider } from "./components/LanguageContext"
 
-const SERVER_URI = "https://chesstutorserver.herokuapp.com" // "http://localhost:5000"
+const SERVER_URI = "http://localhost:5000" // "https://chesstutorserver.herokuapp.com" // "http://localhost:5000"
 
 const defaultOps = []
 
@@ -38,7 +40,10 @@ class App extends Component {
       language: "eng",
       colorTheme: "darkTheme",
       loadingVisible: true,
+      notification: {text: "Congrats! You completed your training", type: "important"},
+      notification_visible: false,
     }
+
     this.createOp = this.createOp.bind(this)
     this.addOpening = this.addOpening.bind(this)
     this.createVari = this.createVari.bind(this)
@@ -68,6 +73,7 @@ class App extends Component {
     this.setVariSubname = this.setVariSubname.bind(this)
     this.sendOpening = this.sendOpening.bind(this)
     this.deleteMail = this.deleteMail.bind(this)
+    this.notify = this.notify.bind(this)
   }
 
   componentDidMount(){
@@ -173,7 +179,15 @@ class App extends Component {
     this.serverRequest("POST", "/sendOpening", {emails: to_user_names, op: this.state.user_ops[op_index]})
   }
 
+  /* ---------------------------- NOTIFICATIONS ---------------------------- */
+
+  notify(text, type = "normal", milliseconds = 3000){
+    this.setState({notification: {text, type}, notification_visible: true})
+    setTimeout(() => this.setState({notification_visible: false}), milliseconds)
+  }
+
   /* ---------------------------- OPENINGS ---------------------------- */
+
   newOpening(op_name = "New opening", op_color = "white", op_subname = undefined) {
     // generates a new opening
     // WARN: it doesn't add it to user_ops. To do that use addOpening
@@ -410,7 +424,7 @@ class App extends Component {
       }
     }
     if(finished_training){
-      alert("training finished") // TODO
+      this.notify("Congrats! Training finished", "important")
       return false
     }
     return is_allowed
@@ -451,7 +465,7 @@ class App extends Component {
       }
     }
     if(finished_training){
-      alert("training finished") // TODO
+      this.notify("Congrats! Training finished", "important")
       return false
     }
     return is_allowed
@@ -570,6 +584,7 @@ class App extends Component {
                                                     setDrawBoardPDF={this.setDrawBoardPDF}
                                                     getDrawBoardPDF={this.getDrawBoardPDF}
                                                     get_correct_moves_data={this.get_correct_moves_data}
+                                                    notify={this.notify}
                                                   />
     const newVariPage = ({ match, history }) => <NewVariPage 
                                                   ops={this.state.user_ops} 
@@ -595,6 +610,7 @@ class App extends Component {
                                               get_pc_move_data={this.get_pc_move_data}
                                               is_move_allowed={this.is_move_allowed}
                                               get_correct_moves_data={this.get_correct_moves_data}
+                                              notify={this.notify}
                                             />
     const newOpPage = ({ match, history }) => <NewOpPage history={history} match={match} createOp={this.createOp}/>
     const loginPage = ({ match, history }) => <LoginPage history={history} match={match} setBearer={this.setBearer} username={this.state.username} rememberMeLocally={this.rememberMeLocally}/>
@@ -616,6 +632,7 @@ class App extends Component {
                                                     get_pc_move_data_color={this.get_pc_move_data_color}
                                                     get_correct_moves_data_color={this.get_correct_moves_data_color}
                                                     getComment={this.getComment}
+                                                    notify={this.notify}
                                                   />
     const analysisPage = ({ match, history }) =>  <AnalysisPage 
                                                     history={history} 
@@ -634,6 +651,12 @@ class App extends Component {
             <div id="loadingScreen" style={{display: this.state.loadingVisible ? "table" : "none"}}>
               <span id="loadingScreenBottom">&nbsp;{"Loading your data... Please wait."}</span>
             </div>
+            <Notification
+              visible={this.state.notification_visible}
+              text={this.state.notification.text}
+              type={this.state.notification.type}
+              close={() => this.setState({notification_visible: false})}
+            ></Notification>
             <Switch>
               <Route path="/" render={needLogin ? redirectToLogin : opsListPage} exact/>
               <Route path="/login" render={!needLogin ? redirectToHome : loginPage} exact/>

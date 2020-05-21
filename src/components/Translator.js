@@ -41,7 +41,9 @@ const languages = {
     "to": "to",
     "with": "with",
     "draw_board_pdf": "Draw position in PDF",
-    "Log out": "Log out"
+    "Log out": "Log out",
+    "Profile": "Profile",
+    "Inbox": "Inbox",
   },
   ita: {
     Openings: "Aperture",
@@ -82,7 +84,9 @@ const languages = {
     "to": "a",
     "with": "con",
     "draw_board_pdf": "Disegna posizione sul PDF",
-    "Log out": "Disconnetti"
+    "Log out": "Disconnetti",
+    "Profile": "Profilo",
+    "Inbox": "Posta",
   }
 }
 

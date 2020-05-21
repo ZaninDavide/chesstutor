@@ -32,6 +32,7 @@ class TrainingPage extends Component {
           get_correct_moves_data={this.props.get_correct_moves_data}
           setDrawBoardPDF={this.props.setDrawBoardPDF}
           getDrawBoardPDF={this.props.getDrawBoardPDF}
+          notify={this.props.notify}
         />
       </React.Fragment>
     )
