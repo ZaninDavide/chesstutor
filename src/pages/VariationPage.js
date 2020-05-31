@@ -21,7 +21,7 @@ class VariationPage extends Component {
     const in_training = this.state.in_training
     return (
       <React.Fragment>
-        <Header mainButtonText="keyboard_backspace" goTo={"/openings/" + op_index} title={<React.Fragment>{op.op_name + ": " + vari.vari_name}</React.Fragment>} />
+        <Header mainButtonText="keyboard_backspace" goTo={"/openings/" + op_index} title={<React.Fragment>{op.op_name + " ⋅ " + vari.vari_name + " " + (vari.vari_subname || "")}</React.Fragment>} />
         <Board 
           key="variationBoard"
           history={this.props.history} 

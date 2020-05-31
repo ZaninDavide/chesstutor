@@ -32,9 +32,9 @@ class OpsListPage extends Component {
 
   getSeparator(text, goTo){
     return  <div id={"opsSeparator" + text} className="opsSeparator" key={"opsSeparator" + text} onClick={() => goTo ? this.props.history.push(goTo) : null}>
-              <span className={text === "Archived openings" ? "alertText" : "impText"}>
+              <h3 className={text === "ARCHIVED OPENINGS" ? "alertText" : "impText"}>
                 <Translator text={text} />
-              </span>
+              </h3>
             </div>
   }
 
@@ -66,15 +66,15 @@ class OpsListPage extends Component {
       // connect all together: not_archived_white + separator + not_archived_black + separator + archived
       let all = []
       if(not_archived_white.length > 0){
-        all.push(this.getSeparator("White", "/training/fullcolor/1"))
+        all.push(this.getSeparator("WHITE", "/training/fullcolor/1"))
         all = all.concat(not_archived_white)
       }
       if(not_archived_black.length > 0){
-        all.push(this.getSeparator("Black", "/training/fullcolor/0"))
+        all.push(this.getSeparator("BLACK", "/training/fullcolor/0"))
         all = all.concat(not_archived_black)
       }
       if(archived.length > 0){
-        all.push(this.getSeparator("Archived openings"))
+        all.push(this.getSeparator("ARCHIVED OPENINGS"))
         all = all.concat(archived)
       }
       return all
@@ -146,6 +146,9 @@ class OpsListPage extends Component {
             add
           </button>
         </div>
+
+        {/* ---------------------------- MODALS ---------------------------- */}
+
         <HangingMenu visible={this.state.hMenuVisible & this.props.ops.length > 0} close={this.hMenuClose}>
           {/* DELETE BUTTON */}
           <button className="simpleButton hMenuButton" onClick={() => {this.hMenuClose(); this.openOpDeleteModal();}}>

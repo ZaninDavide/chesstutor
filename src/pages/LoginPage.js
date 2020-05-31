@@ -32,7 +32,7 @@ class LoginPage extends Component {
 
     if(await res.status !== 200){
       // gestisci errore
-      alert(await res.text())
+      this.props.notify(await res.text(), "error")
       return false
     }else{
       let bearer = await res.text()
@@ -63,13 +63,13 @@ class LoginPage extends Component {
       if(res.status !== 200){
         if(textRes==="Weak password - Add another word or two. Uncommon words are better."){
           // di all'utente di mettere una password più forte
-          console.log(textRes)
+          console.log("Weak password - Add another word or two. Uncommon words are better.")
         }
         else{
           // crasha
           console.log("errore sconosciuto")
         }
-        alert(textRes)
+        this.props.notify(textRes.replace("email", "username"), "error")
         return false
       }else{
         this.props.setBearer(textRes)
@@ -93,10 +93,10 @@ class LoginPage extends Component {
           this.loginClick()
         }
       }else{
-        console.log("signUpClick: username cannot contain the ','(comma) character")
+        this.props.notify("Username cannot contain the commas (',').", "error")
       }
     }else{
-      console.log("signUpClick: missing username or password")
+      this.props.notify("Fill both username and password please.")
     }
   }
 
@@ -107,7 +107,7 @@ class LoginPage extends Component {
         this.props.history.push("/")
       }*/
     }else{
-      console.log("loginClick: missing username or password")
+      this.props.notify("Fill both username and password please.")
     }
   }
 

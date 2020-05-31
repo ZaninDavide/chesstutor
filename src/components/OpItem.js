@@ -14,6 +14,7 @@ class OpItem extends Component {
 
   rightClick(e){
     e.preventDefault() /* avoids the menu to open */
+    e.stopPropagation() /* avoid propagation fore "more button" click*/
     this.props.hMenuOpen(this.props.op_index)
     return false /* avoids the menu to open */
   }
@@ -25,10 +26,15 @@ class OpItem extends Component {
         onClick={this.openOp}
         onContextMenu={this.rightClick}
       >
-        <h2>{this.props.op.op_name}</h2>
-        {<p className="smallText">
-          <Translator text={this.props.op.op_color} />, {this.props.op.variations.length} <Translator text={this.props.op.variations.length === 1 ? "variation" : "variations"} />
-        </p>}
+        <div className="opItemText">
+          <h2>{this.props.op.op_name}</h2>
+          {<p className="smallText">
+            <Translator text={this.props.op.op_color} />{" ⋅ "}{this.props.op.variations.length} <Translator text={this.props.op.variations.length === 1 ? "variation" : "variations"} />
+          </p>}
+        </div>
+        <div className="opItemButton">
+          <button className="iconButton opItemMoreButton" onClick={this.rightClick}>more_vert</button>
+        </div>
       </div>
     )
   }

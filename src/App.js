@@ -20,7 +20,7 @@ import "./styles/Elements.css" // css by ID + SECONDARY COMPONENTS
 import "./styles/Modal.css"
 import { LanguageProvider } from "./components/LanguageContext"
 
-const SERVER_URI = "http://localhost:5000" // "https://chesstutorserver.herokuapp.com" // "http://localhost:5000"
+const SERVER_URI = "https://chesstutorserver.herokuapp.com" // "http://localhost:5000"
 
 const defaultOps = []
 
@@ -40,7 +40,7 @@ class App extends Component {
       language: "eng",
       colorTheme: "darkTheme",
       loadingVisible: true,
-      notification: {text: "Congrats! You completed your training", type: "important"},
+      notification: {text: "Congrats", type: "important"},
       notification_visible: false,
     }
 
@@ -74,6 +74,7 @@ class App extends Component {
     this.sendOpening = this.sendOpening.bind(this)
     this.deleteMail = this.deleteMail.bind(this)
     this.notify = this.notify.bind(this)
+    this.setLanguage = this.setLanguage.bind(this)
   }
 
   componentDidMount(){
@@ -177,6 +178,11 @@ class App extends Component {
 
   sendOpening(to_user_names, op_index){
     this.serverRequest("POST", "/sendOpening", {emails: to_user_names, op: this.state.user_ops[op_index]})
+  }
+
+  setLanguage(lang){
+    this.serverRequest("POST", "/setLanguage", {lang})
+    this.setState({language: lang})
   }
 
   /* ---------------------------- NOTIFICATIONS ---------------------------- */
@@ -613,7 +619,7 @@ class App extends Component {
                                               notify={this.notify}
                                             />
     const newOpPage = ({ match, history }) => <NewOpPage history={history} match={match} createOp={this.createOp}/>
-    const loginPage = ({ match, history }) => <LoginPage history={history} match={match} setBearer={this.setBearer} username={this.state.username} rememberMeLocally={this.rememberMeLocally}/>
+    const loginPage = ({ match, history }) => <LoginPage history={history} match={match} setBearer={this.setBearer} username={this.state.username} rememberMeLocally={this.rememberMeLocally} notify={this.notify}/>
     const userPage = ({ match, history }) =>  <UserPage 
                                                 history={history} 
                                                 match={match} 
@@ -623,6 +629,8 @@ class App extends Component {
                                                 inbox={this.state.inbox}
                                                 addOpening={this.addOpening}
                                                 deleteMail={this.deleteMail}
+                                                notify={this.notify}
+                                                setLanguage={this.setLanguage}
                                               />
     const colorTrainingPage = ({ match, history }) =>  <ColorTrainingPage 
                                                     history={history} 

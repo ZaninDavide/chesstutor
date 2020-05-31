@@ -8,6 +8,9 @@ import PromotionModal from "../components/PromotionModal"
 import CommentModal from "../components/CommentModal"
 import HelpModal from "../components/HelpModal"
 import NewVariModal from "./NewVariModal.js"
+import HangingMenu from "../components/HangingMenu"
+
+import "../styles/Board.css"
 
 // import boardSVG from "../files/chessboard.svg"
 const darkBoardSVG = "/files/chessboard_dark.svg"
@@ -189,6 +192,8 @@ class Board extends Component {
 
     return (
       <React.Fragment>
+        {/* --------------------------------------- BOARD --------------------------------------- */}
+
         <div id="boardGrid" key="boardGrid">
           <div id="boardContainer" 
             ref={"bContainer"} 
@@ -218,12 +223,17 @@ class Board extends Component {
             {thereIsComment ? this.comment() : <div id="noCommentIcon" className="iconText">comment</div>}
           </div>
         </div>
+
+
+        {/* --------------------------------------- MODALS --------------------------------------- */}
+
         {/* CREATE NEW VARIATION MODAL */}
         <NewVariModal 
           close={this.closeVariNameModal}
           visible={this.state.variNameModalVisible}
           createThisVariation={this.createThisVariation}
         />
+
         {/* CHOOSE PROMOTION PIECE MODAL */}
         <PromotionModal 
           color={this.state.game.turn()}
@@ -231,6 +241,8 @@ class Board extends Component {
           close={() => this.setState({promotionModalVisible: false})}
           promotionPromiseRes={this.state.promotionPromiseRes}
         />
+
+        {/* COMMENT MODAL */}
         {this.state.commentModalVisible ? <CommentModal
           visible={this.state.commentModalVisible} 
           close={() => this.setState({commentModalVisible: false})}
@@ -241,6 +253,7 @@ class Board extends Component {
           op_index={this.props.op_index}
           json_moves={this.state.json_moves}
         /> : null}
+
         {/* HELP MODAL */}
         {(this.props.buttons.indexOf("help") !== -1 || this.props.buttons.indexOf("multi_next") !== -1) && this.state.helpModalVisible ? <HelpModal 
           visible={this.state.helpModalVisible}
@@ -253,6 +266,20 @@ class Board extends Component {
           vari_index={this.props.vari_index}
           json_moves_length={this.state.json_moves.length}
         /> : null}
+
+        {/* MORE MENU */}
+        <HangingMenu visible={this.state.boardMenuVisible} close={() => this.setState({boardMenuVisible: false})}>
+          {/* ANALYSIS BUTTON */}
+          <button className="simpleButton hMenuButton" onClick={() => {
+              this.setState({boardMenuVisible: false})
+              this.props.history.push("/analysis/" + this.props.rotation + "/" + this.state.game.fen().split("/").join("_"))
+          }}>
+            <div className="hMenuButtonContent">
+              <div className="hMenuButtonIcon">edit</div>
+              <div className="hMenuButtonLabel">Analyse position</div>
+            </div>
+          </button> 
+        </HangingMenu>
       </React.Fragment>
     )
   }
@@ -478,12 +505,12 @@ class Board extends Component {
 
         if(correct_moves_repetitive.length === 0){
           // training finished
-          this.props.notify("Congrats! Training finished", "important")
+          this.props.notify("Congrats", "important")
         }
 
       }, 500)
     }else{
-      this.props.notify("Congrats! Training finished", "important")
+      this.props.notify("Congrats", "important")
     }
   }
 
@@ -821,7 +848,7 @@ class Board extends Component {
         b_objects.push(
           <button id="moreButton" key="moreButton" className="simpleButton boardButton" 
             onClick={() => {
-              this.props.history.push("/analysis/" + this.props.rotation + "/" + this.state.game.fen().split("/").join("_"))
+              this.setState({boardMenuVisible: true})
             }}
           >more_vert</button>
         )

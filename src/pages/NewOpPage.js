@@ -15,7 +15,7 @@ class NewOpPage extends Component {
   }
 
   getStudyAsButtonColor(buttonColor){ // "white" or "black"
-    return this.state.studyAs === buttonColor ? "var(--buttonText)" : "var(--secondaryText)"
+    return this.state.studyAs === buttonColor ? "var(--impText)" : "var(--secondaryText)"
   }
 
   setStudyAs(color){
@@ -35,7 +35,7 @@ class NewOpPage extends Component {
           <div id="newOpPageBody">
             <Translator text={"Opening name"} />:
             <input type="text" className="textBox" value={this.state.new_op_name} onChange={e => this.setState({new_op_name: e.target.value})}/>
-            <br/>
+            <br/><br/>
             <Translator text={"Study as"} />:&nbsp;&nbsp;
             <button className="simpleButton" onClick={() => this.setStudyAs("white")} style={{marginRight: 0, color: this.getStudyAsButtonColor("white")}}><Translator text={"White"}/></button>
             <button className="simpleButton" onClick={() => this.setStudyAs("black")} style={{marginLeft:  0, color: this.getStudyAsButtonColor("black")}}><Translator text={"Black"}/></button>

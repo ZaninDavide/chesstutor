@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css?family=Quicksand|Muli|Material+Icons&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap');
 
 /* ---------------------------- LAYOUT & THEMES ---------------------------- */
 
@@ -31,25 +32,8 @@
   --headerHeight: calc(var(--uiElementHeight) + var(--smallMargin) * 2);
 }
 
-.defaultTheme {
-  --backColor: #3a4151;
-  --secondaryText: #949dac;
-  --impText: #65f0b6;
-  --buttonText: rgb(245, 245, 245);
-  --primaryText: white;
-  --impButtonText: #3a4151;
-  --impButtonBack: #65f0b6;
-  --hoverImpButtonBack: hsl(156, 35%, 50%);
-  --headerBack: #3a4151;
-  --hoverBackColor: rgba(22, 22, 22, 0.2);
-  --alertColor: #f06b65;
-  --hoverAlertColor: #ce5d57; /*#f06b65*/  
-  --disabledColor: black;
-
-}
-
 .darkTheme {
-  --backColor: #1d1d1b; /*#1f1f1e*/ /* 292827 */
+  --backColor: black; /*#1d1d1b*/
   --alertColor: #f14b4b; /*#f06b65*/
 
   --impText: #3cf17e; /*#a3f7bf*/
@@ -62,13 +46,13 @@
 
   --impButtonText: #1d1d1b;
   --impButtonBack: #3cf17e; /*#a3f7bf*/
-  --hoverImpButtonBack: #32804d; /*hsl(140, 34%, 60%)*/
+  --hoverImpButtonBack: #00ec57; /*hsl(140, 34%, 60%)*/
 
   --hoverAlertColor: #b63737; /*#f06b65*/
 
-  --headerBack: #1d1d1b;
+  --headerBack: black;
 
-  --disabledColor: black;
+  --disabledColor: #443f3f;
 }
 
 /* ---------------------------- CONTAINERS ---------------------------- */
@@ -80,6 +64,7 @@
     overflow: hidden;
     /* Disables pull-to-refresh but allows overscroll glow effects. */
     /*overscroll-behavior-y: contain;*/
+    touch-action: pan-x, pan-y;
   }
   
   #root {
@@ -141,16 +126,16 @@
 
 ::-webkit-scrollbar-track
 {
-  background: rgba(0, 0, 0, 0.1);
+  background: rgba(255, 255, 255, 0.1), 0.1);
 }
 
 ::-webkit-scrollbar-thumb
 {
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(60, 60, 60, 0.3);
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(75, 75, 75, 0.3);
 }
 
 /* ---------------------------- TEXT LABELS ---------------------------- */
@@ -163,7 +148,7 @@
 
   h1 {
     /* TEXT */
-    color: var(--impText);
+    color: var(--primaryText)/*var(--impText)*/;
     font-family: var(--titleFont);
     font-weight: var(--titleWeight);
     font-size: var(--titleSize); /* --titleSize */
@@ -180,6 +165,18 @@
     color: var(--primaryText);
     font-weight: var(--mediumWeight);
     font-size: var(--mediumTextSize);
+    /* SPACES */
+    margin-top: var(--smallMargin);
+    margin-bottom: var(--smallMargin);
+    margin-left: var(--mediumMargin);
+    margin-right: var(--mediumMargin);
+  }
+
+  h3{
+    /* TEXT */
+    font-family: "Montserrat";
+    font-size: var(--smallTextSize);
+    letter-spacing: 0.5px;
     /* SPACES */
     margin-top: var(--smallMargin);
     margin-bottom: var(--smallMargin);
@@ -484,6 +481,10 @@ a {
 
 .opItem,
 .variItem {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  grid-template-areas: "opItemText" "opItemButton";
+
   cursor: pointer;
   /* SPACES */
   padding-top: var(--smallMargin);
@@ -497,32 +498,32 @@ a {
   -webkit-tap-highlight-color: var(--hoverBackColor);
 }
 
-.subvariItem{
+/*.subvariItem{
   border-left-width: calc(var(--mediumMargin) * 2);
-}
+}*/
 
 .opItem:hover,
 .variItem:hover {
   background-color: var(--hoverBackColor);
 }
 
-.variItem{
+/*.variItem{
   display: grid;
   grid-template-columns: auto 1fr;
   grid-template-rows: auto;
   grid-template-areas: "checkbox content";
-}
+}*/
 
-.variItemCheckbox{
+/*.variItemCheckbox{
   margin-top: auto;
   margin-bottom: auto;
-  margin-left: calc(var(--mediumMargin) - 5px); /* 5px = favorite bar */
+  margin-left: calc(var(--mediumMargin) - 5px);
   margin-right: 0;
   vertical-align: middle;
   overflow: hidden;
   grid-area: checkbox;
   width: var(--iconsFontSize);
-}
+}*/
 
 .variItemContent{
   grid-area: content;

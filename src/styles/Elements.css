@@ -12,6 +12,14 @@
   overflow-x: hidden;
 }
 
+#opsListPage{
+  padding-bottom: calc(var(--uiElementHeight) + var(--mediumMargin) + var(--smallMargin));
+}
+
+#openingPage{
+  padding-bottom: calc(2*var(--uiElementHeight) + 2*var(--mediumMargin) + var(--smallMargin));
+}
+
 #newOpButton, #newVariButton {
   position: absolute;
   margin: 0px;
@@ -23,118 +31,6 @@
   text-align: center;
   line-height: var(--uiElementHeight);
   font-size: 30px; /* var(--iconsFontSize) */
-}
-
-#boardContainer {
-  position: relative; /* necessary for the pieces */
-  grid-area: boardContainer;
-  margin-bottom: -4px;
-}
-
-#boardSVG {
-  width: 100%;
-  /*
-  max-height: calc(100vh - var(--headerHeight) - var(--uiElementHeight) - 80px);
-  max-width: calc(100vh - var(--headerHeight) - var(--uiElementHeight) - 80px);
-  */
-}
-
-#touchCircle {
-  width: 18.75%;
-  height: 18.75%;
-  margin: 0px;
-  position: absolute;
-  will-change: transform;
-  border-radius: 50%;
-  background-color: rgba(0, 0, 0, 0.3);
-  z-index: 0;
-}
-
-.selection {
-  width: 12.5%;
-  position: absolute;
-  opacity: 0.6;
-  background-color: rgba(0, 0, 0, 0.5);
-  z-index: 0;
-}
-
-.pieceSVG {
-  width: 12.5%;
-  position: absolute;
-  transition: transform, top, left;
-  transition: 0.15s, 0.15s, 0.15s;
-  will-change: transform, top, left;
-  left: 0px;
-  top: 0px;
-}
-
-.pieceSVG.noAnimationPiece{
-  -webkit-transition-property: none !important;
-  -moz-transition-property: none !important;
-  -o-transition-property: none !important;
-  transition-property: none !important;
-  z-index: 2;
-}
-
-@media (orientation: portrait) {
-  #boardGrid{
-    display: grid;
-    width: 100%;
-    height:  calc(100vh - var(--headerHeight));
-    max-width: calc(100vh - var(--headerHeight) - var(--uiElementHeight) - 80px);
-    grid-template-rows: auto var(--uiElementHeight) 1fr;
-    grid-template-areas: "boardContainer" "boardUI" "boardData";
-  }
-}
-
-@media (orientation: landscape) {
-  #boardGrid{
-    display: grid;
-    width: 100%;
-    height: calc(100vh - var(--headerHeight));
-    grid-template-rows: 1fr var(--uiElementHeight);
-    grid-template-columns: calc(100vh - var(--headerHeight) - var(--uiElementHeight)) 1fr;
-    grid-template-areas: "boardContainer boardData" "boardUI boardData";
-  }
-}
-
-#boardUI{
-  min-height: var(--uiElementHeight);
-  width: 100%;
-  /*background-color: rgba(0, 0, 0, 0.15); add to make the gap between boardContainer and boardUI visible*/
-  grid-area: boardUI;
-  display: flex;
-}
-
-#boardData{
-  grid-area: boardData;
-  padding-left: var(--mediumMargin);
-  padding-right: var(--mediumMargin);
-  padding-top: var(--smallMargin);
-  padding-bottom: var(--smallMargin);
-  overflow-y: auto;
-  font-size: var(--smallTextSize);
-  text-align: justify;
-  white-space: pre-wrap;
-  cursor: pointer;
-}
-
-.boardButton{
-  margin: 0px !important; /* overwrite simpleButton */
-  flex-grow: 1;
-  /* TEXT */
-  font-family: "Material Icons" !important; /* overwrite simpleButton */
-  font-size: var(--iconsFontSize) !important; /* overwrite simpleButton */
-  text-align: center;
-  vertical-align: middle;
-  line-height: var(--uiElementHeight); /* = height*/
-}
-
-#moreButton{
-  flex-grow: 1;
-  /*flex-grow: 0.4;
-  max-width: var(--uiElementHeight);
-  padding: 0px;*/
 }
 
 .textBox{
@@ -235,13 +131,16 @@
 }
 
 .opsSeparator, #archivedVarsSeparator{
-  width: 100%;
+  width: 100%;  
+
   height: var(--uiElementMediumHeight);
   line-height: var(--uiElementMediumHeight);
+  color: var(--impText);
+
   margin: 0px;
   overflow: hidden;
   text-align: center;
-  /*border-bottom: solid 5px var(--hoverBackColor);*/
+  border-top: solid 1px var(--hoverBackColor);
 }
 
 #opsSeparatorWhite, #opsSeparatorBlack{
@@ -316,7 +215,7 @@
 }
 
 #logoutButton{
-  bottom: var(--mediumMargin);
+  bottom: calc(var(--mediumMargin) + var(--uiElementHeight));
   background-color: var(--hoverBackColor);
   color: var(--alertColor);
 }
@@ -338,22 +237,24 @@
 
 .userPageTab{
   width: 100%;
-  height: var(--uiElementHeight);
-  line-height: var(--uiElementHeight);
+  height: calc(var(--uiElementHeight) - 2px);
+  line-height: calc(var(--uiElementHeight) - 2px);
   text-align: center;
   /*background-color: rgba(0, 0, 0, 0.2);*/
-  border-bottom: 2px solid transparent;
+  border-top: 2px solid transparent;
 }
 
-.userPageTab:hover{
-  background-color: var(--hoverBackColor);
+@media (hover: hover) {
+  .userPageTab:hover{
+    background-color: var(--hoverBackColor);
+  }
 }
 
 .userPageTabSelected{
   color: var(--impText);
   background-color: var(--backColor);
-  font-size: var(--mediumTextSize);
-  border-bottom: 2px solid var(--impText);
+  /*font-size: var(--mediumTextSize);*/
+  border-top: 2px solid var(--impText);
 }
 
 
@@ -363,12 +264,23 @@
   display: grid;
   grid-template-columns: 1fr auto;
   width: 100%;
+  cursor: pointer;
+  -webkit-tap-highlight-color: var(--hoverBackColor);
+}
+
+.mailItem:hover{
+  background-color: var(--hoverBackColor);
 }
 
 
-.mailItemCloseButton{
+.mailItemCloseButton, .opItemMoreButton, .variItemMoreButton{
   margin-left: var(--smallMargin);
-  margin-right: 0px;
+  margin-right: var(--smallMargin);
+}
+
+.mailItemCloseButton:hover{
+  color: var(--alertColor);
+  background-color: transparent;
 }
 
 .mailItemOpenButton{
@@ -390,6 +302,8 @@
 
   transition: top .1s ease-out;
   will-change: top;
+
+  overflow: hidden;
 }
 
 .notificationVisible{
@@ -410,7 +324,7 @@
   background-color: var(--impText);
 }
 
-.notificationAlert{
+.notificationError{
   color: var(--backColor);
   background-color: var(--alertColor);
 }
@@ -426,4 +340,47 @@
 #doneButton{
   color: var(--impButtonText); 
   background-color: var(--impButtonBack);
+}
+
+#profile{
+  padding-top: var(--smallMargin);
+}
+
+#emptyInbox{
+  width: 100%;
+  height: 100%;
+  background: url(/files/no_inbox.svg) center center / contain no-repeat;
+}
+
+#userPage{
+  display: grid;
+  grid-template-rows: 1fr var(--uiElementHeight);
+  width: 100%;
+  height: 100%;
+}
+
+.profilePageTitle{
+  margin-top: var(--mediumMargin);
+  margin-bottom: var(--mediumMargin);
+}
+
+.variationFolder{
+  width: 100%;
+
+  height: var(--uiElementMediumHeight);
+  line-height: var(--uiElementMediumHeight);
+
+  color: var(--impText);
+
+  margin: 0px;
+  border-top: solid 1px var(--hoverBackColor);
+
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+}
+
+.variationFolder:hover{
+  /*background-color: var(--hoverBackColor);*/
 }

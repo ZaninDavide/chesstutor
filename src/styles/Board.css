@@ -1,0 +1,107 @@
+
+#boardContainer {
+    position: relative; /* necessary for the pieces */
+    grid-area: boardContainer;
+    margin-bottom: -4px;
+}
+
+#boardSVG {
+  width: 100%;
+  /*
+  max-height: calc(100vh - var(--headerHeight) - var(--uiElementHeight) - 80px);
+  max-width: calc(100vh - var(--headerHeight) - var(--uiElementHeight) - 80px);
+  */
+}
+
+#touchCircle {
+  width: 18.75%;
+  height: 18.75%;
+  margin: 0px;
+  position: absolute;
+  will-change: transform;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 0;
+}
+
+.selection {
+  width: 12.5%;
+  position: absolute;
+  opacity: 0.6;
+  background-color: rgba(0, 0, 0, 0.5);
+  z-index: 0;
+}
+
+.pieceSVG {
+  width: 12.5%;
+  position: absolute;
+  transition-property: transform, top, left;
+  transition: 0.15s, 0.15s, 0.15s;
+  will-change: transform, top, left;
+  left: 0px;
+  top: 0px;
+}
+
+.pieceSVG.noAnimationPiece{
+  -webkit-transition-property: none !important;
+  -moz-transition-property: none !important;
+  -o-transition-property: none !important;
+  transition-property: none !important;
+  z-index: 2;
+}
+
+@media (orientation: portrait) {
+  #boardGrid{
+    display: grid;
+    width: 100%;
+    height:  calc(100vh - var(--headerHeight));
+    max-width: calc(100vh - var(--headerHeight) - var(--uiElementHeight) - 80px);
+    grid-template-rows: auto var(--uiElementHeight) 1fr;
+    grid-template-areas: "boardContainer" "boardUI" "boardData";
+  }
+}
+
+@media (orientation: landscape) {
+  #boardGrid{
+    display: grid;
+    width: 100%;
+    height: calc(100vh - var(--headerHeight));
+    grid-template-rows: 1fr var(--uiElementHeight);
+    grid-template-columns: calc(100vh - var(--headerHeight) - var(--uiElementHeight)) 1fr;
+    grid-template-areas: "boardContainer boardData" "boardUI boardData";
+  }
+}
+
+#boardUI{
+  min-height: var(--uiElementHeight);
+  width: 100%;
+  /*background-color: rgba(0, 0, 0, 0.15); add to make the gap between boardContainer and boardUI visible*/
+  grid-area: boardUI;
+  display: flex;
+}
+
+#boardData{
+  grid-area: boardData;
+
+  padding-left: var(--mediumMargin);
+  padding-right: var(--mediumMargin);
+  padding-top: var(--smallMargin);
+  padding-bottom: var(--smallMargin);
+
+  overflow-y: auto;
+  font-size: var(--smallTextSize);
+  text-align: justify;
+  white-space: pre-wrap;
+  cursor: pointer;
+}
+
+.boardButton{
+  margin: 0px !important; /* overwrite simpleButton */
+  flex-grow: 1;
+  /* TEXT */
+  font-family: "Material Icons" !important; /* overwrite simpleButton */
+  font-size: var(--iconsFontSize) !important; /* overwrite simpleButton */
+  text-align: center;
+  vertical-align: middle;
+  line-height: var(--uiElementHeight); /* = height*/
+}
