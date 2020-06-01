@@ -619,7 +619,15 @@ class App extends Component {
                                               notify={this.notify}
                                             />
     const newOpPage = ({ match, history }) => <NewOpPage history={history} match={match} createOp={this.createOp}/>
-    const loginPage = ({ match, history }) => <LoginPage history={history} match={match} setBearer={this.setBearer} username={this.state.username} rememberMeLocally={this.rememberMeLocally} notify={this.notify}/>
+    const loginPage = ({ match, history }) => <LoginPage 
+                                                history={history} 
+                                                match={match} 
+                                                setBearer={this.setBearer} 
+                                                username={this.state.username} 
+                                                rememberMeLocally={this.rememberMeLocally} 
+                                                notify={this.notify}
+                                                showLoadingScreen={() => this.setState({loadingVisible: true})}
+                                              />
     const userPage = ({ match, history }) =>  <UserPage 
                                                 history={history} 
                                                 match={match} 

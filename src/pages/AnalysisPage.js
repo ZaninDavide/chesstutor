@@ -12,7 +12,7 @@ class TrainingPage extends Component {
     const color = this.props.match.params.color
     return (
       <React.Fragment>
-        <Header mainButtonText="keyboard_backspace" title={<Translator text={"Analysis"} />} />
+        <Header mainButtonText="arrow_back" title={<Translator text={"Analysis"} />} />
         <Board
           history={this.props.history}
           buttons={["back", "forward_next"]}

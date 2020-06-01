@@ -41,7 +41,6 @@ class userPage extends Component {
       <h3 className="profilePageTitle"><Translator text="BOARD"/></h3>
 
 
-
       <button 
         onClick={this.props.logout}
         id="logoutButton" 
@@ -72,7 +71,7 @@ class userPage extends Component {
 
     return (
       <React.Fragment>
-        <Header title={this.props.username} mainButtonText="keyboard_backspace"/>
+        <Header title={this.props.username} mainButtonText="arrow_back"/>
         <div id="userPage" className="page">
 
           {this.state.tab === "inbox" ? inboxPage() : profilePage()}
@@ -82,13 +81,13 @@ class userPage extends Component {
               className={"userPageTab" + (this.state.tab === "profile" ? " userPageTabSelected" : "")}
               onClick={() => this.setState({tab: "profile"})}
             >
-              <span className="iconText">person</span>{/*<Translator text={"Profile"} />*/}
+              <span className="iconText">account_box</span>
             </div>
             <div 
               className={"userPageTab" + (this.state.tab === "inbox" ? " userPageTabSelected" : "")}
               onClick={() => this.setState({tab: "inbox"})}
             >
-              <span className="iconText">inbox</span>{/*<Translator text={"Inbox"} />*/}
+              <span className="iconText">mail</span>
             </div>
           </div>
         </div>

@@ -13,7 +13,7 @@ class ColorTrainingPage extends Component {
     
     return (
       <React.Fragment>
-        <Header mainButtonText="keyboard_backspace" goTo={"/"} title={<React.Fragment><Translator text={"Training"} />{": "}<Translator text={color + " openings"} /></React.Fragment>} />
+        <Header mainButtonText="arrow_back" goTo={"/"} title={<React.Fragment><Translator text={"Training"} />{": "}<Translator text={color + " openings"} /></React.Fragment>} />
         <Board 
           key="colorTrainingBoard"
           history={this.props.history} 

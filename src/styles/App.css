@@ -1,21 +1,21 @@
-@import url("https://fonts.googleapis.com/css?family=Quicksand|Muli|Material+Icons&display=swap");
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400&display=swap');
+@import url("https://fonts.googleapis.com/css?family=Material+Icons&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
 
 /* ---------------------------- LAYOUT & THEMES ---------------------------- */
 
 .layout {
-  font-family: "Quicksand", "Segoe UI";
-  --textFont: "Quicksand", "Segoe UI";
-  --titleFont: "Muli", "Arial";
+  font-family: "Montserrat", "Segoe UI", "Roboto", "Arial";
+  --textFont: "Montserrat", "Segoe UI", "Roboto", "Arial";
+  --titleFont: "Montserrat", "Segoe UI", "Roboto", "Arial";
 
   --smallTextSize: 14px;
   --textSize: 16px;
-  --mediumTextSize: 18px;
-  --titleSize: 19px; /*22px*/
+  --mediumTextSize: 17px;
+  --titleSize: 18px; /*22px*/
   --iconsFontSize: 28px; /* 26px */
 
-  --textWeight: 300;
-  --mediumWeight: 400;
+  --textWeight: 200;
+  --mediumWeight: 300;
   --titleWeight: 500;
   
   --smallMargin: 5px;
@@ -38,19 +38,20 @@
 
   --impText: #3cf17e; /*#a3f7bf*/
   --primaryText: white;
-  --secondaryText: hsl(0, 0%, 72%); /*a2a099*/
+  --secondaryText: hsl(0, 0%, 65%); /*a2a099*/
 
   --buttonText: rgb(245, 245, 245);
   --hoverBackColor: rgba(100, 100, 100, 0.15); /* rgba(100, 100, 100, 0.3) */
-  --hoverBackColorNonAlpha: #323231;
+  --hoverBackColorNonAlpha: #272726;
 
-  --impButtonText: #1d1d1b;
+  --impButtonText: black; /*#1d1d1b*/
   --impButtonBack: #3cf17e; /*#a3f7bf*/
   --hoverImpButtonBack: #00ec57; /*hsl(140, 34%, 60%)*/
 
   --hoverAlertColor: #b63737; /*#f06b65*/
 
   --headerBack: black;
+  --modalBack: #1d1d1b;
 
   --disabledColor: #443f3f;
 }
@@ -126,7 +127,7 @@
 
 ::-webkit-scrollbar-track
 {
-  background: rgba(255, 255, 255, 0.1), 0.1);
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb
@@ -148,11 +149,10 @@
 
   h1 {
     /* TEXT */
-    color: var(--primaryText)/*var(--impText)*/;
+    color: var(--primaryText);
     font-family: var(--titleFont);
     font-weight: var(--titleWeight);
-    font-size: var(--titleSize); /* --titleSize */
-    letter-spacing: 0.5px;
+    font-size: var(--titleSize);
     /* SPACES */
     margin-top: auto;
     margin-bottom: auto;
@@ -164,7 +164,7 @@
     /* TEXT */
     color: var(--primaryText);
     font-weight: var(--mediumWeight);
-    font-size: var(--mediumTextSize);
+    font-size: var(--textSize);
     /* SPACES */
     margin-top: var(--smallMargin);
     margin-bottom: var(--smallMargin);
@@ -463,7 +463,7 @@ button.impButton:hover:enabled{
 
 button.impButton:disabled, button.impButton[disabled]{
   color: var(--disabledColor);
-  background-color: var(--hoverBackColor);
+  background-color: var(--modalBack);
   cursor: default;
 }
 
@@ -482,8 +482,8 @@ a {
 .opItem,
 .variItem {
   display: grid;
+  grid-template-rows: 1fr;
   grid-template-columns: 1fr auto;
-  grid-template-areas: "opItemText" "opItemButton";
 
   cursor: pointer;
   /* SPACES */
@@ -498,35 +498,19 @@ a {
   -webkit-tap-highlight-color: var(--hoverBackColor);
 }
 
-/*.subvariItem{
-  border-left-width: calc(var(--mediumMargin) * 2);
-}*/
-
 .opItem:hover,
 .variItem:hover {
   background-color: var(--hoverBackColor);
 }
 
-/*.variItem{
-  display: grid;
-  grid-template-columns: auto 1fr;
-  grid-template-rows: auto;
-  grid-template-areas: "checkbox content";
-}*/
-
-/*.variItemCheckbox{
-  margin-top: auto;
-  margin-bottom: auto;
-  margin-left: calc(var(--mediumMargin) - 5px);
-  margin-right: 0;
-  vertical-align: middle;
-  overflow: hidden;
-  grid-area: checkbox;
-  width: var(--iconsFontSize);
-}*/
-
 .variItemContent{
   grid-area: content;
+}
+
+.opItemButton, .variItemButton{
+  color: var(--secondaryText);
+  display: flex;
+  align-items: center;
 }
 
 .chessText{

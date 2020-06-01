@@ -23,7 +23,7 @@
     margin-right: auto;
     border-radius: var(--borderRadius);
 
-    background-color: var(--backColor);
+    background-color: var(--modalBack);
 
     /* SHADOWS */
     -moz-box-shadow: 2px 3px 4px rgba(0, 0, 0,0.25);
@@ -123,7 +123,7 @@
 }
 
 .hMenuContent{
-    background-color: var(--backColor);
+    background-color: var(--modalBack);
 
     position: fixed;
     left:0px;
@@ -144,8 +144,6 @@
 
     max-height: 80vh;
     overflow-y: auto;
-    
-    padding-top: var(--smallMargin);
 }
 
 .hMenuButton{
@@ -168,21 +166,22 @@
 }
 
 .hMenuButtonIcon{
-    grid-area: "hMenuButtonIcon";
+    grid-area: hMenuButtonIcon;
     font-family: "Material Icons" !important; /* overwrite simpleButton */
-    font-size: var(--iconsFontSize) !important; /* overwrite simpleButton */
+    font-size: calc(var(--iconsFontSize) * 0.9) !important; /* overwrite simpleButton */
     width: calc(var(--uiElementHeight));
     margin-left: var(--mediumMargin);
     margin-right: var(--mediumMargin);
     height: var(--uiElementHeight);
+    color: var(--secondaryText);
 }
 
 .hMenuButtonLabel{
-    grid-area: "hMenuButtonLabel";
+    grid-area: hMenuButtonLabel;
     text-align: left;
     line-height: var(--uiElementHeight);
     /* TEXT */
-    color: var(--secondaryText);
+    color: var(--primaryText);
     font-family: var(--textFont);
     font-weight: var(--textWeight);
     font-size: var(--textSize);
@@ -252,4 +251,19 @@
 .sendNameLabel{
   text-overflow: ellipsis;
   line-height: var(--uiElementHeight);
+}
+
+#loadingScreen{
+    background-color: black;
+    position: absolute;
+    top: 0px;
+    left: 0px;
+    width: 100vw;
+    height: 100vh;
+    z-index: 10;
+}
+  
+#loadingScreenBottom{
+    display: table-cell;
+    vertical-align: bottom;
 }

@@ -36,6 +36,7 @@ class LoginPage extends Component {
       return false
     }else{
       let bearer = await res.text()
+      this.props.showLoadingScreen()
       this.props.setBearer(bearer)
       if(this.state.rememberMe){
         this.props.rememberMeLocally(this.state.username, bearer)
@@ -72,6 +73,7 @@ class LoginPage extends Component {
         this.props.notify(textRes.replace("email", "username"), "error")
         return false
       }else{
+        this.props.showLoadingScreen()
         this.props.setBearer(textRes)
         return true
       }

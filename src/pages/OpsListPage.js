@@ -32,7 +32,7 @@ class OpsListPage extends Component {
 
   getSeparator(text, goTo){
     return  <div id={"opsSeparator" + text} className="opsSeparator" key={"opsSeparator" + text} onClick={() => goTo ? this.props.history.push(goTo) : null}>
-              <h3 className={text === "ARCHIVED OPENINGS" ? "alertText" : "impText"}>
+              <h3 className={text === "Archived openings" ? "alertText" : "impText"}>
                 <Translator text={text} />
               </h3>
             </div>
@@ -66,15 +66,15 @@ class OpsListPage extends Component {
       // connect all together: not_archived_white + separator + not_archived_black + separator + archived
       let all = []
       if(not_archived_white.length > 0){
-        all.push(this.getSeparator("WHITE", "/training/fullcolor/1"))
+        all.push(this.getSeparator("white", "/training/fullcolor/1"))
         all = all.concat(not_archived_white)
       }
       if(not_archived_black.length > 0){
-        all.push(this.getSeparator("BLACK", "/training/fullcolor/0"))
+        all.push(this.getSeparator("black", "/training/fullcolor/0"))
         all = all.concat(not_archived_black)
       }
       if(archived.length > 0){
-        all.push(this.getSeparator("ARCHIVED OPENINGS"))
+        all.push(this.getSeparator("Archived openings"))
         all = all.concat(archived)
       }
       return all

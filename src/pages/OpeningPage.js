@@ -34,13 +34,13 @@ class OpeningPage extends Component {
   getArchivedSeparator(){
     return  <div id="archivedVarsSeparator" key="archivedVarsSeparator">
               <h3 className="alertText">
-                <Translator text="ARCHIVED VARIATIONS" />
+                <Translator text="Archived variations" />
               </h3>
             </div>
   }
 
   getVariationFolder(variName){
-    return  <div className="variationFolder" key={"variationFolder_" + variName}><h3>{variName.toUpperCase()}</h3></div>
+    return  <div className="variationFolder" key={"variationFolder_" + variName}><h3>{variName}</h3></div>
   }
 
   getVariItems(vars, op_index) {
@@ -155,7 +155,7 @@ class OpeningPage extends Component {
     const thisVari = this.state.hMenuVariIndex !== undefined ? this.props.ops[op_index].variations[this.state.hMenuVariIndex] : null
     return (
       <React.Fragment>
-        <Header title={op.op_name} mainButtonText="keyboard_backspace"/*headerButtonContent={<span className="iconText">school</span>}*/ /> {/* play_arrow */}
+        <Header title={op.op_name} mainButtonText="arrow_back"/*headerButtonContent={<span className="iconText">school</span>}*/ /> {/* play_arrow */}
         <div id="openingPage" className="page" style={this.no_variations_style(op.variations.length)}>{this.getVariItems(op.variations, op_index)}</div>
         <button id="playVarsButton" className="roundButton iconButton impButton" 
           onClick={this.startGame}

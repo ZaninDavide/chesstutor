@@ -42,7 +42,7 @@
   width: calc(100% - 10px); /*10px = padding-left;*/
   /*max-width: 400px;*/
 
-  background-color: var(--hoverBackColor);
+  background-color: var(--hoverBackColorNonAlpha);
   color: var(--primaryText);
   font-size: var(--textSize);
   font-family: inherit;
@@ -52,8 +52,8 @@
 .checkBox{
   width: calc(var(--uiElementSmallHeight) - 2 * var(--smallMargin));
   height: calc(var(--uiElementSmallHeight) - 2 * var(--smallMargin));
-  background-color: var(--hoverBackColor);
-  outline: var(--smallMargin) solid  var(--hoverBackColor);
+  background-color: var(--hoverBackColorNonAlpha);
+  outline: var(--smallMargin) solid  var(--hoverBackColorNonAlpha);
   margin: var(--smallMargin);
 }
 
@@ -130,17 +130,49 @@
   overflow: hidden;
 }
 
+
+.variationFolder{
+  width: 100%;
+
+  height: var(--uiElementMediumHeight);
+  line-height: var(--uiElementMediumHeight);
+
+  color: var(--impText);
+
+  margin: 0px;
+  /*border-top: solid 1px var(--hoverBackColor);*/
+
+  text-align: center;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-transform: uppercase;
+
+  display: flex;
+  align-items: center;
+}
+
+.opsSeparator h3, #archivedVarsSeparator h3, .variationFolder h3{
+  width: 100%;
+}
+
 .opsSeparator, #archivedVarsSeparator{
   width: 100%;  
 
   height: var(--uiElementMediumHeight);
   line-height: var(--uiElementMediumHeight);
+
   color: var(--impText);
 
   margin: 0px;
   overflow: hidden;
+  /*border-top: solid 1px var(--hoverBackColor);*/
+
   text-align: center;
-  border-top: solid 1px var(--hoverBackColor);
+
+  display: flex;
+  align-items: center;
+
+  text-transform: uppercase;
 }
 
 #opsSeparatorWhite, #opsSeparatorBlack{
@@ -180,7 +212,7 @@
   border-top-right-radius: var(--borderRadius);
   border-bottom-right-radius: var(--borderRadius);
   border: 0;
-  border-left: var(--smallMargin) solid var(--backColor);
+  border-left: var(--smallMargin) solid var(--modalBack);
 
   padding-left: 2px;
 
@@ -195,20 +227,6 @@
   outline: none;
 }
 
-#loadingScreen{
-  background-color: rgba(0, 0, 0, 0.8);
-  position: absolute;
-  top: 0px;
-  left: 0px;
-  width: 100vw;
-  height: 100vh;
-  z-index: 10;
-}
-
-#loadingScreenBottom{
-  display: table-cell;
-  vertical-align: bottom;
-}
 
 #opsSeparatorWhite, #opsSeparatorBlack{
   -webkit-tap-highlight-color: var(--hoverBackColor)
@@ -216,13 +234,12 @@
 
 #logoutButton{
   bottom: calc(var(--mediumMargin) + var(--uiElementHeight));
-  background-color: var(--hoverBackColor);
-  color: var(--alertColor);
+  background-color: var(--alertColor);
+  color: var(--backColor);
 }
 
 #logoutButton:hover{
-  background-color: var(--alertColor);
-  color: var(--backColor);
+  background-color: var(--hoverAlertColor);
 }
 
 #logoutButton:hover:focus{
@@ -273,9 +290,9 @@
 }
 
 
-.mailItemCloseButton, .opItemMoreButton, .variItemMoreButton{
+.mailItemCloseButton{
   margin-left: var(--smallMargin);
-  margin-right: var(--smallMargin);
+  margin-right: 0px;
 }
 
 .mailItemCloseButton:hover{
@@ -362,25 +379,9 @@
 .profilePageTitle{
   margin-top: var(--mediumMargin);
   margin-bottom: var(--mediumMargin);
+  color: var(--primaryText);
 }
 
-.variationFolder{
-  width: 100%;
-
-  height: var(--uiElementMediumHeight);
-  line-height: var(--uiElementMediumHeight);
-
-  color: var(--impText);
-
-  margin: 0px;
-  border-top: solid 1px var(--hoverBackColor);
-
-  text-align: center;
-  overflow: hidden;
-  text-overflow: ellipsis;
-
-}
-
-.variationFolder:hover{
-  /*background-color: var(--hoverBackColor);*/
-}
+/*.variationFolder:hover{
+  background-color: var(--hoverBackColor);
+}*/

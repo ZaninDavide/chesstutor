@@ -23,17 +23,15 @@ class OpItem extends Component {
     return (
       <div 
         className="opItem" 
-        onClick={this.openOp}
-        onContextMenu={this.rightClick}
       >
-        <div className="opItemText">
+        <div className="opItemText" onClick={this.openOp} onContextMenu={this.rightClick}>
           <h2>{this.props.op.op_name}</h2>
           {<p className="smallText">
             <Translator text={this.props.op.op_color} />{" ⋅ "}{this.props.op.variations.length} <Translator text={this.props.op.variations.length === 1 ? "variation" : "variations"} />
           </p>}
         </div>
-        <div className="opItemButton">
-          <button className="iconButton opItemMoreButton" onClick={this.rightClick}>more_vert</button>
+        <div className="opItemButton iconText" onClick={this.rightClick}>
+          more_vert
         </div>
       </div>
     )
