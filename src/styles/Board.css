@@ -50,6 +50,11 @@
   z-index: 2;
 }
 
+.pieceSVG.staticPiece{
+  left: 0px !important;
+  top: 0px !important;
+}
+
 @media (orientation: portrait) {
   #boardGrid{
     display: grid;
@@ -93,6 +98,7 @@
   text-align: justify;
   white-space: pre-wrap;
   cursor: pointer;
+  -webkit-tap-highlight-color: var(--hoverBackColor);
 }
 
 .boardButton{

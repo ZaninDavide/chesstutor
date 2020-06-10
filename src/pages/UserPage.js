@@ -1,6 +1,7 @@
 import React, { Component } from "react"
 import Header from "../components/Header"
 import Translator from "../components/Translator"
+import Ripples from "react-ripples"
 
 class userPage extends Component {
   constructor(props){
@@ -34,8 +35,8 @@ class userPage extends Component {
     const profilePage = () => <div id="profile" key="profile">
       <h3 className="profilePageTitle"><Translator text="GENERAL"/></h3>
       <p><Translator text="Language"/>:&nbsp;
-        <button className="simpleButton" onClick={() => this.props.setLanguage("eng")} style={{marginRight: 0, color: this.props.language === "eng" ? "var(--impText)" : "var(--secondaryText)"}}><Translator text={"ENG"}/></button>
-        <button className="simpleButton" onClick={() => this.props.setLanguage("ita")} style={{marginLeft:  0, color: this.props.language === "ita" ? "var(--impText)" : "var(--secondaryText)"}}><Translator text={"ITA"}/></button>
+        <Ripples><button className="simpleButton" onClick={() => this.props.setLanguage("eng")} style={{marginRight: 0, color: this.props.language === "eng" ? "var(--impText)" : "var(--secondaryText)"}}><Translator text={"ENG"}/></button></Ripples>
+        <Ripples><button className="simpleButton" onClick={() => this.props.setLanguage("ita")} style={{marginLeft:  0, color: this.props.language === "ita" ? "var(--impText)" : "var(--secondaryText)"}}><Translator text={"ITA"}/></button></Ripples>
       </p>
 
       <h3 className="profilePageTitle"><Translator text="BOARD"/></h3>
@@ -77,18 +78,18 @@ class userPage extends Component {
           {this.state.tab === "inbox" ? inboxPage() : profilePage()}
 
           <div id="userPageTabContainer">
-            <div 
+            <Ripples
               className={"userPageTab" + (this.state.tab === "profile" ? " userPageTabSelected" : "")}
               onClick={() => this.setState({tab: "profile"})}
             >
               <span className="iconText">account_box</span>
-            </div>
-            <div 
+            </Ripples>
+            <Ripples
               className={"userPageTab" + (this.state.tab === "inbox" ? " userPageTabSelected" : "")}
               onClick={() => this.setState({tab: "inbox"})}
             >
               <span className="iconText">mail</span>
-            </div>
+            </Ripples>
           </div>
         </div>
       </React.Fragment>

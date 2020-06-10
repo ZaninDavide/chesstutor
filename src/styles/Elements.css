@@ -149,6 +149,8 @@
 
   display: flex;
   align-items: center;
+
+  line-height: 1;
 }
 
 .opsSeparator h3, #archivedVarsSeparator h3, .variationFolder h3{
@@ -177,10 +179,6 @@
 
 #opsSeparatorWhite, #opsSeparatorBlack{
   cursor: pointer;
-}
-
-#opsSeparatorWhite:hover, #opsSeparatorBlack:hover{
-  background-color: var(--hoverBackColor);
 }
 
 .renameTextBox{
@@ -238,33 +236,18 @@
   color: var(--backColor);
 }
 
-#logoutButton:hover{
-  background-color: var(--hoverAlertColor);
-}
-
-#logoutButton:hover:focus{
-  background-color: var(--hoverAlertColor);
-  color: var(--backColor);
-}
-
 #userPageTabContainer{
   width: 100%;
   display: flex;
 }
 
 .userPageTab{
+  display: block !important;
   width: 100%;
   height: calc(var(--uiElementHeight) - 2px);
   line-height: calc(var(--uiElementHeight) - 2px);
   text-align: center;
-  /*background-color: rgba(0, 0, 0, 0.2);*/
   border-top: 2px solid transparent;
-}
-
-@media (hover: hover) {
-  .userPageTab:hover{
-    background-color: var(--hoverBackColor);
-  }
 }
 
 .userPageTabSelected{
@@ -285,19 +268,10 @@
   -webkit-tap-highlight-color: var(--hoverBackColor);
 }
 
-.mailItem:hover{
-  background-color: var(--hoverBackColor);
-}
-
 
 .mailItemCloseButton{
   margin-left: var(--smallMargin);
   margin-right: 0px;
-}
-
-.mailItemCloseButton:hover{
-  color: var(--alertColor);
-  background-color: transparent;
 }
 
 .mailItemOpenButton{
@@ -382,6 +356,21 @@
   color: var(--primaryText);
 }
 
-/*.variationFolder:hover{
-  background-color: var(--hoverBackColor);
-}*/
+@media (hover: hover) {
+  .userPageTab:hover{
+    background-color: var(--hoverBackColor);
+  }
+  #logoutButton:hover{
+    background-color: var(--hoverAlertColor);
+  }
+  #opsSeparatorWhite:hover, #opsSeparatorBlack:hover{
+    background-color: var(--hoverBackColor);
+  }
+  .mailItem:hover{
+    background-color: var(--hoverBackColor);
+  }
+  .mailItemCloseButton:hover{
+    color: var(--alertColor);
+    background-color: transparent;
+  }
+}

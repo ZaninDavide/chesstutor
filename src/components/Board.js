@@ -9,6 +9,7 @@ import CommentModal from "../components/CommentModal"
 import HelpModal from "../components/HelpModal"
 import NewVariModal from "./NewVariModal.js"
 import HangingMenu from "../components/HangingMenu"
+import Ripples from "react-ripples"
 
 import "../styles/Board.css"
 
@@ -544,7 +545,7 @@ class Board extends Component {
               id={"piece" + id} 
               key={"piece" + id}
               ref={is_selected ? this.selectedPiece : null}
-              className={is_selected ? "pieceSVG noAnimationPiece" : "pieceSVG"} /* && on_drag  */
+              className={is_selected ? "pieceSVG noAnimationPiece" : "pieceSVG staticPiece"} /* && on_drag  */
               alt={"Piece file missing"}
               draggable={false}
             />
@@ -607,7 +608,12 @@ class Board extends Component {
 
   selectCell(cell) {
     // cell: "d4"
-    this.setState({ selected_cell: cell })
+    this.setState({ selected_cell: cell }, () => {
+      if(this.selectedPiece.current){
+        this.selectedPiece.current.style.left = "0px";
+        this.selectedPiece.current.style.top = "0px";
+      }
+    })
   }
 
   deselectCells() {
@@ -843,7 +849,7 @@ class Board extends Component {
   boardButtons(){
     let b_objects = []
     if(this.props.buttons){
-      // ANALIZE
+      // MORE
       if(this.props.buttons.indexOf("more") !== -1){
         b_objects.push(
           <button id="moreButton" key="moreButton" className="simpleButton boardButton" 
@@ -901,10 +907,7 @@ class Board extends Component {
       // CREATE VARIATION BUTTON - DONE
       if(this.props.buttons.indexOf("done") !== -1){
         b_objects.push(
-          <button 
-            id="doneButton" 
-            key="doneButton" 
-            className="simpleButton boardButton" 
+          <button id="doneButton" key="doneButton" className="simpleButton boardButton" 
             onClick={this.openVariNameModal}
             disabled={this.state.json_moves.length === 0}
           >done</button>
@@ -913,10 +916,7 @@ class Board extends Component {
       // STOP TRAINING THIS OPENING
       if(this.props.buttons.indexOf("stopTrainThis") !== -1){
         b_objects.push(
-          <button 
-            id="stopTrainThisButton" 
-            key="stopTrainThisButton"
-            className="simpleButton boardButton alertButton"
+          <button id="stopTrainThisButton" key="stopTrainThisButton" className="simpleButton boardButton alertButton"
             onClick={() => this.props.set_in_training(false)}
           >clear</button>
         )
@@ -924,10 +924,7 @@ class Board extends Component {
       // TRAIN THIS OPENING
       if(this.props.buttons.indexOf("trainThis") !== -1){
         b_objects.push(
-          <button 
-            id="trainThisButton" 
-            key="trainThisButton"
-            className="simpleButton boardButton impButton"
+          <button id="trainThisButton" key="trainThisButton" className="simpleButton boardButton impButton"
             onClick={() => {
               let newPlayColor = this.props.set_in_training(true)
               if(
@@ -941,7 +938,7 @@ class Board extends Component {
         )
       }
     }
-    return b_objects
+    return b_objects.map(button => <Ripples className="simpleButton boardButton">{button}</Ripples>)
   }
 
   escapeHtml(text) {

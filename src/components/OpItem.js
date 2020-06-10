@@ -1,5 +1,6 @@
 import React, { Component } from "react"
 import Translator from "./Translator"
+import Ripples from "react-ripples"
 
 class OpItem extends Component {
   constructor(props) {
@@ -14,14 +15,13 @@ class OpItem extends Component {
 
   rightClick(e){
     e.preventDefault() /* avoids the menu to open */
-    e.stopPropagation() /* avoid propagation fore "more button" click*/
     this.props.hMenuOpen(this.props.op_index)
     return false /* avoids the menu to open */
   }
 
   render() {
     return (
-      <div 
+      <Ripples 
         className="opItem" 
       >
         <div className="opItemText" onClick={this.openOp} onContextMenu={this.rightClick}>
@@ -33,7 +33,7 @@ class OpItem extends Component {
         <div className="opItemButton iconText" onClick={this.rightClick}>
           more_vert
         </div>
-      </div>
+      </Ripples>
     )
   }
 }

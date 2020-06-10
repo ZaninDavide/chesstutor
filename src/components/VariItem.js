@@ -1,6 +1,7 @@
 import React, { Component } from "react"
 import { Link } from "react-router-dom"
 import Translator from "./Translator"
+import Ripples from "react-ripples"
 
 class VariItem extends Component {
   constructor(props) {
@@ -18,7 +19,7 @@ class VariItem extends Component {
   render() {
     const thisVari = this.props.vari
     return (
-        <div 
+        <Ripples 
           className={"variItem" + (thisVari.vari_subname ? " subvariItem" : "")}
         >
           <div className="variItemText" onContextMenu={this.rightClick}>
@@ -38,7 +39,7 @@ class VariItem extends Component {
           <div className="variItemButton iconText"  onClick={this.rightClick}>
             more_vert
           </div>
-        </div>
+        </Ripples>
       )
   }
 }
