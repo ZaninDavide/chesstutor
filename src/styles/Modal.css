@@ -184,7 +184,7 @@
     color: var(--primaryText);
     font-family: var(--textFont);
     font-weight: var(--textWeight);
-    font-size: var(--textSize);
+    font-size: var(--smallTextSize);
 }
 
 .hMenuBack{
@@ -249,21 +249,30 @@
 }
 
 .sendNameLabel{
-  text-overflow: ellipsis;
-  line-height: var(--uiElementHeight);
+    text-overflow: ellipsis;
+    line-height: var(--uiElementHeight);
 }
 
 #loadingScreen{
-    background-color: black;
     position: absolute;
     top: 0px;
     left: 0px;
     width: 100vw;
     height: 100vh;
     z-index: 10;
+    background-image: url("/files/intro.svg");
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: contain;
+    background-color: black;
 }
   
 #loadingScreenBottom{
     display: table-cell;
     vertical-align: bottom;
+    font-size: var(--smallTextSize);
+    padding-left: var(--smallMargin);
+    padding-bottom: var(--smallMargin);
+    color:  var(--secondaryText);
+    opacity: .5;
 }

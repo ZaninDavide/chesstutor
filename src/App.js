@@ -75,6 +75,7 @@ class App extends Component {
     this.deleteMail = this.deleteMail.bind(this)
     this.notify = this.notify.bind(this)
     this.setLanguage = this.setLanguage.bind(this)
+    this.getOpFreeSubnames = this.getOpFreeSubnames.bind(this)
   }
 
   componentDidMount(){
@@ -342,6 +343,10 @@ class App extends Component {
     })
   }
 
+  getOpFreeSubnames(op_index, new_vari_name, allSubNames){
+    return allSubNames.filter(subname => this.state.user_ops[op_index].variations.filter(v => v.vari_name === new_vari_name && v.vari_subname === subname).length === 0)
+  }
+
   /* ---------------------------- COMMENTS ---------------------------- */
 
   editComment(op_index, json_moves, text){
@@ -602,6 +607,7 @@ class App extends Component {
                                                   setDrawBoardPDF={this.setDrawBoardPDF}
                                                   getDrawBoardPDF={this.getDrawBoardPDF}
                                                   get_correct_moves_data={this.get_correct_moves_data}
+                                                  getOpFreeSubnames={this.getOpFreeSubnames}
                                                 />
     const variPage = ({ match, history }) =>  <VariationPage 
                                               ops={this.state.user_ops} 
@@ -683,7 +689,7 @@ class App extends Component {
               <Route path="/openings/:op_index" render={/*noOpenings ? redirectToHome : */opPage} />
               <Route path="/training/fullcolor/:color_number" render={noOpenings ? redirectToHome : colorTrainingPage} />
               <Route path="/training/:op_index" render={noOpenings ? redirectToHome : trainingPage} />
-              <Route path="/analysis/:color/:fen" render={analysisPage} />
+              <Route path="/analysis/:color/:moves" render={analysisPage} />
               <Route path="/" render={() => <p>Error 404! Page not found</p>} />
             </Switch>
           </div>

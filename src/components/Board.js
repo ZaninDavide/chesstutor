@@ -233,6 +233,8 @@ class Board extends Component {
           close={this.closeVariNameModal}
           visible={this.state.variNameModalVisible}
           createThisVariation={this.createThisVariation}
+          op_index={this.props.op_index}
+          getOpFreeSubnames={this.props.getOpFreeSubnames}
         />
 
         {/* CHOOSE PROMOTION PIECE MODAL */}
@@ -273,7 +275,10 @@ class Board extends Component {
           {/* ANALYSIS BUTTON */}
           <button className="simpleButton hMenuButton" onClick={() => {
               this.setState({boardMenuVisible: false})
-              this.props.history.push("/analysis/" + this.props.rotation + "/" + this.state.game.fen().split("/").join("_"))
+              //this.props.history.push("/analysis/" + this.props.rotation + "/" + this.state.game.fen().split("/").join("_"))
+              //this.props.history.push("/analysis/" + this.props.rotation + "/" + this.state.game.pgn().split(" ").join("_"))
+              const moves = JSON.stringify(this.state.json_moves)
+              this.props.history.push("/analysis/" + this.props.rotation + "/" + moves)
           }}>
             <div className="hMenuButtonContent">
               <div className="hMenuButtonIcon">edit</div>
@@ -289,9 +294,13 @@ class Board extends Component {
     // called when the component is first created
     // this.testChess() // test
     
-    if(this.props.startFen){
-      const fen = this.props.startFen.split("_").join("/")
-      /*const turn = */this.state.game.load(fen)
+    if(this.props.startMoves){
+      /*const fen = this.props.startFen.split("_").join("/")*/
+      /*const turn = this.state.game.load(fen)*/
+      
+      let moves = JSON.parse(this.props.startMoves);
+      moves.forEach(m => this.state.game.move(m.san))
+      this.setState({json_moves: moves})
       this.forceUpdate()
     }
 

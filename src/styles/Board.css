@@ -55,30 +55,44 @@
   top: 0px !important;
 }
 
-@media (orientation: portrait) {
+@media (max-width: 105vh) {
   #boardGrid{
     display: grid;
     width: 100%;
     height:  calc(100vh - var(--headerHeight));
-    max-width: calc(100vh - var(--headerHeight) - var(--uiElementHeight) - 80px);
-    grid-template-rows: auto var(--uiElementHeight) 1fr;
-    grid-template-areas: "boardContainer" "boardUI" "boardData";
+    max-width: calc(100vh - var(--headerHeight) - var(--uiElementMediumHeight) - 80px);
+    grid-template-rows: auto 1fr var(--uiElementMediumHeight); /*  auto var(--uiElementMediumHeight) 1fr */
+    grid-template-areas: "boardContainer" "boardData" "boardUI"; /* "boardContainer" "boardUI" "boardData" */
   }
 }
 
-@media (orientation: landscape) {
+@media (min-width: 105vh) and (max-width: 133vh) {
   #boardGrid{
     display: grid;
     width: 100%;
     height: calc(100vh - var(--headerHeight));
-    grid-template-rows: 1fr var(--uiElementHeight);
-    grid-template-columns: calc(100vh - var(--headerHeight) - var(--uiElementHeight)) 1fr;
+    grid-template-rows: 1fr var(--uiElementMediumHeight);
+    grid-template-columns: calc(100vh - var(--headerHeight) - var(--uiElementMediumHeight)) 1fr;
     grid-template-areas: "boardContainer boardData" "boardUI boardData";
   }
 }
 
+@media (min-width: 133vh) {
+  #boardGrid{
+    display: grid;
+    width: 100%;
+    height: calc(100vh - var(--headerHeight));
+    grid-template-rows: 1fr var(--uiElementMediumHeight);
+    grid-template-columns: calc(100vh - var(--headerHeight)) 1fr;
+    grid-template-areas: "boardContainer boardData" "boardContainer boardUI";
+
+    /*grid-template-columns: calc(100vh - var(--headerHeight) - var(--uiElementMediumHeight)) 1fr;*/
+    /*grid-template-areas: "boardContainer boardData" "boardUI boardData";*/
+  }
+}
+
 #boardUI{
-  min-height: var(--uiElementHeight);
+  min-height: var(--uiElementMediumHeight);
   width: 100%;
   /*background-color: rgba(0, 0, 0, 0.15); add to make the gap between boardContainer and boardUI visible*/
   grid-area: boardUI;
@@ -88,14 +102,14 @@
 #boardData{
   grid-area: boardData;
 
-  padding-left: var(--mediumMargin);
-  padding-right: var(--mediumMargin);
-  padding-top: var(--smallMargin);
+  padding-left: calc(var(--smallMargin) + var(--mediumMargin) / 2);
+  padding-right: calc(var(--smallMargin) + var(--mediumMargin) / 2);
+  padding-top: calc(var(--smallMargin) + var(--mediumMargin) / 2);
   padding-bottom: var(--smallMargin);
 
   overflow-y: auto;
   font-size: var(--smallTextSize);
-  text-align: justify;
+  /*text-align: justify;*/
   white-space: pre-wrap;
   cursor: pointer;
   -webkit-tap-highlight-color: var(--hoverBackColor);
@@ -109,5 +123,6 @@
   font-size: var(--iconsFontSize) !important; /* overwrite simpleButton */
   text-align: center;
   vertical-align: middle;
-  line-height: var(--uiElementHeight); /* = height*/
+  line-height: var(--uiElementMediumHeight) !important; /* = height*/
+  height: var(--uiElementMediumHeight) !important;
 }

@@ -19,7 +19,7 @@ class TrainingPage extends Component {
           rotation={color}
           playColor={"both"}
           allowCommentEdit={false}
-          startFen={this.props.match.params.fen}
+          startMoves={this.props.match.params.moves}
         />
       </React.Fragment>
     )

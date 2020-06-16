@@ -11,12 +11,12 @@
   --smallTextSize: 14px;
   --textSize: 16px;
   --mediumTextSize: 17px;
-  --titleSize: 18px; /*22px*/
-  --iconsFontSize: 28px; /* 26px */
+  --titleSize: 17px; /*22px*/
+  --iconsFontSize: 24px; /* 28px */
 
   --textWeight: 200;
   --mediumWeight: 300;
-  --titleWeight: 500;
+  --titleWeight: 100;
   
   --smallMargin: 5px;
   --mediumMargin: 15px;
@@ -29,7 +29,8 @@
   --uiElementMediumHeight: 40px; /* like wide buttons height */
   --uiElementSmallHeight: 28px; /* like textBox height */
 
-  --headerHeight: calc(var(--uiElementHeight) + var(--smallMargin) * 2);
+  /*--headerHeight: calc(var(--uiElementHeight) + var(--smallMargin) * 2);*/
+  --headerHeight: calc(var(--uiElementMediumHeight) + var(--smallMargin) * 2);
 }
 
 .darkTheme {
