@@ -184,7 +184,7 @@
     color: var(--primaryText);
     font-family: var(--textFont);
     font-weight: var(--textWeight);
-    font-size: var(--smallTextSize);
+    font-size: var(--textSize);
 }
 
 .hMenuBack{

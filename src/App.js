@@ -608,6 +608,7 @@ class App extends Component {
                                                   getDrawBoardPDF={this.getDrawBoardPDF}
                                                   get_correct_moves_data={this.get_correct_moves_data}
                                                   getOpFreeSubnames={this.getOpFreeSubnames}
+                                                  notify={this.notify}
                                                 />
     const variPage = ({ match, history }) =>  <VariationPage 
                                               ops={this.state.user_ops} 

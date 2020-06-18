@@ -135,19 +135,19 @@ let processComment = comment_text => {
     mark_down_text = mark_down_text ? mark_down_text.replace(regex_line, subst_line) : "";
 
     /* MAKE MOVES LOOK NICER */
-    mark_down_text = mark_down_text.replace("$$Q", getPieceText("black_queen"))
-    mark_down_text = mark_down_text.replace("$$K", getPieceText("black_king"))
-    mark_down_text = mark_down_text.replace("$$N", getPieceText("black_knight"))
-    mark_down_text = mark_down_text.replace("$$B", getPieceText("black_bishop"))
-    mark_down_text = mark_down_text.replace("$$R", getPieceText("black_rook"))
-    mark_down_text = mark_down_text.replace("$$P", getPieceText("black_pawn"))
+    mark_down_text = mark_down_text.replace(/\$\$Q/g, getPieceText("black_queen"))
+    mark_down_text = mark_down_text.replace(/\$\$K/g, getPieceText("black_king"))
+    mark_down_text = mark_down_text.replace(/\$\$N/g, getPieceText("black_knight"))
+    mark_down_text = mark_down_text.replace(/\$\$B/g, getPieceText("black_bishop"))
+    mark_down_text = mark_down_text.replace(/\$\$R/g, getPieceText("black_rook"))
+    mark_down_text = mark_down_text.replace(/\$\$P/g, getPieceText("black_pawn"))
 
-    mark_down_text = mark_down_text.replace("$Q", getPieceText("white_queen"))
-    mark_down_text = mark_down_text.replace("$K", getPieceText("white_king"))
-    mark_down_text = mark_down_text.replace("$N", getPieceText("white_knight"))
-    mark_down_text = mark_down_text.replace("$B", getPieceText("white_bishop"))
-    mark_down_text = mark_down_text.replace("$R", getPieceText("white_rook"))
-    mark_down_text = mark_down_text.replace("$P", getPieceText("white_pawn"))
+    mark_down_text = mark_down_text.replace(/\$Q/g, getPieceText("white_queen"))
+    mark_down_text = mark_down_text.replace(/\$K/g, getPieceText("white_king"))
+    mark_down_text = mark_down_text.replace(/\$N/g, getPieceText("white_knight"))
+    mark_down_text = mark_down_text.replace(/\$B/g, getPieceText("white_bishop"))
+    mark_down_text = mark_down_text.replace(/\$R/g, getPieceText("white_rook"))
+    mark_down_text = mark_down_text.replace(/\$P/g, getPieceText("white_pawn"))
 
     return mark_down_text
 }

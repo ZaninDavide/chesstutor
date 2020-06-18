@@ -231,7 +231,7 @@
 }
 
 #logoutButton{
-  bottom: calc(var(--mediumMargin) + var(--uiElementHeight));
+  bottom: calc(var(--mediumMargin) + var(--uiElementMediumHeight));
   background-color: var(--alertColor);
   color: var(--backColor);
 }
@@ -377,4 +377,14 @@
     color: var(--alertColor);
     background-color: transparent;
   }
+}
+
+.settingsSection{
+  color: var(--secondaryText);
+  font-weight: var(--textWeight);
+  font-size: var(--textSize);
+  margin-top: var(--smallMargin);
+  margin-bottom: var(--smallMargin);
+  margin-left: var(--largeMargin);
+  margin-right: var(--mediumMargin);
 }

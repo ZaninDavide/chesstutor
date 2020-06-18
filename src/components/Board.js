@@ -10,6 +10,7 @@ import HelpModal from "../components/HelpModal"
 import NewVariModal from "./NewVariModal.js"
 import HangingMenu from "../components/HangingMenu"
 import Ripples from "react-ripples"
+import BoardData from "../components/BoardData"
 
 import "../styles/Board.css"
 
@@ -171,7 +172,7 @@ class Board extends Component {
     this.pc_move = this.pc_move.bind(this)
     this.try_select_cell = this.try_select_cell.bind(this)
     this.getPromotion = this.getPromotion.bind(this)
-    this.onBoardDataClick = this.onBoardDataClick.bind(this)
+    this.onCommentClick = this.onCommentClick.bind(this)
     this.next_button_click = this.next_button_click.bind(this)
     this.help_button_click = this.help_button_click.bind(this)
     this.make_move = this.make_move.bind(this)
@@ -216,13 +217,13 @@ class Board extends Component {
           <div id="boardUI" key="boardUI">
             {this.boardButtons()}
           </div>
-          <div 
-            id="boardData" 
-            key="boardData" 
-            onClick={this.onBoardDataClick}
-          >{ /* TODO - DO NOT OPEN IN TRAINING */}
-            {thereIsComment ? this.comment() : <div id="noCommentIcon" className="iconText">comment</div>}
-          </div>
+          <BoardData 
+            thereIsComment={thereIsComment} 
+            onCommentClick={this.onCommentClick}
+            getComment={this.props.getComment}
+            op_index={this.props.op_index}
+            json_moves={this.state.json_moves}
+          />
         </div>
 
 
@@ -950,64 +951,6 @@ class Board extends Component {
     return b_objects.map(button => <Ripples className="simpleButton boardButton">{button}</Ripples>)
   }
 
-  escapeHtml(text) {
-    if(!text) return ""
-    return text
-         .replace(/&/g, "&amp;")
-         .replace(/</g, "&lt;")
-         .replace(/>/g, "&gt;")
-         .replace(/"/g, "&quot;")
-         .replace(/'/g, "&#039;");
-  }
-
-  make_san_nicer(san, color = "white"){
-    let new_san = san
-    new_san = new_san.replace("Q", this.getPieceText(color + "_queen"))
-    new_san = new_san.replace("K", this.getPieceText(color + "_king"))
-    new_san = new_san.replace("N", this.getPieceText(color + "_knight"))
-    new_san = new_san.replace("B", this.getPieceText(color + "_bishop"))
-    new_san = new_san.replace("R", this.getPieceText(color + "_rook"))
-    new_san = new_san.replace("P", this.getPieceText(color + "_pawn"))
-    return new_san
-  }
-
-  processComment(comment_text){
-    let text = this.escapeHtml(comment_text)
-
-    const regex_bold = /\*(.*?)\*/gm;
-    const subst_bold = `<b>$1</b>`;
-    let mark_down_text = text ? text.replace(regex_bold, subst_bold) : "";
-
-    const regex_line = /_(.*?)_/gm;
-    const subst_line = `<u>$1</u>`;
-    mark_down_text = mark_down_text ? mark_down_text.replace(regex_line, subst_line) : "";
-
-    /* MAKE MOVES LOOK NICER */
-    mark_down_text = mark_down_text.replace("$$Q", this.getPieceText("black_queen"))
-    mark_down_text = mark_down_text.replace("$$K", this.getPieceText("black_king"))
-    mark_down_text = mark_down_text.replace("$$N", this.getPieceText("black_knight"))
-    mark_down_text = mark_down_text.replace("$$B", this.getPieceText("black_bishop"))
-    mark_down_text = mark_down_text.replace("$$R", this.getPieceText("black_rook"))
-    mark_down_text = mark_down_text.replace("$$P", this.getPieceText("black_pawn"))
-
-    mark_down_text = mark_down_text.replace("$Q", this.getPieceText("white_queen"))
-    mark_down_text = mark_down_text.replace("$K", this.getPieceText("white_king"))
-    mark_down_text = mark_down_text.replace("$N", this.getPieceText("white_knight"))
-    mark_down_text = mark_down_text.replace("$B", this.getPieceText("white_bishop"))
-    mark_down_text = mark_down_text.replace("$R", this.getPieceText("white_rook"))
-    mark_down_text = mark_down_text.replace("$P", this.getPieceText("white_pawn"))
-
-    return mark_down_text
-  }
-
-  comment(){
-    if (this.props.op_index === undefined || !this.state.json_moves) return ""
-    let text = this.props.getComment(this.props.op_index, this.state.json_moves)
-    text = this.processComment(text)
-
-    return <span dangerouslySetInnerHTML={{__html: text}} />
-  }
-
   closeVariNameModal(){
     this.setState({variNameModalVisible: false})
   }
@@ -1019,11 +962,13 @@ class Board extends Component {
   createThisVariation(name, subname = undefined){
     if(name.length !== 0){
       /*let vari_index = */this.props.createVari(name, this.state.json_moves, this.props.op_index, subname)
-      this.props.history.push("/openings/" + this.props.op_index)
+      // this.props.history.push("/openings/" + this.props.op_index)
+      this.props.notify(`${name} ${subname} created!`, "important")
+      this.setState({variNameModalVisible: false})
     }
   }
 
-  onBoardDataClick(){
+  onCommentClick(){
     if(this.props.allowCommentEdit){
       this.setState({commentModalVisible: true})
     }
@@ -1062,36 +1007,6 @@ class Board extends Component {
     }
   }
 
-  getPieceText(name) {
-    switch (name) {
-      case "white_king":
-        return "♔"
-      case "white_queen":
-        return "♕"
-      case "white_rook":
-        return "♖"
-      case "white_bishop":
-        return "♗"
-      case "white_knight":
-        return "♘"
-      case "white_pawn":
-        return "♙"
-      case "black_king":
-        return "♚"
-      case "black_queen":
-        return "♛"
-      case "black_rook":
-        return "♜"
-      case "black_bishop":
-        return "♝"
-      case "black_knight":
-        return "♞"
-      case "black_pawn":
-        return "♟"
-      default:
-        return undefined
-    }
-  }
 }
 
 export default Board

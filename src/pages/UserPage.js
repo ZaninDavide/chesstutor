@@ -34,14 +34,14 @@ class userPage extends Component {
 
     const profilePage = () => <div id="profile" key="profile">
       <h3 className="profilePageTitle"><Translator text="GENERAL"/></h3>
-      <p><Translator text="Language"/>:&nbsp;
+      <div className="settingsSection">
+        <Translator text="Language"/>:&nbsp;
         <Ripples><button className="simpleButton" onClick={() => this.props.setLanguage("eng")} style={{marginRight: 0, color: this.props.language === "eng" ? "var(--impText)" : "var(--secondaryText)"}}><Translator text={"ENG"}/></button></Ripples>
         <Ripples><button className="simpleButton" onClick={() => this.props.setLanguage("ita")} style={{marginLeft:  0, color: this.props.language === "ita" ? "var(--impText)" : "var(--secondaryText)"}}><Translator text={"ITA"}/></button></Ripples>
-      </p>
+      </div>
 
-      <h3 className="profilePageTitle"><Translator text="BOARD"/></h3>
-
-
+      {/*<h3 className="profilePageTitle"><Translator text="BOARD"/></h3>*/}
+      
       <button 
         onClick={this.props.logout}
         id="logoutButton" 

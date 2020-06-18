@@ -20,8 +20,6 @@ class NewVariModal extends Component {
       new_vari_name: "",
       new_vari_subname: ""
     }
-
-    this.subNameSelector = React.createRef()
   }
 
   getStyle(){
@@ -54,7 +52,7 @@ class NewVariModal extends Component {
               const allowed_subnames = this.props.getOpFreeSubnames(this.props.op_index, vari_name, sub_names)
               this.setState(old => {
                 if(allowed_subnames.indexOf(old.new_vari_subname) === -1){
-                  return {new_vari_name: vari_name, new_vari_subname: allowed_subnames[0]}
+                  return {new_vari_name: vari_name, new_vari_subname: allowed_subnames[0] !== undefined ? allowed_subnames[0] : allowed_subnames[1]}
                 }else{
                   return {new_vari_name: vari_name}
                 }

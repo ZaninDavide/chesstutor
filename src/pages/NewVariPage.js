@@ -32,6 +32,7 @@ class VariationPage extends Component {
           allowCommentEdit={true}
           get_correct_moves_data={this.props.get_correct_moves_data}
           getOpFreeSubnames={this.props.getOpFreeSubnames}
+          notify={this.props.notify}
         />
       </React.Fragment>
     )

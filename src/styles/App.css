@@ -1,12 +1,12 @@
 @import url("https://fonts.googleapis.com/css?family=Material+Icons&display=swap");
-@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
 
 /* ---------------------------- LAYOUT & THEMES ---------------------------- */
 
 .layout {
-  font-family: "Montserrat", "Segoe UI", "Roboto", "Arial";
-  --textFont: "Montserrat", "Segoe UI", "Roboto", "Arial";
-  --titleFont: "Montserrat", "Segoe UI", "Roboto", "Arial";
+  font-family: "Montserrat", "Open Sans", "Segoe UI", "Roboto", "Arial";
+  --textFont: "Montserrat", "Open Sans", "Segoe UI", "Roboto", "Arial";
+  --titleFont: "Montserrat", "Open Sans", "Segoe UI", "Roboto", "Arial";
 
   --smallTextSize: 14px;
   --textSize: 16px;
@@ -456,8 +456,7 @@ a {
   color: inherit;
 }
 
-.opItem,
-.variItem {
+.opItem, .variItem {
   display: grid !important;
   grid-template-rows: 1fr;
   grid-template-columns: 1fr auto;
@@ -467,7 +466,7 @@ a {
   padding-top: var(--smallMargin);
   padding-bottom: var(--smallMargin);
   border-style: solid;
-  border-left-width: var(--smallMargin);
+  border-left-width: 0px; /*var(--smallMargin);*/
   border-top-width: 0px;
   border-bottom-width: 0px;
   border-right-width: 0px;
@@ -475,6 +474,15 @@ a {
   -webkit-tap-highlight-color: var(--hoverBackColor);
 }
 
+.horizontalLine{
+  content: "";
+  margin-left: var(--mediumMargin);
+  margin-right: var(--mediumMargin);
+  height: 0px;
+  border-bottom: 1px solid var(--modalBack);
+  margin-top: -1px;
+  /*display: none;*/
+}
 
 .variItemContent{
   grid-area: content;
