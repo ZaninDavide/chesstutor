@@ -14,8 +14,8 @@
 }
 
 #touchCircle {
-  width: 18.75%;
-  height: 18.75%;
+  width: 17.67766953%;
+  height: 17.67766953%;
   margin: 0px;
   position: absolute;
   will-change: transform;
@@ -156,4 +156,8 @@
   margin-left: 2px;
   position: relative;
   top: -1px;
+}
+
+#arrows_svg{
+  position: absolute;
 }

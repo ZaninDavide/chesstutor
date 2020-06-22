@@ -11,6 +11,7 @@ import NewVariModal from "./NewVariModal.js"
 import HangingMenu from "../components/HangingMenu"
 import Ripples from "react-ripples"
 import BoardData from "../components/BoardData"
+import Arrows from "../components/Arrows"
 
 import "../styles/Board.css"
 
@@ -212,6 +213,7 @@ class Board extends Component {
             {this.selection()}
             {this.touchCircle()}
             {this.pieces()}
+            <Arrows arrows={[]} />
             <img id="boardSVG" src={this.state.rotated ? darkBoardRotatedSVG : darkBoardSVG} alt={"Board file missing"} ref="board" key="board" draggable={false} />
           </div>
           <div id="boardUI" key="boardUI">
@@ -599,8 +601,11 @@ class Board extends Component {
     if (over === undefined || sel === undefined || !dragged_away) return <div key="touchCircle"/>
     
     let coor = this.cellCoordinates(over)
+    coor.x = coor.x / Math.sqrt(2) - 100/8
+    coor.y = coor.y / Math.sqrt(2) - 100/8
 
-    return <div style={{ transform: `translate(${coor.x/1.5 - 17.25}%, ${coor.y/1.5 - 19.75}%)` }} key="touchCircle" id="touchCircle" />
+    return <div style={{ transform: `translate(calc(${coor.x}% - 2px), calc(${coor.y}% - 4px))` }} key="touchCircle" id="touchCircle" />
+    // return <div style={{ transform: `translate(${coor.x/1.5 - 17.25}%, ${coor.y/1.5 - 19.75}%)` }} key="touchCircle" id="touchCircle" />
 
     /*if(!this.state.selected_cell || !on_drag) return <div key="touchCircle" ref={this.touchCircleRef} />
     let coor = this.cellCoordinates(this.cellFromCoor(this.state.selected_cell))
