@@ -153,6 +153,7 @@ class Board extends Component {
       helpModalVisible: false,
       helpModalCorrectMoves: [],
       moves_forward: [],
+      arrows: [],
     }
     /* functions */
     this.newGame = this.newGame.bind(this)
@@ -180,6 +181,7 @@ class Board extends Component {
     this.back_button_click = this.back_button_click.bind(this)
     this.is_my_turn = this.is_my_turn.bind(this)
     this.forward_next_button_click = this.forward_next_button_click.bind(this)
+    this.setArrows = this.setArrows.bind(this)
     /* refs */
     this.selectedPiece = React.createRef()
 
@@ -213,7 +215,7 @@ class Board extends Component {
             {this.selection()}
             {this.touchCircle()}
             {this.pieces()}
-            <Arrows arrows={[]} />
+            <Arrows arrows={this.state.arrows} />
             <img id="boardSVG" src={this.state.rotated ? darkBoardRotatedSVG : darkBoardSVG} alt={"Board file missing"} ref="board" key="board" draggable={false} />
           </div>
           <div id="boardUI" key="boardUI">
@@ -378,6 +380,7 @@ class Board extends Component {
     let move = this.state.game.move(move_data)
 
     this.play_move_sound(move)
+    this.setArrows([])
 
     return new Promise(res => {
       this.setState(old => {
@@ -479,6 +482,8 @@ class Board extends Component {
     if(this.state.json_moves.length > 0){
       // actually undo
       let move = this.state.game.undo()
+      // remove arrows in case there were any
+      this.setArrows([])
       // pop the move out of the list of all moves of the game 
       this.setState(old => {
         // add this move to moves_forward
@@ -826,7 +831,7 @@ class Board extends Component {
     }
   }
 
-  async help_button_click(){
+  async help_button_click(can_auto_move = false){
     if(!this.is_my_turn()) return false
     // get moves data [{from: "d2", to: "d4", san: "d4"}, ...]
     let correct_moves_repetitive = []
@@ -846,11 +851,12 @@ class Board extends Component {
       }
     });
 
-    if(correct_moves.length > 1){
-      this.setState({
+    if(correct_moves.length > 1 || !can_auto_move){
+      /*this.setState({
         helpModalVisible: true,
         helpModalCorrectMoves: correct_moves
-      })
+      })*/
+      this.setArrows(correct_moves)
     }else if(correct_moves.length === 1){
       // MAKE MOVE
       const moves_list_after = await this.make_move(correct_moves[0])
@@ -887,7 +893,7 @@ class Board extends Component {
       if(this.props.buttons.indexOf("help") !== -1){
         b_objects.push(
           <button id="helpButton" key="helpButton" className="simpleButton boardButton" 
-            onClick={this.help_button_click}
+            onClick={() => this.help_button_click(false)}
             disabled={!this.is_my_turn()}
           >help</button>
         )
@@ -905,7 +911,7 @@ class Board extends Component {
       if(this.props.buttons.indexOf("multi_next") !== -1){
         b_objects.push(
           <button id="helpButton" key="helpButton" className="simpleButton boardButton" 
-            onClick={this.help_button_click} 
+            onClick={() => this.help_button_click(true)} 
             disabled={!this.is_my_turn()}
           >keyboard_arrow_right</button>
         )
@@ -977,6 +983,10 @@ class Board extends Component {
     if(this.props.allowCommentEdit){
       this.setState({commentModalVisible: true})
     }
+  }
+
+  setArrows(arrows){
+    this.setState({arrows})
   }
 
   /* ---------------------------- TEDEOUS JOB ---------------------------- */
