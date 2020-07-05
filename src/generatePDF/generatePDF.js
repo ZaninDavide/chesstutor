@@ -1,18 +1,8 @@
 import Chess from "../chessjs-chesstutor/chess.js"
-const printBoardSVG = "/files/chessboard_print.svg"
-// const printBoardRotatedSVG = "/files/chessboard_print_rotated.svg"
-const whiteKingSVG = "/files/white_king.svg"
-const whiteQueenSVG = "/files/white_queen.svg"
-const whiteRookSVG = "/files/white_rook.svg"
-const whiteKnightSVG = "/files/white_knight.svg"
-const whitePawnSVG = "/files/white_pawn.svg"
-const whiteBishopSVG = "/files/white_bishop.svg"
-const blackKingSVG = "/files/black_king.svg"
-const blackQueenSVG = "/files/black_queen.svg"
-const blackRookSVG = "/files/black_rook.svg"
-const blackKnightSVG = "/files/black_knight.svg"
-const blackPawnSVG = "/files/black_pawn.svg"
-const blackBishopSVG = "/files/black_bishop.svg"
+import { get_piece_src, printBoardSVG } from "../utilities/file_paths"
+
+import { make_san_nicer, process_comment } from "../utilities/san_parsing"
+import { pieces_names } from "../utilities/pieces_and_coords"
 
 let max_inline_comment_length = 35
 
@@ -25,135 +15,8 @@ let end = () => `
 </div>
 `
 
-let getPieceText = name => {
-    switch (name) {
-      case "white_king":
-        return "♔"
-      case "white_queen":
-        return "♕"
-      case "white_rook":
-        return "♖"
-      case "white_bishop":
-        return "♗"
-      case "white_knight":
-        return "♘"
-      case "white_pawn":
-        return "♙"
-      case "black_king":
-        return "♚"
-      case "black_queen":
-        return "♛"
-      case "black_rook":
-        return "♜"
-      case "black_bishop":
-        return "♝"
-      case "black_knight":
-        return "♞"
-      case "black_pawn":
-        return "♟"
-      default:
-        return undefined
-    }
-}
-
-const piecesName = {
-    K: "white_king",
-    Q: "white_queen",
-    R: "white_rook",
-    N: "white_knight",
-    B: "white_bishop",
-    P: "white_pawn",
-    k: "black_king",
-    q: "black_queen",
-    r: "black_rook",
-    n: "black_knight",
-    b: "black_bishop",
-    p: "black_pawn"
-}
-
-let getPieceSrc = (name) => {
-    switch (name) {
-      case "white_king":
-        return whiteKingSVG
-      case "white_queen":
-        return whiteQueenSVG
-      case "white_rook":
-        return whiteRookSVG
-      case "white_bishop":
-        return whiteBishopSVG
-      case "white_knight":
-        return whiteKnightSVG
-      case "white_pawn":
-        return whitePawnSVG
-      case "black_king":
-        return blackKingSVG
-      case "black_queen":
-        return blackQueenSVG
-      case "black_rook":
-        return blackRookSVG
-      case "black_bishop":
-        return blackBishopSVG
-      case "black_knight":
-        return blackKnightSVG
-      case "black_pawn":
-        return blackPawnSVG
-      default:
-        return undefined
-    }
-}
-
-let nicer_san= (san) => {
-    let text = san
-    text = text.replace("Q", getPieceText("white_queen"))
-    text = text.replace("K", getPieceText("white_king"))
-    text = text.replace("N", getPieceText("white_knight"))
-    text = text.replace("B", getPieceText("white_bishop"))
-    text = text.replace("R", getPieceText("white_rook"))
-    text = text.replace("P", getPieceText("white_pawn"))
-    return text
-}
-
-let escapeHtml = text => {
-    if(text === undefined) return ""
-    return text
-         .replace(/&/g, "&amp;")
-         .replace(/</g, "&lt;")
-         .replace(/>/g, "&gt;")
-         .replace(/"/g, "&quot;")
-         .replace(/'/g, "&#039;");
-  }
-
-let processComment = comment_text => {
-    let text = escapeHtml(comment_text)
-
-    const regex_bold = /\*(.*?)\*/gm;
-    const subst_bold = `<b>$1</b>`;
-    let mark_down_text = text ? text.replace(regex_bold, subst_bold) : "";
-
-    const regex_line = /_(.*?)_/gm;
-    const subst_line = `<u>$1</u>`;
-    mark_down_text = mark_down_text ? mark_down_text.replace(regex_line, subst_line) : "";
-
-    /* MAKE MOVES LOOK NICER */
-    mark_down_text = mark_down_text.replace(/\$\$Q/g, getPieceText("black_queen"))
-    mark_down_text = mark_down_text.replace(/\$\$K/g, getPieceText("black_king"))
-    mark_down_text = mark_down_text.replace(/\$\$N/g, getPieceText("black_knight"))
-    mark_down_text = mark_down_text.replace(/\$\$B/g, getPieceText("black_bishop"))
-    mark_down_text = mark_down_text.replace(/\$\$R/g, getPieceText("black_rook"))
-    mark_down_text = mark_down_text.replace(/\$\$P/g, getPieceText("black_pawn"))
-
-    mark_down_text = mark_down_text.replace(/\$Q/g, getPieceText("white_queen"))
-    mark_down_text = mark_down_text.replace(/\$K/g, getPieceText("white_king"))
-    mark_down_text = mark_down_text.replace(/\$N/g, getPieceText("white_knight"))
-    mark_down_text = mark_down_text.replace(/\$B/g, getPieceText("white_bishop"))
-    mark_down_text = mark_down_text.replace(/\$R/g, getPieceText("white_rook"))
-    mark_down_text = mark_down_text.replace(/\$P/g, getPieceText("white_pawn"))
-
-    return mark_down_text
-}
-
 let intro = (op_name, intro_text) => {
-    return `<h2 id="introTitle">${op_name}</h2><p id="introText">${processComment(intro_text)}</p>`
+    return `<h2 id="introTitle">${op_name}</h2><p id="introText">${process_comment(intro_text)}</p>`
 }
 
 let variTitle = vari_name => `<h3 class="variTitle">${vari_name}</h3>`
@@ -183,7 +46,7 @@ let line_moves = (moves_array, last_index, discussed_count) => {
         if(final_index % 2 === 0){
             text += (Math.floor(final_index / 2) + 1).toString() + ". "
         }
-        text += nicer_san(move.san) + " " 
+        text += make_san_nicer(move.san) + " " 
         // inline comments
         if(!discussed && comment){
             if(canCommentBeInline(comment)){
@@ -215,10 +78,10 @@ let boardFromMoveName = (move_name, op_color) => {
         let piece = board[line][collumn]
             if (piece !== null) {
                 // if the cell is not empty
-                let type = piecesName[piece.color === "b" ? piece.type : piece.type.toUpperCase()] // get the type in this form: "white_king"
+                let type = pieces_names[piece.color === "b" ? piece.type : piece.type.toUpperCase()] // get the type in this form: "white_king"
                 let px = op_color === "black" ? ((7 - collumn) * 100) : (collumn * 100)
                 let py = op_color === "black" ? ((7 - line) * 100) : (line * 100)
-                piecesHTML += `<img src="${getPieceSrc(type)}" class="piecePDF" style="transform: translate(${px}%, ${py}%" />` //${cellCoords[(collumn * 100).toString() + "x"] + cellCoords[(line * 100).toString() + "y"]}
+                piecesHTML += `<img src="${get_piece_src(type)}" class="piecePDF" style="transform: translate(${px}%, ${py}%" />` //${cellCoords[(collumn * 100).toString() + "x"] + cellCoords[(line * 100).toString() + "y"]}
             }
         }
     }
@@ -228,7 +91,7 @@ let boardFromMoveName = (move_name, op_color) => {
 }
 
 let comment = text => {
-    return `<p class="commentPDF">${processComment(text)}</p>` // \subsubsection*{\large{1. e4 - c5 2. \knight f6}}
+    return `<p class="commentPDF">${process_comment(text)}</p>` // \subsubsection*{\large{1. e4 - c5 2. \knight f6}}
 }
 
 let moveName = json_moves => {

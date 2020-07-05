@@ -1,9 +1,9 @@
 import React, { Component } from "react"
-//import Chess from "chess.js"
 import Chess from "../chessjs-chesstutor/chess.js"
 
-//import Modal from "../components/Modal"
-//import Translator from "../components/Translator"
+import { cells, cells_rotated, cell_coords, cell_coords_rotated, pieces_names } from "../utilities/pieces_and_coords"
+import { get_piece_src, darkBoardSVG, darkBoardRotatedSVG, sound_capture, sound_move, sound_error } from "../utilities/file_paths"
+
 import PromotionModal from "../components/PromotionModal"
 import CommentModal from "../components/CommentModal"
 import HelpModal from "../components/HelpModal"
@@ -14,118 +14,6 @@ import BoardData from "../components/BoardData"
 import Arrows from "../components/Arrows"
 
 import "../styles/Board.css"
-
-// import boardSVG from "../files/chessboard.svg"
-const darkBoardSVG = "/files/chessboard_dark.svg"
-const darkBoardRotatedSVG = "/files/chessboard_dark_rotated.svg"
-const whiteKingSVG = "/files/white_king.svg"
-const whiteQueenSVG = "/files/white_queen.svg"
-const whiteRookSVG = "/files/white_rook.svg"
-const whiteKnightSVG = "/files/white_knight.svg"
-const whitePawnSVG = "/files/white_pawn.svg"
-const whiteBishopSVG = "/files/white_bishop.svg"
-const blackKingSVG = "/files/black_king.svg"
-const blackQueenSVG = "/files/black_queen.svg"
-const blackRookSVG = "/files/black_rook.svg"
-const blackKnightSVG = "/files/black_knight.svg"
-const blackPawnSVG = "/files/black_pawn.svg"
-const blackBishopSVG = "/files/black_bishop.svg"
-// import selectionSVG from "../files/selection.svg"
-
-const sound_capture = "/files/sound_capture.mp3"
-const sound_move = "/files/sound_move.mp3"
-const sound_error = "/files/sound_error.mp3"
-
-const cells = {
-  "1": "700",
-  "2": "600",
-  "3": "500",
-  "4": "400",
-  "5": "300",
-  "6": "200",
-  "7": "100",
-  "8": "0",
-  h: "700",
-  g: "600",
-  f: "500",
-  e: "400",
-  d: "300",
-  c: "200",
-  b: "100",
-  a: "0"
-}
-
-const cellsRotated = {
-  "1": "0",
-  "2": "100",
-  "3": "200",
-  "4": "300",
-  "5": "400",
-  "6": "500",
-  "7": "600",
-  "8": "700",
-  h: "0",
-  g: "100",
-  f: "200",
-  e: "300",
-  d: "400",
-  c: "500",
-  b: "600",
-  a: "700"
-}
-
-const cellCoords = {
-  "700y": "1",
-  "600y": "2",
-  "500y": "3",
-  "400y": "4",
-  "300y": "5",
-  "200y": "6",
-  "100y": "7",
-  "0y": "8",
-  "700x": "h",
-  "600x": "g",
-  "500x": "f",
-  "400x": "e",
-  "300x": "d",
-  "200x": "c",
-  "100x": "b",
-  "0x": "a"
-}
-
-const cellCoordsRotated = {
-  "0y": "1",
-  "100y": "2",
-  "200y": "3",
-  "300y": "4",
-  "400y": "5",
-  "500y": "6",
-  "600y": "7",
-  "700y": "8",
-  "0x": "h",
-  "100x": "g",
-  "200x": "f",
-  "300x": "e",
-  "400x": "d",
-  "500x": "c",
-  "600x": "b",
-  "700x": "a"
-}
-
-const piecesName = {
-  K: "white_king",
-  Q: "white_queen",
-  R: "white_rook",
-  N: "white_knight",
-  B: "white_bishop",
-  P: "white_pawn",
-  k: "black_king",
-  q: "black_queen",
-  r: "black_rook",
-  n: "black_knight",
-  b: "black_bishop",
-  p: "black_pawn"
-}
 
 let clientX_down = 0
 let clientY_down = 0
@@ -540,7 +428,7 @@ class Board extends Component {
     if (!rotated) {
       return { x: cells[letter], y: cells[number] }
     } else {
-      return { x: cellsRotated[letter], y: cellsRotated[number] }
+      return { x: cells_rotated[letter], y: cells_rotated[number] }
     }
   }
 
@@ -554,7 +442,7 @@ class Board extends Component {
       cell_str = this.cellFromCoor(coor) /* , false */
     }
 
-    const svg = this.getPieceSrc(type)
+    const svg = get_piece_src(type)
     const is_selected = this.state.selected_cell === cell_str
     return  <img 
               style={{ transform: `translate(${coor.x}%, ${coor.y}%)` }} 
@@ -577,7 +465,7 @@ class Board extends Component {
         let piece = board[line][collumn]
         if (piece !== null) {
           // if the cell is not empty
-          let type = piecesName[piece.color === "b" ? piece.type : piece.type.toUpperCase()] // get the type in this form: "white_king"
+          let type = pieces_names[piece.color === "b" ? piece.type : piece.type.toUpperCase()] // get the type in this form: "white_king"
           if(!rotated){
             objects.push({ collumn, line, type, id: piece.id })
           }else{
@@ -596,8 +484,8 @@ class Board extends Component {
     if (sel === undefined || !piece) return <div key="selection" id="selection" />
     
     let coor = this.cellCoordinates(sel)
-    let type =  piecesName[piece.color === "b" ? piece.type : piece.type.toUpperCase()]
-    return <img style={{ transform: `translate(${coor.x}%, ${coor.y}%)` }} src={this.getPieceSrc(type)} className="selection" key="selection" id="selection" alt="selection" />
+    let type =  pieces_names[piece.color === "b" ? piece.type : piece.type.toUpperCase()]
+    return <img style={{ transform: `translate(${coor.x}%, ${coor.y}%)` }} src={get_piece_src(type)} className="selection" key="selection" id="selection" alt="selection" />
   }
 
   touchCircle(){
@@ -620,9 +508,9 @@ class Board extends Component {
   cellFromCoor(coor, rotated = this.state.rotated || false) {
     // coor: {x: "100", y: "700"}
     if (!rotated) {
-      return cellCoords[coor.x + "x"] + cellCoords[coor.y + "y"]
+      return cell_coords[coor.x + "x"] + cell_coords[coor.y + "y"]
     } else {
-      return cellCoordsRotated[coor.x + "x"] + cellCoordsRotated[coor.y + "y"]
+      return cell_coords_rotated[coor.x + "x"] + cell_coords_rotated[coor.y + "y"]
     }
   }
 
@@ -987,39 +875,6 @@ class Board extends Component {
 
   setArrows(arrows){
     this.setState({arrows})
-  }
-
-  /* ---------------------------- TEDEOUS JOB ---------------------------- */
-
-  getPieceSrc(name) {
-    switch (name) {
-      case "white_king":
-        return whiteKingSVG
-      case "white_queen":
-        return whiteQueenSVG
-      case "white_rook":
-        return whiteRookSVG
-      case "white_bishop":
-        return whiteBishopSVG
-      case "white_knight":
-        return whiteKnightSVG
-      case "white_pawn":
-        return whitePawnSVG
-      case "black_king":
-        return blackKingSVG
-      case "black_queen":
-        return blackQueenSVG
-      case "black_rook":
-        return blackRookSVG
-      case "black_bishop":
-        return blackBishopSVG
-      case "black_knight":
-        return blackKnightSVG
-      case "black_pawn":
-        return blackPawnSVG
-      default:
-        return undefined
-    }
   }
 
 }
