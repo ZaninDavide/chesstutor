@@ -1,5 +1,5 @@
 @import url("https://fonts.googleapis.com/css?family=Material+Icons&display=swap");
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap');
 
 /* ---------------------------- LAYOUT & THEMES ---------------------------- */
 
@@ -8,15 +8,15 @@
   --textFont: "Montserrat", "Open Sans", "Segoe UI", "Roboto", "Arial";
   --titleFont: "Montserrat", "Open Sans", "Segoe UI", "Roboto", "Arial";
 
-  --smallTextSize: 14px;
-  --textSize: 16px;
-  --mediumTextSize: 17px;
-  --titleSize: 17px; /*22px*/
-  --iconsFontSize: 24px; /* 28px */
+  --smallTextSize: 13px;
+  --textSize: 14px;
+  --bigTextSize: 15px;
+  --titleSize: 15px;
+  --iconsFontSize: 24px;
 
-  --textWeight: 200;
-  --mediumWeight: 300;
-  --titleWeight: 100;
+  --textWeight: 300;
+  --mediumWeight: 400;
+  --titleWeight: 400;
   
   --smallMargin: 5px;
   --mediumMargin: 15px;
@@ -39,7 +39,7 @@
 
   --impText: #3cf17e; /*#a3f7bf*/
   --primaryText: white;
-  --secondaryText: hsl(0, 0%, 65%); /*a2a099*/
+  --secondaryText: hsl(0, 0%, 55%);
 
   --buttonText: rgb(245, 245, 245);
   --hoverBackColor: rgba(100, 100, 100, 0.15); /* rgba(100, 100, 100, 0.3) */
@@ -52,7 +52,7 @@
   --hoverAlertColor: #b63737; /*#f06b65*/
 
   --headerBack: black;
-  --modalBack: #1d1d1b;
+  --modalBack: #1c1c1c;
 
   --disabledColor: #443f3f;
 
@@ -337,7 +337,7 @@ button.roundButton {
   border: 0px;
   /* TEXT */
   font-weight: var(--textWeight);
-  font-size: var(--mediumTextSize);
+  font-size: var(--bigTextSize);
   /* SPACES */
   margin-top: var(--smallMargin);
   margin-bottom: var(--smallMargin);
@@ -494,6 +494,7 @@ a {
   color: var(--secondaryText);
   display: flex;
   align-items: center;
+  line-height: 100%;
 }
 
 .chessText{

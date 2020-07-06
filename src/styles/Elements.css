@@ -5,6 +5,7 @@
   margin-bottom: auto;
   margin-right: 0px;
   margin-left: var(--smallMargin);
+  height: var(--headerHeight);
 }
 
 #opsListPage, #openingPage {
@@ -50,11 +51,11 @@
 }
 
 .checkBox{
-  width: calc(var(--uiElementSmallHeight) - 2 * var(--smallMargin));
-  height: calc(var(--uiElementSmallHeight) - 2 * var(--smallMargin));
-  background-color: var(--hoverBackColorNonAlpha);
-  outline: var(--smallMargin) solid  var(--hoverBackColorNonAlpha);
-  margin: var(--smallMargin);
+  height: var(--uiElementSmallHeight);
+  line-height: var(--uiElementSmallHeight);
+  font-family: "Material Icons";
+  font-size: var(--iconsFontSize);
+  color: var(--impText);
 }
 
 .checkBox.checked{
@@ -65,7 +66,10 @@
   display: flex;
   margin-top: var(--smallMargin);
   margin-bottom: var(--smallMargin);
+  height: var(--uiElementSmallHeight);
   line-height: var(--uiElementSmallHeight);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
 }
 
 
@@ -257,7 +261,7 @@
 .userPageTabSelected{
   color: var(--impText);
   background-color: var(--backColor);
-  /*font-size: var(--mediumTextSize);*/
+  /*font-size: var(--bigTextSize);*/
   border-top: 2px solid var(--impText);
 }
 
@@ -276,6 +280,10 @@
 .mailItemCloseButton{
   margin-left: var(--smallMargin);
   margin-right: 0px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+  line-height: 100%;
+  height: 100%;
 }
 
 .mailItemOpenButton{
@@ -288,7 +296,7 @@
   width: 100vw;
   height: var(--headerHeight);
 
-  font-size: var(--mediumTextSize);
+  font-size: var(--bigTextSize);
 
   text-align: center;
   line-height: var(--headerHeight);
@@ -387,4 +395,19 @@
   margin-bottom: var(--smallMargin);
   margin-left: var(--largeMargin);
   margin-right: var(--mediumMargin);
+}
+
+.treeComment{
+  font-size: var(--smallTextSize);
+}
+
+.treeMoveSan{
+  font-weight: bold;
+  color: var(--impText);
+}
+
+.loginPageLabel{
+  color: var(--impText);
+  margin-left: 0px;
+  margin-bottom: 0px;
 }

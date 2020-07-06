@@ -103,7 +103,7 @@ class Board extends Component {
             {this.selection()}
             {this.touchCircle()}
             {this.pieces()}
-            <Arrows arrows={this.state.arrows} />
+            <Arrows arrows={this.state.arrows} rotated={this.state.rotated} />
             <img id="boardSVG" src={this.state.rotated ? darkBoardRotatedSVG : darkBoardSVG} alt={"Board file missing"} ref="board" key="board" draggable={false} />
           </div>
           <div id="boardUI" key="boardUI">

@@ -40,7 +40,7 @@ class BoardData extends Component {
             }
           </div>
           <div id="boardDataTreeSlide" className="boardDataSlide">
-            <Tree json_moves={this.props.json_moves}/>
+            <Tree json_moves={this.props.json_moves} getComment={this.props.getComment} op_index={this.props.op_index}/>
           </div>
         </SwipeableViews>
       </div>
@@ -53,37 +53,6 @@ class BoardData extends Component {
     text = process_comment(text)
 
     return <span dangerouslySetInnerHTML={{__html: text}} />
-  }
-  
-  getPieceText(name) {
-    switch (name) {
-      case "white_king":
-        return "♔"
-      case "white_queen":
-        return "♕"
-      case "white_rook":
-        return "♖"
-      case "white_bishop":
-        return "♗"
-      case "white_knight":
-        return "♘"
-      case "white_pawn":
-        return "♙"
-      case "black_king":
-        return "♚"
-      case "black_queen":
-        return "♛"
-      case "black_rook":
-        return "♜"
-      case "black_bishop":
-        return "♝"
-      case "black_knight":
-        return "♞"
-      case "black_pawn":
-        return "♟"
-      default:
-        return undefined
-    }
   }
 
 }

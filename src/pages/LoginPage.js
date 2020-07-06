@@ -1,6 +1,7 @@
 import React, { Component } from "react"
 import Header from "../components/Header"
 import Translator from "../components/Translator"
+import Ripples from "react-ripples"
 
 class LoginPage extends Component {
   constructor(props){
@@ -119,10 +120,10 @@ class LoginPage extends Component {
         <Header title={<Translator text={"Login"}/>}  goTo="/login" />
         <div id="loginPage" className="page">
           <div id="loginPageBody">
-            <Translator text={"Username"} />:
+            <h2 className="loginPageLabel"><Translator text={"Username"} />:</h2>
             <input type="text" className="textBox" value={this.state.username} onChange={e => this.setState({username: e.target.value})}/>
             <br/><br/>
-            <Translator text={"Password"} />:
+            <h2 className="loginPageLabel"><Translator text={"Password"} />:</h2>
             <input 
               type="password" className="textBox" 
               value={this.state.password} 
@@ -134,13 +135,15 @@ class LoginPage extends Component {
               }}
             />
             <br/><br/>
-            <div className="checkBoxContainer">
+            <Ripples className="checkBoxContainer">
               <span onClick={this.checkBoxClick} style={{display: "flex"}} >
-                <div className={"checkBox" + (this.state.rememberMe ? " checked" : "")}/>
+                <div className={"checkBox"}>
+                  {this.state.rememberMe ? "check_box" : "check_box_outline_blank"}
+                </div>
                 &nbsp;
                 <Translator text={"Remember me"}/>
               </span>
-            </div>
+            </Ripples>
           </div>
           <button onClick={this.signUpClick} className="barButton impButton" style={{position: "absolute", bottom: "calc(var(--uiElementMediumHeight) + 2 * var(--mediumMargin))", marginBottom: 0, width: "calc(100% - 30px)"}}><Translator text={"Sign up"} /></button>
           <button onClick={this.loginClick} className="barButton impButton" style={{position: "absolute", bottom: "var(--mediumMargin)", marginBottom: 0, width: "calc(100% - 30px)"}}><Translator text={"Login"} /></button>
