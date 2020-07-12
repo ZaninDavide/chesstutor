@@ -154,8 +154,6 @@
   display: inline-block;
   background-color: var(--backColor);
   margin-left: 2px;
-  position: relative;
-  top: -1px;
 }
 
 #arrows_svg{

@@ -26,7 +26,7 @@ class Tree extends Component {
                 move_text = "... " + move_text
             }
             if(comment){
-                if(comment.length > 35){
+                if(comment.length > 35 || comment.indexOf("\n") !== -1){
                     objects.push(<>
                         <span className="treeMoveSan">{move_text}</span>
                         <p className="treeComment" dangerouslySetInnerHTML={{__html: process_comment(comment)}}></p>

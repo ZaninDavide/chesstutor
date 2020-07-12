@@ -28,7 +28,6 @@ class OpeningPage extends Component {
     this.deleteThisVari = this.deleteThisVari.bind(this)
     this.switchArchivedThisVari = this.switchArchivedThisVari.bind(this)
     this.no_variations_style = this.no_variations_style.bind(this)
-    this.getVariationFolder = this.getVariationFolder.bind(this)
   }
 
   getArchivedSeparator(){
@@ -39,64 +38,63 @@ class OpeningPage extends Component {
             </div>
   }
 
-  getVariationFolder(variName){
-    return  <div className="variationFolder" key={"variationFolder_" + variName}><h3>{variName}</h3></div>
-  }
+  getVariItems(vars, op_index){
+    let not_archived = {}
+    let archived = {}
 
-  getVariItems(vars, op_index) {
-    if (vars.length > 0) {
-      let not_archived = []
-      let archived = []
-      let sortedIndices = vars.map((c, i) => {return {vari_name: c.vari_name, vari_subname: c.vari_subname, index: i}})
-      
-      sortedIndices.sort((a, b) => {
-        if(a.vari_name === b.vari_name){
-          if(a.vari_subname === undefined || a.vari_subname === null) return -1
-          if(b.vari_subname === undefined || b.vari_subname === null) return  1
-          return a.vari_subname.localeCompare(b.vari_subname)
-        }
-        return a.vari_name.localeCompare(b.vari_name);
-      })
+    let sortedVars = vars.map((c, i) => {return {vari_name: c.vari_name, vari_subname: c.vari_subname, index: i, archived: c.archived}})
 
-      let last_vari_name = undefined
-      sortedIndices.forEach(cur => {
-        // populate not_archived and archived
-        let item = <VariItem 
-          vari={vars[cur.index]} 
-          vari_index={cur.index} 
-          op_index={op_index}
-          history={this.props.history} 
-          key={`variItem_${op_index}_${cur.index}`} 
-          switchVariArchived={this.props.switchVariArchived}
-          hMenuOpen={this.hMenuOpen}
-        />
-
-        const cur_vari_name = vars[cur.index].vari_name
-        if(vars[cur.index].archived){ // add item to archived
-          if(last_vari_name !== cur_vari_name){
-            last_vari_name = cur_vari_name
-            archived.push(this.getVariationFolder(cur_vari_name))
-          }
-          archived.push(item)
-        }else{ // add item to not_archived
-          if(last_vari_name !== cur_vari_name){
-            last_vari_name = cur_vari_name
-            not_archived.push(this.getVariationFolder(cur_vari_name))
-          }
-          not_archived.push(item)
-        }
-      });
-      
-      // connect all together: not_archived + separator + archived
-      let all = not_archived
-      if(archived.length > 0){
-        all.push(this.getArchivedSeparator())
-        all = all.concat(archived)
+    sortedVars.sort((a, b) => {
+      if(a.vari_name === b.vari_name){
+        if(a.vari_subname === undefined || a.vari_subname === null) return -1
+        if(b.vari_subname === undefined || b.vari_subname === null) return  1
+        return a.vari_subname.localeCompare(b.vari_subname)
       }
-      return all
-    } else {
-      return <p><Translator text={"no_variations"}/></p>
-    }
+      return a.vari_name.localeCompare(b.vari_name);
+    })
+
+    sortedVars.forEach(cur => {
+      let item = <VariItem 
+        vari={vars[cur.index]} 
+        vari_index={cur.index} 
+        op_index={op_index}
+        history={this.props.history} 
+        key={`variItem_${op_index}_${cur.index}`} 
+        switchVariArchived={this.props.switchVariArchived}
+        hMenuOpen={this.hMenuOpen}
+      />
+
+      let group = cur.archived ? archived : not_archived 
+      if(group[cur.vari_name]){
+        group[cur.vari_name].push(item)
+      }else{
+        group[cur.vari_name] = [item]
+      }
+    })
+
+    let html = []
+
+    Object.keys(not_archived).forEach(vari_name => {
+      html.push(
+        <div className="variationFolder" key={"variationFolder_" + vari_name}>
+          <div className="variationTitle" key={"variationTitle_" + vari_name}><h3>{vari_name}</h3></div>
+          {not_archived[vari_name]}
+        </div>
+      )
+    })
+
+    if(Object.keys(archived).length > 0) html.push(this.getArchivedSeparator())
+
+    Object.keys(archived).forEach(vari_name => {
+      html.push(
+        <div className="variationFolder" key={"variationFolderArchived_" + vari_name}>
+          <div className="variationTitle" key={"variationTitleArchived_" + vari_name}><h3>{vari_name}</h3></div>
+          {archived[vari_name]}
+        </div>
+      )
+    })
+
+    return html
   }
 
   newVariClick(){

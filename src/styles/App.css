@@ -1,5 +1,5 @@
 @import url("https://fonts.googleapis.com/css?family=Material+Icons&display=swap");
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&display=swap');
 
 /* ---------------------------- LAYOUT & THEMES ---------------------------- */
 
@@ -14,9 +14,10 @@
   --titleSize: 15px;
   --iconsFontSize: 24px;
 
-  --textWeight: 300;
-  --mediumWeight: 400;
-  --titleWeight: 400;
+  --thinWeight: 300;
+  --textWeight: 400;
+  --mediumWeight: 500;
+  --titleWeight: 500;
   
   --smallMargin: 5px;
   --mediumMargin: 15px;
@@ -39,7 +40,7 @@
 
   --impText: #3cf17e; /*#a3f7bf*/
   --primaryText: white;
-  --secondaryText: hsl(0, 0%, 55%);
+  --secondaryText: hsl(0, 0%, 70%);
 
   --buttonText: rgb(245, 245, 245);
   --hoverBackColor: rgba(100, 100, 100, 0.15); /* rgba(100, 100, 100, 0.3) */

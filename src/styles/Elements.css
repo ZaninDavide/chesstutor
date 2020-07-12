@@ -134,8 +134,14 @@
   overflow: hidden;
 }
 
-
 .variationFolder{
+  background-color: var(--modalBack);
+  border-radius: var(--borderRadius);
+  margin: var(--mediumMargin);
+  overflow: hidden;
+}
+
+.variationTitle{
   width: 100%;
 
   height: var(--uiElementMediumHeight);
@@ -157,7 +163,7 @@
   line-height: 1;
 }
 
-.opsSeparator h3, #archivedVarsSeparator h3, .variationFolder h3{
+.opsSeparator h3, #archivedVarsSeparator h3, .variationTitle h3{
   width: 100%;
 }
 
@@ -410,4 +416,8 @@
   color: var(--impText);
   margin-left: 0px;
   margin-bottom: 0px;
+}
+
+.opItemText p{
+  font-weight: var(--textWeight);
 }
