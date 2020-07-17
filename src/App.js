@@ -685,7 +685,7 @@ class App extends Component {
               <Route path="/login" render={!needLogin ? redirectToHome : loginPage} exact/>
               <Route path="/profile" render={needLogin ? redirectToLogin : userPage} exact/>
               <Route path="/newOpening" render={newOpPage} />
-              <Route path="/newVariation/:op_index" render={newVariPage} />
+              <Route path="/newVariation/:op_index/:vari_name" render={newVariPage} />
               <Route path="/openings/:op_index/:vari_index" render={noOpenings ? redirectToHome : variPage} />
               <Route path="/openings/:op_index" render={/*noOpenings ? redirectToHome : */opPage} />
               <Route path="/training/fullcolor/:color_number" render={noOpenings ? redirectToHome : colorTrainingPage} />

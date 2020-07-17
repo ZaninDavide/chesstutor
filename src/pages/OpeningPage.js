@@ -5,6 +5,8 @@ import Translator from "../components/Translator"
 import HangingMenu from "../components/HangingMenu"
 import Modal from "../components/Modal"
 import RenameVariModal from "../components/RenameVariModal"
+import NewVariGroupModal from "../components/NewVariGroupModal"
+
 
 class OpeningPage extends Component {
   constructor(props) {
@@ -17,6 +19,7 @@ class OpeningPage extends Component {
       hMenuVariIndex: null,
       variDeleteVisible: false,
       variNewName: "",
+      newVariGroupModalVisible:false,
     }
     this.newVariClick = this.newVariClick.bind(this)
     this.startGame = this.startGame.bind(this)
@@ -24,9 +27,10 @@ class OpeningPage extends Component {
     this.hMenuOpen = this.hMenuOpen.bind(this)
     this.closeVariDeleteModal = this.closeVariDeleteModal.bind(this)
     this.openVariDeleteModal = this.openVariDeleteModal.bind(this)
+    this.openVariRenameModal = this.openVariRenameModal.bind(this)
     this.renameThisVari = this.renameThisVari.bind(this)
     this.deleteThisVari = this.deleteThisVari.bind(this)
-    this.switchArchivedThisVari = this.switchArchivedThisVari.bind(this)
+    this.switchArchived = this.switchArchived.bind(this)
     this.no_variations_style = this.no_variations_style.bind(this)
   }
 
@@ -58,10 +62,14 @@ class OpeningPage extends Component {
         vari={vars[cur.index]} 
         vari_index={cur.index} 
         op_index={op_index}
+        archived={cur.archived}
         history={this.props.history} 
-        key={`variItem_${op_index}_${cur.index}`} 
-        switchVariArchived={this.props.switchVariArchived}
+        key={`variItem_${op_index}_${cur.index}`}
         hMenuOpen={this.hMenuOpen}
+
+        delete={() => this.openVariDeleteModal(cur.index)}
+        switch_archive={() => this.switchArchived(cur.index)}
+        rename={() => this.openVariRenameModal(cur.index)}
       />
 
       let group = cur.archived ? archived : not_archived 
@@ -77,18 +85,28 @@ class OpeningPage extends Component {
     Object.keys(not_archived).forEach(vari_name => {
       html.push(
         <div className="variationFolder" key={"variationFolder_" + vari_name}>
-          <div className="variationTitle" key={"variationTitle_" + vari_name}><h3>{vari_name}</h3></div>
+          <div className="variationTitle" key={"variationTitle_" + vari_name}>
+            <h3>{vari_name}</h3>
+            <button 
+              className="variationPlusButton iconText"
+              onClick={() => {
+                this.props.history.push("/newVariation/" + this.props.match.params.op_index + "/" + vari_name)
+              }}
+            >add</button>
+          </div>
           {not_archived[vari_name]}
         </div>
       )
     })
 
-    if(Object.keys(archived).length > 0) html.push(this.getArchivedSeparator())
+    // if(Object.keys(archived).length > 0) html.push(this.getArchivedSeparator())
 
     Object.keys(archived).forEach(vari_name => {
       html.push(
         <div className="variationFolder" key={"variationFolderArchived_" + vari_name}>
-          <div className="variationTitle" key={"variationTitleArchived_" + vari_name}><h3>{vari_name}</h3></div>
+          <div className="variationTitleArchived" key={"variationTitleArchived_" + vari_name}>
+            <h3>{vari_name}</h3>
+          </div>
           {archived[vari_name]}
         </div>
       )
@@ -117,8 +135,20 @@ class OpeningPage extends Component {
     this.setState({variDeleteVisible: false})
   }
 
-  openVariDeleteModal(){
-    this.setState({variDeleteVisible: true})
+  openVariDeleteModal(vari_index){
+    if(vari_index !== undefined){
+      this.setState({hMenuVariIndex: vari_index, variDeleteVisible: true})
+    }else{
+      this.setState({variDeleteVisible: true})
+    }
+  }
+
+  openVariRenameModal(vari_index){
+    if(vari_index !== undefined){
+      this.setState({hMenuVariIndex: vari_index, renameVariVisible: true})
+    }else{
+      this.setState({renameVariVisible: true})
+    }
   }
 
   renameThisVari(variNewName, variNewSubname){
@@ -132,9 +162,13 @@ class OpeningPage extends Component {
     this.props.deleteVari(op_index, this.state.hMenuVariIndex)
   }
 
-  switchArchivedThisVari(){
+  switchArchived(vari_index){
     const op_index = this.props.match.params.op_index
-    this.props.switchVariArchived(op_index, this.state.hMenuVariIndex)
+    if(vari_index !== undefined){
+      this.props.switchVariArchived(op_index, vari_index)
+    }else{
+      this.props.switchVariArchived(op_index, this.state.hMenuVariIndex)
+    }
   }
 
   no_variations_style(len){
@@ -154,16 +188,19 @@ class OpeningPage extends Component {
     return (
       <React.Fragment>
         <Header title={op.op_name} mainButtonText="arrow_back"/*headerButtonContent={<span className="iconText">school</span>}*/ /> {/* play_arrow */}
-        <div id="openingPage" className="page" style={this.no_variations_style(op.variations.length)}>{this.getVariItems(op.variations, op_index)}</div>
+        <div id="openingPage" className="page" style={this.no_variations_style(op.variations.length)}>
+          {this.getVariItems(op.variations, op_index)}
+          <div id="newVariationBox" onClick={() => this.setState({newVariGroupModalVisible: true})}>+</div>
+        </div>
         <button id="playVarsButton" className="roundButton iconButton impButton" 
           onClick={this.startGame}
           disabled={op.variations.length === 0}
         >
           school
         </button>
-        <button id="newVariButton" className="roundButton iconButton impButton" onClick={this.newVariClick}>
+        {/*<button id="newVariButton" className="roundButton iconButton impButton" onClick={this.newVariClick}>
           add
-        </button>
+        </button>*/}
         
         <HangingMenu visible={this.state.hMenuVisible} close={this.hMenuClose}>
           {/* DELETE BUTTON */}
@@ -174,7 +211,7 @@ class OpeningPage extends Component {
             </div>
           </button>
           {/* ARCHIVED BUTTON */}
-          <button className="simpleButton hMenuButton" onClick={() => {this.hMenuClose(); this.switchArchivedThisVari();}}>
+          <button className="simpleButton hMenuButton" onClick={() => {this.hMenuClose(); this.switchArchived();}}>
             <div className="hMenuButtonContent">
               <div className="hMenuButtonIcon">{thisVari ? (thisVari.archived ? "unarchive" : "archive") : null}</div>
               <div className="hMenuButtonLabel">{thisVari ? (thisVari.archived ? "Unarchive" : "Archive") : null}</div>
@@ -192,7 +229,7 @@ class OpeningPage extends Component {
         
         {/* DELETE VARI MODAL */}
         <Modal 
-          id="deleteVaripModal" 
+          id="deleteVariModal" 
           visible={this.state.variDeleteVisible} 
           close={this.closeVariDeleteModal}
           doneButtonText={<span className="alertText iconText">delete</span>}
@@ -208,6 +245,14 @@ class OpeningPage extends Component {
           thisVari={thisVari}
           renameThisVari={this.renameThisVari}
         /> : null /*i do this so that every time you open it the modal refreshes and takes new default values*/}
+
+        {/* NEW VARI_GROUP MODAL */}
+        <NewVariGroupModal
+          visible={this.state.newVariGroupModalVisible}
+          close={() => this.setState({newVariGroupModalVisible: false})}
+          history={this.props.history}
+          op_index={this.props.match.params.op_index}
+        ></NewVariGroupModal>
       </React.Fragment>
     )
   }

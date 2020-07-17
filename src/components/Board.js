@@ -1,7 +1,7 @@
 import React, { Component } from "react"
 import Chess from "../chessjs-chesstutor/chess.js"
 
-import { cells, cells_rotated, cell_coords, cell_coords_rotated, pieces_names } from "../utilities/pieces_and_coords"
+import { cells, cells_rotated, cell_coords, cell_coords_rotated, pieces_names, sub_names } from "../utilities/pieces_and_coords"
 import { get_piece_src, darkBoardSVG, darkBoardRotatedSVG, sound_capture, sound_move, sound_error } from "../utilities/file_paths"
 
 import PromotionModal from "../components/PromotionModal"
@@ -817,7 +817,12 @@ class Board extends Component {
       if(this.props.buttons.indexOf("done") !== -1){
         b_objects.push(
           <button id="doneButton" key="doneButton" className="simpleButton boardButton" 
-            onClick={this.openVariNameModal}
+            // onClick={this.openVariNameModal}
+            onClick={() => {
+              const allowed_subnames = this.props.getOpFreeSubnames(this.props.op_index, this.props.vari_name, sub_names)
+              const sub_name = allowed_subnames[0] !== undefined || allowed_subnames.length === 1 ? allowed_subnames[0] : allowed_subnames[1]
+              this.createThisVariation(this.props.vari_name, sub_name)
+            }}
             disabled={this.state.json_moves.length === 0}
           >done</button>
         )

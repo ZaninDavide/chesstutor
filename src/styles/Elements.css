@@ -19,6 +19,9 @@
 
 #openingPage{
   padding-bottom: calc(2*var(--uiElementHeight) + 2*var(--mediumMargin) + var(--smallMargin));
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  grid-auto-rows: max-content;
 }
 
 #newOpButton, #newVariButton {
@@ -114,12 +117,25 @@
   grid-area: headerRightSide;
 }
 
-#playVarsButton {
+/*#playVarsButton {
   position: absolute;
   margin: 0px;
   padding: 0px;
   right: var(--mediumMargin);
   bottom: calc(var(--uiElementHeight) + 2 * var(--mediumMargin));
+  height: var(--uiElementHeight);
+  width: var(--uiElementHeight);
+  text-align: center;
+  line-height: var(--uiElementHeight);
+  font-size: var(--iconsFontSize);
+}*/
+
+#playVarsButton {
+  position: absolute;
+  margin: 0px;
+  padding: 0px;
+  right: var(--mediumMargin);
+  bottom: var(--mediumMargin);
   height: var(--uiElementHeight);
   width: var(--uiElementHeight);
   text-align: center;
@@ -141,13 +157,11 @@
   overflow: hidden;
 }
 
-.variationTitle{
+.variationTitle, .variationTitleArchived{
   width: 100%;
 
   height: var(--uiElementMediumHeight);
   line-height: var(--uiElementMediumHeight);
-
-  color: var(--impText);
 
   margin: 0px;
   /*border-top: solid 1px var(--hoverBackColor);*/
@@ -163,7 +177,32 @@
   line-height: 1;
 }
 
-.opsSeparator h3, #archivedVarsSeparator h3, .variationTitle h3{
+.variationTitle{
+  color: var(--modalBack);
+  background-color: var(--impText);
+  padding-left: 29px;
+  box-sizing: border-box;
+}
+
+.variationTitleArchived{
+  color: var(--modalBack);
+  background-color: var(--alertColor);
+}
+
+.variationPlusButton{
+  background-color: transparent;
+  border: 0px;
+  padding: 0px;
+  padding-right: var(--smallMargin);
+  padding-left: var(--smallMargin);
+  margin-left: calc(-1 * var(--smallMargin));
+}
+
+.variationPlusButton:hover{
+  background-color: var(--hoverImpButtonBack);
+}
+
+.opsSeparator h3, #archivedVarsSeparator h3, .variationTitle h3, .variationTitleArchived h3{
   width: 100%;
 }
 
@@ -192,6 +231,12 @@
 }
 
 .renameTextBox{
+  margin-left: var(--mediumMargin);
+  margin-right: var(--mediumMargin);
+  width: calc(100% - 2 * var(--mediumMargin) - 12px); /* 12px = padding left+right */
+}
+
+#newVariGroupTextBox{
   margin-left: var(--mediumMargin);
   margin-right: var(--mediumMargin);
   width: calc(100% - 2 * var(--mediumMargin) - 12px); /* 12px = padding left+right */
@@ -420,4 +465,29 @@
 
 .opItemText p{
   font-weight: var(--textWeight);
+}
+
+#newVariationBox{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: var(--borderRadius);
+  margin: var(--mediumMargin);
+  border: 2px solid var(--modalBack);
+  border-style: dashed;
+
+  min-height: var(--uiElementHeight); 
+  overflow: hidden;
+
+  font-size: var(--iconsFontSize);
+  font-family: "Material Icons";
+  color: var(--impText);
+
+  cursor: pointer;
+  -webkit-tap-highlight-color: var(--hoverBackColor);
+}
+
+#newVariationBox:hover{
+  background-color: var(--hoverBackColor);
 }

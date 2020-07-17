@@ -6,13 +6,19 @@ import Ripples from "react-ripples"
 class VariItem extends Component {
   constructor(props) {
     super(props)
+    this.state = {
+      menuVisible: false,
+    }
     this.rightClick = this.rightClick.bind(this);
+    this.menuRef = React.createRef();
   }
 
   
   rightClick(e){
     e.preventDefault() /* avoids the menu to open */
-    this.props.hMenuOpen(this.props.vari_index)
+    /* this.props.hMenuOpen(this.props.vari_index) */
+    this.setState({menuVisible: true})
+    this.menuRef.current.focus()
     return false /* avoids the menu to open */
   }
 
@@ -38,6 +44,23 @@ class VariItem extends Component {
           </div>
           <div className="variItemButton iconText"  onClick={this.rightClick}>
             more_vert
+          </div>
+          <div 
+            className={"variItemMenu" + (this.state.menuVisible ? " variItemMenuOpened" : " variItemMenuClosed")}
+            onClick={() => {this.setState({menuVisible: false})}}
+            onBlur={() => this.setState({menuVisible: false})}
+            tabindex="1"
+            ref={this.menuRef}
+          >
+            <span className="variItemMenuIcon iconText" 
+              onClick={() => {this.props.delete(); this.setState({menuVisible: false})}}
+            >delete</span>
+            <span className="variItemMenuIcon iconText" 
+              onClick={() => {this.props.switch_archive(); this.setState({menuVisible: false})}}
+            >{this.props.archived ? "unarchive" : "archive"}</span>
+            <span className="variItemMenuIcon iconText" 
+              onClick={() => {this.props.rename(); this.setState({menuVisible: false})}}
+            >edit</span>
           </div>
         </Ripples>
       )
