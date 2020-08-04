@@ -6,6 +6,8 @@ const languages = {
     Openings: "Openings",
     white: "white",
     black: "black",
+    White: "White",
+    Black: "Black",
     variation: "variation",
     variations: "variations",
     move: "move",
@@ -47,11 +49,14 @@ const languages = {
     "BOARD": "BOARD",
     "Congrats": "Congrats! Training finished",
     "Opening downloaded": "Opening downloaded",
+    "Choose a name for this group of variations": "Choose a name for this group of variations",
   },
   ita: {
     Openings: "Aperture",
     white: "bianco",
     black: "nero",
+    White: "Bianco",
+    Black: "Nero",
     variation: "variante",
     variations: "varianti",
     move: "mossa",
@@ -93,6 +98,7 @@ const languages = {
     "BOARD": "SCACCHIERA",
     "Congrats": "Complimenti! Allenamento completato",
     "Opening downloaded": "Apertura scaricata.",
+    "Choose a name for this group of variations": "Scegli un nome per questo gruppo di varianti"
   }
 }
 

@@ -27,7 +27,7 @@ class NewVariGroupModal extends Component {
       >
         {this.props.visible ? 
           <React.Fragment>
-            <h2><Translator text={"Choose a name for this group of variations:"} /></h2>  
+            <h2><Translator text={"Choose a name for this group of variations"} /></h2>  
             <input type="text" 
               id="newVariGroupTextBox"
               className="textBox"

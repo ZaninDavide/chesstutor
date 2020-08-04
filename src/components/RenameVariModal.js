@@ -13,7 +13,7 @@ class RenameVariModal extends Component {
 
     this.state = {
       variNewName: this.props.thisVari ? this.props.thisVari.vari_name : "",
-      variNewSubname: this.props.thisVari ? this.props.thisVari.vari_subname : ""
+      variNewSubname: this.props.thisVari ? this.props.thisVari.vari_subname : "",
     }
   }
 
@@ -40,7 +40,9 @@ class RenameVariModal extends Component {
             <React.Fragment>
               <h2>
                 <Translator text={"Rename"} />&nbsp;
-                <span style={{color: "var(--impButtonBack)"}}>{this.props.thisVari.vari_name}</span>&nbsp;
+                <span style={{color: "var(--impButtonBack)"}}>
+                  {this.props.thisVari.vari_name}{this.props.thisVari.vari_subname ? (" " + this.props.thisVari.vari_subname) : ""}
+                </span>&nbsp;
                 <Translator text={"to:"} />&nbsp;
               </h2>
               <input type="text" 

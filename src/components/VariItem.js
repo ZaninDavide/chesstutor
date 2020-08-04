@@ -1,5 +1,4 @@
 import React, { Component } from "react"
-import { Link } from "react-router-dom"
 import Translator from "./Translator"
 import Ripples from "react-ripples"
 
@@ -10,16 +9,28 @@ class VariItem extends Component {
       menuVisible: false,
     }
     this.rightClick = this.rightClick.bind(this);
+    this.menuButtonClick = this.menuButtonClick.bind(this);
+    this.openVariation = this.openVariation.bind(this);
     this.menuRef = React.createRef();
   }
 
-  
-  rightClick(e){
-    e.preventDefault() /* avoids the menu to open */
-    /* this.props.hMenuOpen(this.props.vari_index) */
+  menuButtonClick(e){
+    e.stopPropagation()
     this.setState({menuVisible: true})
     this.menuRef.current.focus()
-    return false /* avoids the menu to open */
+  }
+
+  rightClick(e){
+    this.setState({menuVisible: true})
+    this.menuRef.current.focus()
+
+    /* avoids the menu to open */
+    e.preventDefault()
+    return false
+  }
+
+  openVariation(){
+    this.props.history.push("/openings/" + this.props.op_index + "/" + this.props.vari_index)
   }
 
   render() {
@@ -27,9 +38,11 @@ class VariItem extends Component {
     return (
         <Ripples 
           className={"variItem" + (thisVari.vari_subname ? " subvariItem" : "")}
+          onContextMenu={this.rightClick}
+          onClick={this.openVariation}
         >
-          <div className="variItemText" onContextMenu={this.rightClick}>
-            <Link to={"/openings/" + this.props.op_index + "/" + this.props.vari_index} className="variItemContent">
+          <div className="variItemText">
+            <div className="variItemContent">
               {(() => {
                 if(thisVari.vari_subname){
                   return <h2>{thisVari.vari_name + " "}<span className="impText">{thisVari.vari_subname}</span></h2>
@@ -40,16 +53,22 @@ class VariItem extends Component {
               {<p className="smallText">
                 {thisVari.moves.length} <Translator text={thisVari.moves.length === 1 ? "move" : "moves"} />
               </p>}
-            </Link>
+            </div>
           </div>
-          <div className="variItemButton iconText"  onClick={this.rightClick}>
+          <div className="variItemButton iconText"  onClick={this.menuButtonClick}>
             more_vert
           </div>
+
+          {/* MENU */}
+
           <div 
             className={"variItemMenu" + (this.state.menuVisible ? " variItemMenuOpened" : " variItemMenuClosed")}
-            onClick={() => {this.setState({menuVisible: false})}}
+            onClick={e => {
+              this.setState({menuVisible: false});
+              e.stopPropagation()
+            }}
             onBlur={() => this.setState({menuVisible: false})}
-            tabindex="1"
+            tabIndex="1"
             ref={this.menuRef}
           >
             <span className="variItemMenuIcon iconText" 

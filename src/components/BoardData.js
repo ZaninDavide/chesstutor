@@ -5,7 +5,7 @@ import { process_comment } from "../utilities/san_parsing"
 
 class BoardData extends Component {
 
-  constructor(props){
+  constructor(props) {
     super(props)
     this.state = {
       tab: 0,
@@ -14,8 +14,8 @@ class BoardData extends Component {
     this.setTab = this.setTab.bind(this);
   }
 
-  setTab(i){
-    this.setState({tab: i})
+  setTab(i) {
+    this.setState({ tab: i })
   }
 
   render() {
@@ -23,8 +23,12 @@ class BoardData extends Component {
 
       <div id="boardDataTabIconsContainer">
         {
-          this.state.tabIcons.map((t, index) => 
-            <div className={"boardDataTabIcon" + (this.state.tab === index ? " impText" : "")} onClick={() => this.setTab(index)}>{t}</div>
+          this.state.tabIcons.map((t, index) =>
+            <div
+              className={"boardDataTabIcon" + (this.state.tab === index ? " impText" : "")}
+              key={"boardDataTabIcon_" + t}
+              onClick={() => this.setTab(index)}
+            >{t}</div>
           )
         }
       </div>
@@ -34,25 +38,29 @@ class BoardData extends Component {
           <div id="boardDataCommentSlide" className="boardDataSlide"
             onClick={this.props.onCommentClick}
           >
-            {this.props.thereIsComment 
-              ? this.comment() 
+            {this.props.thereIsComment
+              ? this.comment()
               : <div id="noCommentIcon" className="iconText">comment</div>
             }
           </div>
           <div id="boardDataTreeSlide" className="boardDataSlide">
-            <Tree json_moves={this.props.json_moves} getComment={this.props.getComment} op_index={this.props.op_index}/>
+            <Tree
+              json_moves={this.props.json_moves}
+              getComment={this.props.getComment}
+              op_index={this.props.op_index}
+            />
           </div>
         </SwipeableViews>
       </div>
     </div>
   }
 
-  comment(){
+  comment() {
     if (this.props.op_index === undefined || !this.props.json_moves) return ""
     let text = this.props.getComment(this.props.op_index, this.props.json_moves)
     text = process_comment(text)
 
-    return <span dangerouslySetInnerHTML={{__html: text}} />
+    return <span dangerouslySetInnerHTML={{ __html: text }} />
   }
 
 }

@@ -65,7 +65,6 @@ class OpeningPage extends Component {
         archived={cur.archived}
         history={this.props.history} 
         key={`variItem_${op_index}_${cur.index}`}
-        hMenuOpen={this.hMenuOpen}
 
         delete={() => this.openVariDeleteModal(cur.index)}
         switch_archive={() => this.switchArchived(cur.index)}

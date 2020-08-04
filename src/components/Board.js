@@ -88,8 +88,8 @@ class Board extends Component {
         {/* --------------------------------------- BOARD --------------------------------------- */}
 
         <div id="boardGrid" key="boardGrid">
-          <div id="boardContainer" 
-            ref={"bContainer"} 
+          <div id="boardContainer"
+            ref={"bContainer"}
             key="boardContainer"
 
             onTouchStart={this.boardDown}
@@ -109,8 +109,8 @@ class Board extends Component {
           <div id="boardUI" key="boardUI">
             {this.boardButtons()}
           </div>
-          <BoardData 
-            thereIsComment={thereIsComment} 
+          <BoardData
+            thereIsComment={thereIsComment}
             onCommentClick={this.onCommentClick}
             getComment={this.props.getComment}
             op_index={this.props.op_index}
@@ -122,7 +122,7 @@ class Board extends Component {
         {/* --------------------------------------- MODALS --------------------------------------- */}
 
         {/* CREATE NEW VARIATION MODAL */}
-        <NewVariModal 
+        <NewVariModal
           close={this.closeVariNameModal}
           visible={this.state.variNameModalVisible}
           createThisVariation={this.createThisVariation}
@@ -131,17 +131,17 @@ class Board extends Component {
         />
 
         {/* CHOOSE PROMOTION PIECE MODAL */}
-        <PromotionModal 
+        <PromotionModal
           color={this.state.game.turn()}
-          visible={this.state.promotionModalVisible} 
-          close={() => this.setState({promotionModalVisible: false})}
+          visible={this.state.promotionModalVisible}
+          close={() => this.setState({ promotionModalVisible: false })}
           promotionPromiseRes={this.state.promotionPromiseRes}
         />
 
         {/* COMMENT MODAL */}
         {this.state.commentModalVisible ? <CommentModal
-          visible={this.state.commentModalVisible} 
-          close={() => this.setState({commentModalVisible: false})}
+          visible={this.state.commentModalVisible}
+          close={() => this.setState({ commentModalVisible: false })}
           editComment={this.props.editComment}
           setDrawBoardPDF={this.props.setDrawBoardPDF}
           getDrawBoardPDF={this.props.getDrawBoardPDF}
@@ -151,9 +151,9 @@ class Board extends Component {
         /> : null}
 
         {/* HELP MODAL */}
-        {(this.props.buttons.indexOf("help") !== -1 || this.props.buttons.indexOf("multi_next") !== -1) && this.state.helpModalVisible ? <HelpModal 
+        {(this.props.buttons.indexOf("help") !== -1 || this.props.buttons.indexOf("multi_next") !== -1) && this.state.helpModalVisible ? <HelpModal
           visible={this.state.helpModalVisible}
-          close={() => this.setState({helpModalVisible: false})}
+          close={() => this.setState({ helpModalVisible: false })}
           correct_moves={this.state.helpModalCorrectMoves}
           make_move={this.make_move}
           playColor={this.props.playColor}
@@ -164,20 +164,20 @@ class Board extends Component {
         /> : null}
 
         {/* MORE MENU */}
-        <HangingMenu visible={this.state.boardMenuVisible} close={() => this.setState({boardMenuVisible: false})}>
+        <HangingMenu visible={this.state.boardMenuVisible} close={() => this.setState({ boardMenuVisible: false })}>
           {/* ANALYSIS BUTTON */}
           <button className="simpleButton hMenuButton" onClick={() => {
-              this.setState({boardMenuVisible: false})
-              //this.props.history.push("/analysis/" + this.props.rotation + "/" + this.state.game.fen().split("/").join("_"))
-              //this.props.history.push("/analysis/" + this.props.rotation + "/" + this.state.game.pgn().split(" ").join("_"))
-              const moves = JSON.stringify(this.state.json_moves)
-              this.props.history.push("/analysis/" + this.props.rotation + "/" + moves)
+            this.setState({ boardMenuVisible: false })
+            //this.props.history.push("/analysis/" + this.props.rotation + "/" + this.state.game.fen().split("/").join("_"))
+            //this.props.history.push("/analysis/" + this.props.rotation + "/" + this.state.game.pgn().split(" ").join("_"))
+            const moves = JSON.stringify(this.state.json_moves)
+            this.props.history.push("/analysis/" + this.props.rotation + "/" + moves)
           }}>
             <div className="hMenuButtonContent">
               <div className="hMenuButtonIcon">edit</div>
               <div className="hMenuButtonLabel">Analyse position</div>
             </div>
-          </button> 
+          </button>
         </HangingMenu>
       </React.Fragment>
     )
@@ -186,19 +186,19 @@ class Board extends Component {
   componentDidMount() {
     // called when the component is first created
     // this.testChess() // test
-    
-    if(this.props.startMoves){
+
+    if (this.props.startMoves) {
       /*const fen = this.props.startFen.split("_").join("/")*/
       /*const turn = this.state.game.load(fen)*/
-      
+
       let moves = JSON.parse(this.props.startMoves);
       moves.forEach(m => this.state.game.move(m.san))
-      this.setState({json_moves: moves})
+      this.setState({ json_moves: moves })
       this.forceUpdate()
     }
 
     // pc make first move if the player playes as black
-    if(this.props.playColor === "black"){
+    if (this.props.playColor === "black") {
       this.pc_move(this.props.op_index, [])
     }
   }
@@ -242,21 +242,21 @@ class Board extends Component {
     )
   }
 
-  is_my_turn(turn = this.state.game.turn(), both_allowed = true){
-    if(
+  is_my_turn(turn = this.state.game.turn(), both_allowed = true) {
+    if (
       (this.props.playColor === "black" && turn === "b") ||
       (this.props.playColor === "white" && turn === "w") ||
       (this.props.playColor === "both" && both_allowed)
-    ){
+    ) {
       return true
     }
     return false
   }
 
-  is_move_legal(move_data){
+  is_move_legal(move_data) {
     // as default move_data.from = this.state.selectedCell
-    if(move_data.from === undefined){
-      if(this.state.selected_cell === undefined){return false}
+    if (move_data.from === undefined) {
+      if (this.state.selected_cell === undefined) { return false }
       move_data.from = this.state.selected_cell
     }
     // is it legal?
@@ -264,7 +264,7 @@ class Board extends Component {
     return legal_moves.includes(move_data.to)
   }
 
-  async make_move(move_data){
+  async make_move(move_data) {
     let move = this.state.game.move(move_data)
 
     this.play_move_sound(move)
@@ -272,6 +272,8 @@ class Board extends Component {
 
     return new Promise(res => {
       this.setState(old => {
+        if (!move) return; // the move was aborted (for example with the back button)
+
         let moves_list = old.json_moves
         // adding the new move to the history array in the correct format
         moves_list.push({
@@ -285,15 +287,15 @@ class Board extends Component {
 
         // if the move is not the one you came back from clear the history otherwise remove that move from the history
         let clearMovesForward = true
-        if(old.moves_forward[0]){
+        if (old.moves_forward[0]) {
           clearMovesForward = move.san !== old.moves_forward[0].san
         }
-        if(clearMovesForward){
+        if (clearMovesForward) {
           return {
             json_moves: moves_list,
             moves_forward: []
           }
-        }else{
+        } else {
           let new_moves_forward = old.moves_forward
           new_moves_forward.shift() // remove first
           return {
@@ -310,43 +312,43 @@ class Board extends Component {
     // move data is an object: {from: "d2", to: "d5", promotion: undefined}
     // as default move_data.from = this.state.selectedCell
 
-    if(move_data.from === undefined){
-      if(this.state.selected_cell === undefined){return false}
+    if (move_data.from === undefined) {
+      if (this.state.selected_cell === undefined) { return false }
       move_data.from = this.state.selected_cell
     }
 
-    if(this.is_move_legal(move_data)){
+    if (this.is_move_legal(move_data)) {
       if (this.is_move_promotion(move_data)) {
         let promotion = await this.getPromotion() // "q" TODO -- decide which piece to promote to
-        if(!promotion){
+        if (!promotion) {
           return false
         }
         move_data.promotion = promotion
       }
-      
+
       let move_allowed = true
-      if(this.props.is_move_allowed){ // TODO - should check if it is not the turn of the computer
+      if (this.props.is_move_allowed) { // TODO - should check if it is not the turn of the computer
         // if the function exists try and see if this move is allowed(i don't mean illegal, if the move cannot be done for other reasons)
         move_allowed = this.props.is_move_allowed(this.props.op_index, this.state.json_moves, move_data, this.props.vari_index) // if var_index exists it looks only into it
       }
       // works in COLOR_TRAINING_MODE
-      if(this.props.is_move_allowed_color){
+      if (this.props.is_move_allowed_color) {
         move_allowed = this.props.is_move_allowed_color(this.props.trainColor, this.state.json_moves, move_data)
       }
 
-      if(move_allowed){ // allowed as default
+      if (move_allowed) { // allowed as default
         // MAKE THE MOVE
         let moves_list_after = await this.make_move(move_data)
-        if(this.props.playColor !== "both"){
+        if (this.props.playColor !== "both") {
           this.pc_move(this.props.op_index, moves_list_after, this.props.vari_index)
         }
-      }else{
+      } else {
         this.play_error_sound()
         return false
       }
 
       return true
-    }else{
+    } else {
       return false
     }
   }
@@ -359,15 +361,18 @@ class Board extends Component {
     return false
   }
 
-  getPromotion(){
-      return new Promise((res, rej) => {
-        this.setState({promotionPromiseRes: res, promotionModalVisible: true})
-      })
+  getPromotion() {
+    return new Promise((res, rej) => {
+      this.setState({ promotionPromiseRes: res, promotionModalVisible: true })
+    })
   }
-  
-  try_undo(){
-  /* I can undo if there is some move to undo */
-    if(this.state.json_moves.length > 0){
+
+  try_undo() {
+    /* I can undo if there is some move to undo */
+    if (this.state.json_moves.length > 0) {
+      if (this.state.json_moves.length === 1 && this.props.playColor === "black") {
+        return;
+      }
       // actually undo
       let move = this.state.game.undo()
       // remove arrows in case there were any
@@ -378,44 +383,48 @@ class Board extends Component {
         // remove it from json_moves
         let moves_list = old.json_moves
         moves_list.pop()
-        return{
+        return {
           json_moves: moves_list,
           moves_forward: [move, ...old.moves_forward]
         }
       })
-    }else{
+    } else {
       console.log("Cannot undo before any move is done")
     }
   }
 
-  pc_move(op_index, json_moves, vari_index = undefined){
-    let move_data = null
-    if(this.props.trainColor === undefined){
-      move_data = this.props.get_pc_move_data(op_index, json_moves, vari_index)
-    }else{ // works with COLOR_TRAINING_MODE
+  pc_move(op_index, json_moves, vari_index = undefined) {
+    /*if (this.is_my_turn(this.state.game.turn())) {
+      console.log("The computer can't move during the player's turn.")
+      return;
+    }*/
+
+    let move_data = this.props.get_pc_move_data ? this.props.get_pc_move_data(op_index, json_moves, vari_index) : null
+    if (this.props.trainColor === undefined) {
+    } else { // works with COLOR_TRAINING_MODE
       move_data = this.props.get_pc_move_data_color(this.props.trainColor, json_moves)
     }
-    
-    if(move_data !== null){
+
+    if (move_data !== null) {
       setTimeout(async () => {
         // the pc makes his move
         let pc_move_data = await await this.make_move(move_data)
 
         // now that pc has moved is the training finished?
         let correct_moves_repetitive = []
-        if(this.props.trainColor === undefined){
+        if (this.props.trainColor === undefined) {
           correct_moves_repetitive = this.props.get_correct_moves_data(this.props.op_index, pc_move_data, this.props.vari_index)
-        }else{ // works with COLOR_TRAINING_MODE
+        } else { // works with COLOR_TRAINING_MODE
           correct_moves_repetitive = this.props.get_correct_moves_data_color(this.props.trainColor, pc_move_data)
         }
 
-        if(correct_moves_repetitive.length === 0){
+        if (correct_moves_repetitive.length === 0) {
           // training finished
           this.props.notify("Congrats", "important")
         }
 
       }, 500)
-    }else{
+    } else {
       this.props.notify("Congrats", "important")
     }
   }
@@ -438,22 +447,22 @@ class Board extends Component {
     if (typeof cell === "string") {
       coor = this.cellCoordinates(cell)
       cell_str = cell
-    }else{
+    } else {
       cell_str = this.cellFromCoor(coor) /* , false */
     }
 
     const svg = get_piece_src(type)
     const is_selected = this.state.selected_cell === cell_str
-    return  <img 
-              style={{ transform: `translate(${coor.x}%, ${coor.y}%)` }} 
-              src={svg} 
-              id={"piece" + id} 
-              key={"piece" + id}
-              ref={is_selected ? this.selectedPiece : null}
-              className={is_selected ? "pieceSVG noAnimationPiece" : "pieceSVG staticPiece"} /* && on_drag  */
-              alt={"Piece file missing"}
-              draggable={false}
-            />
+    return <img
+      style={{ transform: `translate(${coor.x}%, ${coor.y}%)` }}
+      src={svg}
+      id={"piece" + id}
+      key={"piece" + id}
+      ref={is_selected ? this.selectedPiece : null}
+      className={is_selected ? "pieceSVG noAnimationPiece" : "pieceSVG staticPiece"} /* && on_drag  */
+      alt={"Piece file missing"}
+      draggable={false}
+    />
   }
 
   pieces(rotated = this.state.rotated || false) {
@@ -466,9 +475,9 @@ class Board extends Component {
         if (piece !== null) {
           // if the cell is not empty
           let type = pieces_names[piece.color === "b" ? piece.type : piece.type.toUpperCase()] // get the type in this form: "white_king"
-          if(!rotated){
+          if (!rotated) {
             objects.push({ collumn, line, type, id: piece.id })
-          }else{
+          } else {
             objects.push({ collumn: 7 - collumn, line: 7 - line, type, id: piece.id })
           }
         }
@@ -479,23 +488,23 @@ class Board extends Component {
   }
 
   selection() {
-    let sel = this.state.selected_cell    
+    let sel = this.state.selected_cell
     let piece = this.state.game.get(sel)
     if (sel === undefined || !piece) return <div key="selection" id="selection" />
-    
+
     let coor = this.cellCoordinates(sel)
-    let type =  pieces_names[piece.color === "b" ? piece.type : piece.type.toUpperCase()]
+    let type = pieces_names[piece.color === "b" ? piece.type : piece.type.toUpperCase()]
     return <img style={{ transform: `translate(${coor.x}%, ${coor.y}%)` }} src={get_piece_src(type)} className="selection" key="selection" id="selection" alt="selection" />
   }
 
-  touchCircle(){
+  touchCircle() {
     let over = this.state.mouse_over_cell
     let sel = this.state.selected_cell
-    if (over === undefined || sel === undefined || !dragged_away) return <div key="touchCircle"/>
-    
+    if (over === undefined || sel === undefined || !dragged_away) return <div key="touchCircle" />
+
     let coor = this.cellCoordinates(over)
-    coor.x = coor.x / Math.sqrt(2) - 100/8
-    coor.y = coor.y / Math.sqrt(2) - 100/8
+    coor.x = coor.x / Math.sqrt(2) - 100 / 8
+    coor.y = coor.y / Math.sqrt(2) - 100 / 8
 
     return <div style={{ transform: `translate(calc(${coor.x}% - 2px), calc(${coor.y}% - 4px))` }} key="touchCircle" id="touchCircle" />
     // return <div style={{ transform: `translate(${coor.x/1.5 - 17.25}%, ${coor.y/1.5 - 19.75}%)` }} key="touchCircle" id="touchCircle" />
@@ -517,7 +526,7 @@ class Board extends Component {
   selectCell(cell) {
     // cell: "d4"
     this.setState({ selected_cell: cell }, () => {
-      if(this.selectedPiece.current){
+      if (this.selectedPiece.current) {
         this.selectedPiece.current.style.left = "0px";
         this.selectedPiece.current.style.top = "0px";
       }
@@ -533,7 +542,7 @@ class Board extends Component {
     if (cell_obj !== null) {
       if (cell_obj.color === this.state.game.turn()) {
         // for example "black"[0] === "b" => true NB: also "both"[0] works but it's not a problem here
-        if(this.props.playColor === "both" || this.props.playColor[0] === cell_obj.color){ 
+        if (this.props.playColor === "both" || this.props.playColor[0] === cell_obj.color) {
           this.selectCell(cell)
           return true
         }
@@ -547,7 +556,7 @@ class Board extends Component {
     // if something is selected try to move there
     if (this.state.selected_cell !== undefined) {
       let res = await this.try_move({ from: this.state.selected_cell, to: cell }) // true = move done; false = move not done because illegal
-      if(res){
+      if (res) {
         // if i have a piece selected and i moved there
         this.deselectCells()
       } else {
@@ -571,10 +580,10 @@ class Board extends Component {
     }
   }
 
-  async boardDown(e){
+  async boardDown(e) {
     let clientX = e.clientX
     let clientY = e.clientY
-    if(e.type === "touchstart"){
+    if (e.type === "touchstart") {
       clientX = e.touches[0].clientX;
       clientY = e.touches[0].clientY;
     }
@@ -587,41 +596,41 @@ class Board extends Component {
       // inside the board
       const cell = this.cellFromCoor(coor)
 
-      if(this.state.selected_cell && this.is_move_legal){
-        await this.try_move({to: cell})
+      if (this.state.selected_cell && this.is_move_legal) {
+        await this.try_move({ to: cell })
       }
 
       const selection_res = this.try_select_cell(cell)
       on_drag = selection_res ? true : false
       left_mouse_down = true
-      this.setState({mouse_over_cell: cell})
+      this.setState({ mouse_over_cell: cell })
     }
   }
 
-  async boardUp(e){
-    if(this.state.selected_cell && this.selectedPiece.current){
-       // (both variables) stored here to avoid losing it, before resetting piece offset, by deselecting
+  async boardUp(e) {
+    if (this.state.selected_cell && this.selectedPiece.current) {
+      // (both variables) stored here to avoid losing it, before resetting piece offset, by deselecting
       const draggedPiece = this.selectedPiece.current
 
       // find the coordinates of the mouse
       let clientX = e.clientX
       let clientY = e.clientY
-      if(e.type === "touchend"){
+      if (e.type === "touchend") {
         clientX = e.changedTouches[0].clientX;
         clientY = e.changedTouches[0].clientY;
       }
       const coor = { x: clientX - this.refs.bContainer.offsetLeft, y: clientY - this.refs.bContainer.offsetTop }
       coor.x = Math.floor((coor.x / this.refs.board.width) * 8) * 100
       coor.y = Math.floor((coor.y / this.refs.board.width) * 8) * 100
-      
+
       // inside the board?
       if (coor.x <= 700 && coor.y <= 700) {
         // try to move there
         const cell = this.cellFromCoor(coor)
-        const try_move_res = await this.try_move({to: cell})
-        if(!try_move_res && cell){
+        const try_move_res = await this.try_move({ to: cell })
+        if (!try_move_res && cell) {
           this.try_select_cell(cell)
-        }else if(cell){
+        } else if (cell) {
           this.deselectCells()
         }
       }
@@ -641,16 +650,16 @@ class Board extends Component {
     this.forceUpdate()
   }
 
-  boardDrag(e){
-    if(this.state.selected_cell && this.selectedPiece.current && left_mouse_down && on_drag){
+  boardDrag(e) {
+    if (this.state.selected_cell && this.selectedPiece.current && left_mouse_down && on_drag) {
       let clientX = e.clientX
       let clientY = e.clientY
-      
-      if(e.type === "touchmove"){
+
+      if (e.type === "touchmove") {
         clientX = e.touches[0].clientX;
         clientY = e.touches[0].clientY;
       }
-      
+
       //move piece
       let deltaX = clientX - clientX_down
       let deltaY = clientY - clientY_down
@@ -665,67 +674,67 @@ class Board extends Component {
       const coor = { x: clientX - this.refs.bContainer.offsetLeft, y: clientY - this.refs.bContainer.offsetTop }
       coor.x = Math.floor((coor.x / this.refs.board.width) * 8) * 100
       coor.y = Math.floor((coor.y / this.refs.board.width) * 8) * 100
-      
+
       // inside the board?
       if (coor.x <= 700 && coor.y <= 700) {
         // try to move there
         const cell = this.cellFromCoor(coor)
-        this.setState({mouse_over_cell: cell})
+        this.setState({ mouse_over_cell: cell })
       }
     }
   }
 
-  async play_move_sound(move){
+  async play_move_sound(move) {
     // move is what the game.move() function returns
-    if(move){
-      if(move.flags.indexOf("c") !== -1 || move.flags.indexOf("e") !== -1){
+    if (move) {
+      if (move.flags.indexOf("c") !== -1 || move.flags.indexOf("e") !== -1) {
         capture_audio.play()
-      }else{
+      } else {
         move_audio.play()
       }
     }
   }
 
-  async play_error_sound(){
+  async play_error_sound() {
     error_audio.play()
   }
 
 
   /* ---------------------------- UI ELEMENTS ---------------------------- */
 
-  next_button_click(){
-    if(this.props.playColor === "none" || this.is_my_turn()){
+  next_button_click() {
+    if (this.props.playColor === "none" || this.is_my_turn()) {
       let move_data = this.props.get_vari_next_move_data(this.props.op_index, this.props.vari_index, this.state.json_moves)
-      if(move_data !== null){
+      if (move_data !== null) {
         this.make_move(move_data)
       }
     }
   }
 
-  forward_next_button_click(){
-    if(this.state.moves_forward.length > 0){
+  forward_next_button_click() {
+    if (this.state.moves_forward.length > 0) {
       let move_data = this.state.moves_forward[0]
-      if(move_data !== null){
+      if (move_data !== null) {
         this.make_move(move_data)
       }
     }
   }
 
-  back_button_click(){
+  back_button_click() {
     const before_turn = this.state.game.turn()
     this.try_undo()
-    if(this.is_my_turn(before_turn, false)){ // undo twice
+    if (this.is_my_turn(before_turn, false)) { // undo twice
       this.try_undo()
     }
   }
 
-  async help_button_click(can_auto_move = false){
-    if(!this.is_my_turn()) return false
+  async help_button_click(can_auto_move = false) {
+    if (!this.is_my_turn()) return false
     // get moves data [{from: "d2", to: "d4", san: "d4"}, ...]
     let correct_moves_repetitive = []
-    if(this.props.trainColor === undefined){
+    if (this.props.trainColor === undefined) {
       correct_moves_repetitive = this.props.get_correct_moves_data(this.props.op_index, this.state.json_moves, this.props.vari_index)
-    }else{ // works with COLOR_TRAINING_MODE
+    } else { // works with COLOR_TRAINING_MODE
       correct_moves_repetitive = this.props.get_correct_moves_data_color(this.props.trainColor, this.state.json_moves)
     }
 
@@ -733,90 +742,97 @@ class Board extends Component {
     let correct_moves_names = []
     let correct_moves = []
     correct_moves_repetitive.forEach(element => {
-      if(correct_moves_names.indexOf(element.san) === -1){
+      if (correct_moves_names.indexOf(element.san) === -1) {
         correct_moves_names.push(element.san)
         correct_moves.push(element)
       }
     });
 
-    if(correct_moves.length > 1 || !can_auto_move){
+    if (correct_moves.length > 1 || !can_auto_move) {
       /*this.setState({
         helpModalVisible: true,
         helpModalCorrectMoves: correct_moves
       })*/
       this.setArrows(correct_moves)
-    }else if(correct_moves.length === 1){
+    } else if (correct_moves.length === 1) {
       // MAKE MOVE
       const moves_list_after = await this.make_move(correct_moves[0])
       // COMPUTER ANSWER IF NECESSARY
-      if(this.props.playColor !== "both"){
+      if (this.props.playColor !== "both") {
         this.pc_move(this.props.op_index, moves_list_after, this.props.vari_index)
       }
     }
   }
 
-  boardButtons(){
+  boardButtons() {
     let b_objects = []
-    if(this.props.buttons){
+    let b_names = []
+    if (this.props.buttons) {
       // MORE
-      if(this.props.buttons.indexOf("more") !== -1){
+      if (this.props.buttons.indexOf("more") !== -1) {
         b_objects.push(
-          <button id="moreButton" key="moreButton" className="simpleButton boardButton" 
+          <button id="moreButton" key="moreButton" className="simpleButton boardButton"
             onClick={() => {
-              this.setState({boardMenuVisible: true})
+              this.setState({ boardMenuVisible: true })
             }}
           >more_vert</button>
         )
+        b_names.push("moreButton")
       }
       // BACK
-      if(this.props.buttons.indexOf("back") !== -1){
+      if (this.props.buttons.indexOf("back") !== -1) {
         b_objects.push(
-          <button id="backButton" key="backButton" className="simpleButton boardButton" 
+          <button id="backButton" key="backButton" className="simpleButton boardButton"
             onClick={this.back_button_click}
-            disabled={this.state.json_moves.length === 0}
+            disabled={this.state.json_moves.length === 0 || (this.state.json_moves.length === 1 && this.props.playColor === "black")}
           >keyboard_arrow_left</button>
         )
+        b_names.push("backButton")
       }
       // HELP
-      if(this.props.buttons.indexOf("help") !== -1){
+      if (this.props.buttons.indexOf("help") !== -1) {
         b_objects.push(
-          <button id="helpButton" key="helpButton" className="simpleButton boardButton" 
+          <button id="helpButton" key="helpButton" className="simpleButton boardButton"
             onClick={() => this.help_button_click(false)}
             disabled={!this.is_my_turn()}
           >help</button>
         )
+        b_names.push("helpButton")
       }
       // SINGLE NEXT
-      if(this.props.buttons.indexOf("single_next") !== -1){
+      if (this.props.buttons.indexOf("single_next") !== -1) {
         b_objects.push(
-          <button id="nextButton" key="nextButton" className="simpleButton boardButton" 
-            onClick={this.next_button_click} 
+          <button id="nextButton" key="nextButton" className="simpleButton boardButton"
+            onClick={this.next_button_click}
             disabled={(!this.is_my_turn() && !this.props.playColor === "none") || !this.props.get_vari_next_move_data(this.props.op_index, this.props.vari_index, this.state.json_moves)}
           >keyboard_arrow_right</button>
         )
+        b_names.push("nextButton")
       }
       // MULTI NEXT - search in all non archived variations
-      if(this.props.buttons.indexOf("multi_next") !== -1){
+      if (this.props.buttons.indexOf("multi_next") !== -1) {
         b_objects.push(
-          <button id="helpButton" key="helpButton" className="simpleButton boardButton" 
-            onClick={() => this.help_button_click(true)} 
+          <button id="multiNextButton" key="multiNextButton" className="simpleButton boardButton"
+            onClick={() => this.help_button_click(true)}
             disabled={!this.is_my_turn()}
           >keyboard_arrow_right</button>
         )
+        b_names.push("multiNextButton")
       }
       // FORWARD NEXT
-      if(this.props.buttons.indexOf("forward_next") !== -1){
+      if (this.props.buttons.indexOf("forward_next") !== -1) {
         b_objects.push(
-          <button id="forwardNextButton" key="forwardNextButton" className="simpleButton boardButton" 
-            onClick={this.forward_next_button_click} 
+          <button id="forwardNextButton" key="forwardNextButton" className="simpleButton boardButton"
+            onClick={this.forward_next_button_click}
             disabled={this.state.moves_forward.length < 1}
           >keyboard_arrow_right</button>
         )
+        b_names.push("forwardNextButton")
       }
       // CREATE VARIATION BUTTON - DONE
-      if(this.props.buttons.indexOf("done") !== -1){
+      if (this.props.buttons.indexOf("done") !== -1) {
         b_objects.push(
-          <button id="doneButton" key="doneButton" className="simpleButton boardButton" 
+          <button id="doneButton" key="doneButton" className="simpleButton boardButton"
             // onClick={this.openVariNameModal}
             onClick={() => {
               const allowed_subnames = this.props.getOpFreeSubnames(this.props.op_index, this.props.vari_name, sub_names)
@@ -826,60 +842,63 @@ class Board extends Component {
             disabled={this.state.json_moves.length === 0}
           >done</button>
         )
+        b_names.push("doneButton")
       }
       // STOP TRAINING THIS OPENING
-      if(this.props.buttons.indexOf("stopTrainThis") !== -1){
+      if (this.props.buttons.indexOf("stopTrainThis") !== -1) {
         b_objects.push(
           <button id="stopTrainThisButton" key="stopTrainThisButton" className="simpleButton boardButton alertButton"
             onClick={() => this.props.set_in_training(false)}
           >clear</button>
         )
+        b_names.push("stopTrainThisButton")
       }
       // TRAIN THIS OPENING
-      if(this.props.buttons.indexOf("trainThis") !== -1){
+      if (this.props.buttons.indexOf("trainThis") !== -1) {
         b_objects.push(
           <button id="trainThisButton" key="trainThisButton" className="simpleButton boardButton impButton"
             onClick={() => {
               let newPlayColor = this.props.set_in_training(true)
-              if(
+              if (
                 (newPlayColor === "black" && this.state.json_moves.length % 2 === 0) ||
                 (newPlayColor === "white" && this.state.json_moves.length % 2 === 1)
-              ){ // if it's the turn of the pc to move
+              ) { // if it's the turn of the pc to move
                 this.pc_move(this.props.op_index, this.state.json_moves, this.props.vari_index)
               }
             }}
           >school</button>
         )
+        b_names.push("trainThisButton")
       }
     }
-    return b_objects.map(button => <Ripples className="simpleButton boardButton">{button}</Ripples>)
+    return b_objects.map((button, i) => <Ripples className="simpleButton boardButton" key={b_names[i] + "_ripple"}>{button}</Ripples>)
   }
 
-  closeVariNameModal(){
-    this.setState({variNameModalVisible: false})
+  closeVariNameModal() {
+    this.setState({ variNameModalVisible: false })
   }
 
-  openVariNameModal(){
-    this.setState({variNameModalVisible: true})
+  openVariNameModal() {
+    this.setState({ variNameModalVisible: true })
   }
 
-  createThisVariation(name, subname = undefined){
-    if(name.length !== 0){
+  createThisVariation(name, subname = undefined) {
+    if (name.length !== 0) {
       /*let vari_index = */this.props.createVari(name, this.state.json_moves, this.props.op_index, subname)
       // this.props.history.push("/openings/" + this.props.op_index)
       this.props.notify(`${name} ${subname} created!`, "important")
-      this.setState({variNameModalVisible: false})
+      this.setState({ variNameModalVisible: false })
     }
   }
 
-  onCommentClick(){
-    if(this.props.allowCommentEdit){
-      this.setState({commentModalVisible: true})
+  onCommentClick() {
+    if (this.props.allowCommentEdit) {
+      this.setState({ commentModalVisible: true })
     }
   }
 
-  setArrows(arrows){
-    this.setState({arrows})
+  setArrows(arrows) {
+    this.setState({ arrows })
   }
 
 }

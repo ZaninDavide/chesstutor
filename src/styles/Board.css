@@ -120,6 +120,10 @@
   height: 100%;
 }
 
+#movesTree{
+  height: auto !important;
+}
+
 
 #boardDataCommentSlide{
   height: 100%;
