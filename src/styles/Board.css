@@ -131,7 +131,7 @@
   font-size: var(--smallTextSize);
   white-space: pre-wrap;
   cursor: pointer;
-  -webkit-tap-highlight-color: var(--hoverBackColor);
+  -webkit-tap-highlight-color: var(--tap);
 }
 
 .boardButton{

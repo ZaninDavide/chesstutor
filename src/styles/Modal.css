@@ -26,9 +26,9 @@
     background-color: var(--modalBack);
 
     /* SHADOWS */
-    -moz-box-shadow: 2px 3px 4px rgba(0, 0, 0,0.25);
-    -webkit-box-shadow: 2px 3px 4px rgba(0, 0, 0, .25);
-    box-shadow: 2px 3px 4px rgba(0, 0, 0, .25);
+    -moz-box-shadow: var(--shadowShift) var(--shadowShift) var(--shadowBlur) var(--shadow);
+    -webkit-box-shadow: var(--shadowShift) var(--shadowShift) var(--shadowBlur) var(--shadow);
+    box-shadow: var(--shadowShift) var(--shadowShift) var(--shadowBlur) var(--shadow);
 }
 
 .tallModalContent{
@@ -72,7 +72,7 @@
     height: 100%;
     max-height: 60vh;
     width: 100%;
-    background-color: var(--backColor);
+    background-color: var(--modalBack);
     max-width: 500px;
     margin-left: auto;
     margin-right: auto;
@@ -109,8 +109,8 @@
     border: 0; 
     border-radius: 0;
 
-    background-color: var(--hoverBackColor);
-    color: var(--primaryText);
+    background-color: var(--onBack);
+    color: var(--title);
     font-size: var(--textSize);
     font-family: inherit;
     resize: none;
@@ -156,6 +156,22 @@
     border-radius: 0px;
 }
 
+@media (hover: hover) {
+    .hMenuButton:hover:enabled, 
+    .modalButtons button.modalButton:hover:enabled,
+    .modalButtons button.modalBackButton:hover:enabled,
+    .insideModal button.simpleButton:hover:enabled
+    {
+        background-color: var(--hoverModalBack);
+    }
+}
+
+.insideModal input.textBox,
+.insideModal.insideCommentModal textarea.commentTextBox
+{
+    background-color: var(--onModalBack);
+}
+
 .hMenuButtonContent{
     display: grid;
     grid-template-columns: auto 1fr;
@@ -173,7 +189,7 @@
     margin-left: var(--mediumMargin);
     margin-right: var(--mediumMargin);
     height: var(--uiElementHeight);
-    color: var(--secondaryText);
+    color: var(--text);
 }
 
 .hMenuButtonLabel{
@@ -181,7 +197,7 @@
     text-align: left;
     line-height: var(--uiElementHeight);
     /* TEXT */
-    color: var(--primaryText);
+    color: var(--title);
     font-family: var(--textFont);
     font-weight: var(--textWeight);
     font-size: var(--textSize);
@@ -273,6 +289,6 @@
     font-size: var(--smallTextSize);
     padding-left: var(--smallMargin);
     padding-bottom: var(--smallMargin);
-    color:  var(--secondaryText);
+    color:  var(--text);
     opacity: .5;
 }

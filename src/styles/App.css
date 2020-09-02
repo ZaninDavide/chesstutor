@@ -1,5 +1,5 @@
 @import url("https://fonts.googleapis.com/css?family=Material+Icons&display=swap");
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
 
 /* ---------------------------- LAYOUT & THEMES ---------------------------- */
 
@@ -17,7 +17,7 @@
   --thinWeight: 300;
   --textWeight: 400;
   --mediumWeight: 500;
-  --titleWeight: 500;
+  --titleWeight: 600;
   
   --smallMargin: 5px;
   --mediumMargin: 15px;
@@ -34,7 +34,81 @@
   --headerHeight: calc(var(--uiElementMediumHeight) + var(--smallMargin) * 2);
 }
 
+.lightTheme {
+  /* special colors */
+  --main: #43ce76; /* #00bcd4; */
+  --hoverMain: #31b862;
+
+  --alert: #f14b4b;
+  --hoverAlert: #b63737;
+
+  --arrow: #43ce76;
+  --ripple: rgba(0, 0, 0, 0.1);
+  --tap: rgba(150,150,150, 0.25);
+
+  /* shadows */
+  --shadow: rgba(0, 0, 0,0.15);
+  --shadowBlur: 20px;
+  --shadowShift: 9px;
+
+  /* app background */
+  --back: #fbfbfb;
+  --hoverBack: #ecebeb;
+  --onBack: #e8e8e8;
+
+  --headerBack: #fbfbfb;
+
+  /* text */
+  --text: #242424;
+  --title: #424242;
+
+  /* button */
+  --clickText: #181818;
+  --disabledClickText: #646464;
+
+  /* colored buttons */
+  --disabledButtonText: #646464;
+
+  /* cards */
+  --cardBack: #fbfbfb;
+  --hoverCard: #ecebeb;
+  --onCardBack: #c5c4c4;
+
+  /* modals */
+  --modalBack: #ebebeb;
+  --hoverModalBack: #dddbdb;
+  --onModalBack: #d8d8d8;
+}
+
 .darkTheme {
+  --main: #43ce76;
+  --hoverMain: #31b862;
+  --alert: #f14b4b;
+  --hoverAlert: #b63737;
+  --arrow: #43ce76;
+  --ripple: rgb(255 255 255 / 10%);
+  --tap: rgb(144 144 144 / 25%);
+  --shadow: rgba(0, 0, 0, 0);
+  --shadowBlur: 0px;
+  --shadowShift: 0px;
+  --back: #000000;
+  --hoverBack: #0e0e0e;
+  --onBack: #1d1d1d;
+  --headerBack: #000000;
+  --text: #c7c7c7;
+  --title: #ffffff;
+  --clickText: #ffffff;
+  --disabledClickText: #646464;
+  --disabledButtonText: #646464;
+  --cardBack: #1b1b1b;
+  --hoverCard: #232323;
+  --onCardBack: #525151;
+  --modalBack: #191919;
+  --hoverModalBack: #1f1f1f;
+  --onModalBack: #252525;
+}
+
+.darkTheme_old {
   --backColor: black; /*#1d1d1b*/
   --alertColor: #f14b4b; /*#f06b65*/
 
@@ -92,10 +166,10 @@
   height: 100%;
   overflow: hidden;
   /* COLORS */
-  background-color: var(--backColor);
+  background-color: var(--back);
   /* background-image: linear-gradient(var(--backColor) 50%, #131311); */ /*151513*/
   /* TEXT */
-  color: var(--secondaryText);
+  color: var(--text);
   font-weight: var(--textWeight);
   font-size: var(--textSize);
   /* no selction */
@@ -153,7 +227,7 @@
 
   h1 {
     /* TEXT */
-    color: var(--primaryText);
+    color: var(--title);
     font-family: var(--titleFont);
     font-weight: var(--titleWeight);
     font-size: var(--titleSize);
@@ -166,8 +240,8 @@
   
   h2 {
     /* TEXT */
-    color: var(--primaryText);
-    font-weight: var(--mediumWeight);
+    color: var(--title);
+    font-weight: var(--titleWeight);
     font-size: var(--textSize);
     /* SPACES */
     margin-top: var(--smallMargin);
@@ -190,7 +264,7 @@
   
   p {
     /* TEXT */
-    color: var(--secondaryText);
+    color: var(--text);
     font-weight: var(--textWeight);
     font-size: var(--textSize);
     /* SPACES */
@@ -201,7 +275,7 @@
   }
   
   .alertText{
-    color: var(--alertColor);
+    color: var(--alert);
   }
   
   .smallText{
@@ -298,7 +372,7 @@ input {
   height: var(--uiElementHeight);
   min-width: var(--uiElementHeight);
   /* TEXT */
-  color: var(--buttonText);
+  color: var(--clickText);
   font-family: "Material Icons";
   font-size: var(--iconsFontSize);
   text-align: center;
@@ -306,7 +380,7 @@ input {
   line-height: var(--uiElementHeight); /* = height*/
   /* COLORS */
   background-color: transparent;
-  -webkit-tap-highlight-color: var(--hoverBackColor);
+  -webkit-tap-highlight-color: var(--tap);
   /* BORDERS */
   border: 0px;
   border-radius: calc(var(--uiElementHeight) / 2);
@@ -353,9 +427,9 @@ button.roundButton {
   transition-timing-function: cubic-bezier(0.3, 0, 0.7, 1);
   transition-delay: 0s;
   /* SHADOWS */
-  /*-moz-box-shadow: 2px 3px 4px rgba(0, 0, 0,0.25);
-  -webkit-box-shadow: 2px 3px 4px rgba(0, 0, 0, .25);
-  box-shadow: 2px 3px 4px rgba(0, 0, 0, .25);*/
+  -moz-box-shadow: var(--shadowShift) var(--shadowShift) var(--shadowBlur) var(--shadow);
+  -webkit-box-shadow: var(--shadowShift) var(--shadowShift) var(--shadowBlur) var(--shadow);
+  box-shadow: var(--shadowShift) var(--shadowShift) var(--shadowBlur) var(--shadow);
 }
 
 button.simpleButton{
@@ -363,7 +437,7 @@ button.simpleButton{
   height: var(--uiElementHeight);
   min-width: var(--uiElementHeight);
   /* TEXT */
-  color: var(--buttonText);
+  color: var(--clickText);
   /*font-family: inherit;*/
   font-size: var(--textSize);
   text-align: center;
@@ -371,7 +445,7 @@ button.simpleButton{
   line-height: var(--uiElementHeight); /* = height*/
   /* COLORS */
   background-color: transparent;
-  -webkit-tap-highlight-color: var(--hoverBackColor);
+  -webkit-tap-highlight-color: var(--tap);
   /* BORDERS */
   border: 0px;
   border-radius: 0px;
@@ -410,17 +484,16 @@ button.simpleButton{
   height: var(--uiElementMediumHeight);
   line-height: var(--uiElementMediumHeight); /* = height*/
 
+  -moz-box-shadow: var(--shadowShift) var(--shadowShift) var(--shadowBlur) var(--shadow);
+  -webkit-box-shadow: var(--shadowShift) var(--shadowShift) var(--shadowBlur) var(--shadow);
+  box-shadow: var(--shadowShift) var(--shadowShift) var(--shadowBlur) var(--shadow);
 
-  /*-moz-box-shadow: 0px 0px 1px rgba(0, 0, 0,0.15);
-  -webkit-box-shadow: 0px 0px 1px rgba(0, 0, 0, .15);
-  box-shadow: 0px 0px 1px rgba(0, 0, 0, .15);*/
-
-  -webkit-tap-highlight-color: var(--hoverBackColor);
+  -webkit-tap-highlight-color: var(--tap);
 
   border: 0px;
   border-radius: var(--borderRadius);
   
-  color: var(--buttonText);
+  color: var(--clickText);
   font-family: var(--textFont);
   font-weight: bold;
   font-size: var(--textSize);
@@ -428,27 +501,28 @@ button.simpleButton{
 
 
 button:disabled, button[disabled]{
-  color: var(--disabledColor);
+  color: var(--disabledClickText);
+  background-color: var(--onBack);
 }
 
 button.alertButton{
-  background-color: var(--alertColor) !important;
-  color: var(--backColor) !important;
+  background-color: var(--alert) !important;
+  color: var(--back) !important;
 }
 
 button.impButton{
-    color: var(--impButtonText);
-    background-color: var(--impButtonBack);
+  background-color: var(--main);
+  color: var(--back);
 }
 
 button.impButton:disabled, button.impButton[disabled]{
-  color: var(--disabledColor);
-  background-color: var(--modalBack);
+  color: var(--disabledButtonText);
+  background-color: var(--onBack);
   cursor: default;
 }
 
 button.simpleButton:disabled, button.simpleButton[disabled]{
-  color: var(--disabledColor) !important;
+  color: var(--disabledClickText) !important;
   background-color: transparent !important;
   cursor: default;
 }
@@ -474,7 +548,7 @@ a {
   border-bottom-width: 0px;
   border-right-width: 0px;
   border-left-color: transparent;
-  -webkit-tap-highlight-color: var(--hoverBackColor);
+  -webkit-tap-highlight-color: var(--tap);
 
   position: relative;
 }
@@ -483,7 +557,7 @@ a {
   position: absolute;
   top: 0px;
   left: 0px;
-  background-color: var(--modalBack);
+  background-color: var(--cardBack);
   display: flex;
   min-height: 100%;
   min-width: 100%;
@@ -491,7 +565,7 @@ a {
   /* justify-content: center; */
   padding-left: var(--mediumMargin);
   outline: none;
-  -webkit-tap-highlight-color: var(--hoverBackColor);
+  -webkit-tap-highlight-color: var(--tap);
 
   transition: opacity 0.2s linear;
   will-change: opacity;
@@ -507,21 +581,21 @@ a {
     opacity: 1;
     -webkit-backdrop-filter: saturate(180%) blur(5px);
     backdrop-filter: saturate(180%) blur(5px);
-    background-color: rgba(var(--modalBack), 0.05); /* rgba(0, 0, 0, 0.05) */
+    background-color: rgba(var(--cardBack), 0.05); /* rgba(0, 0, 0, 0.05) */
   }
 }
 
 @supports not (backdrop-filter: none) {
   .variItemMenuOpened{
     opacity: 1;
-    background-color: var(--hoverBackColorNonAlpha);
+    background-color: var(--hoverBack);
   }
 }
 
 .variItemMenuIcon{
   margin-right: var(--mediumMargin);
-  color: var(--primaryText);
-  text-shadow: 2px 2px 2px rgba(0, 0, 0, 0.5);
+  color: var(--title);
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 .horizontalLine{
@@ -529,7 +603,7 @@ a {
   margin-left: var(--mediumMargin);
   margin-right: var(--mediumMargin);
   height: 0px;
-  border-bottom: 1px solid var(--modalBack);
+  border-bottom: 1px solid var(--onBack);
   margin-top: -1px;
   /*display: none;*/
 }
@@ -538,8 +612,13 @@ a {
   grid-area: content;
 }
 
+.opItemButton{
+  color: var(--onCardBack); /* --onBack */
+}
+.variItemButton{
+  color: var(--onCardBack);
+}
 .opItemButton, .variItemButton{
-  color: var(--secondaryText);
   display: flex;
   align-items: center;
   line-height: 100%;
@@ -550,40 +629,42 @@ a {
 }
 
 .impText{
-  color: var(--impText);
+  color: var(--main);
 }
 
 .react-ripples s{
-  background-color: rgba(255, 255, 255, 0.1) !important;
+  background-color: var(--ripple) !important;
   will-change: opacity, transform, top, left;
 }
 
 
 @media (hover: hover) {
-  .opItem:hover,
+  .opItem:hover{
+    background-color: var(--hoverBack);
+  }
   .variItem:hover {
-    background-color: var(--hoverBackColor);
+    background-color: var(--hoverCard);
   }
   .iconButton:hover {
     /* COLORS */
-    background-color: var(--hoverBackColor);
+    background-color: var(--hoverBack);
   }
   button.roundButton:hover:enabled {
     /* TEXT */
     text-align: center;
     /* SHADOWS */
-    /*-moz-box-shadow: 0px 0px 1px rgba(0, 0, 0,0.15);
-    -webkit-box-shadow: 0px 0px 1px rgba(0, 0, 0, .15);
-    box-shadow: 0px 0px 1px rgba(0, 0, 0, .15);*/
+    -moz-box-shadow: var(--shadowShift) var(--shadowShift) var(--shadowBlur) var(--shadow);
+    -webkit-box-shadow: var(--shadowShift) var(--shadowShift) var(--shadowBlur) var(--shadow);
+    box-shadow: var(--shadowShift) var(--shadowShift) var(--shadowBlur) var(--shadow);
   }
   button.simpleButton:hover:enabled {
     /* COLORS */
-    background-color: var(--hoverBackColor);
+    background-color: var(--hoverBack);
   }
   button.alertButton:hover:enabled{
-    background-color: var(--hoverAlertColor) !important;
+    background-color: var(--hoverAlert) !important;
   }
   button.impButton:hover:enabled{
-    background-color: var(--hoverImpButtonBack);
+    background-color: var(--hoverMain);
   }
 }

@@ -34,7 +34,7 @@
   width: var(--uiElementHeight);
   text-align: center;
   line-height: var(--uiElementHeight);
-  font-size: 30px; /* var(--iconsFontSize) */
+  font-size: var(--iconsFontSize); /* var(--30px) */
 }
 
 .textBox{
@@ -43,14 +43,18 @@
   border: 0px;
 
   height: var(--uiElementSmallHeight);
-  width: calc(100% - 10px); /*10px = padding-left;*/
-  /*max-width: 400px;*/
+  width: calc(100% - 10px); /* 10px = padding-left; */
+  /* max-width: 400px; */
 
-  background-color: var(--hoverBackColorNonAlpha);
-  color: var(--primaryText);
+  background-color: var(--onBack);
+  color: var(--title);
   font-size: var(--textSize);
   font-family: inherit;
-  border-radius: var(--borderRadius);
+  /* border-radius: var(--borderRadius); */
+
+  border-top-left-radius: var(--borderRadius);
+  border-top-right-radius: var(--borderRadius);
+  border-bottom: 2px solid var(--main);
 }
 
 .checkBox{
@@ -58,11 +62,11 @@
   line-height: var(--uiElementSmallHeight);
   font-family: "Material Icons";
   font-size: var(--iconsFontSize);
-  color: var(--impText);
+  color: var(--main);
 }
 
 .checkBox.checked{
-  background-color: var(--primaryText);
+  background-color: var(--title);
 }
 
 .checkBoxContainer{
@@ -151,10 +155,14 @@
 }
 
 .variationFolder{
-  background-color: var(--modalBack);
+  background-color: var(--cardBack);
   border-radius: var(--borderRadius);
   margin: var(--mediumMargin);
   overflow: hidden;
+
+  -moz-box-shadow: var(--shadowShift) var(--shadowShift) var(--shadowBlur) var(--shadow);
+  -webkit-box-shadow: var(--shadowShift) var(--shadowShift) var(--shadowBlur) var(--shadow);
+  box-shadow: var(--shadowShift) var(--shadowShift) var(--shadowBlur) var(--shadow);
 }
 
 .variationTitle, .variationTitleArchived{
@@ -178,15 +186,15 @@
 }
 
 .variationTitle{
-  color: var(--modalBack);
-  background-color: var(--impText);
+  color: var(--cardBack);
+  background-color: var(--main);
   padding-left: 29px;
   box-sizing: border-box;
 }
 
 .variationTitleArchived{
-  color: var(--modalBack);
-  background-color: var(--alertColor);
+  color: var(--cardBack);
+  background-color: var(--alert);
 }
 
 .variationPlusButton{
@@ -196,10 +204,11 @@
   padding-right: var(--smallMargin);
   padding-left: var(--smallMargin);
   margin-left: calc(-1 * var(--smallMargin));
+  color: var(--cardBack);
 }
 
 .variationPlusButton:hover{
-  background-color: var(--hoverImpButtonBack);
+  background-color: var(--hoverMain);
 }
 
 .opsSeparator h3, #archivedVarsSeparator h3, .variationTitle h3, .variationTitleArchived h3{
@@ -212,7 +221,7 @@
   height: var(--uiElementMediumHeight);
   line-height: var(--uiElementMediumHeight);
 
-  color: var(--impText);
+  color: var(--main);
 
   margin: 0px;
   overflow: hidden;
@@ -228,6 +237,7 @@
 
 #opsSeparatorWhite, #opsSeparatorBlack{
   cursor: pointer;
+  -webkit-tap-highlight-color: var(--tap);
 }
 
 .renameTextBox{
@@ -270,8 +280,8 @@
   padding-left: 2px;
 
   outline: none;
-  background-color: var(--hoverBackColorNonAlpha);
-  color: var(--buttonText);
+  background-color: var(--onModalBack);
+  color: var(--clickText);
   font-size: var(--textSize);
   font-family: var(--textFont);
 }
@@ -280,15 +290,10 @@
   outline: none;
 }
 
-
-#opsSeparatorWhite, #opsSeparatorBlack{
-  -webkit-tap-highlight-color: var(--hoverBackColor)
-}
-
 #logoutButton{
   bottom: calc(var(--mediumMargin) + var(--uiElementMediumHeight));
-  background-color: var(--alertColor);
-  color: var(--backColor);
+  background-color: var(--alert);
+  color: var(--back);
 }
 
 #userPageTabContainer{
@@ -310,10 +315,10 @@
 }
 
 .userPageTabSelected{
-  color: var(--impText);
-  background-color: var(--backColor);
+  color: var(--main);
+  background-color: var(--back);
   /*font-size: var(--bigTextSize);*/
-  border-top: 2px solid var(--impText);
+  border-top: 2px solid var(--main);
 }
 
 
@@ -324,7 +329,7 @@
   grid-template-columns: 1fr auto;
   width: 100%;
   cursor: pointer;
-  -webkit-tap-highlight-color: var(--hoverBackColor);
+  -webkit-tap-highlight-color: var(--tap);
 }
 
 
@@ -369,18 +374,18 @@
 }
 
 .notificationNormal{
-  color: var(--primaryText);
+  color: var(--title);
   background-color: var(--headerBack);
 }
 
 .notificationImp{
-  color: var(--backColor);
-  background-color: var(--impText);
+  color: var(--back);
+  background-color: var(--main);
 }
 
 .notificationError{
-  color: var(--backColor);
-  background-color: var(--alertColor);
+  color: var(--back);
+  background-color: var(--alert);
 }
 
 #noCommentIcon{
@@ -392,8 +397,8 @@
 }
 
 #doneButton{
-  color: var(--impButtonText); 
-  background-color: var(--impButtonBack);
+  color: var(--back); 
+  background-color: var(--main);
 }
 
 #profile{
@@ -416,30 +421,30 @@
 .profilePageTitle{
   margin-top: var(--mediumMargin);
   margin-bottom: var(--mediumMargin);
-  color: var(--primaryText);
+  color: var(--title);
 }
 
 @media (hover: hover) {
   .userPageTab:hover{
-    background-color: var(--hoverBackColor);
+    background-color: var(--hoverBack);
   }
   #logoutButton:hover{
-    background-color: var(--hoverAlertColor);
+    background-color: var(--hoverAlert);
   }
   #opsSeparatorWhite:hover, #opsSeparatorBlack:hover{
-    background-color: var(--hoverBackColor);
+    background-color: var(--hoverBack);
   }
   .mailItem:hover{
-    background-color: var(--hoverBackColor);
+    background-color: var(--hoverBack);
   }
   .mailItemCloseButton:hover{
-    color: var(--alertColor);
+    color: var(--alert);
     background-color: transparent;
   }
 }
 
 .settingsSection{
-  color: var(--secondaryText);
+  color: var(--text);
   font-weight: var(--textWeight);
   font-size: var(--textSize);
   margin-top: var(--smallMargin);
@@ -454,11 +459,11 @@
 
 .treeMoveSan{
   font-weight: bold;
-  color: var(--impText);
+  color: var(--main);
 }
 
 .loginPageLabel{
-  color: var(--impText);
+  color: var(--main);
   margin-left: 0px;
   margin-bottom: 0px;
 }
@@ -474,7 +479,7 @@
 
   border-radius: var(--borderRadius);
   margin: var(--mediumMargin);
-  border: 2px solid var(--modalBack);
+  border: 2px solid var(--onBack);
   border-style: dashed;
 
   min-height: var(--uiElementHeight); 
@@ -482,12 +487,83 @@
 
   font-size: var(--iconsFontSize);
   font-family: "Material Icons";
-  color: var(--impText);
+  color: var(--main);
 
   cursor: pointer;
-  -webkit-tap-highlight-color: var(--hoverBackColor);
+  -webkit-tap-highlight-color: var(--tap);
 }
 
 #newVariationBox:hover{
-  background-color: var(--hoverBackColor);
+  background-color: var(--main);
+  border: 2px solid var(--main);
+  color: var(--back);
+}
+
+#goodJobIconContainer, #trainingFinishedIconContainer{
+  overflow: hidden;
+  height: 110px;
+}
+
+#goodJobIcon, #trainingFinishedIcon{
+  width: 100%;
+  font-size: 75px !important;
+  margin-top: var(--mediumMargin);
+  padding-top: var(--mediumMargin);
+  height: 50px;
+}
+
+#goodJobIcon{
+  /* ANIMATION */
+  position: relative;
+  animation: goodJobAnimation 1s ease-in-out infinite;
+  animation-delay: 0s;
+  will-change: transform, top;
+}
+
+#trainingFinishedIcon{
+  /* ANIMATION */
+  position: relative;
+  animation: trainingFinishedAnimation 1s ease-in-out infinite;
+  animation-delay: 0s;
+  will-change: transform, top;
+}
+
+@keyframes goodJobAnimation {
+  0% {
+    top: 0px;
+    transform: rotate(0deg);
+  }
+  25%{
+    transform: rotate(-10deg);
+  }
+  50% {
+    top: 20px;
+  }
+  75%{
+    transform: rotate(10deg);
+  }
+  100% {
+    top: 0px;
+    transform: rotate(0deg);
+  }
+}
+
+@keyframes trainingFinishedAnimation {
+  0% {
+    top: 0px;
+    transform: rotate(0deg);
+  }
+  25%{
+    transform: rotate(-10deg);
+  }
+  50% {
+    top: 20px;
+  }
+  75%{
+    transform: rotate(10deg);
+  }
+  100% {
+    top: 0px;
+    transform: rotate(0deg);
+  }
 }

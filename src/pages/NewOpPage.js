@@ -3,10 +3,10 @@ import Header from "../components/Header"
 import Translator from "../components/Translator"
 
 class NewOpPage extends Component {
-  constructor(props){
+  constructor(props) {
     super(props)
     this.state = {
-      new_op_name: "Unnamed opening",
+      new_op_name: "",
       studyAs: "white"
     }
     this.getStudyAsButtonColor = this.getStudyAsButtonColor.bind(this)
@@ -14,15 +14,15 @@ class NewOpPage extends Component {
     this.createButtonClick = this.createButtonClick.bind(this)
   }
 
-  getStudyAsButtonColor(buttonColor){ // "white" or "black"
-    return this.state.studyAs === buttonColor ? "var(--impText)" : "var(--secondaryText)"
+  getStudyAsButtonColor(buttonColor) { // "white" or "black"
+    return this.state.studyAs === buttonColor ? "var(--main)" : "var(--text)"
   }
 
-  setStudyAs(color){
-    this.setState({studyAs: color})
+  setStudyAs(color) {
+    this.setState({ studyAs: color })
   }
 
-  createButtonClick(){
+  createButtonClick() {
     const op_index = this.props.createOp(this.state.new_op_name, this.state.studyAs)
     this.props.history.push("/openings/" + op_index)
   }
@@ -34,13 +34,13 @@ class NewOpPage extends Component {
         <div id="newOpPage" className="page">
           <div id="newOpPageBody">
             <Translator text={"Opening name"} />:
-            <input type="text" className="textBox" value={this.state.new_op_name} onChange={e => this.setState({new_op_name: e.target.value})}/>
-            <br/><br/>
+            <input type="text" className="textBox" value={this.state.new_op_name} onChange={e => this.setState({ new_op_name: e.target.value })} />
+            <br /><br />
             <Translator text={"Study as"} />:&nbsp;&nbsp;
-            <button className="simpleButton" onClick={() => this.setStudyAs("white")} style={{marginRight: 0, color: this.getStudyAsButtonColor("white")}}><Translator text={"White"}/></button>
-            <button className="simpleButton" onClick={() => this.setStudyAs("black")} style={{marginLeft:  0, color: this.getStudyAsButtonColor("black")}}><Translator text={"Black"}/></button>
+            <button className="simpleButton" onClick={() => this.setStudyAs("white")} style={{ marginRight: 0, color: this.getStudyAsButtonColor("white") }}><Translator text={"White"} /></button>
+            <button className="simpleButton" onClick={() => this.setStudyAs("black")} style={{ marginLeft: 0, color: this.getStudyAsButtonColor("black") }}><Translator text={"Black"} /></button>
           </div>
-          <button onClick={this.createButtonClick} className="barButton impButton" style={{position: "absolute", bottom: "var(--mediumMargin)", marginBottom: 0, width: "calc(100% - 30px)"}}><Translator text={"Create"} /></button>
+          <button disabled={this.state.new_op_name.length === 0} onClick={this.createButtonClick} className="barButton impButton" style={{ position: "absolute", bottom: "var(--mediumMargin)", marginBottom: 0, width: "calc(100% - 30px)" }}><Translator text={"Create"} /></button>
         </div>
       </React.Fragment>
     )

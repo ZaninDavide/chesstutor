@@ -9,6 +9,9 @@ import CommentModal from "../components/CommentModal"
 import HelpModal from "../components/HelpModal"
 import NewVariModal from "./NewVariModal.js"
 import HangingMenu from "../components/HangingMenu"
+import VariationAddedModal from "../components/VariationAddedModal"
+import TrainingFinishedModal from "../components/TrainingFinishedModal"
+
 import Ripples from "react-ripples"
 import BoardData from "../components/BoardData"
 import Arrows from "../components/Arrows"
@@ -42,6 +45,10 @@ class Board extends Component {
       helpModalCorrectMoves: [],
       moves_forward: [],
       arrows: [],
+      variationAddedNames: {
+        name: "",
+        subname: "",
+      }
     }
     /* functions */
     this.newGame = this.newGame.bind(this)
@@ -70,6 +77,7 @@ class Board extends Component {
     this.is_my_turn = this.is_my_turn.bind(this)
     this.forward_next_button_click = this.forward_next_button_click.bind(this)
     this.setArrows = this.setArrows.bind(this)
+    this.makeCongrats = this.makeCongrats.bind(this)
     /* refs */
     this.selectedPiece = React.createRef()
 
@@ -179,6 +187,23 @@ class Board extends Component {
             </div>
           </button>
         </HangingMenu>
+
+        {/* YOU ADDED A VARIATION! */}
+        <VariationAddedModal
+          visible={this.state.variationAddedModalVisible}
+          close={() => this.setState({ variationAddedModalVisible: false })}
+          added_vari_names={this.state.variationAddedNames}
+          op_index={this.props.op_index}
+          history={this.props.history}
+        />
+
+        {/* TRAINING FINISHED! */}
+        <TrainingFinishedModal
+          visible={this.state.trainingFinishedModalVisible}
+          close={() => this.setState({ trainingFinishedModalVisible: false })}
+          op_index={this.props.op_index}
+          history={this.props.history}
+        />
       </React.Fragment>
     )
   }
@@ -312,6 +337,11 @@ class Board extends Component {
     // move data is an object: {from: "d2", to: "d5", promotion: undefined}
     // as default move_data.from = this.state.selectedCell
 
+    if (!this.is_my_turn(this.state.game.turn())) {
+      console.log("You can't move during the computer's turn.")
+      return false;
+    }
+
     if (move_data.from === undefined) {
       if (this.state.selected_cell === undefined) { return false }
       move_data.from = this.state.selected_cell
@@ -420,12 +450,12 @@ class Board extends Component {
 
         if (correct_moves_repetitive.length === 0) {
           // training finished
-          this.props.notify("Congrats", "important")
+          this.makeCongrats()
         }
 
       }, 500)
     } else {
-      this.props.notify("Congrats", "important")
+      this.makeCongrats()
     }
   }
 
@@ -840,7 +870,7 @@ class Board extends Component {
               this.createThisVariation(this.props.vari_name, sub_name)
             }}
             disabled={this.state.json_moves.length === 0}
-          >done</button>
+          >add</button>
         )
         b_names.push("doneButton")
       }
@@ -886,8 +916,14 @@ class Board extends Component {
     if (name.length !== 0) {
       /*let vari_index = */this.props.createVari(name, this.state.json_moves, this.props.op_index, subname)
       // this.props.history.push("/openings/" + this.props.op_index)
-      this.props.notify(`${name} ${subname} created!`, "important")
-      this.setState({ variNameModalVisible: false })
+
+      // this.props.notify(`${name} ${subname} created!`, "important")
+      this.setState({
+        variNameModalVisible: false, variationAddedModalVisible: true, variationAddedNames: {
+          name: name,
+          subname: subname
+        }
+      })
     }
   }
 
@@ -899,6 +935,11 @@ class Board extends Component {
 
   setArrows(arrows) {
     this.setState({ arrows })
+  }
+
+  makeCongrats() {
+    // this.props.notify("Congrats", "important")
+    this.setState({ trainingFinishedModalVisible: true })
   }
 
 }
