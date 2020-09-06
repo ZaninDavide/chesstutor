@@ -73,7 +73,7 @@
   display: flex;
   margin-top: var(--smallMargin);
   margin-bottom: var(--smallMargin);
-  height: var(--uiElementSmallHeight);
+  height: var(--uiElementSmallHeight) !important;
   line-height: var(--uiElementSmallHeight);
   cursor: pointer;
   -webkit-tap-highlight-color: transparent;

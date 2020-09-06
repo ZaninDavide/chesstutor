@@ -55,6 +55,15 @@
   top: 0px !important;
 }
 
+.pieceSVG[draggable="false"] {
+  user-drag: none;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-drag: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+}
+
 @media (max-width: 105vh) {
   #boardGrid{
     display: grid;

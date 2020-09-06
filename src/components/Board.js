@@ -18,6 +18,9 @@ import Arrows from "../components/Arrows"
 
 import "../styles/Board.css"
 
+let stockfish;
+let stockfish_asked = 0;
+
 let clientX_down = 0
 let clientY_down = 0
 let left_mouse_down = false
@@ -48,7 +51,8 @@ class Board extends Component {
       variationAddedNames: {
         name: "",
         subname: "",
-      }
+      },
+      stockfish_evaluation: undefined,
     }
     /* functions */
     this.newGame = this.newGame.bind(this)
@@ -78,6 +82,10 @@ class Board extends Component {
     this.forward_next_button_click = this.forward_next_button_click.bind(this)
     this.setArrows = this.setArrows.bind(this)
     this.makeCongrats = this.makeCongrats.bind(this)
+    this.start_stockfish = this.start_stockfish.bind(this)
+    this.stockfish_move = this.stockfish_move.bind(this)
+    this.stockfish_find_best_moves = this.stockfish_find_best_moves.bind(this)
+    this.stockfish_eval = this.stockfish_eval.bind(this)
     /* refs */
     this.selectedPiece = React.createRef()
 
@@ -123,6 +131,11 @@ class Board extends Component {
             getComment={this.props.getComment}
             op_index={this.props.op_index}
             json_moves={this.state.json_moves}
+            stockfish={this.props.stockfish}
+            switchStockfish={this.props.switchStockfish}
+            stockfish_find_best_moves={() => this.stockfish_find_best_moves(this.state.json_moves)}
+            stockfish_eval={() => this.stockfish_eval(this.state.json_moves)}
+            stockfish_evaluation={this.state.stockfish_evaluation}
           />
         </div>
 
@@ -224,7 +237,11 @@ class Board extends Component {
 
     // pc make first move if the player playes as black
     if (this.props.playColor === "black") {
-      this.pc_move(this.props.op_index, [])
+      if (this.props.stockfish.makes_moves) {
+        this.stockfish_move([])
+      } else {
+        this.pc_move(this.props.op_index, [])
+      }
     }
   }
 
@@ -294,6 +311,7 @@ class Board extends Component {
 
     this.play_move_sound(move)
     this.setArrows([])
+    this.setState({ stockfish_evaluation: undefined })
 
     return new Promise(res => {
       this.setState(old => {
@@ -370,7 +388,11 @@ class Board extends Component {
         // MAKE THE MOVE
         let moves_list_after = await this.make_move(move_data)
         if (this.props.playColor !== "both") {
-          this.pc_move(this.props.op_index, moves_list_after, this.props.vari_index)
+          if (this.props.stockfish.makes_moves) {
+            this.stockfish_move(moves_list_after)
+          } else {
+            this.pc_move(this.props.op_index, moves_list_after, this.props.vari_index)
+          }
         }
       } else {
         this.play_error_sound()
@@ -457,6 +479,104 @@ class Board extends Component {
     } else {
       this.makeCongrats()
     }
+  }
+
+  start_stockfish() {
+    if (typeof (Worker)) {
+      stockfish = new Worker("/stockfish/stockfish.js");
+      let make_this_move = move => this.make_move(move)
+      let is_my_turn_now = () => this.is_my_turn(this.state.game.turn())
+      let stockfish_arrows = () => this.props.stockfish.show_arrows
+      let setArrows = arr => this.setArrows(arr)
+      let setEvaluation = value => this.setState({ stockfish_evaluation: value })
+      stockfish.onmessage = async function (event) {
+        console.log(event.data)
+
+        // MAKE THE BEST MOVE
+        if (event.data.startsWith("bestmove ")) {
+          let move = event.data.split(" ")[1]
+          if (stockfish_asked === 1 && !is_my_turn_now()) {
+            console.log("BEST " + move)
+            if (move.length === 4) {
+              make_this_move({
+                from: move[0] + move[1],
+                to: move[2] + move[3]
+              })
+            } else if (move.length === 5) {
+              make_this_move({
+                from: move[0] + move[1],
+                to: move[2] + move[3],
+                promotion: move[4]
+              })
+            }
+            else {
+              console.log("Unknown move format: " + move)
+            }
+          } else {
+            console.log("LOST CALCULATION " + move)
+          }
+          stockfish_asked -= 1
+
+          // SHOW WHAT STOCKFISH IS THINKING
+        } else if (event.data.startsWith("info depth ") && stockfish_arrows()) {
+          let splitted = event.data.split("pv ")
+          let moves = splitted[splitted.length - 1].split(" ").map(m => {
+            return {
+              from: m[0] + m[1],
+              to: m[2] + m[3]
+            }
+          })
+          setArrows(moves ? [moves[0]] : [])
+
+          // EVALUATE POSITION
+        } else if (event.data.startsWith("Total Evaluation: ")) {
+          let splitted = event.data.split(" ")
+          if (splitted.length >= 3) {
+            let value = splitted[2]
+            setEvaluation(parseFloat(value))
+          }
+        }
+      };
+    } else {
+      console.log("Workers needs to be supported in order to use Stockfish.")
+    }
+  }
+
+  stockfish_move(json_moves) {
+    if (!stockfish) {
+      this.start_stockfish()
+    }
+
+    stockfish.postMessage("stop")
+    stockfish.postMessage("ucinewgame")
+    stockfish.postMessage("position startpos moves " + json_moves.map(c => c.from + c.to + (c.promotion ? c.promotion : "")).join(" "))
+    stockfish.postMessage("go depth " + this.props.stockfish.depth)
+
+    stockfish_asked += 1
+  }
+
+  stockfish_find_best_moves(json_moves) {
+    if (!stockfish) {
+      this.start_stockfish()
+    }
+
+    stockfish.postMessage("stop")
+    stockfish.postMessage("ucinewgame")
+    stockfish.postMessage("position startpos moves " + json_moves.map(c => c.from + c.to + (c.promotion ? c.promotion : "")).join(" "))
+    stockfish.postMessage("go depth " + this.props.stockfish.depth)
+
+    stockfish_asked += 1
+  }
+
+  stockfish_eval(json_moves) {
+    if (!stockfish) {
+      this.start_stockfish()
+    }
+
+    stockfish.postMessage("stop")
+    stockfish.postMessage("ucinewgame")
+    stockfish.postMessage("position startpos moves " + json_moves.map(c => c.from + c.to + (c.promotion ? c.promotion : "")).join(" "))
+    stockfish.postMessage("eval")
   }
 
   /* ---------------------------- BOARD MANAGEMENT ---------------------------- */
@@ -789,7 +909,12 @@ class Board extends Component {
       const moves_list_after = await this.make_move(correct_moves[0])
       // COMPUTER ANSWER IF NECESSARY
       if (this.props.playColor !== "both") {
-        this.pc_move(this.props.op_index, moves_list_after, this.props.vari_index)
+        if (this.props.stockfish.makes_moves) {
+          this.stockfish_move(moves_list_after)
+        } else {
+          this.stockfish_move(moves_list_after) // TODO ERROR STOCKFISH TEST -------
+          this.pc_move(this.props.op_index, moves_list_after, this.props.vari_index)
+        }
       }
     }
   }

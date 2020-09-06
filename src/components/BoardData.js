@@ -2,6 +2,7 @@ import React, { Component } from "react"
 import SwipeableViews from 'react-swipeable-views';
 import Tree from "./Tree"
 import { process_comment } from "../utilities/san_parsing"
+import CheckBox from "../components/CheckBox"
 
 class BoardData extends Component {
 
@@ -9,7 +10,7 @@ class BoardData extends Component {
     super(props)
     this.state = {
       tab: 0,
-      tabIcons: ["comment", "list"],
+      tabIcons: ["comment", "list", "computer"],
     }
     this.setTab = this.setTab.bind(this);
   }
@@ -44,11 +45,24 @@ class BoardData extends Component {
             }
           </div>
           <div id="boardDataTreeSlide" className="boardDataSlide">
+            Moves tree:<br />
             <Tree
               json_moves={this.props.json_moves}
               getComment={this.props.getComment}
               op_index={this.props.op_index}
             />
+          </div>
+          <div id="boardDataStockfishSlide" className="boardDataSlide">
+            {
+              this.props.stockfish ? <>
+                <h2>{"Stockfish is here now!"}</h2>
+                <CheckBox text={"Play against stockfish"} checked={this.props.stockfish.makes_moves} click={this.props.switchStockfish} />
+                <p>{"Depth: "}{this.props.stockfish.depth}</p>
+                <button className="simpleButton" onClick={this.props.stockfish_find_best_moves}>BEST MOVE</button>
+                <br />
+                <button className="simpleButton" onClick={this.props.stockfish_eval}>EVALUATE {this.props.stockfish_evaluation}</button>
+              </> : null
+            }
           </div>
         </SwipeableViews>
       </div>
