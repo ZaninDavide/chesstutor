@@ -126,6 +126,12 @@ class Board extends Component {
             {this.boardButtons()}
           </div>
           <BoardData
+            tabIcons={
+              this.props.stockfish ?
+                ["comment", "list", "computer"]
+                :
+                ["comment", "list"]
+            }
             thereIsComment={thereIsComment}
             onCommentClick={this.onCommentClick}
             getComment={this.props.getComment}
@@ -388,7 +394,7 @@ class Board extends Component {
         // MAKE THE MOVE
         let moves_list_after = await this.make_move(move_data)
         if (this.props.playColor !== "both") {
-          if (this.props.stockfish.makes_moves) {
+          if (this.props.stockfish ? this.props.stockfish.makes_moves : false) {
             this.stockfish_move(moves_list_after)
           } else {
             this.pc_move(this.props.op_index, moves_list_after, this.props.vari_index)
@@ -486,7 +492,7 @@ class Board extends Component {
       stockfish = new Worker("/stockfish/stockfish.js");
       let make_this_move = move => this.make_move(move)
       let is_my_turn_now = () => this.is_my_turn(this.state.game.turn())
-      let stockfish_arrows = () => this.props.stockfish.show_arrows
+      let stockfish_arrows = () => this.props.stockfish ? this.props.stockfish.show_arrows : false // should always exists
       let setArrows = arr => this.setArrows(arr)
       let setEvaluation = value => this.setState({ stockfish_evaluation: value })
       stockfish.onmessage = async function (event) {
@@ -909,10 +915,10 @@ class Board extends Component {
       const moves_list_after = await this.make_move(correct_moves[0])
       // COMPUTER ANSWER IF NECESSARY
       if (this.props.playColor !== "both") {
-        if (this.props.stockfish.makes_moves) {
+        if (this.props.stockfish ? this.props.stockfish.makes_moves : false) {
           this.stockfish_move(moves_list_after)
         } else {
-          this.stockfish_move(moves_list_after) // TODO ERROR STOCKFISH TEST -------
+          // this.stockfish_move(moves_list_after) // TODO ERROR STOCKFISH TEST -------
           this.pc_move(this.props.op_index, moves_list_after, this.props.vari_index)
         }
       }
