@@ -528,6 +528,20 @@
   will-change: transform, top;
 }
 
+#stockfishTable {
+  width: 100%;
+}
+
+#stockfishTable button{
+  width: 100%;
+  height: var(--uiElementSmallHeight);
+  line-height: var(--uiElementSmallHeight);
+}
+
+#stockfishTable tr, #stockfishTable td {
+  padding: 0px;
+}
+
 @keyframes goodJobAnimation {
   0% {
     top: 0px;

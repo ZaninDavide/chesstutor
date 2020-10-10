@@ -85,7 +85,8 @@ class Board extends Component {
     this.start_stockfish = this.start_stockfish.bind(this)
     this.stockfish_move = this.stockfish_move.bind(this)
     this.stockfish_find_best_moves = this.stockfish_find_best_moves.bind(this)
-    this.stockfish_eval = this.stockfish_eval.bind(this)
+    this.stockfish_evaluate = this.stockfish_evaluate.bind(this)
+    this.stockfish_automatics = this.stockfish_automatics.bind(this)
     /* refs */
     this.selectedPiece = React.createRef()
 
@@ -128,7 +129,7 @@ class Board extends Component {
           <BoardData
             tabIcons={
               this.props.stockfish ?
-                ["comment", "list", "computer"]
+                ["computer"]
                 :
                 ["comment", "list"]
             }
@@ -138,10 +139,38 @@ class Board extends Component {
             op_index={this.props.op_index}
             json_moves={this.state.json_moves}
             stockfish={this.props.stockfish}
-            switchStockfish={this.props.switchStockfish}
+            switch_stockfish={() => {
+              this.props.switch_stockfish(() => {
+                if (!this.is_my_turn() && (this.props.stockfish ? this.props.stockfish.makes_moves : false)) {
+                  this.stockfish_move(this.state.json_moves)
+                }
+              })
+            }}
+            switch_auto_eval={() => {
+              this.props.switch_auto_eval(() => {
+                if (this.props.stockfish) {
+                  if (this.props.stockfish.auto_eval) {
+                    this.stockfish_evaluate(this.state.json_moves)
+                  }
+                }
+              })
+            }}
+            switch_auto_best_move={() => {
+              this.props.switch_auto_best_move(() => {
+                if (this.props.stockfish) {
+                  if (this.props.stockfish.auto_best_move) {
+                    this.stockfish_find_best_moves(this.state.json_moves)
+                  } else {
+                    this.setArrows([])
+                    this.setState({ stockfish_chosen_move: undefined })
+                  }
+                }
+              })
+            }}
             stockfish_find_best_moves={() => this.stockfish_find_best_moves(this.state.json_moves)}
-            stockfish_eval={() => this.stockfish_eval(this.state.json_moves)}
+            stockfish_evaluate={() => this.stockfish_evaluate(this.state.json_moves)}
             stockfish_evaluation={this.state.stockfish_evaluation}
+            stockfish_chosen_move={this.state.stockfish_chosen_move}
           />
         </div>
 
@@ -243,7 +272,7 @@ class Board extends Component {
 
     // pc make first move if the player playes as black
     if (this.props.playColor === "black") {
-      if (this.props.stockfish.makes_moves) {
+      if (this.props.stockfish ? this.props.stockfish.makes_moves : false) {
         this.stockfish_move([])
       } else {
         this.pc_move(this.props.op_index, [])
@@ -317,7 +346,7 @@ class Board extends Component {
 
     this.play_move_sound(move)
     this.setArrows([])
-    this.setState({ stockfish_evaluation: undefined })
+    this.setState({ stockfish_evaluation: undefined, stockfish_chosen_move: undefined })
 
     return new Promise(res => {
       this.setState(old => {
@@ -333,6 +362,8 @@ class Board extends Component {
         })
         // store moves_list to return it later
         res(moves_list)
+
+        this.stockfish_automatics(moves_list)
 
         // if the move is not the one you came back from clear the history otherwise remove that move from the history
         let clearMovesForward = true
@@ -441,9 +472,13 @@ class Board extends Component {
         // remove it from json_moves
         let moves_list = old.json_moves
         moves_list.pop()
+
+        this.stockfish_automatics(moves_list)
+
         return {
           json_moves: moves_list,
-          moves_forward: [move, ...old.moves_forward]
+          moves_forward: [move, ...old.moves_forward],
+          stockfish_chosen_move: undefined
         }
       })
     } else {
@@ -495,6 +530,7 @@ class Board extends Component {
       let stockfish_arrows = () => this.props.stockfish ? this.props.stockfish.show_arrows : false // should always exists
       let setArrows = arr => this.setArrows(arr)
       let setEvaluation = value => this.setState({ stockfish_evaluation: value })
+      let setChosenMove = value => this.setState({ stockfish_chosen_move: value })
       stockfish.onmessage = async function (event) {
         console.log(event.data)
 
@@ -533,6 +569,7 @@ class Board extends Component {
             }
           })
           setArrows(moves ? [moves[0]] : [])
+          setChosenMove(moves ? moves[0].from + "-" + moves[0].to : undefined)
 
           // EVALUATE POSITION
         } else if (event.data.startsWith("Total Evaluation: ")) {
@@ -574,7 +611,7 @@ class Board extends Component {
     stockfish_asked += 1
   }
 
-  stockfish_eval(json_moves) {
+  stockfish_evaluate(json_moves) {
     if (!stockfish) {
       this.start_stockfish()
     }
@@ -583,6 +620,16 @@ class Board extends Component {
     stockfish.postMessage("ucinewgame")
     stockfish.postMessage("position startpos moves " + json_moves.map(c => c.from + c.to + (c.promotion ? c.promotion : "")).join(" "))
     stockfish.postMessage("eval")
+  }
+
+  stockfish_automatics(json_moves) {
+    if (this.props.stockfish) {
+      // evaluate position if needed
+      if (this.props.stockfish.auto_eval) this.stockfish_evaluate(json_moves)
+
+      // find best move if needed
+      if (this.props.stockfish.auto_best_move && this.is_my_turn()) this.stockfish_find_best_moves(json_moves)
+    }
   }
 
   /* ---------------------------- BOARD MANAGEMENT ---------------------------- */

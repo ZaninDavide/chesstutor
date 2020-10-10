@@ -8,12 +8,16 @@ class TrainingPage extends Component {
     super(props)
     this.state = {
       stockfish: false,
+      stockfish_auto_eval: false,
+      stockfish_auto_best_move: false,
       playColor: "both"
     }
-    this.switchStockfish = this.switchStockfish.bind(this);
+    this.switch_stockfish = this.switch_stockfish.bind(this);
+    this.switch_auto_eval = this.switch_auto_eval.bind(this);
+    this.switch_auto_best_move = this.switch_auto_best_move.bind(this);
   }
 
-  switchStockfish() {
+  switch_stockfish(callback) {
     this.setState(old => {
       if (old.stockfish) {
         return {
@@ -26,7 +30,23 @@ class TrainingPage extends Component {
           stockfish: true,
         }
       }
-    })
+    }, callback)
+  }
+
+  switch_auto_eval(callback) {
+    this.setState(old => {
+      return {
+        stockfish_auto_eval: !old.stockfish_auto_eval
+      }
+    }, callback)
+  }
+
+  switch_auto_best_move(callback) {
+    this.setState(old => {
+      return {
+        stockfish_auto_best_move: !old.stockfish_auto_best_move
+      }
+    }, callback)
   }
 
   render() {
@@ -45,8 +65,12 @@ class TrainingPage extends Component {
             makes_moves: this.state.stockfish,
             show_arrows: true,
             depth: 5,
+            auto_eval: this.state.stockfish_auto_eval,
+            auto_best_move: this.state.stockfish_auto_best_move,
           }}
-          switchStockfish={this.switchStockfish}
+          switch_stockfish={this.switch_stockfish}
+          switch_auto_eval={this.switch_auto_eval}
+          switch_auto_best_move={this.switch_auto_best_move}
         />
       </React.Fragment>
     )

@@ -2,7 +2,7 @@ import React, { Component } from "react"
 import SwipeableViews from 'react-swipeable-views';
 import Tree from "./Tree"
 import { process_comment } from "../utilities/san_parsing"
-import CheckBox from "../components/CheckBox"
+import StockfishUI from "./StockfishUI";
 
 class BoardData extends Component {
 
@@ -21,39 +21,44 @@ class BoardData extends Component {
   render() {
     let tabs = []
 
-    const tabComment =
-      <div id="boardDataCommentSlide" key="boardDataCommentSlide" className="boardDataSlide"
-        onClick={this.props.onCommentClick}
-      >
-        {this.props.thereIsComment
-          ? this.comment()
-          : <div id="noCommentIcon" className="iconText">comment</div>
-        }
-      </div>
-    tabs.push(tabComment)
-
-
-    const tabTree =
-      <div id="boardDataTreeSlide" key="boardDataTreeSlide" className="boardDataSlide">
-        Moves tree:<br />
-        <Tree
-          json_moves={this.props.json_moves}
-          getComment={this.props.getComment}
-          op_index={this.props.op_index}
-        />
-      </div>
-    tabs.push(tabTree)
-
-    if (this.props.stockfish) {
-      const tabStockfish =
-        <div id="boardDataStockfishSlide" key="boardDataStockfishSlide" className="boardDataSlide">
-          <h2>{"Stockfish is here now!"}</h2>
-          <CheckBox text={"Play against stockfish"} checked={this.props.stockfish.makes_moves} click={this.props.switchStockfish} />
-          <p>{"Depth: "}{this.props.stockfish.depth}</p>
-          <button className="simpleButton" onClick={this.props.stockfish_find_best_moves}>BEST MOVE</button>
-          <br />
-          <button className="simpleButton" onClick={this.props.stockfish_eval}>EVALUATE {this.props.stockfish_evaluation}</button>
+    if (this.props.tabIcons.indexOf("comment") !== -1) {
+      const tabComment =
+        <div id="boardDataCommentSlide" key="boardDataCommentSlide" className="boardDataSlide"
+          onClick={this.props.onCommentClick}
+        >
+          {this.props.thereIsComment
+            ? this.comment()
+            : <div id="noCommentIcon" className="iconText">comment</div>
+          }
         </div>
+      tabs.push(tabComment)
+    }
+
+    if (this.props.tabIcons.indexOf("list") !== -1) {
+      const tabTree =
+        <div id="boardDataTreeSlide" key="boardDataTreeSlide" className="boardDataSlide">
+          Moves tree:<br />
+          <Tree key="tree"
+            json_moves={this.props.json_moves}
+            getComment={this.props.getComment}
+            op_index={this.props.op_index}
+          />
+        </div>
+      tabs.push(tabTree)
+    }
+
+    if (this.props.tabIcons.indexOf("computer") !== -1) {
+      const tabStockfish = <StockfishUI key="stockfishUI"
+        stockfish={this.props.stockfish}
+        stockfish_find_best_moves={this.props.stockfish_find_best_moves}
+        stockfish_evaluate={this.props.stockfish_evaluate}
+        stockfish_evaluation={this.props.stockfish_evaluation}
+        switch_stockfish={this.props.switch_stockfish}
+        stockfish_chosen_move={this.props.stockfish_chosen_move}
+        switch_auto_eval={this.props.switch_auto_eval}
+        switch_auto_best_move={this.props.switch_auto_best_move}
+      />
+
       tabs.push(tabStockfish)
     }
 
