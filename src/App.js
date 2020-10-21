@@ -11,6 +11,7 @@ import NewVariPage from "./pages/NewVariPage"
 import TrainingPage from "./pages/TrainingPage"
 import UserPage from "./pages/UserPage"
 import ColorTrainingPage from "./pages/ColorTrainingPage"
+import GroupTrainingPage from "./pages/GroupTrainingPage"
 import AnalysisPage from "./pages/AnalysisPage"
 
 import Notification from "./components/Notification"
@@ -76,6 +77,10 @@ class App extends Component {
     this.notify = this.notify.bind(this)
     this.setLanguage = this.setLanguage.bind(this)
     this.getOpFreeSubnames = this.getOpFreeSubnames.bind(this)
+    this.setTheme = this.setTheme.bind(this)
+    this.is_move_allowed_group = this.is_move_allowed_group.bind(this)
+    this.get_pc_move_data_group = this.get_pc_move_data_group.bind(this)
+    this.get_correct_moves_data_group = this.get_correct_moves_data_group.bind(this)
   }
 
   componentDidMount() {
@@ -184,6 +189,11 @@ class App extends Component {
   setLanguage(lang) {
     this.serverRequest("POST", "/setLanguage", { lang })
     this.setState({ language: lang })
+  }
+
+  setTheme(theme = "darkTheme") {
+    this.serverRequest("POST", "/setLanguage", { theme })
+    this.setState({ colorTheme: theme })
   }
 
   /* ---------------------------- NOTIFICATIONS ---------------------------- */
@@ -482,6 +492,43 @@ class App extends Component {
     return is_allowed
   }
 
+
+  is_move_allowed_group(op_index, json_moves, move_data, vari_name = undefined) {
+    let is_allowed = false
+    let finished_training = true
+    let op = this.state.user_ops[op_index]
+
+    // look into all variations(not archived) with the name vari_name
+    for (let vari_index = 0; vari_index < op.variations.length; vari_index++) {
+      // loop through all variations 
+      let vari = op.variations[vari_index]
+      if (vari.vari_name = vari_name) {
+        if (vari.moves.length > json_moves.length && !vari.archived) { // this variation is long enougth and not archived
+          let first_moves = vari.moves.slice(0, json_moves.length)
+
+          // is the variation compatible with the already done moves?
+          if (JSON.stringify(first_moves) === JSON.stringify(json_moves)) {
+            finished_training = false // there is at least one move to do
+            let vari_next_move = vari.moves[json_moves.length] // take the next move
+
+            // is it the move I'm going to do?
+            if (vari_next_move.from === move_data.from && vari_next_move.to === move_data.to && vari_next_move.promotion === move_data.promotion) {
+              is_allowed = true
+              break;
+            }
+          }
+
+        }
+      }
+    }
+
+    if (finished_training) {
+      this.notify("Congrats! Training finished", "important")
+      return false
+    }
+    return is_allowed
+  }
+
   get_correct_moves_data(op_index, json_moves, vari_index = undefined) {
     if (vari_index !== undefined) {
       let correct_move = this.get_vari_next_move_data(op_index, vari_index, json_moves)
@@ -531,6 +578,29 @@ class App extends Component {
     return correct_moves
   }
 
+  get_correct_moves_data_group(op_index, json_moves, vari_name = undefined) {
+    let correct_moves = []
+    let op = this.state.user_ops[op_index]
+    for (let vari_index = 0; vari_index < op.variations.length; vari_index++) {
+      // loop through all variations 
+      let vari = op.variations[vari_index]
+      console.log(vari.vari_name, vari_name)
+      if (vari.vari_name === vari_name) {
+        if (vari.moves.length > json_moves.length && !vari.archived) { // this variation is long enougth and not archived
+          let first_moves = vari.moves.slice(0, json_moves.length)
+
+          // is the variation compatible with the already done moves?
+          if (JSON.stringify(first_moves) === JSON.stringify(json_moves)) {
+            let vari_next_move = vari.moves[json_moves.length] // take the next move
+            correct_moves.push(vari_next_move) // add the move to the list
+          }
+
+        }
+      }
+    }
+    return correct_moves
+  }
+
   get_pc_move_data(op_index, json_moves, vari_index = undefined) {
     if (vari_index !== undefined) {
       let vari_next_move = this.get_vari_next_move_data(op_index, vari_index, json_moves)
@@ -546,6 +616,16 @@ class App extends Component {
 
   get_pc_move_data_color(color, json_moves) {
     let correct_moves = this.get_correct_moves_data_color(color, json_moves)
+
+    // return false if there is no correct move
+    if (correct_moves.length === 0) return null
+    // choose which move to do
+    let random = Math.round(Math.random() * (correct_moves.length - 1));
+    return correct_moves[random]
+  }
+
+  get_pc_move_data_group(op_index, json_moves, vari_name = undefined) {
+    let correct_moves = this.get_correct_moves_data_group(op_index, json_moves, vari_name)
 
     // return false if there is no correct move
     if (correct_moves.length === 0) return null
@@ -640,12 +720,14 @@ class App extends Component {
       match={match}
       logout={this.logout}
       username={this.state.username}
-      language={this.state.language}
       inbox={this.state.inbox}
       addOpening={this.addOpening}
       deleteMail={this.deleteMail}
       notify={this.notify}
       setLanguage={this.setLanguage}
+      language={this.state.language}
+      setTheme={this.setTheme}
+      colorTheme={this.state.colorTheme}
     />
     const colorTrainingPage = ({ match, history }) => <ColorTrainingPage
       history={history}
@@ -654,6 +736,16 @@ class App extends Component {
       is_move_allowed_color={this.is_move_allowed_color}
       get_pc_move_data_color={this.get_pc_move_data_color}
       get_correct_moves_data_color={this.get_correct_moves_data_color}
+      getComment={this.getComment}
+      notify={this.notify}
+    />
+    const variTrainingPage = ({ match, history }) => <GroupTrainingPage
+      history={history}
+      match={match}
+      ops={this.state.user_ops}
+      is_move_allowed_group={this.is_move_allowed_group}
+      get_pc_move_data_group={this.get_pc_move_data_group}
+      get_correct_moves_data_group={this.get_correct_moves_data_group}
       getComment={this.getComment}
       notify={this.notify}
     />
@@ -685,6 +777,7 @@ class App extends Component {
               <Route path="/login" render={!needLogin ? redirectToHome : loginPage} exact />
               <Route path="/profile" render={needLogin ? redirectToLogin : userPage} exact />
               <Route path="/newOpening" render={newOpPage} />
+              <Route path="/openings/training/:op_index/:vari_name" render={noOpenings ? redirectToHome : variTrainingPage} />
               <Route path="/newVariation/:op_index/:vari_name" render={newVariPage} />
               <Route path="/openings/:op_index/:vari_index" render={noOpenings ? redirectToHome : variPage} />
               <Route path="/openings/:op_index" render={/*noOpenings ? redirectToHome : */opPage} />

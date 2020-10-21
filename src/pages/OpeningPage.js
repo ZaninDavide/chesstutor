@@ -19,7 +19,7 @@ class OpeningPage extends Component {
       hMenuVariIndex: null,
       variDeleteVisible: false,
       variNewName: "",
-      newVariGroupModalVisible:false,
+      newVariGroupModalVisible: false,
     }
     this.newVariClick = this.newVariClick.bind(this)
     this.startGame = this.startGame.bind(this)
@@ -34,36 +34,36 @@ class OpeningPage extends Component {
     this.no_variations_style = this.no_variations_style.bind(this)
   }
 
-  getArchivedSeparator(){
-    return  <div id="archivedVarsSeparator" key="archivedVarsSeparator">
-              <h3 className="alertText">
-                <Translator text="Archived variations" />
-              </h3>
-            </div>
+  getArchivedSeparator() {
+    return <div id="archivedVarsSeparator" key="archivedVarsSeparator">
+      <h3 className="alertText">
+        <Translator text="Archived variations" />
+      </h3>
+    </div>
   }
 
-  getVariItems(vars, op_index){
+  getVariItems(vars, op_index) {
     let not_archived = {}
     let archived = {}
 
-    let sortedVars = vars.map((c, i) => {return {vari_name: c.vari_name, vari_subname: c.vari_subname, index: i, archived: c.archived}})
+    let sortedVars = vars.map((c, i) => { return { vari_name: c.vari_name, vari_subname: c.vari_subname, index: i, archived: c.archived } })
 
     sortedVars.sort((a, b) => {
-      if(a.vari_name === b.vari_name){
-        if(a.vari_subname === undefined || a.vari_subname === null) return -1
-        if(b.vari_subname === undefined || b.vari_subname === null) return  1
+      if (a.vari_name === b.vari_name) {
+        if (a.vari_subname === undefined || a.vari_subname === null) return -1
+        if (b.vari_subname === undefined || b.vari_subname === null) return 1
         return a.vari_subname.localeCompare(b.vari_subname)
       }
       return a.vari_name.localeCompare(b.vari_name);
     })
 
     sortedVars.forEach(cur => {
-      let item = <VariItem 
-        vari={vars[cur.index]} 
-        vari_index={cur.index} 
+      let item = <VariItem
+        vari={vars[cur.index]}
+        vari_index={cur.index}
         op_index={op_index}
         archived={cur.archived}
-        history={this.props.history} 
+        history={this.props.history}
         key={`variItem_${op_index}_${cur.index}`}
 
         delete={() => this.openVariDeleteModal(cur.index)}
@@ -71,10 +71,10 @@ class OpeningPage extends Component {
         rename={() => this.openVariRenameModal(cur.index)}
       />
 
-      let group = cur.archived ? archived : not_archived 
-      if(group[cur.vari_name]){
+      let group = cur.archived ? archived : not_archived
+      if (group[cur.vari_name]) {
         group[cur.vari_name].push(item)
-      }else{
+      } else {
         group[cur.vari_name] = [item]
       }
     })
@@ -85,8 +85,12 @@ class OpeningPage extends Component {
       html.push(
         <div className="variationFolder" key={"variationFolder_" + vari_name}>
           <div className="variationTitle" key={"variationTitle_" + vari_name}>
-            <h3>{vari_name}</h3>
-            <button 
+            <h3
+              onClick={() => {
+                this.props.history.push("/openings/training/" + this.props.match.params.op_index + "/" + vari_name)
+              }}
+            >{vari_name}</h3>
+            <button
               className="variationPlusButton iconText"
               onClick={() => {
                 this.props.history.push("/newVariation/" + this.props.match.params.op_index + "/" + vari_name)
@@ -114,64 +118,64 @@ class OpeningPage extends Component {
     return html
   }
 
-  newVariClick(){
+  newVariClick() {
     this.props.history.push("/newVariation/" + this.props.match.params.op_index)
   }
 
-  startGame(){
+  startGame() {
     this.props.history.push("/training/" + this.props.match.params.op_index)
   }
 
-  hMenuClose(){
-    this.setState({hMenuVisible: false})
+  hMenuClose() {
+    this.setState({ hMenuVisible: false })
   }
 
-  hMenuOpen(vari_index){
-    this.setState({hMenuVisible: true, hMenuVariIndex: vari_index})
+  hMenuOpen(vari_index) {
+    this.setState({ hMenuVisible: true, hMenuVariIndex: vari_index })
   }
 
-  closeVariDeleteModal(){
-    this.setState({variDeleteVisible: false})
+  closeVariDeleteModal() {
+    this.setState({ variDeleteVisible: false })
   }
 
-  openVariDeleteModal(vari_index){
-    if(vari_index !== undefined){
-      this.setState({hMenuVariIndex: vari_index, variDeleteVisible: true})
-    }else{
-      this.setState({variDeleteVisible: true})
+  openVariDeleteModal(vari_index) {
+    if (vari_index !== undefined) {
+      this.setState({ hMenuVariIndex: vari_index, variDeleteVisible: true })
+    } else {
+      this.setState({ variDeleteVisible: true })
     }
   }
 
-  openVariRenameModal(vari_index){
-    if(vari_index !== undefined){
-      this.setState({hMenuVariIndex: vari_index, renameVariVisible: true})
-    }else{
-      this.setState({renameVariVisible: true})
+  openVariRenameModal(vari_index) {
+    if (vari_index !== undefined) {
+      this.setState({ hMenuVariIndex: vari_index, renameVariVisible: true })
+    } else {
+      this.setState({ renameVariVisible: true })
     }
   }
 
-  renameThisVari(variNewName, variNewSubname){
+  renameThisVari(variNewName, variNewSubname) {
     const op_index = this.props.match.params.op_index
     this.props.renameVari(op_index, this.state.hMenuVariIndex, variNewName)
     this.props.setVariSubname(op_index, this.state.hMenuVariIndex, variNewSubname)
   }
 
-  deleteThisVari(){
+  deleteThisVari() {
     const op_index = this.props.match.params.op_index
     this.props.deleteVari(op_index, this.state.hMenuVariIndex)
   }
 
-  switchArchived(vari_index){
+  switchArchived(vari_index) {
     const op_index = this.props.match.params.op_index
-    if(vari_index !== undefined){
+    if (vari_index !== undefined) {
       this.props.switchVariArchived(op_index, vari_index)
-    }else{
+    } else {
       this.props.switchVariArchived(op_index, this.state.hMenuVariIndex)
     }
   }
 
-  no_variations_style(len){
-    if(len > 0) return {}
+  no_variations_style(len) {
+    if (len > 0) return {}
     return {
       background: `url("/files/no_variations.svg")`,
       backgroundRepeat: "no-repeat",
@@ -189,9 +193,9 @@ class OpeningPage extends Component {
         <Header title={op.op_name} mainButtonText="arrow_back"/*headerButtonContent={<span className="iconText">school</span>}*/ /> {/* play_arrow */}
         <div id="openingPage" className="page" style={this.no_variations_style(op.variations.length)}>
           {this.getVariItems(op.variations, op_index)}
-          <div id="newVariationBox" onClick={() => this.setState({newVariGroupModalVisible: true})}>+</div>
+          <div id="newVariationBox" onClick={() => this.setState({ newVariGroupModalVisible: true })}>+</div>
         </div>
-        <button id="playVarsButton" className="roundButton iconButton impButton" 
+        <button id="playVarsButton" className="roundButton iconButton impButton"
           onClick={this.startGame}
           disabled={op.variations.length === 0}
         >
@@ -200,47 +204,47 @@ class OpeningPage extends Component {
         {/*<button id="newVariButton" className="roundButton iconButton impButton" onClick={this.newVariClick}>
           add
         </button>*/}
-        
+
         <HangingMenu visible={this.state.hMenuVisible} close={this.hMenuClose}>
           {/* DELETE BUTTON */}
-          <button className="simpleButton hMenuButton" onClick={() => {this.hMenuClose(); this.openVariDeleteModal();}}>
+          <button className="simpleButton hMenuButton" onClick={() => { this.hMenuClose(); this.openVariDeleteModal(); }}>
             <div className="hMenuButtonContent">
               <div className="hMenuButtonIcon"><span className="alertText">delete</span></div>
               <div className="hMenuButtonLabel"><span className="alertText">Delete</span></div>
             </div>
           </button>
           {/* ARCHIVED BUTTON */}
-          <button className="simpleButton hMenuButton" onClick={() => {this.hMenuClose(); this.switchArchived();}}>
+          <button className="simpleButton hMenuButton" onClick={() => { this.hMenuClose(); this.switchArchived(); }}>
             <div className="hMenuButtonContent">
               <div className="hMenuButtonIcon">{thisVari ? (thisVari.archived ? "unarchive" : "archive") : null}</div>
               <div className="hMenuButtonLabel">{thisVari ? (thisVari.archived ? "Unarchive" : "Archive") : null}</div>
             </div>
-              
+
           </button>
           {/* EDIT BUTTON */}
-          <button className="simpleButton hMenuButton" onClick={() => this.setState({renameVariVisible: true, variNewName: "", hMenuVisible: false})}>
+          <button className="simpleButton hMenuButton" onClick={() => this.setState({ renameVariVisible: true, variNewName: "", hMenuVisible: false })}>
             <div className="hMenuButtonContent">
               <div className="hMenuButtonIcon">edit</div>
               <div className="hMenuButtonLabel">Rename</div>
             </div>
           </button>
         </HangingMenu>
-        
+
         {/* DELETE VARI MODAL */}
-        <Modal 
-          id="deleteVariModal" 
-          visible={this.state.variDeleteVisible} 
+        <Modal
+          id="deleteVariModal"
+          visible={this.state.variDeleteVisible}
           close={this.closeVariDeleteModal}
           doneButtonText={<span className="alertText iconText">delete</span>}
           onDoneClick={this.deleteThisVari}>
-            { this.state.variDeleteVisible ? 
-              <React.Fragment><h2><Translator text={"Delete permanently:"} />&nbsp;<span className="alertText">{thisVari.vari_name}</span>{"?"}</h2></React.Fragment> : null
-            }     
+          {this.state.variDeleteVisible ?
+            <React.Fragment><h2><Translator text={"Delete permanently:"} />&nbsp;<span className="alertText">{thisVari.vari_name}</span>{"?"}</h2></React.Fragment> : null
+          }
         </Modal>
         {/* RENAME VARI MODAL */}
         {this.state.renameVariVisible ? <RenameVariModal
           visible={this.state.renameVariVisible}
-          close={() => this.setState({renameVariVisible: false})}
+          close={() => this.setState({ renameVariVisible: false })}
           thisVari={thisVari}
           renameThisVari={this.renameThisVari}
         /> : null /*i do this so that every time you open it the modal refreshes and takes new default values*/}
@@ -248,7 +252,7 @@ class OpeningPage extends Component {
         {/* NEW VARI_GROUP MODAL */}
         <NewVariGroupModal
           visible={this.state.newVariGroupModalVisible}
-          close={() => this.setState({newVariGroupModalVisible: false})}
+          close={() => this.setState({ newVariGroupModalVisible: false })}
           history={this.props.history}
           op_index={this.props.match.params.op_index}
         ></NewVariGroupModal>

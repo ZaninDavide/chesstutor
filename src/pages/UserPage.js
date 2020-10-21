@@ -39,6 +39,11 @@ class userPage extends Component {
         <Ripples><button className="simpleButton" onClick={() => this.props.setLanguage("eng")} style={{ marginRight: 0, color: this.props.language === "eng" ? "var(--main)" : "var(--text)" }}><Translator text={"ENG"} /></button></Ripples>
         <Ripples><button className="simpleButton" onClick={() => this.props.setLanguage("ita")} style={{ marginLeft: 0, color: this.props.language === "ita" ? "var(--main)" : "var(--text)" }}><Translator text={"ITA"} /></button></Ripples>
       </div>
+      <div className="settingsSection">
+        <Translator text="Color theme" />:&nbsp;
+        <Ripples><button className="simpleButton" onClick={() => this.props.setTheme("darkTheme")} style={{ marginRight: 0, color: this.props.colorTheme === "darkTheme" ? "var(--main)" : "var(--text)" }}><Translator text={"Dark"} /></button></Ripples>
+        <Ripples><button className="simpleButton" onClick={() => this.props.setTheme("lightTheme")} style={{ marginLeft: 0, color: this.props.colorTheme === "lightTheme" ? "var(--main)" : "var(--text)" }}><Translator text={"Light"} /></button></Ripples>
+      </div>
 
       {/*<h3 className="profilePageTitle"><Translator text="BOARD"/></h3>*/}
 

@@ -420,6 +420,11 @@ class Board extends Component {
       if (this.props.is_move_allowed_color) {
         move_allowed = this.props.is_move_allowed_color(this.props.trainColor, this.state.json_moves, move_data)
       }
+      // works in GROUP_TRAINING_MODE
+      if (this.props.is_move_allowed_group) {
+        move_allowed = this.props.is_move_allowed_group(this.props.op_index, this.state.json_moves, move_data, this.props.trainGroup)
+      }
+
 
       if (move_allowed) { // allowed as default
         // MAKE THE MOVE
@@ -493,9 +498,12 @@ class Board extends Component {
     }*/
 
     let move_data = this.props.get_pc_move_data ? this.props.get_pc_move_data(op_index, json_moves, vari_index) : null
-    if (this.props.trainColor === undefined) {
-    } else { // works with COLOR_TRAINING_MODE
+    if (this.props.trainColor !== undefined) {
+      // works with COLOR_TRAINING_MODE
       move_data = this.props.get_pc_move_data_color(this.props.trainColor, json_moves)
+    } else if (this.props.trainGroup !== undefined) {
+      // works with GROUP_TRAINING_MODE
+      move_data = this.props.get_pc_move_data_group(op_index, json_moves, this.props.trainGroup)
     }
 
     if (move_data !== null) {
@@ -505,10 +513,12 @@ class Board extends Component {
 
         // now that pc has moved is the training finished?
         let correct_moves_repetitive = []
-        if (this.props.trainColor === undefined) {
+        if (this.props.trainColor === undefined && this.props.trainGroup === undefined) {
           correct_moves_repetitive = this.props.get_correct_moves_data(this.props.op_index, pc_move_data, this.props.vari_index)
-        } else { // works with COLOR_TRAINING_MODE
+        } else if (this.props.trainColor !== undefined) { // works with COLOR_TRAINING_MODE
           correct_moves_repetitive = this.props.get_correct_moves_data_color(this.props.trainColor, pc_move_data)
+        } else if (this.props.trainGroup !== undefined) { // works with GROUP_TRAINING_MODE
+          correct_moves_repetitive = this.props.get_correct_moves_data_group(this.props.op_index, pc_move_data, this.props.trainGroup)
         }
 
         if (correct_moves_repetitive.length === 0) {
@@ -935,10 +945,12 @@ class Board extends Component {
     if (!this.is_my_turn()) return false
     // get moves data [{from: "d2", to: "d4", san: "d4"}, ...]
     let correct_moves_repetitive = []
-    if (this.props.trainColor === undefined) {
+    if (this.props.trainColor === undefined && this.props.trainGroup === undefined) {
       correct_moves_repetitive = this.props.get_correct_moves_data(this.props.op_index, this.state.json_moves, this.props.vari_index)
-    } else { // works with COLOR_TRAINING_MODE
+    } else if (this.props.trainColor !== undefined) { // works with COLOR_TRAINING_MODE
       correct_moves_repetitive = this.props.get_correct_moves_data_color(this.props.trainColor, this.state.json_moves)
+    } else if (this.props.trainGroup !== undefined) { // works with GROUP_TRAINING_MODE
+      correct_moves_repetitive = this.props.get_correct_moves_data_group(this.props.op_index, this.state.json_moves, this.props.trainGroup)
     }
 
     // remove doubles ([d4, d4, e4] -> [d4, e4])

@@ -1,6 +1,7 @@
 import React, { Component } from "react"
 import Translator from "../components/Translator"
 import "../styles/Modal.css"
+import CheckBox from "./CheckBox"
 
 class CommentModal extends Component {
   constructor(props) {
@@ -13,18 +14,18 @@ class CommentModal extends Component {
     this.onDone = this.onDone.bind(this);
   }
 
-  getStyle(){
+  getStyle() {
     return {
       display: this.props.visible ? "block" : "none",
       backgroundColor: this.props.visible ? "rgba(0, 0, 0, 0.8)" : "rgba(0, 0, 0, 0)",
     }
   }
 
-  onDone(){
+  onDone() {
     this.props.editComment(this.props.op_index, this.props.json_moves, this.state.text)
-    if(this.state.invertDrawBoardPDF){
+    if (this.state.invertDrawBoardPDF) {
       let value = this.props.getDrawBoardPDF(this.props.op_index, this.props.json_moves)
-      if(this.state.invertDrawBoardPDF){
+      if (this.state.invertDrawBoardPDF) {
         value = !value
       }
       this.props.setDrawBoardPDF(this.props.op_index, this.props.json_moves, value)
@@ -37,10 +38,18 @@ class CommentModal extends Component {
       <div id="commentModal" className="modal" onClick={this.props.close} style={this.getStyle()}>
         <div className="modalContent tallModalContent" onClick={e => e.stopPropagation()}>
           <div className="insideModal insideCommentModal" onClick={e => e.stopPropagation()}>
-            <textarea placeholder={"Comment"} onChange={e => this.setState({text: e.target.value})} className="commentTextBox" type="text" value={this.state.text}></textarea>
-            <div className="checkBoxContainer commentCheckBox" style={{marginLeft: "var(--mediumMargin)"}}>
+            <textarea placeholder={"Comment"} onChange={e => this.setState({ text: e.target.value })} className="commentTextBox" type="text" value={this.state.text}></textarea>
+            <div style={{ marginLeft: "var(--mediumMargin)" }}>
+              <CheckBox
+                text={<Translator text={"draw_board_pdf"} />}
+                click={() => this.setState(old => { return { invertDrawBoardPDF: !old.invertDrawBoardPDF } })}
+                checked={this.state.invertDrawBoardPDF !== this.props.getDrawBoardPDF(this.props.op_index, this.props.json_moves)}
+              />
+            </div>
+
+            {/*            
+<div className="checkBoxContainer commentCheckBox" style={{marginLeft: "var(--mediumMargin)"}}>
               <span 
-                onClick={() => this.setState(old => {return {invertDrawBoardPDF: !old.invertDrawBoardPDF}})} 
                 style={{display: "flex"}} 
               >
                 <div className={"checkBox" + 
@@ -50,16 +59,17 @@ class CommentModal extends Component {
                 &nbsp;
                 <Translator text={"draw_board_pdf"}/>
               </span>
-            </div>
+    </div>
+    */}
           </div>
-          <div className="modalButtons" style={{textAlign: "right"}}>
+          <div className="modalButtons" style={{ textAlign: "right" }}>
             <button className="modalButton simpleButton iconText"
               disabled={this.props.disabledDoneButton}
               onClick={this.onDone}
             >done</button>
             <button className="simpleButton modalBackButton"
               onClick={() => {
-                  this.props.close()
+                this.props.close()
               }}
             ><span className="iconText">close</span></button>
           </div>

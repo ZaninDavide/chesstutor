@@ -1,6 +1,6 @@
 import React, { Component } from "react"
 import CheckBox from "../components/CheckBox"
-import TrainingFinishedModal from "./TrainingFinishedModal"
+// import TrainingFinishedModal from "./TrainingFinishedModal"
 
 class StockfishUI extends Component {
 
