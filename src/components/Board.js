@@ -20,6 +20,7 @@ import "../styles/Board.css"
 
 let stockfish;
 let stockfish_asked = 0;
+let stockfish_request_time = new Date();
 
 let clientX_down = 0
 let clientY_down = 0
@@ -383,6 +384,10 @@ class Board extends Component {
             moves_forward: new_moves_forward,
           }
         }
+      }, () => {
+        // scroll the tree to the bottom after the state got updated
+        let tree = document.getElementById("boardDataTreeSlide");
+        if (tree) tree.scrollTop = tree.scrollHeight;
       })
     })
 
@@ -549,17 +554,22 @@ class Board extends Component {
           let move = event.data.split(" ")[1]
           if (stockfish_asked === 1 && !is_my_turn_now()) {
             console.log("BEST " + move)
+            let remaining_time = Math.max(500 - (new Date() - stockfish_request_time), 0)
             if (move.length === 4) {
-              make_this_move({
-                from: move[0] + move[1],
-                to: move[2] + move[3]
-              })
+              setTimeout(() => {
+                make_this_move({
+                  from: move[0] + move[1],
+                  to: move[2] + move[3]
+                })
+              }, remaining_time)
             } else if (move.length === 5) {
-              make_this_move({
-                from: move[0] + move[1],
-                to: move[2] + move[3],
-                promotion: move[4]
-              })
+              setTimeout(() => {
+                make_this_move({
+                  from: move[0] + move[1],
+                  to: move[2] + move[3],
+                  promotion: move[4]
+                })
+              }, remaining_time)
             }
             else {
               console.log("Unknown move format: " + move)
@@ -606,6 +616,9 @@ class Board extends Component {
     stockfish.postMessage("go depth " + this.props.stockfish.depth)
 
     stockfish_asked += 1
+    if (new Date() - stockfish_request_time > 500) {
+      stockfish_request_time = new Date()
+    }
   }
 
   stockfish_find_best_moves(json_moves) {

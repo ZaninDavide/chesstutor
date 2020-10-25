@@ -64,7 +64,7 @@ class TrainingPage extends Component {
           stockfish={{
             makes_moves: this.state.stockfish,
             show_arrows: true,
-            depth: 5,
+            depth: 8,
             auto_eval: this.state.stockfish_auto_eval,
             auto_best_move: this.state.stockfish_auto_best_move,
           }}

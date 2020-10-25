@@ -154,7 +154,7 @@ class OpsListPage extends Component {
           <button className="simpleButton hMenuButton" onClick={() => { this.hMenuClose(); this.openOpDeleteModal(); }}>
             <div className="hMenuButtonContent">
               <div className="hMenuButtonIcon"><span className="alertText">delete</span></div>
-              <div className="hMenuButtonLabel"><span className="alertText">Delete</span></div>
+              <div className="hMenuButtonLabel"><span className="alertText"><Translator text="Delete" /></span></div>
             </div>
           </button>
           {/* ARCHIVE BUTTON */}
@@ -163,7 +163,7 @@ class OpsListPage extends Component {
           >
             <div className="hMenuButtonContent">
               <div className="hMenuButtonIcon">{(this.state.hMenuOpIndex !== null && this.props.ops[this.state.hMenuOpIndex] !== undefined) ? (this.props.ops[this.state.hMenuOpIndex].archived ? "unarchive" : "archive") : null}</div>
-              <div className="hMenuButtonLabel">{(this.state.hMenuOpIndex !== null && this.props.ops[this.state.hMenuOpIndex] !== undefined) ? (this.props.ops[this.state.hMenuOpIndex].archived ? "Unarchive" : "Archive") : null}</div>
+              <div className="hMenuButtonLabel"><Translator text={(this.state.hMenuOpIndex !== null && this.props.ops[this.state.hMenuOpIndex] !== undefined) ? (this.props.ops[this.state.hMenuOpIndex].archived ? "Unarchive" : "Archive") : null} /></div>
             </div>
           </button>
           {/* STATS BUTTON */}
@@ -178,7 +178,7 @@ class OpsListPage extends Component {
           >
             <div className="hMenuButtonContent">
               <div className="hMenuButtonIcon">print</div>
-              <div className="hMenuButtonLabel">Print PDF</div>
+              <div className="hMenuButtonLabel"><Translator text="Print PDF" /></div>
             </div>
           </button>
           {/* SEND BUTTON */}
@@ -187,14 +187,14 @@ class OpsListPage extends Component {
           >
             <div className="hMenuButtonContent">
               <div className="hMenuButtonIcon">send</div>
-              <div className="hMenuButtonLabel">Send</div>
+              <div className="hMenuButtonLabel"><Translator text="Send" /></div>
             </div>
           </button>
           {/* EDIT BUTTON */}
           <button className="simpleButton hMenuButton" onClick={() => this.setState({ renameOpVisible: true, opNewName: "", hMenuVisible: false })}>
             <div className="hMenuButtonContent">
               <div className="hMenuButtonIcon">edit</div>
-              <div className="hMenuButtonLabel">Rename</div>
+              <div className="hMenuButtonLabel"><Translator text="Rename" /></div>
             </div>
           </button>
         </HangingMenu>
