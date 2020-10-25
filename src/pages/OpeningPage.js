@@ -85,11 +85,7 @@ class OpeningPage extends Component {
       html.push(
         <div className="variationFolder" key={"variationFolder_" + vari_name}>
           <div className="variationTitle" key={"variationTitle_" + vari_name}>
-            <h3
-              onClick={() => {
-                this.props.history.push("/openings/training/" + this.props.match.params.op_index + "/" + vari_name)
-              }}
-            >{vari_name}</h3>
+            <h3>{vari_name}</h3>
             <button
               className="variationPlusButton iconText"
               onClick={() => {
@@ -97,7 +93,18 @@ class OpeningPage extends Component {
               }}
             >add</button>
           </div>
-          {not_archived[vari_name]}
+          <div id="variationFolderList">
+            {not_archived[vari_name]}
+          </div>
+          <div id="variationFolderLearnContainer">
+            <button id="variationFolderLearn" className="barButton impButton"
+              onClick={() => {
+                this.props.history.push("/openings/training/" + this.props.match.params.op_index + "/" + vari_name)
+              }}
+            >
+              <span className="iconText">school</span>
+            </button>
+          </div>
         </div>
       )
     })

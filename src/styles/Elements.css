@@ -158,11 +158,14 @@
   background-color: var(--cardBack);
   border-radius: var(--borderRadius);
   margin: var(--mediumMargin);
-  overflow: hidden;
+  /* overflow: hidden; */
 
   -moz-box-shadow: var(--shadowShift) var(--shadowShift) var(--shadowBlur) var(--shadow);
   -webkit-box-shadow: var(--shadowShift) var(--shadowShift) var(--shadowBlur) var(--shadow);
   box-shadow: var(--shadowShift) var(--shadowShift) var(--shadowBlur) var(--shadow);
+
+  display: grid;
+  grid-template-rows: auto auto 1fr;
 }
 
 .variationTitle, .variationTitleArchived{
@@ -186,15 +189,16 @@
 }
 
 .variationTitle{
-  color: var(--cardBack);
-  background-color: var(--main);
+  /* color: var(--cardBack); */
+  /* background-color: var(--main); */
   padding-left: 29px;
   box-sizing: border-box;
 }
 
 .variationTitleArchived{
-  color: var(--cardBack);
-  background-color: var(--alert);
+  color: var(--alert);
+  /* color: var(--cardBack); */
+  /* background-color: var(--alert); */
 }
 
 .variationPlusButton{
@@ -204,11 +208,28 @@
   padding-right: var(--smallMargin);
   padding-left: var(--smallMargin);
   margin-left: calc(-1 * var(--smallMargin));
-  color: var(--cardBack);
+  color: var(--main); /* var(--cardBack); */
 }
 
-.variationPlusButton:hover{
-  background-color: var(--hoverMain);
+.variationPlusButton:hover {
+  background-color: var(--hoverCard); /* var(--hoverMain); */
+}
+
+#variationFolderLearnContainer {
+  position: relative;
+  min-height: var(--uiElementMediumHeight);
+  text-align: center;
+}
+
+#variationFolderLearn {
+  position: absolute;
+  bottom:  calc(var(--smallMargin)*(-1));
+  width: calc(100% - 2*var(--mediumMargin));
+  line-height: var(--uiElementMediumHeight);
+}
+
+#variationFolderLearn span {
+  line-height: var(--uiElementMediumHeight);
 }
 
 .opsSeparator h3, #archivedVarsSeparator h3, .variationTitle h3, .variationTitleArchived h3{
@@ -257,7 +278,7 @@
   margin-right: 0;
   width: calc(100% - 2 * var(--mediumMargin) - 10px - var(--uiElementHeight)); /* 10px = padding */
   border-top-left-radius: var(--borderRadius);
-  border-bottom-left-radius: var(--borderRadius);
+  /*border-bottom-left-radius: var(--borderRadius);*/
   border-top-right-radius: 0px;
   border-bottom-right-radius: 0px;
 }
