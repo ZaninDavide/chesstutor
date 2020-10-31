@@ -10,6 +10,7 @@ class TrainingPage extends Component {
       stockfish: false,
       stockfish_auto_eval: false,
       stockfish_auto_best_move: false,
+      stockfish_depth: 8,
       playColor: "both"
     }
     this.switch_stockfish = this.switch_stockfish.bind(this);
@@ -64,13 +65,14 @@ class TrainingPage extends Component {
           stockfish={{
             makes_moves: this.state.stockfish,
             show_arrows: true,
-            depth: 8,
+            depth: this.state.stockfish_depth,
             auto_eval: this.state.stockfish_auto_eval,
             auto_best_move: this.state.stockfish_auto_best_move,
           }}
           switch_stockfish={this.switch_stockfish}
           switch_auto_eval={this.switch_auto_eval}
           switch_auto_best_move={this.switch_auto_best_move}
+          set_stockfish_depth={depth => this.setState({ stockfish_depth: Math.max(1, Math.min(20, depth)) })}
         />
       </React.Fragment>
     )

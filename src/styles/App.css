@@ -187,6 +187,27 @@
   grid-area: page;
 }
 
+.page::after {
+  content: "";
+  width: 100vw;
+  height: 100vh;
+  opacity: 0;
+  animation-name: disolve;
+  animation-duration: 0.15s;
+  animation-iteration-count: 1;
+  background-color: var(--back);
+  position:absolute;
+  top: 0px;
+  left: 0px;
+  z-index: 999999999;
+  pointer-events: none;
+}
+
+@keyframes disolve {
+  from {opacity: 1;}
+  to {opacity: 0;}
+}
+
 @media (pointer: coarse) { /* touch screen */
   ::-webkit-scrollbar
   {

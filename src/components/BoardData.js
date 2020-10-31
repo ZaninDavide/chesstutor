@@ -57,6 +57,7 @@ class BoardData extends Component {
         stockfish_chosen_move={this.props.stockfish_chosen_move}
         switch_auto_eval={this.props.switch_auto_eval}
         switch_auto_best_move={this.props.switch_auto_best_move}
+        set_stockfish_depth={this.props.set_stockfish_depth}
       />
 
       tabs.push(tabStockfish)

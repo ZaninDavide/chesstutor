@@ -1,6 +1,7 @@
 import React, { Component } from "react"
 import CheckBox from "../components/CheckBox"
 // import TrainingFinishedModal from "./TrainingFinishedModal"
+import Translator from "../components/Translator"
 
 class StockfishUI extends Component {
 
@@ -27,6 +28,13 @@ class StockfishUI extends Component {
                     <tr>
                         <td><CheckBox text="Play agains the computer" checked={this.props.stockfish.makes_moves} click={this.props.switch_stockfish} /></td>
                         <td></td>
+                    </tr>
+                    <tr style={{ lineHeight: "var(--uiElementSmallHeight)", height: "var(--uiElementSmallHeight)" }}>
+                        <td>
+                            <span id="depthLabel"><Translator text={"Precision (depth)"} /></span>&nbsp;
+                            <input type="range" min="1" max="20" step="1" value={this.props.stockfish.depth} onChange={e => this.props.set_stockfish_depth(e.target.value)} />
+                        </td>
+                        <td style={{ textAlign: "center" }}>{this.props.stockfish.depth}</td>
                     </tr>
                 </tbody>
             </table>

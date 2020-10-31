@@ -142,7 +142,7 @@ class Board extends Component {
             stockfish={this.props.stockfish}
             switch_stockfish={() => {
               this.props.switch_stockfish(() => {
-                if (!this.is_my_turn() && (this.props.stockfish ? this.props.stockfish.makes_moves : false)) {
+                if (!this.is_my_turn()/* && (this.props.stockfish ? this.props.stockfish.makes_moves : false)*/) {
                   this.stockfish_move(this.state.json_moves)
                 }
               })
@@ -172,6 +172,7 @@ class Board extends Component {
             stockfish_evaluate={() => this.stockfish_evaluate(this.state.json_moves)}
             stockfish_evaluation={this.state.stockfish_evaluation}
             stockfish_chosen_move={this.state.stockfish_chosen_move}
+            set_stockfish_depth={this.props.set_stockfish_depth}
           />
         </div>
 
@@ -580,7 +581,7 @@ class Board extends Component {
           stockfish_asked -= 1
 
           // SHOW WHAT STOCKFISH IS THINKING
-        } else if (event.data.startsWith("info depth ") && stockfish_arrows()) {
+        } else if (event.data.startsWith("info depth ") && event.data.indexOf("currmove ") === -1 && stockfish_arrows()) {
           let splitted = event.data.split("pv ")
           let moves = splitted[splitted.length - 1].split(" ").map(m => {
             return {
@@ -588,6 +589,17 @@ class Board extends Component {
               to: m[2] + m[3]
             }
           })
+
+          // if it contains currmove
+          /*
+          let splitted = event.data.slice(currmove, event.data.length).split(" ")
+          moves = [{
+            from: splitted[1][0] + splitted[1][1],
+            to: splitted[1][2] + splitted[1][3]
+          }]
+          */
+
+
           setArrows(moves ? [moves[0]] : [])
           setChosenMove(moves ? moves[0].from + "-" + moves[0].to : undefined)
 

@@ -563,6 +563,42 @@
   padding: 0px;
 }
 
+#depthLabel{
+  line-height: var(--uiElementSmallHeight);
+  margin-bottom: -40px;
+  display: block;
+}
+
+input[type=range] {
+  width: 100%;
+  -webkit-appearance: none;
+  background: var(--onBack);
+  outline: none;
+  height: 3px;
+  margin-top: -5px;
+}
+
+
+input[type=range]::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  width: 25px;
+  height: 25px;
+  background: #4CAF50;
+  cursor: pointer;
+  border: none;
+  border-radius: 50%;
+}
+
+input[type=range]::-moz-range-thumb {
+  width: calc(var(--uiElementSmallHeight)/2);
+  height: calc(var(--uiElementSmallHeight)/2);
+  background: var(--main);
+  cursor: pointer;
+  border: none;
+  border-radius: 50%;
+}
+
 @keyframes goodJobAnimation {
   0% {
     top: 0px;
