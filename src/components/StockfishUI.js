@@ -2,6 +2,7 @@ import React, { Component } from "react"
 import CheckBox from "../components/CheckBox"
 // import TrainingFinishedModal from "./TrainingFinishedModal"
 import Translator from "../components/Translator"
+import Ripples from "react-ripples"
 
 class StockfishUI extends Component {
 
@@ -32,7 +33,13 @@ class StockfishUI extends Component {
                     <tr style={{ lineHeight: "var(--uiElementSmallHeight)", height: "var(--uiElementSmallHeight)" }}>
                         <td>
                             <span id="depthLabel"><Translator text={"Precision (depth)"} /></span>&nbsp;
-                            <input type="range" min="1" max="20" step="1" value={this.props.stockfish.depth} onChange={e => this.props.set_stockfish_depth(e.target.value)} />
+                            <div className="optionButtonsContainer">
+                                <Ripples><button onClick={() => this.props.set_stockfish_depth(4)} className="simpleButton" style={{ marginRight: 0, color: this.props.stockfish.depth === 4 ? "var(--main)" : "var(--text)" }}>FAST</button></Ripples>
+                                <Ripples><button onClick={() => this.props.set_stockfish_depth(8)} className="simpleButton" style={{ marginRight: 0, color: this.props.stockfish.depth === 8 ? "var(--main)" : "var(--text)" }}>GOOD</button></Ripples>
+                                <Ripples><button onClick={() => this.props.set_stockfish_depth(12)} className="simpleButton" style={{ marginRight: 0, color: this.props.stockfish.depth === 12 ? "var(--main)" : "var(--text)" }}>PRECISE</button></Ripples>
+                                <Ripples><button onClick={() => this.props.set_stockfish_depth(16)} className="simpleButton" style={{ marginLeft: 0, color: this.props.stockfish.depth === 16 ? "var(--main)" : "var(--text)" }}>ACCURATE</button></Ripples>
+                                <Ripples><button onClick={() => this.props.set_stockfish_depth(20)} className="simpleButton" style={{ marginLeft: 0, color: this.props.stockfish.depth === 20 ? "var(--main)" : "var(--text)" }}>DEEPER</button></Ripples>
+                            </div>
                         </td>
                         <td style={{ textAlign: "center" }}>{this.props.stockfish.depth}</td>
                     </tr>

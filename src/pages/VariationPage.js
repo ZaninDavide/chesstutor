@@ -22,11 +22,11 @@ class VariationPage extends Component {
     return (
       <React.Fragment>
         <Header mainButtonText="arrow_back" goTo={"/openings/" + op_index} title={<React.Fragment>{op.op_name + " ⋅ " + vari.vari_name + " " + (vari.vari_subname || "")}</React.Fragment>} />
-        <Board 
+        <Board
           key="variationBoard"
-          history={this.props.history} 
-          op_index={op_index} 
-          vari_index={vari_index} 
+          history={this.props.history}
+          op_index={op_index}
+          vari_index={vari_index}
           buttons={in_training ? ["back", "help", "stopTrainThis", "more"] : ["back", "single_next", "trainThis", "more"]}
           rotation={op.op_color}
           playColor={in_training ? op.op_color : "none"}
@@ -37,13 +37,14 @@ class VariationPage extends Component {
           allowCommentEdit={!in_training}
           get_vari_next_move_data={this.props.get_vari_next_move_data}
           set_in_training={bool => {
-            this.setState({in_training: bool})
+            this.setState({ in_training: bool })
             return op.op_color
           }}
           get_pc_move_data={this.props.get_pc_move_data}
           is_move_allowed={this.props.is_move_allowed}
           get_correct_moves_data={this.props.get_correct_moves_data}
           notify={this.props.notify}
+          wait_time={this.props.wait_time}
         />
       </React.Fragment>
     )

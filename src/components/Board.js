@@ -532,7 +532,7 @@ class Board extends Component {
           this.makeCongrats()
         }
 
-      }, 500)
+      }, this.props.wait_time)
     } else {
       this.makeCongrats()
     }
@@ -547,6 +547,7 @@ class Board extends Component {
       let setArrows = arr => this.setArrows(arr)
       let setEvaluation = value => this.setState({ stockfish_evaluation: value })
       let setChosenMove = value => this.setState({ stockfish_chosen_move: value })
+      let wait_time = () => this.props.wait_time
       stockfish.onmessage = async function (event) {
         console.log(event.data)
 
@@ -555,7 +556,7 @@ class Board extends Component {
           let move = event.data.split(" ")[1]
           if (stockfish_asked === 1 && !is_my_turn_now()) {
             console.log("BEST " + move)
-            let remaining_time = Math.max(500 - (new Date() - stockfish_request_time), 0)
+            let remaining_time = Math.max(wait_time() - (new Date() - stockfish_request_time), 0)
             if (move.length === 4) {
               setTimeout(() => {
                 make_this_move({

@@ -73,6 +73,7 @@ class TrainingPage extends Component {
           switch_auto_eval={this.switch_auto_eval}
           switch_auto_best_move={this.switch_auto_best_move}
           set_stockfish_depth={depth => this.setState({ stockfish_depth: Math.max(1, Math.min(20, depth)) })}
+          wait_time={this.props.wait_time}
         />
       </React.Fragment>
     )

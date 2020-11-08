@@ -18,9 +18,9 @@ class TrainingPage extends Component {
     return (
       <React.Fragment>
         <Header mainButtonText="arrow_back" goTo={"/openings/" + op_index} title={<React.Fragment><Translator text={"Training"} />{": " + op.op_name}</React.Fragment>} />
-        <Board 
+        <Board
           key="trainingBoard"
-          history={this.props.history} 
+          history={this.props.history}
           op_index={op_index}
           buttons={["back", "help", "more"]}
           is_move_allowed={this.props.is_move_allowed}
@@ -33,6 +33,7 @@ class TrainingPage extends Component {
           setDrawBoardPDF={this.props.setDrawBoardPDF}
           getDrawBoardPDF={this.props.getDrawBoardPDF}
           notify={this.props.notify}
+          wait_time={this.props.wait_time}
         />
       </React.Fragment>
     )

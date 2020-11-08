@@ -39,10 +39,10 @@ class App extends Component {
       bearer: saved_bearer,
       user_ops: [],
       language: "eng",
-      colorTheme: "darkTheme",
       loadingVisible: true,
       notification: { text: "Congrats", type: "important" },
       notification_visible: false,
+      settings: { wait_time: 500, colorTheme: "darkTheme" }
     }
 
     this.createOp = this.createOp.bind(this)
@@ -81,6 +81,8 @@ class App extends Component {
     this.is_move_allowed_group = this.is_move_allowed_group.bind(this)
     this.get_pc_move_data_group = this.get_pc_move_data_group.bind(this)
     this.get_correct_moves_data_group = this.get_correct_moves_data_group.bind(this)
+    this.setWaitTime = this.setWaitTime.bind(this)
+    this.setSetting = this.setSetting.bind(this)
   }
 
   componentDidMount() {
@@ -118,11 +120,24 @@ class App extends Component {
           console.log("You have recived the default datapack")
         }
 
+        // fill missing data with defaults
+        if (userData.language === undefined) {
+          userData.language = "eng"
+        }
+        if (userData.settings === undefined) {
+          userData.settings = { wait_time: 500, colorTheme: "darkTheme" }
+        } else if (userData.settings.wait_time === undefined) {
+          userData.settings.wait_time = 500
+        } else if (userData.settings.wait_time === undefined) {
+          userData.settings.colorTheme = "darkTheme"
+        }
+
         return {
           user_ops: ops,
           _id: userData._id,
           username: userData.email,
-          language: userData.language || "eng",
+          language: userData.language,
+          settings: userData.settings,
           inbox: userData.inbox,
           loadingVisible: false, // LOADING SCREEN NOW HIDDEN
         }
@@ -169,12 +184,12 @@ class App extends Component {
     })
   }
 
-  updateDB(new_ops = this.state.user_ops) {
+  updateDB(new_ops = this.state.user_ops, language = "eng", settings = { wait_time: 500, colorTheme: "darkTheme" }) {
     /*if (new_ops.toString() !== this.state.user_ops.toString()) {
       // Warning you that you are saving in the database something that is different from what the user sees now
       console.log("updateDB: database and state won't match. the database will be updated aniway")
     }*/
-    this.updateUserData({ user_ops: new_ops }, this.state.bearer)
+    this.updateUserData({ user_ops: new_ops, language, settings }, this.state.bearer)
   }
 
   rememberMeLocally(username, bearer) {
@@ -191,9 +206,25 @@ class App extends Component {
     this.setState({ language: lang })
   }
 
+  setSetting(setting_name, setting_value) {
+    this.serverRequest("POST", "/setSetting/" + setting_name.toString(), { setting_value })
+    this.setState(old => {
+      let setts = old.settings
+      setts[setting_name] = setting_value
+      return { setting: setts }
+    })
+  }
+
   setTheme(theme = "darkTheme") {
-    this.serverRequest("POST", "/setLanguage", { theme })
-    this.setState({ colorTheme: theme })
+    // this.serverRequest("POST", "/setTheme", { theme })
+    // this.setState({ colorTheme: theme })
+    this.setSetting("colorTheme", theme)
+  }
+
+  setWaitTime(millis) {
+    // this.serverRequest("POST", "/setWaitTime", { millis })
+    // this.setState({ wait_time: millis })
+    this.setSetting("wait_time", millis)
   }
 
   /* ---------------------------- NOTIFICATIONS ---------------------------- */
@@ -676,6 +707,7 @@ class App extends Component {
       getDrawBoardPDF={this.getDrawBoardPDF}
       get_correct_moves_data={this.get_correct_moves_data}
       notify={this.notify}
+      wait_time={this.state.settings.wait_time}
     />
     const newVariPage = ({ match, history }) => <NewVariPage
       ops={this.state.user_ops}
@@ -689,6 +721,7 @@ class App extends Component {
       get_correct_moves_data={this.get_correct_moves_data}
       getOpFreeSubnames={this.getOpFreeSubnames}
       notify={this.notify}
+      wait_time={this.state.settings.wait_time}
     />
     const variPage = ({ match, history }) => <VariationPage
       ops={this.state.user_ops}
@@ -704,6 +737,7 @@ class App extends Component {
       is_move_allowed={this.is_move_allowed}
       get_correct_moves_data={this.get_correct_moves_data}
       notify={this.notify}
+      wait_time={this.state.settings.wait_time}
     />
     const newOpPage = ({ match, history }) => <NewOpPage history={history} match={match} createOp={this.createOp} />
     const loginPage = ({ match, history }) => <LoginPage
@@ -727,7 +761,9 @@ class App extends Component {
       setLanguage={this.setLanguage}
       language={this.state.language}
       setTheme={this.setTheme}
-      colorTheme={this.state.colorTheme}
+      colorTheme={this.state.settings.colorTheme}
+      wait_time={this.state.settings.wait_time}
+      setWaitTime={this.setWaitTime}
     />
     const colorTrainingPage = ({ match, history }) => <ColorTrainingPage
       history={history}
@@ -738,6 +774,7 @@ class App extends Component {
       get_correct_moves_data_color={this.get_correct_moves_data_color}
       getComment={this.getComment}
       notify={this.notify}
+      wait_time={this.state.settings.wait_time}
     />
     const variTrainingPage = ({ match, history }) => <GroupTrainingPage
       history={history}
@@ -748,10 +785,12 @@ class App extends Component {
       get_correct_moves_data_group={this.get_correct_moves_data_group}
       getComment={this.getComment}
       notify={this.notify}
+      wait_time={this.state.settings.wait_time}
     />
     const analysisPage = ({ match, history }) => <AnalysisPage
       history={history}
       match={match}
+      wait_time={this.state.settings.wait_time}
     />
     const redirectToLogin = () => <Redirect to="/login" />
     const redirectToHome = () => <Redirect to="/" />
@@ -762,7 +801,7 @@ class App extends Component {
     return (
       <LanguageProvider lang={this.state.language}>
         <Router>
-          <div id="App" className={`layout ${this.state.colorTheme}`}>
+          <div id="App" className={`layout ${this.state.settings.colorTheme}`}>
             <div id="loadingScreen" style={{ display: this.state.loadingVisible ? "table" : "none" }}>
               <span id="loadingScreenBottom">&nbsp;{"Loading your data... Please wait."}</span>
             </div>

@@ -45,7 +45,7 @@ const languages = {
     "Profile": "Profile",
     "Inbox": "Inbox",
     "Settings": "Settings",
-    "GENERAL": "GENERAL",
+    "General": "General",
     "BOARD": "BOARD",
     "Congrats": "Congrats! Training finished",
     "Opening downloaded": "Opening downloaded",
@@ -54,6 +54,10 @@ const languages = {
     "Delete": "Delete",
     "Archive": "Archive",
     "Print PDF": "Print PDF",
+    "Extra Features": "Extra Features",
+    "Computer waits before moving (ms)": "Computer waits before moving (ms)",
+    "Start new board": "Start new board",
+    "Color theme": "Color theme",
   },
   ita: {
     Openings: "Aperture",
@@ -98,7 +102,7 @@ const languages = {
     "Profile": "Profilo",
     "Inbox": "Posta",
     "Settings": "Impostazioni",
-    "GENERAL": "GENERALE",
+    "General": "Generale",
     "BOARD": "SCACCHIERA",
     "Congrats": "Complimenti! Allenamento completato",
     "Opening downloaded": "Apertura scaricata.",
@@ -107,6 +111,10 @@ const languages = {
     "Delete": "Elimina",
     "Archive": "Archivia",
     "Print PDF": "Stampa PDF",
+    "Extra Features": "Funzionalità Aggiuntive",
+    "Computer waits before moving (ms)": "Tempo d'attesa prima che il computer risponda (ms)",
+    "Start new board": "Apri una nuova scacchiera",
+    "Color theme": "Tema colori",
   }
 }
 

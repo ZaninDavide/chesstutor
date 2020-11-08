@@ -19,10 +19,10 @@ class VariationPage extends Component {
     return (
       <React.Fragment>
         <Header mainButtonText="arrow_back" goTo={"/openings/" + op_index} title={<React.Fragment>{op.op_name}{" ⋅ "}<Translator text={"New variation"} /></React.Fragment>} />
-        <Board 
-          history={this.props.history} 
-          createVari={this.props.createVari} 
-          op_index={op_index} 
+        <Board
+          history={this.props.history}
+          createVari={this.props.createVari}
+          op_index={op_index}
           vari_name={vari_name}
           buttons={["back", "done", "multi_next"]}
           rotation={op.op_color}
@@ -35,6 +35,7 @@ class VariationPage extends Component {
           get_correct_moves_data={this.props.get_correct_moves_data}
           getOpFreeSubnames={this.props.getOpFreeSubnames}
           notify={this.props.notify}
+          wait_time={this.props.wait_time}
         />
       </React.Fragment>
     )

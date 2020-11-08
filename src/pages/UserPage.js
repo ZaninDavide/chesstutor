@@ -33,19 +33,38 @@ class userPage extends Component {
     }
 
     const profilePage = () => <div id="profile" key="profile">
-      <h3 className="profilePageTitle"><Translator text="GENERAL" /></h3>
+      <h3 className="profilePageTitle"><Translator text="General" /></h3>
       <div className="settingsSection">
         <Translator text="Language" />:&nbsp;
-        <Ripples><button className="simpleButton" onClick={() => this.props.setLanguage("eng")} style={{ marginRight: 0, color: this.props.language === "eng" ? "var(--main)" : "var(--text)" }}><Translator text={"ENG"} /></button></Ripples>
-        <Ripples><button className="simpleButton" onClick={() => this.props.setLanguage("ita")} style={{ marginLeft: 0, color: this.props.language === "ita" ? "var(--main)" : "var(--text)" }}><Translator text={"ITA"} /></button></Ripples>
+        <div className="optionButtonsContainer">
+          <Ripples><button className="simpleButton" onClick={() => this.props.setLanguage("eng")} style={{ marginRight: 0, color: this.props.language === "eng" ? "var(--main)" : "var(--text)" }}><Translator text={"ENG"} /></button></Ripples>
+          <Ripples><button className="simpleButton" onClick={() => this.props.setLanguage("ita")} style={{ marginLeft: 0, color: this.props.language === "ita" ? "var(--main)" : "var(--text)" }}><Translator text={"ITA"} /></button></Ripples>
+        </div>
       </div>
       <div className="settingsSection">
         <Translator text="Color theme" />:&nbsp;
-        <Ripples><button className="simpleButton" onClick={() => this.props.setTheme("darkTheme")} style={{ marginRight: 0, color: this.props.colorTheme === "darkTheme" ? "var(--main)" : "var(--text)" }}><Translator text={"Dark"} /></button></Ripples>
-        <Ripples><button className="simpleButton" onClick={() => this.props.setTheme("lightTheme")} style={{ marginLeft: 0, color: this.props.colorTheme === "lightTheme" ? "var(--main)" : "var(--text)" }}><Translator text={"Light"} /></button></Ripples>
+        <div className="optionButtonsContainer">
+          <Ripples><button className="simpleButton" onClick={() => this.props.setTheme("darkTheme")} style={{ marginRight: 0, color: this.props.colorTheme === "darkTheme" ? "var(--main)" : "var(--text)" }}><Translator text={"Dark"} /></button></Ripples>
+          <Ripples><button className="simpleButton" onClick={() => this.props.setTheme("lightTheme")} style={{ marginLeft: 0, color: this.props.colorTheme === "lightTheme" ? "var(--main)" : "var(--text)" }}><Translator text={"Light"} /></button></Ripples>
+        </div>
       </div>
 
-      {/*<h3 className="profilePageTitle"><Translator text="BOARD"/></h3>*/}
+      <h3 className="profilePageTitle"><Translator text="Training" /></h3>
+      <div className="settingsSection">
+        <Translator text="Computer waits before moving (ms)" />:&nbsp;
+        <div className="optionButtonsContainer">
+          <Ripples><button onClick={() => this.props.setWaitTime(0)} className="simpleButton" style={{ marginRight: 0, color: this.props.wait_time === 0 ? "var(--main)" : "var(--text)" }}>0</button></Ripples>
+          <Ripples><button onClick={() => this.props.setWaitTime(250)} className="simpleButton" style={{ marginRight: 0, color: this.props.wait_time === 250 ? "var(--main)" : "var(--text)" }}>250</button></Ripples>
+          <Ripples><button onClick={() => this.props.setWaitTime(500)} className="simpleButton" style={{ marginRight: 0, color: this.props.wait_time === 500 ? "var(--main)" : "var(--text)" }}>500</button></Ripples>
+          <Ripples><button onClick={() => this.props.setWaitTime(1000)} className="simpleButton" style={{ marginLeft: 0, color: this.props.wait_time === 1000 ? "var(--main)" : "var(--text)" }}>1000</button></Ripples>
+          <Ripples><button onClick={() => this.props.setWaitTime(2000)} className="simpleButton" style={{ marginLeft: 0, color: this.props.wait_time === 2000 ? "var(--main)" : "var(--text)" }}>2000</button></Ripples>
+        </div>
+      </div>
+
+      <h3 className="profilePageTitle"><Translator text="Extra Features" /></h3>
+      <div className="settingsSection">
+        <button className="simpleButton" onClick={() => this.props.history.push("/analysis/white/[]")} ><Translator text="Start new board" /></button>
+      </div>
 
       <button
         onClick={this.props.logout}

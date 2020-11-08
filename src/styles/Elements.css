@@ -443,6 +443,7 @@
   margin-top: var(--mediumMargin);
   margin-bottom: var(--mediumMargin);
   color: var(--title);
+  text-transform: uppercase;
 }
 
 @media (hover: hover) {
@@ -563,40 +564,35 @@
   padding: 0px;
 }
 
-#depthLabel{
-  line-height: var(--uiElementSmallHeight);
-  margin-bottom: -40px;
-  display: block;
+.optionButtonsContainer{
+  display: inline-block;
+  margin-left: var(--smallMargin);
+  border-left: var(--borderSize) solid var(--onBack);
+  border-top: var(--borderSize) solid var(--onBack);
+  border-bottom: var(--borderSize) solid var(--onBack);
+  border-top-left-radius: var(--borderRadius);
+  border-bottom-left-radius: var(--borderRadius);
 }
 
-input[type=range] {
-  width: 100%;
-  -webkit-appearance: none;
-  background: var(--onBack);
-  outline: none;
-  height: 3px;
-  margin-top: -5px;
+.optionButtonsContainer:nth-child(1) {
+  border-left: var(--borderSize) solid var(--onBack);
+  border-top: var(--borderSize) solid var(--onBack);
+  border-bottom: var(--borderSize) solid var(--onBack);
+  border-top-left-radius: var(--borderRadius);
+  border-bottom-left-radius: var(--borderRadius);
 }
 
-
-input[type=range]::-webkit-slider-thumb {
-  -webkit-appearance: none;
-  appearance: none;
-  width: 25px;
-  height: 25px;
-  background: #4CAF50;
-  cursor: pointer;
-  border: none;
-  border-radius: 50%;
+.optionButtonsContainer button {
+  margin-left: 0px !important;
+  margin-right: 0px !important;
 }
 
-input[type=range]::-moz-range-thumb {
-  width: calc(var(--uiElementSmallHeight)/2);
-  height: calc(var(--uiElementSmallHeight)/2);
-  background: var(--main);
-  cursor: pointer;
-  border: none;
-  border-radius: 50%;
+.optionButtonsContainer:last-child {
+  border-right: var(--borderSize) solid var(--onBack);
+  border-top: var(--borderSize) solid var(--onBack);
+  border-bottom: var(--borderSize) solid var(--onBack);
+  border-top-right-radius: var(--borderRadius);
+  border-bottom-right-radius: var(--borderRadius);
 }
 
 @keyframes goodJobAnimation {
