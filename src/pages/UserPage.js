@@ -3,6 +3,10 @@ import Header from "../components/Header"
 import Translator from "../components/Translator"
 import Ripples from "react-ripples"
 
+import { sound_move } from "../utilities/file_paths"
+
+let move_audio
+
 class userPage extends Component {
   constructor(props) {
     super(props)
@@ -11,6 +15,8 @@ class userPage extends Component {
     }
     this.acceptMail = this.acceptMail.bind(this)
     this.discardMail = this.discardMail.bind(this)
+
+    move_audio = new Audio(sound_move)
   }
 
   acceptMail(mail, mail_id) {
@@ -25,6 +31,11 @@ class userPage extends Component {
   click(mail, index) {
     this.acceptMail(mail, index)
     this.props.notify("Opening downloaded")
+  }
+
+  previewVolume(volume) {
+    move_audio.volume = volume
+    move_audio.play()
   }
 
   render() {
@@ -46,6 +57,15 @@ class userPage extends Component {
         <div className="optionButtonsContainer">
           <Ripples><button className="simpleButton" onClick={() => this.props.setTheme("darkTheme")} style={{ marginRight: 0, color: this.props.colorTheme === "darkTheme" ? "var(--main)" : "var(--text)" }}><Translator text={"Dark"} /></button></Ripples>
           <Ripples><button className="simpleButton" onClick={() => this.props.setTheme("lightTheme")} style={{ marginLeft: 0, color: this.props.colorTheme === "lightTheme" ? "var(--main)" : "var(--text)" }}><Translator text={"Light"} /></button></Ripples>
+        </div>
+      </div>
+      <div className="settingsSection">
+        <Translator text="Volume" />:&nbsp;
+        <div className="optionButtonsContainer">
+          <Ripples><button onClick={() => { this.props.setVolume(0.0); this.previewVolume(0.0) }} className="simpleButton" style={{ marginRight: 0, color: this.props.volume === 0.0 ? "var(--main)" : "var(--text)" }}>Off</button></Ripples>
+          <Ripples><button onClick={() => { this.props.setVolume(0.2); this.previewVolume(0.2) }} className="simpleButton" style={{ marginRight: 0, color: this.props.volume === 0.2 ? "var(--main)" : "var(--text)" }}>Low</button></Ripples>
+          <Ripples><button onClick={() => { this.props.setVolume(0.6); this.previewVolume(0.6) }} className="simpleButton" style={{ marginRight: 0, color: this.props.volume === 0.6 ? "var(--main)" : "var(--text)" }}>Medium</button></Ripples>
+          <Ripples><button onClick={() => { this.props.setVolume(1.0); this.previewVolume(1.0) }} className="simpleButton" style={{ marginRight: 0, color: this.props.volume === 1.0 ? "var(--main)" : "var(--text)" }}>High</button></Ripples>
         </div>
       </div>
 

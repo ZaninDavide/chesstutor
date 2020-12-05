@@ -634,3 +634,8 @@
     transform: rotate(0deg);
   }
 }
+
+#signupLink, #loginLink{
+  color: var(--main);
+  text-decoration: underline;
+}

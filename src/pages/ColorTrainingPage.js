@@ -30,6 +30,7 @@ class ColorTrainingPage extends Component {
           allowCommentEdit={false}
           notify={this.props.notify}
           wait_time={this.props.wait_time}
+          volume={this.props.volume}
         />
       </React.Fragment>
     )

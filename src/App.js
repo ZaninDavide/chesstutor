@@ -7,6 +7,7 @@ import OpsListPage from "./pages/OpsListPage"
 import VariationPage from "./pages/VariationPage"
 import NewOpPage from "./pages/NewOpPage"
 import LoginPage from "./pages/LoginPage"
+import SignupPage from "./pages/SignupPage"
 import NewVariPage from "./pages/NewVariPage"
 import TrainingPage from "./pages/TrainingPage"
 import UserPage from "./pages/UserPage"
@@ -42,7 +43,7 @@ class App extends Component {
       loadingVisible: true,
       notification: { text: "Congrats", type: "important" },
       notification_visible: false,
-      settings: { wait_time: 500, colorTheme: "darkTheme" }
+      settings: { wait_time: 500, colorTheme: "darkTheme", volume: 0.6 }
     }
 
     this.createOp = this.createOp.bind(this)
@@ -125,11 +126,11 @@ class App extends Component {
           userData.language = "eng"
         }
         if (userData.settings === undefined) {
-          userData.settings = { wait_time: 500, colorTheme: "darkTheme" }
-        } else if (userData.settings.wait_time === undefined) {
-          userData.settings.wait_time = 500
-        } else if (userData.settings.wait_time === undefined) {
-          userData.settings.colorTheme = "darkTheme"
+          userData.settings = { wait_time: 500, colorTheme: "darkTheme", volume: 0.6 }
+        } else {
+          if (userData.settings.wait_time === undefined) userData.settings.wait_time = 500
+          if (userData.settings.colorTheme === undefined) userData.settings.colorTheme = "darkTheme"
+          if (userData.settings.volume === undefined) userData.settings.volume = 0.6 /* from 0 to 1 */
         }
 
         return {
@@ -184,7 +185,7 @@ class App extends Component {
     })
   }
 
-  updateDB(new_ops = this.state.user_ops, language = "eng", settings = { wait_time: 500, colorTheme: "darkTheme" }) {
+  updateDB(new_ops = this.state.user_ops, language = "eng", settings = { wait_time: 500, colorTheme: "darkTheme", volume: 0.5 }) {
     /*if (new_ops.toString() !== this.state.user_ops.toString()) {
       // Warning you that you are saving in the database something that is different from what the user sees now
       console.log("updateDB: database and state won't match. the database will be updated aniway")
@@ -708,6 +709,7 @@ class App extends Component {
       get_correct_moves_data={this.get_correct_moves_data}
       notify={this.notify}
       wait_time={this.state.settings.wait_time}
+      volume={this.state.settings.volume}
     />
     const newVariPage = ({ match, history }) => <NewVariPage
       ops={this.state.user_ops}
@@ -722,6 +724,7 @@ class App extends Component {
       getOpFreeSubnames={this.getOpFreeSubnames}
       notify={this.notify}
       wait_time={this.state.settings.wait_time}
+      volume={this.state.settings.volume}
     />
     const variPage = ({ match, history }) => <VariationPage
       ops={this.state.user_ops}
@@ -738,9 +741,19 @@ class App extends Component {
       get_correct_moves_data={this.get_correct_moves_data}
       notify={this.notify}
       wait_time={this.state.settings.wait_time}
+      volume={this.state.settings.volume}
     />
     const newOpPage = ({ match, history }) => <NewOpPage history={history} match={match} createOp={this.createOp} />
     const loginPage = ({ match, history }) => <LoginPage
+      history={history}
+      match={match}
+      setBearer={this.setBearer}
+      username={this.state.username}
+      rememberMeLocally={this.rememberMeLocally}
+      notify={this.notify}
+      showLoadingScreen={() => this.setState({ loadingVisible: true })}
+    />
+    const signupPage = ({ match, history }) => <SignupPage
       history={history}
       match={match}
       setBearer={this.setBearer}
@@ -764,6 +777,8 @@ class App extends Component {
       colorTheme={this.state.settings.colorTheme}
       wait_time={this.state.settings.wait_time}
       setWaitTime={this.setWaitTime}
+      volume={this.state.settings.volume}
+      setVolume={value => this.setSetting("volume", value)}
     />
     const colorTrainingPage = ({ match, history }) => <ColorTrainingPage
       history={history}
@@ -775,6 +790,7 @@ class App extends Component {
       getComment={this.getComment}
       notify={this.notify}
       wait_time={this.state.settings.wait_time}
+      volume={this.state.settings.volume}
     />
     const variTrainingPage = ({ match, history }) => <GroupTrainingPage
       history={history}
@@ -786,11 +802,13 @@ class App extends Component {
       getComment={this.getComment}
       notify={this.notify}
       wait_time={this.state.settings.wait_time}
+      volume={this.state.settings.volume}
     />
     const analysisPage = ({ match, history }) => <AnalysisPage
       history={history}
       match={match}
       wait_time={this.state.settings.wait_time}
+      volume={this.state.settings.volume}
     />
     const redirectToLogin = () => <Redirect to="/login" />
     const redirectToHome = () => <Redirect to="/" />
@@ -814,6 +832,7 @@ class App extends Component {
             <Switch>
               <Route path="/" render={needLogin ? redirectToLogin : opsListPage} exact />
               <Route path="/login" render={!needLogin ? redirectToHome : loginPage} exact />
+              <Route path="/signup" render={!needLogin ? redirectToHome : signupPage} exact />
               <Route path="/profile" render={needLogin ? redirectToLogin : userPage} exact />
               <Route path="/newOpening" render={newOpPage} />
               <Route path="/openings/training/:op_index/:vari_name" render={noOpenings ? redirectToHome : variTrainingPage} />
@@ -823,7 +842,7 @@ class App extends Component {
               <Route path="/training/fullcolor/:color_number" render={noOpenings ? redirectToHome : colorTrainingPage} />
               <Route path="/training/:op_index" render={noOpenings ? redirectToHome : trainingPage} />
               <Route path="/analysis/:color/:moves" render={analysisPage} />
-              <Route path="/" render={() => <p>Error 404! Page not found</p>} />
+              <Route path="/" render={() => { console.warn("Error 404. Redirected to home"); return redirectToHome() }} />
             </Switch>
           </div>
         </Router>

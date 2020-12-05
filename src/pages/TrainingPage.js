@@ -34,6 +34,7 @@ class TrainingPage extends Component {
           getDrawBoardPDF={this.props.getDrawBoardPDF}
           notify={this.props.notify}
           wait_time={this.props.wait_time}
+          volume={this.props.volume}
         />
       </React.Fragment>
     )

@@ -4,15 +4,17 @@ import Translator from "../components/Translator"
 import Ripples from "react-ripples"
 import { Link } from "react-router-dom"
 
-class LoginPage extends Component {
+class SignupPage extends Component {
   constructor(props) {
     super(props)
     this.state = {
       username: "",
       password: "",
+      password2: "",
       rememberMe: false,
     }
     this.checkBoxClick = this.checkBoxClick.bind(this)
+    this.signUpClick = this.signUpClick.bind(this)
     this.loginClick = this.loginClick.bind(this)
   }
 
@@ -89,6 +91,26 @@ class LoginPage extends Component {
     })
   }
 
+  async signUpClick() {
+    if (this.state.username !== "" & this.state.password !== "" & this.state.password2 !== "") {
+      if (this.state.password === this.state.password2) {
+        if (this.state.username.indexOf(",") === -1) {
+          let signup_res = await this.signup()
+          if (signup_res) {
+            // this.props.history.push("/")
+            this.loginClick()
+          }
+        } else {
+          this.props.notify("Username cannot contain commas (',').", "error")
+        }
+      } else {
+        this.props.notify("The fields 'password' and 'password repeated' do not match.", "error")
+      }
+    } else {
+      this.props.notify("Fill all fields please.")
+    }
+  }
+
   async loginClick() {
     if (this.state.username !== "" & this.state.password !== "") {
       await this.login() // let login_res = 
@@ -103,7 +125,7 @@ class LoginPage extends Component {
   render() {
     return (
       <React.Fragment>
-        <Header title={<Translator text={"Login"} />} goTo="/login" />
+        <Header title={<Translator text={"Sign up"} />} goTo="/login" />
         <div id="loginPage" className="page">
           <div id="loginPageBody">
             <h2 className="loginPageLabel"><Translator text={"Username"} />:</h2>
@@ -114,11 +136,12 @@ class LoginPage extends Component {
               type="password" className="textBox"
               value={this.state.password}
               onChange={e => this.setState({ password: e.target.value })}
-              onKeyPress={e => {
-                if (e.which === 13 || e.keyCode === 13) {
-                  this.loginClick()
-                }
-              }}
+            /><br /><br />
+            <h2 className="loginPageLabel"><Translator text={"Repeat password"} />:</h2>
+            <input
+              type="password" className="textBox"
+              value={this.state.password2}
+              onChange={e => this.setState({ password2: e.target.value })}
             />
             <br /><br />
             <Ripples className="checkBoxContainer">
@@ -132,13 +155,13 @@ class LoginPage extends Component {
             </Ripples>
             <br />
             <br />
-            <span>{"If you don't have an account yet just "}<Link to="/signup" id="signupLink">sign up</Link>{" instead!"}</span>
+            <span>{"If you already have an account "}<Link to="/login" id="loginLink">log in</Link>{" instead!"}</span>
           </div>
-          <button onClick={this.loginClick} className="barButton impButton" style={{ position: "absolute", bottom: "var(--mediumMargin)", marginBottom: 0, width: "calc(100% - 30px)" }}><Translator text={"Login"} /></button>
+          <button onClick={this.signUpClick} className="barButton impButton" style={{ position: "absolute", bottom: "var(--mediumMargin)", marginBottom: 0, width: "calc(100% - 30px)" }}><Translator text={"Sign up"} /></button>
         </div>
       </React.Fragment>
     )
   }
 }
 
-export default LoginPage
+export default SignupPage

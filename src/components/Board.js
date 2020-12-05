@@ -927,14 +927,17 @@ class Board extends Component {
     // move is what the game.move() function returns
     if (move) {
       if (move.flags.indexOf("c") !== -1 || move.flags.indexOf("e") !== -1) {
+        capture_audio.volume = this.props.volume
         capture_audio.play()
       } else {
+        move_audio.volume = this.props.volume
         move_audio.play()
       }
     }
   }
 
   async play_error_sound() {
+    move_audio.volume = this.props.volume
     error_audio.play()
   }
 

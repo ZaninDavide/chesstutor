@@ -20,7 +20,7 @@ class TrainingFinishedModal extends Component {
         if (this.props.op_index) {
             this.props.history.push("/openings/" + this.props.op_index)
         } else {
-            this.props.history.push("/" + this.props.op_index)
+            this.props.history.push("/")
         }
     }
 

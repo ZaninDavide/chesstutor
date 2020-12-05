@@ -45,6 +45,7 @@ class VariationPage extends Component {
           get_correct_moves_data={this.props.get_correct_moves_data}
           notify={this.props.notify}
           wait_time={this.props.wait_time}
+          volume={this.props.volume}
         />
       </React.Fragment>
     )

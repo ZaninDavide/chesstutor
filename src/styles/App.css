@@ -24,7 +24,7 @@
   --largeMargin: 25px;
 
   --borderSize: 1px;
-  --borderRadius: 5px;
+  --borderRadius: 4px;
 
   --uiElementHeight: 50px; /* like buttons height */
   --uiElementMediumHeight: 40px; /* like wide buttons height */
@@ -108,32 +108,6 @@
   --onModalBack: #252525;
 }
 
-.darkTheme_old {
-  --backColor: black; /*#1d1d1b*/
-  --alertColor: #f14b4b; /*#f06b65*/
-
-  --impText: #3cf17e; /*#a3f7bf*/
-  --primaryText: white;
-  --secondaryText: hsl(0, 0%, 70%);
-
-  --buttonText: rgb(245, 245, 245);
-  --hoverBackColor: rgba(100, 100, 100, 0.15); /* rgba(100, 100, 100, 0.3) */
-  --hoverBackColorNonAlpha: #272726;
-
-  --impButtonText: black; /*#1d1d1b*/
-  --impButtonBack: #3cf17e; /*#a3f7bf*/
-  --hoverImpButtonBack: #00ec57; /*hsl(140, 34%, 60%)*/
-
-  --hoverAlertColor: #b63737; /*#f06b65*/
-
-  --headerBack: black;
-  --modalBack: #1c1c1c;
-
-  --disabledColor: #443f3f;
-
-  --arrowColor: #3cf17e;
-}
-
 /* ---------------------------- CONTAINERS ---------------------------- */
 
 @media not print{
@@ -187,7 +161,7 @@
   grid-area: page;
 }
 
-.page::after {
+.page::after, .fadein::after {
   content: "";
   width: 100vw;
   height: 100vh;
@@ -580,11 +554,13 @@ a {
   left: 0px;
   background-color: var(--cardBack);
   display: flex;
+  width: 100%;
+  box-sizing: border-box;
   min-height: 100%;
   min-width: 100%;
   align-items: center;
   /* justify-content: center; */
-  padding-left: var(--mediumMargin);
+  /* padding-left: var(--mediumMargin); */
   outline: none;
   -webkit-tap-highlight-color: var(--tap);
 
@@ -609,14 +585,38 @@ a {
 @supports not (backdrop-filter: none) {
   .variItemMenuOpened{
     opacity: 1;
-    background-color: var(--hoverBack);
+    background-color: var(--hoverModalBack);
   }
 }
 
-.variItemMenuIcon{
-  margin-right: var(--mediumMargin);
+
+.variItemMenuButton{
+  padding-left: var(--smallMargin);
+  padding-right: var(--smallMargin);
   color: var(--title);
   text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+  /* border-right: var(--borderSize) solid var(--onModalBack); */
+  line-height: 100%;
+  display: inline-flex;
+  flex-grow: 1;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.variItemMenuButton:last-child{
+  border-right: 0px;
+}
+
+.variItemMenuLabel{
+  margin-left: var(--smallMargin);
+  margin-right: var(--smallMargin);
+  font-size: var(--smallTextSize);
+  line-height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .horizontalLine{
