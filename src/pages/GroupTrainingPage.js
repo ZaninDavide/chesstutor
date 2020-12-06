@@ -13,9 +13,9 @@ class GroupTrainingPage extends Component {
 
     const vari_name = this.props.match.params.vari_name
 
-    console.log("vari_name", vari_name)
+    // console.log("vari_name", vari_name)
 
-    console.log("op_index", op_index, op)
+    // console.log("op_index", op_index, op)
 
     return (
       <React.Fragment>
@@ -34,8 +34,10 @@ class GroupTrainingPage extends Component {
           is_move_allowed_group={this.props.is_move_allowed_group}
           get_pc_move_data_group={this.props.get_pc_move_data_group}
           get_correct_moves_data_group={this.props.get_correct_moves_data_group}
+
           getComment={this.props.getComment}
           allowCommentEdit={false}
+
           notify={this.props.notify}
           wait_time={this.props.wait_time}
           volume={this.props.volume}

@@ -534,7 +534,7 @@ class App extends Component {
     for (let vari_index = 0; vari_index < op.variations.length; vari_index++) {
       // loop through all variations 
       let vari = op.variations[vari_index]
-      if (vari.vari_name = vari_name) {
+      if (vari.vari_name === vari_name) {
         if (vari.moves.length > json_moves.length && !vari.archived) { // this variation is long enougth and not archived
           let first_moves = vari.moves.slice(0, json_moves.length)
 
