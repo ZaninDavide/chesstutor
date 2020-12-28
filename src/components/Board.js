@@ -2,7 +2,7 @@ import React, { Component } from "react"
 import Chess from "../chessjs-chesstutor/chess.js"
 
 import { cells, cells_rotated, cell_coords, cell_coords_rotated, pieces_names, sub_names } from "../utilities/pieces_and_coords"
-import { get_piece_src, darkBoardSVG, darkBoardRotatedSVG, sound_capture, sound_move, sound_error } from "../utilities/file_paths"
+import { get_piece_src, get_board_svg, get_board_rotated_svg, sound_capture, sound_move, sound_error } from "../utilities/file_paths"
 
 import PromotionModal from "../components/PromotionModal"
 import CommentModal from "../components/CommentModal"
@@ -84,6 +84,7 @@ class Board extends Component {
     this.setArrows = this.setArrows.bind(this)
     this.makeCongrats = this.makeCongrats.bind(this)
     this.start_stockfish = this.start_stockfish.bind(this)
+    this.close_stockfish = this.close_stockfish.bind(this)
     this.stockfish_move = this.stockfish_move.bind(this)
     this.stockfish_find_best_moves = this.stockfish_find_best_moves.bind(this)
     this.stockfish_evaluate = this.stockfish_evaluate.bind(this)
@@ -122,7 +123,7 @@ class Board extends Component {
             {this.touchCircle()}
             {this.pieces()}
             <Arrows arrows={this.state.arrows} rotated={this.state.rotated} />
-            <img id="boardSVG" src={this.state.rotated ? darkBoardRotatedSVG : darkBoardSVG} alt={"Board file missing"} ref="board" key="board" draggable={false} />
+            <img id="boardSVG" src={this.state.rotated ? get_board_rotated_svg() : get_board_svg()} alt={"Board file missing"} ref="board" key="board" draggable={false} />
           </div>
           <div id="boardUI" key="boardUI">
             {this.boardButtons()}
@@ -223,6 +224,18 @@ class Board extends Component {
 
         {/* MORE MENU */}
         <HangingMenu visible={this.state.boardMenuVisible} close={() => this.setState({ boardMenuVisible: false })}>
+          {/* ROTATE BOARD */}
+          <button className="simpleButton hMenuButton" onClick={() => {
+            this.setState({ boardMenuVisible: false })
+            //this.props.history.push("/analysis/" + this.props.rotation + "/" + this.state.game.fen().split("/").join("_"))
+            //this.props.history.push("/analysis/" + this.props.rotation + "/" + this.state.game.pgn().split(" ").join("_"))
+            this.setState(old => {return{rotated: !old.rotated}})
+          }}>
+            <div className="hMenuButtonContent">
+              <div className="hMenuButtonIcon">import_export</div>
+              <div className="hMenuButtonLabel">Flip</div>
+            </div>
+          </button>
           {/* ANALYSIS BUTTON */}
           <button className="simpleButton hMenuButton" onClick={() => {
             this.setState({ boardMenuVisible: false })
@@ -280,6 +293,10 @@ class Board extends Component {
         this.pc_move(this.props.op_index, [])
       }
     }
+  }
+
+  componentWillUnmount() {
+    this.close_stockfish()
   }
 
   /* ---------------------------- DEBUG ---------------------------- */
@@ -538,6 +555,14 @@ class Board extends Component {
     }
   }
 
+  close_stockfish() {
+    if (stockfish) {
+      stockfish.terminate()
+    }
+    stockfish_asked = 0;
+    stockfish = undefined;
+  }
+
   start_stockfish() {
     if (typeof (Worker)) {
       stockfish = new Worker("/stockfish/stockfish.js");
@@ -614,7 +639,7 @@ class Board extends Component {
         }
       };
     } else {
-      console.log("Workers needs to be supported in order to use Stockfish.")
+      console.log("Workers needs to be supported in order to use Stockfish.") // TODO: notify the user
     }
   }
 

@@ -56,8 +56,9 @@ const languages = {
     "Print PDF": "Print PDF",
     "Extra Features": "Extra Features",
     "Computer waits before moving (ms)": "Computer waits before moving (ms)",
-    "Start new board": "Start new board",
+    "Free analisys": "Free analisys",
     "Color theme": "Color theme",
+    "Messages": "Messages",
   },
   ita: {
     Openings: "Aperture",
@@ -113,8 +114,9 @@ const languages = {
     "Print PDF": "Stampa PDF",
     "Extra Features": "Funzionalità Aggiuntive",
     "Computer waits before moving (ms)": "Tempo d'attesa prima che il computer risponda (ms)",
-    "Start new board": "Apri una nuova scacchiera",
+    "Free analisys": "Analisi libera",
     "Color theme": "Tema colori",
+    "Messages": "Messaggi",
   }
 }
 

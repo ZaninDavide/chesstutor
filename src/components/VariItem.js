@@ -2,6 +2,8 @@ import React, { Component } from "react"
 import Translator from "./Translator"
 import Ripples from "react-ripples"
 
+// import { Menu, MenuItem } from '@szhsin/react-menu';
+
 class VariItem extends Component {
   constructor(props) {
     super(props)
@@ -55,11 +57,11 @@ class VariItem extends Component {
             </p>}
           </div>
         </div>
-        <div className="variItemButton iconText" onClick={this.menuButtonClick}>
-          more_vert
-          </div>
 
         {/* MENU */}
+        <div className="variItemButton iconText" onClick={this.menuButtonClick}>
+          more_vert
+        </div>
 
         <div
           className={"variItemMenu" + (this.state.menuVisible ? " variItemMenuOpened" : " variItemMenuClosed")}
@@ -81,6 +83,18 @@ class VariItem extends Component {
             onClick={() => { this.props.rename(); this.setState({ menuVisible: false }) }}
           ><span className="iconText">edit</span><span className="variItemMenuLabel">edit</span></span>
         </div>
+
+
+        {/*
+        <div className="variItemButton iconText" onClick={e => e.stopPropagation()}>
+          <Menu menuButton={
+            <button className="iconButton">more_vert</button>}>
+            <MenuItem ><Translator text="Rename\Move" /></MenuItem>
+            <MenuItem ><Translator text="Archive" /></MenuItem>
+            <MenuItem ><Translator text="Delete" /></MenuItem>
+          </Menu>
+        </div>
+        */}
       </Ripples>
     )
   }

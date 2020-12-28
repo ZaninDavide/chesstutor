@@ -144,6 +144,9 @@
 
     max-height: 80vh;
     overflow-y: auto;
+
+    margin-left: max(0.00000000000000000000000000000000000001px, calc((100vw - 400px)/2));
+    max-width: 400px;   
 }
 
 .hMenuButton{
@@ -291,4 +294,36 @@
     padding-bottom: var(--smallMargin);
     color:  var(--text);
     opacity: .5;
+}
+
+/* @szhsin/react-menu */
+.rc-menu-container {
+    background-color: var(--modalBack);
+}
+
+.rc-menu{
+    background-color: var(--modalBack);
+    margin-right: 50px !important;
+    box-sizing: border-box;
+    border-radius: var(--borderRadius);
+}
+
+.rc-menu__item{
+    font-family: var(--textFont);
+    font-weight: var(--textWeight);
+    font-size: var(--textSize);
+
+    background-color: var(--modalBack);
+    color: var(--text);
+
+    height: var(--uiElementMediumHeight);
+    line-height: var(--uiElementMediumHeight);
+
+    padding: 0px;
+    padding-left: var(--mediumMargin);
+    padding-right: var(--mediumMargin);
+}
+
+.rc-menu__item:hover{
+    background-color: var(--hoverModalBack);
 }

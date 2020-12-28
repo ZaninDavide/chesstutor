@@ -10,9 +10,9 @@ let move_audio
 class userPage extends Component {
   constructor(props) {
     super(props)
-    this.state = {
+    /*this.state = {
       tab: "profile"
-    }
+    }*/
     this.acceptMail = this.acceptMail.bind(this)
     this.discardMail = this.discardMail.bind(this)
 
@@ -81,47 +81,47 @@ class userPage extends Component {
         </div>
       </div>
 
-      <h3 className="profilePageTitle"><Translator text="Extra Features" /></h3>
+      <h3 className="profilePageTitle"><Translator text="Profile" /></h3>
       <div className="settingsSection">
-        <button className="simpleButton" onClick={() => this.props.history.push("/analysis/white/[]")} ><Translator text="Start new board" /></button>
+        <button
+          onClick={this.props.logout}
+          id="logoutButton" className="simpleButton"
+        ><Translator text="Log out" /></button>
       </div>
-
-      <button
-        onClick={this.props.logout}
-        id="logoutButton"
-        className="barButton"
-      ><Translator text="Log out" /></button>
     </div>
-
-    const inboxPage = () => this.props.inbox.length === 0 ? <div id="emptyInbox" /> : <div id="mailItemContainer">
-      {this.props.inbox.map((mail, index) =>
-        <div className="mailItem" onClick={() => this.click(mail, index)} key={"mailItem_" + index + "_" + mail.op_name + "_" + mail.creator_email}>
-          <div className="mailItemLeft">
-            <h2>{mail.op_name}</h2>
-            <p>{mail.creator_email}</p>
-          </div>
-          <div className="mailItemRight">
-            <button className="iconButton mailItemCloseButton"
-              onClick={e => {
-                e.stopPropagation()
-                this.discardMail(index)
-              }}
-            >
-              close
-            </button>
-          </div>
+    /*
+        const inboxPage = () => this.props.inbox.length === 0 ? <div id="emptyInbox" /> : <div id="mailItemContainer">
+          {this.props.inbox.map((mail, index) =>
+            <div className="mailItem" onClick={() => this.click(mail, index)} key={"mailItem_" + index + "_" + mail.op_name + "_" + mail.creator_email}>
+              <div className="mailItemLeft">
+                <h2>{mail.op_name}</h2>
+                <p>{mail.creator_email}</p>
+              </div>
+              <div className="mailItemRight">
+                <button className="iconButton mailItemCloseButton"
+                  onClick={e => {
+                    e.stopPropagation()
+                    this.discardMail(index)
+                  }}
+                >
+                  close
+                </button>
+              </div>
+            </div>
+          )}
         </div>
-      )}
-    </div>
-
+    */
     return (
       <React.Fragment>
         <Header title={this.props.username} mainButtonText="arrow_back" />
         <div id="userPage" className="page">
 
-          {this.state.tab === "inbox" ? inboxPage() : profilePage()}
+          {profilePage()}
+          {/*
 
-          <div id="userPageTabContainer">
+            {this.state.tab === "inbox" ? inboxPage() : profilePage()}
+
+            <div id="userPageTabContainer">
             <Ripples
               className={"userPageTab" + (this.state.tab === "profile" ? " userPageTabSelected" : "")}
               onClick={() => this.setState({ tab: "profile" })}
@@ -135,6 +135,7 @@ class userPage extends Component {
               <span className="iconText">mail</span>
             </Ripples>
           </div>
+          */}
         </div>
       </React.Fragment>
     )

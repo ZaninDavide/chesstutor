@@ -11,6 +11,7 @@ import SignupPage from "./pages/SignupPage"
 import NewVariPage from "./pages/NewVariPage"
 import TrainingPage from "./pages/TrainingPage"
 import UserPage from "./pages/UserPage"
+import MailPage from "./pages/MailPage"
 import ColorTrainingPage from "./pages/ColorTrainingPage"
 import GroupTrainingPage from "./pages/GroupTrainingPage"
 import AnalysisPage from "./pages/AnalysisPage"
@@ -616,7 +617,7 @@ class App extends Component {
     for (let vari_index = 0; vari_index < op.variations.length; vari_index++) {
       // loop through all variations 
       let vari = op.variations[vari_index]
-      console.log(vari.vari_name, vari_name)
+      // console.log(vari.vari_name, vari_name)
       if (vari.vari_name === vari_name) {
         if (vari.moves.length > json_moves.length && !vari.archived) { // this variation is long enougth and not archived
           let first_moves = vari.moves.slice(0, json_moves.length)
@@ -767,9 +768,6 @@ class App extends Component {
       match={match}
       logout={this.logout}
       username={this.state.username}
-      inbox={this.state.inbox}
-      addOpening={this.addOpening}
-      deleteMail={this.deleteMail}
       notify={this.notify}
       setLanguage={this.setLanguage}
       language={this.state.language}
@@ -779,6 +777,15 @@ class App extends Component {
       setWaitTime={this.setWaitTime}
       volume={this.state.settings.volume}
       setVolume={value => this.setSetting("volume", value)}
+    />
+    const mailPage = ({ match, history }) => <MailPage
+      history={history}
+      match={match}
+      username={this.state.username}
+      inbox={this.state.inbox}
+      addOpening={this.addOpening}
+      deleteMail={this.deleteMail}
+      notify={this.notify}
     />
     const colorTrainingPage = ({ match, history }) => <ColorTrainingPage
       history={history}
@@ -834,6 +841,7 @@ class App extends Component {
               <Route path="/login" render={!needLogin ? redirectToHome : loginPage} exact />
               <Route path="/signup" render={!needLogin ? redirectToHome : signupPage} exact />
               <Route path="/profile" render={needLogin ? redirectToLogin : userPage} exact />
+              <Route path="/mail" render={needLogin ? redirectToLogin : mailPage} exact />
               <Route path="/newOpening" render={newOpPage} />
               <Route path="/openings/training/:op_index/:vari_name" render={noOpenings ? redirectToHome : variTrainingPage} />
               <Route path="/newVariation/:op_index/:vari_name" render={newVariPage} />

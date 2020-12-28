@@ -8,6 +8,8 @@ import SendModal from "../components/SendModal"
 
 import generatePDF from "../generatePDF/generatePDF.js"
 
+import { Menu, MenuItem } from '@szhsin/react-menu';
+
 class OpsListPage extends Component {
   constructor(props) {
     super(props)
@@ -139,7 +141,17 @@ class OpsListPage extends Component {
   render() {
     return (
       <React.Fragment>
-        <Header title={<Translator text={"Openings"} />} goTo={"/profile"} mainButtonText="settings" />
+        <Header
+          title={<Translator text={"Openings"} />}
+          headerMenu={
+            <Menu menuButton={
+              <button id="headerButton" className="iconButton">menu</button>}>
+              <MenuItem onClick={() => this.props.history.push("/analysis/white/[]")}><Translator text="Free analisys" /></MenuItem>
+              <MenuItem onClick={() => this.props.history.push("/mail")}><Translator text="Messages" /></MenuItem>
+              <MenuItem onClick={() => this.props.history.push("/profile")}><Translator text="Settings" /></MenuItem>
+            </Menu>
+          }
+        />
         <div id="opsListPage" className={"page"} style={this.no_openings_style(this.props.ops.length)}>
           {this.getOpItems(this.props.ops)}
           <button id="newOpButton" className="roundButton iconButton impButton" onClick={this.newOpButton}>

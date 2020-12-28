@@ -18,7 +18,7 @@ class VariationPage extends Component {
     const vari_name = this.props.match.params.vari_name
     return (
       <React.Fragment>
-        <Header mainButtonText="arrow_back" goTo={"/openings/" + op_index} title={<React.Fragment>{op.op_name}{" ⋅ "}<Translator text={"New variation"} /></React.Fragment>} />
+        <Header mainButtonText="arrow_back" goTo={"/openings/" + op_index} title={<React.Fragment>{op.op_name + " ⋅ " + vari_name + " ⋅ "}<Translator text={"New variation"} /></React.Fragment>} />
         <Board
           history={this.props.history}
           createVari={this.props.createVari}
