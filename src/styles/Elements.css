@@ -6,6 +6,7 @@
   margin-right: 0px;
   margin-left: var(--smallMargin);
   height: var(--headerHeight);
+  line-height: var(--headerHeight);
 }
 
 #opsListPage, #openingPage {
@@ -119,10 +120,12 @@
   grid-area: headerLeftSide;
   display: -webkit-flex; /* Safari */
   display: flex;
+  height: var(--headerHeight);
 }
 
 #headerRightSide{
   grid-area: headerRightSide;
+  height: var(--headerHeight);
 }
 
 /*#playVarsButton {
@@ -205,17 +208,22 @@
   /* background-color: var(--alert); */
 }
 
-.variationPlusButton{
+.variationExtraButton{
   background-color: transparent;
-  border: 0px;
   padding: 0px;
   padding-right: var(--smallMargin);
   padding-left: var(--smallMargin);
   margin-left: calc(-1 * var(--smallMargin));
-  color: var(--main); /* var(--cardBack); */
+  /*color: var(--main);*/
+  color: var(--onCardBack);
+  font-size: calc(var(--iconsFontSize)*0.9) !important;
+  border: 0px;
+  border-radius: var(--borderRadius);
+  height: 100%;
+  line-height: 1;
 }
 
-.variationPlusButton:hover {
+.variationExtraButton:hover {
   background-color: var(--hoverCard); /* var(--hoverMain); */
 }
 
@@ -223,13 +231,43 @@
   position: relative;
   min-height: var(--uiElementMediumHeight);
   text-align: center;
+  padding-left: var(--mediumMargin);
+  padding-right: var(--mediumMargin);
+  display: grid;
+  grid-template-rows: 1fr auto;
+  grid-template-columns: 1fr;
+}
+
+#variationFolderLearnButtons {
+  display: flex;
+}
+#variationFolderLearn:first-child {
+  border-top-left-radius: var(--borderRadius) !important;
+  border-bottom-left-radius: var(--borderRadius) !important;
+  border-left: 0px;
+}
+#variationFolderLearn:last-child {
+  border-top-right-radius: var(--borderRadius) !important;
+  border-bottom-right-radius: var(--borderRadius) !important;
+  border-right: 0px;
 }
 
 #variationFolderLearn {
-  position: absolute;
+  background-color: var(--onModalBack);
+  color: var(--main);
+  flex-grow: 1;
+  position: relative;
   bottom:  calc(var(--smallMargin)*(-1));
-  width: calc(100% - 2*var(--mediumMargin));
+  width: 100%;
+  height: var(--uiElementMediumHeight);
   line-height: var(--uiElementMediumHeight);
+  border-radius: 0px;
+  border-left: solid var(--modalBack) var(--borderSize);
+  border-right: solid var(--modalBack) var(--borderSize);
+}
+
+#variationFolderLearn:hover{
+  background-color: var(--hoverCard);
 }
 
 #variationFolderLearn span {

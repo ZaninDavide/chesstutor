@@ -31,6 +31,8 @@ class GroupTrainingPage extends Component {
           op_index={op_index}
 
           buttons={["back", "help", "more"]}
+          moreMenuButtons={["analyse", "flip"]}
+
           is_move_allowed_group={this.props.is_move_allowed_group}
           get_pc_move_data_group={this.props.get_pc_move_data_group}
           get_correct_moves_data_group={this.props.get_correct_moves_data_group}

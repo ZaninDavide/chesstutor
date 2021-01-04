@@ -21,6 +21,19 @@ class BoardData extends Component {
   render() {
     let tabs = []
 
+    if (this.props.tabIcons.indexOf("list") !== -1) {
+      const tabTree =
+        <div id="boardDataTreeSlide" key="boardDataTreeSlide" className="boardDataSlide">
+          <Tree key="tree"
+            json_moves={this.props.json_moves}
+            getComment={this.props.getComment}
+            op_index={this.props.op_index}
+          />
+        </div>
+      tabs.push(tabTree)
+    }
+
+    /*
     if (this.props.tabIcons.indexOf("comment") !== -1) {
       const tabComment =
         <div id="boardDataCommentSlide" key="boardDataCommentSlide" className="boardDataSlide"
@@ -33,19 +46,7 @@ class BoardData extends Component {
         </div>
       tabs.push(tabComment)
     }
-
-    if (this.props.tabIcons.indexOf("list") !== -1) {
-      const tabTree =
-        <div id="boardDataTreeSlide" key="boardDataTreeSlide" className="boardDataSlide">
-          Moves tree:<br />
-          <Tree key="tree"
-            json_moves={this.props.json_moves}
-            getComment={this.props.getComment}
-            op_index={this.props.op_index}
-          />
-        </div>
-      tabs.push(tabTree)
-    }
+    */
 
     if (this.props.tabIcons.indexOf("computer") !== -1) {
       const tabStockfish = <StockfishUI key="stockfishUI"
@@ -65,7 +66,9 @@ class BoardData extends Component {
 
     return <div id="boardData" key="boardData">
 
+    { this.props.tabIcons.length > 1 ?
       <div id="boardDataTabIconsContainer">
+        <div id="boardDataTabIconsInnerContainer">
         {
           this.props.tabIcons.map((t, index) =>
             <div
@@ -75,7 +78,8 @@ class BoardData extends Component {
             >{t}</div>
           )
         }
-      </div>
+        </div>
+      </div> : <div></div> }
 
       <div id="boardDataSwipe" key="boardDataSwipe">
         <SwipeableViews resistance onChangeIndex={this.setTab} index={this.state.tab}>

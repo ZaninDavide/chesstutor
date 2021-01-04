@@ -133,7 +133,7 @@ class Board extends Component {
               this.props.stockfish ?
                 ["computer"]
                 :
-                ["comment", "list"]
+                ["list"] // , "comment"
             }
             thereIsComment={thereIsComment}
             onCommentClick={this.onCommentClick}
@@ -225,19 +225,22 @@ class Board extends Component {
         {/* MORE MENU */}
         <HangingMenu visible={this.state.boardMenuVisible} close={() => this.setState({ boardMenuVisible: false })}>
           {/* ROTATE BOARD */}
-          <button className="simpleButton hMenuButton" onClick={() => {
-            this.setState({ boardMenuVisible: false })
-            //this.props.history.push("/analysis/" + this.props.rotation + "/" + this.state.game.fen().split("/").join("_"))
-            //this.props.history.push("/analysis/" + this.props.rotation + "/" + this.state.game.pgn().split(" ").join("_"))
-            this.setState(old => {return{rotated: !old.rotated}})
-          }}>
-            <div className="hMenuButtonContent">
-              <div className="hMenuButtonIcon">import_export</div>
-              <div className="hMenuButtonLabel">Flip</div>
-            </div>
-          </button>
+          {this.props.moreMenuButtons.indexOf("flip") !== -1 ?
+            <button className="simpleButton hMenuButton" onClick={() => {
+              this.setState({ boardMenuVisible: false })
+              //this.props.history.push("/analysis/" + this.props.rotation + "/" + this.state.game.fen().split("/").join("_"))
+              //this.props.history.push("/analysis/" + this.props.rotation + "/" + this.state.game.pgn().split(" ").join("_"))
+              this.setState(old => {return{rotated: !old.rotated}})
+            }}>
+              <div className="hMenuButtonContent">
+                <div className="hMenuButtonIcon">import_export</div>
+                <div className="hMenuButtonLabel">Flip</div>
+              </div>
+            </button> : null
+          }
           {/* ANALYSIS BUTTON */}
-          <button className="simpleButton hMenuButton" onClick={() => {
+          {this.props.moreMenuButtons.indexOf("analyse") !== -1 ?
+            <button className="simpleButton hMenuButton" onClick={() => {
             this.setState({ boardMenuVisible: false })
             //this.props.history.push("/analysis/" + this.props.rotation + "/" + this.state.game.fen().split("/").join("_"))
             //this.props.history.push("/analysis/" + this.props.rotation + "/" + this.state.game.pgn().split(" ").join("_"))
@@ -248,7 +251,8 @@ class Board extends Component {
               <div className="hMenuButtonIcon">edit</div>
               <div className="hMenuButtonLabel">Analyse position</div>
             </div>
-          </button>
+          </button> : null
+          }
         </HangingMenu>
 
         {/* YOU ADDED A VARIATION! */}
@@ -1043,7 +1047,7 @@ class Board extends Component {
     let b_names = []
     if (this.props.buttons) {
       // MORE
-      if (this.props.buttons.indexOf("more") !== -1) {
+      if (this.props.buttons.indexOf("more") !== -1 && this.props.moreMenuButtons.length > 0) {
         b_objects.push(
           <button id="moreButton" key="moreButton" className="simpleButton boardButton"
             onClick={() => {
@@ -1102,6 +1106,16 @@ class Board extends Component {
           >keyboard_arrow_right</button>
         )
         b_names.push("forwardNextButton")
+      }
+      // COMMENT THIS MOVE
+      if (this.props.buttons.indexOf("add_comment") !== -1) {
+        b_objects.push(
+          <button id="addCommentButton" key="addCommentButton" className="simpleButton boardButton"
+            onClick={this.onCommentClick}
+            disabled={false}
+          >comment</button>
+        )
+        b_names.push("addCommentButton")
       }
       // CREATE VARIATION BUTTON - DONE
       if (this.props.buttons.indexOf("done") !== -1) {

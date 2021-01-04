@@ -15,6 +15,8 @@ class Arrows extends Component {
         y: cells_list[a.to[1]] / 8 + 100 / 16
       }
 
+      if(isNaN(from.x) || isNaN(from.y) || isNaN(to.x) || isNaN(to.y) ) return null
+
       const extra = 100 / 16
       if (to.x - from.x === 0) {
         to.y -= extra * Math.sign(to.y - from.y)

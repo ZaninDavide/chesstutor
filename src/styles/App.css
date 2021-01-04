@@ -34,6 +34,12 @@
   --headerHeight: calc(var(--uiElementMediumHeight) + var(--smallMargin) * 2);
 }
 
+@media (max-height: 600px) {
+  .layout {
+    --headerHeight: 32px;
+  }
+}
+
 .lightTheme {
   /* special colors */
   --main: #43ce76; /* #00bcd4; */

@@ -57,7 +57,8 @@ class TrainingPage extends Component {
         <Header mainButtonText="arrow_back" title={<Translator text={"Analysis"} />} />
         <Board
           history={this.props.history}
-          buttons={["back", "forward_next"]}
+          buttons={["more", "back", "forward_next"]}
+          moreMenuButtons={["flip"]}
           rotation={color}
           playColor={this.state.playColor}
           allowCommentEdit={false}

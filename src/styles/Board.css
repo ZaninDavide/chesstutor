@@ -121,6 +121,7 @@
 
 .boardDataSlide{
   padding: var(--mediumMargin);
+  padding-top: var(--smallMargin);
   overflow-y: auto;
   box-sizing: border-box;
 }
@@ -158,7 +159,19 @@
 #boardDataTabIconsContainer{
   height: fit-content;
   z-index: 2;
-  text-align: right;
+}
+
+#boardDataTabIconsInnerContainer{    
+  width: -moz-fit-content;
+  width: fit-content;
+  margin-left: auto;
+  margin-right: auto;
+  padding-left: var(--smallMargin);
+  padding-right: var(--smallMargin);
+  padding-top: 1px;
+  background-color: var(--onBack);
+  border-bottom-left-radius: var(--borderRadius);
+  border-bottom-right-radius: var(--borderRadius);
 }
 
 .boardDataTabIcon{
@@ -167,6 +180,7 @@
   display: inline-block;
   background-color: var(--backColor);
   margin-left: 2px;
+  cursor: pointer;
 }
 
 #arrows_svg{

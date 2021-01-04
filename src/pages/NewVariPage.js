@@ -24,7 +24,8 @@ class VariationPage extends Component {
           createVari={this.props.createVari}
           op_index={op_index}
           vari_name={vari_name}
-          buttons={["back", "done", "multi_next"]}
+          buttons={["back", "done", "multi_next", "more", "add_comment"]}
+          moreMenuButtons={["flip"]}
           rotation={op.op_color}
           playColor={"both"}
           editComment={this.props.editComment}

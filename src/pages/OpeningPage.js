@@ -87,23 +87,30 @@ class OpeningPage extends Component {
           <div className="variationTitle" key={"variationTitle_" + vari_name}>
             <h3>{vari_name}</h3>
             <button
-              className="variationPlusButton iconText"
-              onClick={() => {
-                this.props.history.push("/newVariation/" + this.props.match.params.op_index + "/" + vari_name)
-              }}
-            >add</button>
+              className="variationExtraButton iconText"
+            >edit</button>
           </div>
           <div id="variationFolderList">
             {not_archived[vari_name]}
           </div>
           <div id="variationFolderLearnContainer">
-            <button id="variationFolderLearn" className="barButton impButton"
-              onClick={() => {
-                this.props.history.push("/openings/training/" + this.props.match.params.op_index + "/" + vari_name)
-              }}
-            >
-              <span className="iconText">school</span>
-            </button>
+            <div id="variationFolderLearnFiller"></div>
+            <div id="variationFolderLearnButtons">
+              <button id="variationFolderLearn" className="barButton"
+                onClick={() => {
+                  this.props.history.push("/openings/training/" + this.props.match.params.op_index + "/" + vari_name)
+                }}
+              >
+                <span className="iconText">school</span>
+              </button>
+              <button id="variationFolderLearn" className="barButton"       
+                onClick={() => {
+                  this.props.history.push("/newVariation/" + this.props.match.params.op_index + "/" + vari_name)
+                }}
+              >
+                <span className="iconText">add</span>
+              </button>
+            </div>
           </div>
         </div>
       )

@@ -76,12 +76,14 @@ class VariItem extends Component {
           <span className="variItemMenuButton"
             onClick={() => { this.props.delete(); this.setState({ menuVisible: false }) }}
           ><span className="iconText">delete</span><span className="variItemMenuLabel">delete</span></span>
+          {/*
           <span className="variItemMenuButton"
             onClick={() => { this.props.switch_archive(); this.setState({ menuVisible: false }) }}
           ><span className="iconText">{this.props.archived ? "unarchive" : "archive"}</span><span className="variItemMenuLabel">{this.props.archived ? "unarchive" : "archive"}</span></span>
+          */}
           <span className="variItemMenuButton"
             onClick={() => { this.props.rename(); this.setState({ menuVisible: false }) }}
-          ><span className="iconText">edit</span><span className="variItemMenuLabel">edit</span></span>
+          ><span className="iconText">edit</span><span className="variItemMenuLabel">Move / Rename</span></span>
         </div>
 
 
