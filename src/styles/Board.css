@@ -3,6 +3,7 @@
     position: relative; /* necessary for the pieces */
     grid-area: boardContainer;
     margin-bottom: -4px;
+
 }
 
 #boardSVG {
@@ -11,6 +12,7 @@
   max-height: calc(100vh - var(--headerHeight) - var(--uiElementHeight) - 80px);
   max-width: calc(100vh - var(--headerHeight) - var(--uiElementHeight) - 80px);
   */
+  border-radius: var(--borderRadius);
 }
 
 #touchCircle {
@@ -100,6 +102,15 @@
   }
 }
 
+@media (min-width: 1200px) and (min-height: 800px) {
+  #boardContainer{
+    width: 95%;
+    height: 95%;
+    margin-left: 2.5%;
+    margin-top: min(1%, var(--smallMargin));
+  }
+}
+
 #boardUI{
   min-height: var(--uiElementMediumHeight);
   width: 100%;
@@ -159,6 +170,7 @@
 #boardDataTabIconsContainer{
   height: fit-content;
   z-index: 2;
+  pointer-events: none;
 }
 
 #boardDataTabIconsInnerContainer{    
@@ -172,6 +184,7 @@
   background-color: var(--onBack);
   border-bottom-left-radius: var(--borderRadius);
   border-bottom-right-radius: var(--borderRadius);
+  pointer-events: all;
 }
 
 .boardDataTabIcon{

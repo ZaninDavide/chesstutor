@@ -11,6 +11,7 @@ class LoginPage extends Component {
       username: "",
       password: "",
       rememberMe: false,
+      loginWaiting: false,
     }
     this.checkBoxClick = this.checkBoxClick.bind(this)
     this.loginClick = this.loginClick.bind(this)
@@ -91,10 +92,12 @@ class LoginPage extends Component {
 
   async loginClick() {
     if (this.state.username !== "" & this.state.password !== "") {
+      this.setState({loginWaiting: true})
       await this.login() // let login_res = 
       /*if(login_res){
         this.props.history.push("/")
       }*/
+      this.setState({loginWaiting: false})
     } else {
       this.props.notify("Fill both username and password please.")
     }
@@ -134,7 +137,9 @@ class LoginPage extends Component {
             <br />
             <span>{"If you don't have an account yet just "}<Link to="/signup" id="signupLink">sign up</Link>{" instead!"}</span>
           </div>
-          <button onClick={this.loginClick} className="barButton impButton" style={{ position: "absolute", bottom: "var(--mediumMargin)", marginBottom: 0, width: "calc(100% - 30px)" }}><Translator text={"Login"} /></button>
+          <button onClick={this.loginClick} disabled={this.state.loginWaiting} className="barButton impButton" style={{ position: "absolute", bottom: "var(--mediumMargin)", marginBottom: 0, width: "calc(100% - 30px)" }}>
+              <Translator text={"Login"} />
+          </button>
         </div>
       </React.Fragment>
     )

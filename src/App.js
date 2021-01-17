@@ -70,6 +70,7 @@ class App extends Component {
     this.serverRequest = this.serverRequest.bind(this)
     this.get_correct_moves_data_color = this.get_correct_moves_data_color.bind(this)
     this.get_pc_move_data_color = this.get_pc_move_data_color.bind(this)
+    this.get_correct_moves_data_book = this.get_correct_moves_data_book.bind(this)
     this.is_move_allowed_color = this.is_move_allowed_color.bind(this)
     this.setDrawBoardPDF = this.setDrawBoardPDF.bind(this)
     this.getDrawBoardPDF = this.getDrawBoardPDF.bind(this)
@@ -591,7 +592,7 @@ class App extends Component {
     let correct_moves = []
     for (let op_index = 0; op_index < this.state.user_ops.length; op_index++) {
       let op = this.state.user_ops[op_index]
-      if (op.op_color === color && !op.archived) {
+      if ((op.op_color === color || color === "both") && !op.archived) {
         for (let vari_index = 0; vari_index < op.variations.length; vari_index++) {
           // loop through all variations 
           let vari = op.variations[vari_index]
@@ -675,6 +676,36 @@ class App extends Component {
 
     let vari_next_move = vari.moves[json_moves.length] // take the next move
     return vari_next_move
+  }
+
+  get_correct_moves_data_book(json_moves) {
+    let correct_moves = []
+    for (let op_index = 0; op_index < this.state.user_ops.length; op_index++) {
+      let op = this.state.user_ops[op_index]
+      if (!op.archived) {
+        for (let vari_index = 0; vari_index < op.variations.length; vari_index++) {
+          // loop through all variations 
+          let vari = op.variations[vari_index]
+          if (vari.moves.length > json_moves.length && !vari.archived) { // this variation is long enougth and not archived
+            let first_moves = vari.moves.slice(0, json_moves.length)
+
+            // is the variation compatible with the already done moves?
+            if (JSON.stringify(first_moves) === JSON.stringify(json_moves)) {
+              let vari_next_move = JSON.parse(JSON.stringify(vari.moves[json_moves.length])) // take the next move
+              vari_next_move.op_name = op.op_name;
+              vari_next_move.vari_name = vari.vari_name;
+              vari_next_move.vari_subname = vari.vari_subname;
+              
+              // vari_next_move.comment = this.getComment(op_index, [...json_moves, vari_next_move]);
+
+              correct_moves.push(vari_next_move) // add the move to the list
+            }
+
+          }
+        }
+      }
+    }
+    return correct_moves
   }
 
   /* ---------------------------- RENDER ---------------------------- */
@@ -816,6 +847,7 @@ class App extends Component {
       match={match}
       wait_time={this.state.settings.wait_time}
       volume={this.state.settings.volume}
+      get_correct_moves_data_book={this.get_correct_moves_data_book}
     />
     const redirectToLogin = () => <Redirect to="/login" />
     const redirectToHome = () => <Redirect to="/" />

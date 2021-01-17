@@ -12,6 +12,7 @@ class SignupPage extends Component {
       password: "",
       password2: "",
       rememberMe: false,
+      signupWaiting: false,
     }
     this.checkBoxClick = this.checkBoxClick.bind(this)
     this.signUpClick = this.signUpClick.bind(this)
@@ -95,6 +96,7 @@ class SignupPage extends Component {
     if (this.state.username !== "" & this.state.password !== "" & this.state.password2 !== "") {
       if (this.state.password === this.state.password2) {
         if (this.state.username.indexOf(",") === -1) {
+          this.setState({signupWaiting: true})
           let signup_res = await this.signup()
           if (signup_res) {
             // this.props.history.push("/")
@@ -109,6 +111,7 @@ class SignupPage extends Component {
     } else {
       this.props.notify("Fill all fields please.")
     }
+    this.setState({signupWaiting: false})
   }
 
   async loginClick() {
@@ -157,7 +160,7 @@ class SignupPage extends Component {
             <br />
             <span>{"If you already have an account "}<Link to="/login" id="loginLink">log in</Link>{" instead!"}</span>
           </div>
-          <button onClick={this.signUpClick} className="barButton impButton" style={{ position: "absolute", bottom: "var(--mediumMargin)", marginBottom: 0, width: "calc(100% - 30px)" }}><Translator text={"Sign up"} /></button>
+          <button onClick={this.signUpClick} disabled={this.state.signupWaiting} className="barButton impButton" style={{ position: "absolute", bottom: "var(--mediumMargin)", marginBottom: 0, width: "calc(100% - 30px)" }}><Translator text={"Sign up"} /></button>
         </div>
       </React.Fragment>
     )

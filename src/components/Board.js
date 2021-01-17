@@ -131,7 +131,7 @@ class Board extends Component {
           <BoardData
             tabIcons={
               this.props.stockfish ?
-                ["computer"]
+                ["book", "computer"]
                 :
                 ["list"] // , "comment"
             }
@@ -174,6 +174,9 @@ class Board extends Component {
             stockfish_evaluation={this.state.stockfish_evaluation}
             stockfish_chosen_move={this.state.stockfish_chosen_move}
             set_stockfish_depth={this.props.set_stockfish_depth}
+            get_correct_moves_data_book={this.props.get_correct_moves_data_book}
+            book_move={move => this.make_move(move)}
+            get_fen={this.state.game.fen}
           />
         </div>
 
@@ -568,17 +571,29 @@ class Board extends Component {
   }
 
   start_stockfish() {
-    if (typeof (Worker)) {
-      stockfish = new Worker("/stockfish/stockfish.js");
-      let make_this_move = move => this.make_move(move)
-      let is_my_turn_now = () => this.is_my_turn(this.state.game.turn())
-      let stockfish_arrows = () => this.props.stockfish ? this.props.stockfish.show_arrows : false // should always exists
-      let setArrows = arr => this.setArrows(arr)
-      let setEvaluation = value => this.setState({ stockfish_evaluation: value })
-      let setChosenMove = value => this.setState({ stockfish_chosen_move: value })
-      let wait_time = () => this.props.wait_time
-      stockfish.onmessage = async function (event) {
-        console.log(event.data)
+
+    if (!(typeof (Worker))) {
+      console.log("Workers needs to be supported in order to use Stockfish.") // TODO: notify the user
+      return false;
+    } 
+
+
+    let wasmSupported = typeof WebAssembly === 'object' && WebAssembly.validate(Uint8Array.of(0x0, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00));
+
+    stockfish = new Worker(wasmSupported ? '/stockfish/stockfish.wasm.js' : '/stockfish/stockfish.js');
+
+    let make_this_move = move => this.make_move(move)
+    let is_my_turn_now = () => this.is_my_turn(this.state.game.turn())
+    let stockfish_arrows = () => this.props.stockfish ? this.props.stockfish.show_arrows : false // should always exists
+    let setArrows = arr => this.setArrows(arr)
+    let setEvaluation = value => this.setState({ stockfish_evaluation: value })
+    let setChosenMove = value => this.setState({ stockfish_chosen_move: value })
+    let wait_time = () => this.props.wait_time
+    let auto_eval = () => this.props.stockfish.auto_eval
+    let auto_best_move = () => this.props.stockfish.auto_best_move
+
+    stockfish.addEventListener('message', async function (event) {
+      console.log(event.data)
 
         // MAKE THE BEST MOVE
         if (event.data.startsWith("bestmove ")) {
@@ -612,26 +627,38 @@ class Board extends Component {
 
           // SHOW WHAT STOCKFISH IS THINKING
         } else if (event.data.startsWith("info depth ") && event.data.indexOf("currmove ") === -1 && stockfish_arrows()) {
-          let splitted = event.data.split("pv ")
-          let moves = splitted[splitted.length - 1].split(" ").map(m => {
-            return {
-              from: m[0] + m[1],
-              to: m[2] + m[3]
+
+          if(auto_eval()) {
+            let splitted = event.data.split("cp ")
+            let data = splitted[splitted.length - 1].split(" ")
+            if(data.length >= 1){
+              setEvaluation(parseInt(data[0]) / 100)
             }
-          })
+          }
 
-          // if it contains currmove
-          /*
-          let splitted = event.data.slice(currmove, event.data.length).split(" ")
-          moves = [{
-            from: splitted[1][0] + splitted[1][1],
-            to: splitted[1][2] + splitted[1][3]
-          }]
-          */
+          if(auto_best_move()){
+            let splitted = event.data.split("pv ")
+            let moves = splitted[splitted.length - 1].split(" ").map(m => {
+              return {
+                from: m[0] + m[1],
+                to: m[2] + m[3]
+              }
+            })
 
+            // if it contains currmove
+            /*
+            let splitted = event.data.slice(currmove, event.data.length).split(" ")
+            moves = [{
+              from: splitted[1][0] + splitted[1][1],
+              to: splitted[1][2] + splitted[1][3]
+            }]
+            */
+  
+            setArrows(moves ? [moves[0]] : [])
+            setChosenMove(moves ? moves[0].from + "-" + moves[0].to : undefined)
+          
+          }
 
-          setArrows(moves ? [moves[0]] : [])
-          setChosenMove(moves ? moves[0].from + "-" + moves[0].to : undefined)
 
           // EVALUATE POSITION
         } else if (event.data.startsWith("Total Evaluation: ")) {
@@ -641,10 +668,8 @@ class Board extends Component {
             setEvaluation(parseFloat(value))
           }
         }
-      };
-    } else {
-      console.log("Workers needs to be supported in order to use Stockfish.") // TODO: notify the user
-    }
+    });
+
   }
 
   stockfish_move(json_moves) {
@@ -690,7 +715,7 @@ class Board extends Component {
   stockfish_automatics(json_moves) {
     if (this.props.stockfish) {
       // evaluate position if needed
-      if (this.props.stockfish.auto_eval) this.stockfish_evaluate(json_moves)
+      if (this.props.stockfish.auto_eval) this.stockfish_find_best_moves(json_moves) // this.stockfish_evaluate(json_moves)
 
       // find best move if needed
       if (this.props.stockfish.auto_best_move && this.is_my_turn()) this.stockfish_find_best_moves(json_moves)

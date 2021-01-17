@@ -81,11 +81,23 @@
 }
 
 
-#newOpPageBody, #loginPageBody{
+#newOpPageBody{
   margin-left: var(--mediumMargin);
   margin-right: var(--mediumMargin);
 }
 
+#loginPageBody{
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  max-width: min(400px, calc(100% - 2*var(--mediumMargin)));
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#loginPage {
+  position: relative;
+}
 
 #headerChessTutorLabel {
   vertical-align: middle;
@@ -128,7 +140,8 @@
   height: var(--headerHeight);
 }
 
-/*#playVarsButton {
+/*
+#playVarsButton {
   position: absolute;
   margin: 0px;
   padding: 0px;
@@ -139,7 +152,8 @@
   text-align: center;
   line-height: var(--uiElementHeight);
   font-size: var(--iconsFontSize);
-}*/
+}
+*/
 
 #playVarsButton {
   position: absolute;
@@ -221,6 +235,15 @@
   border-radius: var(--borderRadius);
   height: 100%;
   line-height: 1;
+
+  
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -khtml-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
 }
 
 .variationExtraButton:hover {
@@ -681,4 +704,43 @@
 #signupLink, #loginLink{
   color: var(--main);
   text-decoration: underline;
+}
+
+#boardDataBookSlide{
+  padding: 0px;
+}
+
+#bookTable {
+  width: 100%;
+  border: 0px;
+  border-collapse: collapse;
+}
+
+#bookTable td {
+  padding: var(--smallMargin);
+  border-bottom: var(--borderSize) solid var(--onBack);
+}
+
+
+#bookTable tr:last-child {
+  font-weight: bold;
+  height: var(--uiElementSmallHeight);
+}
+
+
+#bookTable tr:nth-child(even){
+  background-color: var(--onBack);
+}
+
+#bookTable .bookTableNumber{
+  min-width: 30px;
+}
+
+#bookTable .bookTableSan{
+  color: var(--main);
+  font-weight: bold;
+}
+
+#bookTable .bookTableSan:hover{
+  background-color: var(--hoverBack);
 }

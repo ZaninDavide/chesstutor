@@ -34,17 +34,25 @@ class StockfishUI extends Component {
                         <td>
                             <span id="depthLabel"><Translator text={"Precision (depth)"} /></span>&nbsp;
                             <div className="optionButtonsContainer">
-                                <Ripples><button onClick={() => this.props.set_stockfish_depth(4)} className="simpleButton" style={{ marginRight: 0, color: this.props.stockfish.depth === 4 ? "var(--main)" : "var(--text)" }}>FAST</button></Ripples>
-                                <Ripples><button onClick={() => this.props.set_stockfish_depth(8)} className="simpleButton" style={{ marginRight: 0, color: this.props.stockfish.depth === 8 ? "var(--main)" : "var(--text)" }}>GOOD</button></Ripples>
-                                <Ripples><button onClick={() => this.props.set_stockfish_depth(12)} className="simpleButton" style={{ marginRight: 0, color: this.props.stockfish.depth === 12 ? "var(--main)" : "var(--text)" }}>PRECISE</button></Ripples>
-                                <Ripples><button onClick={() => this.props.set_stockfish_depth(16)} className="simpleButton" style={{ marginLeft: 0, color: this.props.stockfish.depth === 16 ? "var(--main)" : "var(--text)" }}>ACCURATE</button></Ripples>
-                                <Ripples><button onClick={() => this.props.set_stockfish_depth(20)} className="simpleButton" style={{ marginLeft: 0, color: this.props.stockfish.depth === 20 ? "var(--main)" : "var(--text)" }}>DEEPER</button></Ripples>
+                                <Ripples><button onClick={() => this.props.set_stockfish_depth(8)} className="simpleButton" style={{ marginRight: 0, color: this.props.stockfish.depth === 8 ? "var(--main)" : "var(--text)" }}>FAST</button></Ripples>
+                                <Ripples><button onClick={() => this.props.set_stockfish_depth(12)} className="simpleButton" style={{ marginRight: 0, color: this.props.stockfish.depth === 12 ? "var(--main)" : "var(--text)" }}>GOOD</button></Ripples>
+                                <Ripples><button onClick={() => this.props.set_stockfish_depth(16)} className="simpleButton" style={{ marginRight: 0, color: this.props.stockfish.depth === 16 ? "var(--main)" : "var(--text)" }}>PRECISE</button></Ripples>
+                                <Ripples><button onClick={() => this.props.set_stockfish_depth(20)} className="simpleButton" style={{ marginLeft: 0, color: this.props.stockfish.depth === 20 ? "var(--main)" : "var(--text)" }}>ACCURATE</button></Ripples>
+                                <Ripples><button onClick={() => this.props.set_stockfish_depth(28)} className="simpleButton" style={{ marginLeft: 0, color: this.props.stockfish.depth === 28 ? "var(--main)" : "var(--text)" }}>DEEPER</button></Ripples>
                             </div>
                         </td>
                         <td style={{ textAlign: "center" }}>{this.props.stockfish.depth}</td>
                     </tr>
                 </tbody>
             </table>
+            
+            <br/>
+            <a href={"https://lichess.org/analysis/standard/" + this.props.get_fen()} target="_blank">
+                <button className="simpleButton"><Translator text={"Open on lichess.org"} /></button>
+            </a>
+            <a href={"https://www.chess.com/analysis?fen=" + this.props.get_fen()} target="_blank">
+                <button className="simpleButton"><Translator text={"Open on chess.com"} /></button>
+            </a>
 
             {/*
             <h2>{"Stockfish settings:"}</h2>

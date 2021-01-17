@@ -3,6 +3,7 @@ import SwipeableViews from 'react-swipeable-views';
 import Tree from "./Tree"
 import { process_comment } from "../utilities/san_parsing"
 import StockfishUI from "./StockfishUI";
+import BookUI from "./BookUI";
 
 class BoardData extends Component {
 
@@ -20,6 +21,19 @@ class BoardData extends Component {
 
   render() {
     let tabs = []
+
+    if (this.props.tabIcons.indexOf("book") !== -1) {
+      const tabBook =
+        <div id="boardDataBookSlide" key="boardDataBookSlide" className="boardDataSlide">
+          <BookUI key="book"
+            json_moves={this.props.json_moves}
+            getComment={this.props.getComment}
+            get_correct_moves_data_book={this.props.get_correct_moves_data_book}
+            book_move={this.props.book_move}
+          />
+        </div>
+      tabs.push(tabBook)
+    }
 
     if (this.props.tabIcons.indexOf("list") !== -1) {
       const tabTree =
@@ -59,6 +73,7 @@ class BoardData extends Component {
         switch_auto_eval={this.props.switch_auto_eval}
         switch_auto_best_move={this.props.switch_auto_best_move}
         set_stockfish_depth={this.props.set_stockfish_depth}
+        get_fen={this.props.get_fen}
       />
 
       tabs.push(tabStockfish)
