@@ -64,6 +64,8 @@
   -webkit-user-drag: none;
   -webkit-user-select: none;
   -ms-user-select: none;
+
+  /* filter: drop-shadow(0px 6px 10px rgba(0, 0, 0, 0.2)); // TODO */ 
 }
 
 @media (max-width: 105vh) {
@@ -109,6 +111,17 @@
     margin-left: 2.5%;
     margin-top: min(1%, var(--smallMargin));
   }
+
+}
+
+@media (min-width: 1000px) and (min-height: 600px) {
+  .boardDataTabIcon{
+    font-size: calc(var(--iconsFontSize)*0.75) !important;
+  }
+
+  #boardDataTabTopBar {
+    font-size: var(--titleSize);
+  }
 }
 
 #boardUI{
@@ -123,7 +136,7 @@
   grid-area: boardData;
   overflow-y: hidden;
   display: grid;
-  grid-template-rows: 0px 1fr;
+  grid-template-rows: auto 1fr;
 }
 
 #boardDataSwipe{
@@ -167,23 +180,36 @@
   height: var(--uiElementMediumHeight) !important;
 }
 
-#boardDataTabIconsContainer{
+#boardDataTabTopBar{
   height: fit-content;
   z-index: 2;
   pointer-events: none;
+  margin-left: var(--smallMargin);
+  margin-right: var(--smallMargin);
+  border-bottom: solid var(--borderSize) var(--onBack);
+  padding-top: 2px;
+
+  display: grid;
+  grid-template-columns: 1fr auto;
 }
 
-#boardDataTabIconsInnerContainer{    
-  width: -moz-fit-content;
-  width: fit-content;
-  margin-left: auto;
-  margin-right: auto;
-  padding-left: var(--smallMargin);
-  padding-right: var(--smallMargin);
+#boardDataTabTopBarExtraInfo{
   padding-top: 1px;
-  background-color: var(--onBack);
-  border-bottom-left-radius: var(--borderRadius);
-  border-bottom-right-radius: var(--borderRadius);
+}
+
+#boardDataTabTopBarExtraInfoEvaluation{
+  font-weight: bold;
+}
+
+#boardDataTabIconsContainer{    
+  text-align: right;
+  width: calc(100% - 2*calc(var(--smallMargin)));
+  margin-left: var(--smallMargin);
+  margin-right: var(--mediumMargin);
+  padding-top: 1px;
+
+  /*border-bottom-left-radius: var(--borderRadius);
+  border-bottom-right-radius: var(--borderRadius);*/
   pointer-events: all;
 }
 
@@ -192,8 +218,15 @@
   font-family: "Material Icons";
   display: inline-block;
   background-color: var(--backColor);
-  margin-left: 2px;
+  padding-right: var(--smallMargin);
+  margin-right: var(--smallMargin);
   cursor: pointer;
+  border-right: solid var(--borderSize) var(--onBack);
+}
+
+.boardDataTabIcon:last-child{
+  border-right: 0px;
+  margin-right: 0px;
 }
 
 #arrows_svg{

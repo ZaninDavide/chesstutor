@@ -54,6 +54,7 @@ class Board extends Component {
         subname: "",
       },
       stockfish_evaluation: undefined,
+      stockfish_calculated_depth: 0,
     }
     /* functions */
     this.newGame = this.newGame.bind(this)
@@ -89,6 +90,7 @@ class Board extends Component {
     this.stockfish_find_best_moves = this.stockfish_find_best_moves.bind(this)
     this.stockfish_evaluate = this.stockfish_evaluate.bind(this)
     this.stockfish_automatics = this.stockfish_automatics.bind(this)
+    this.stockfish_go_deeper = this.stockfish_go_deeper.bind(this)
     /* refs */
     this.selectedPiece = React.createRef()
 
@@ -149,6 +151,7 @@ class Board extends Component {
               })
             }}
             switch_auto_eval={() => {
+              this.setState({stockfish_evaluation: undefined})
               this.props.switch_auto_eval(() => {
                 if (this.props.stockfish) {
                   if (this.props.stockfish.auto_eval) {
@@ -173,7 +176,13 @@ class Board extends Component {
             stockfish_evaluate={() => this.stockfish_evaluate(this.state.json_moves)}
             stockfish_evaluation={this.state.stockfish_evaluation}
             stockfish_chosen_move={this.state.stockfish_chosen_move}
-            set_stockfish_depth={this.props.set_stockfish_depth}
+            stockfish_calculated_depth={this.state.stockfish_calculated_depth}
+            set_stockfish_depth={depth => {
+              this.props.set_stockfish_depth(depth)
+              if (this.props.stockfish.auto_eval || this.props.stockfish.auto_best_move) {
+                this.stockfish_go_deeper(depth)
+              }
+            }}
             get_correct_moves_data_book={this.props.get_correct_moves_data_book}
             book_move={move => this.make_move(move)}
             get_fen={this.state.game.fen}
@@ -372,7 +381,7 @@ class Board extends Component {
 
     this.play_move_sound(move)
     this.setArrows([])
-    this.setState({ stockfish_evaluation: undefined, stockfish_chosen_move: undefined })
+    this.setState({ stockfish_evaluation: undefined, stockfish_chosen_move: undefined, setCalculatedDepth: 0 })
 
     return new Promise(res => {
       this.setState(old => {
@@ -586,11 +595,13 @@ class Board extends Component {
     let is_my_turn_now = () => this.is_my_turn(this.state.game.turn())
     let stockfish_arrows = () => this.props.stockfish ? this.props.stockfish.show_arrows : false // should always exists
     let setArrows = arr => this.setArrows(arr)
+    let setCalculatedDepth = value => this.setState({ stockfish_calculated_depth: value })
     let setEvaluation = value => this.setState({ stockfish_evaluation: value })
     let setChosenMove = value => this.setState({ stockfish_chosen_move: value })
     let wait_time = () => this.props.wait_time
     let auto_eval = () => this.props.stockfish.auto_eval
     let auto_best_move = () => this.props.stockfish.auto_best_move
+    let eval_color_factor = () => this.state.game.turn() == "w" ? 1 : -1 
 
     stockfish.addEventListener('message', async function (event) {
       console.log(event.data)
@@ -628,11 +639,14 @@ class Board extends Component {
           // SHOW WHAT STOCKFISH IS THINKING
         } else if (event.data.startsWith("info depth ") && event.data.indexOf("currmove ") === -1 && stockfish_arrows()) {
 
+          let depth = parseInt(event.data.split(" ")[2])
+          setCalculatedDepth(depth)
+
           if(auto_eval()) {
             let splitted = event.data.split("cp ")
             let data = splitted[splitted.length - 1].split(" ")
             if(data.length >= 1){
-              setEvaluation(parseInt(data[0]) / 100)
+              setEvaluation(parseInt(data[0]) / 100 * eval_color_factor())
             }
           }
 
@@ -667,8 +681,13 @@ class Board extends Component {
             let value = splitted[2]
             setEvaluation(parseFloat(value))
           }
+        } else if(event.data.startsWith("uciok")){
+          stockfish.postMessage("setoption name UCI_AnalyseMode value true");
+          stockfish.postMessage("setoption name Analysis Contempt value Off");
         }
     });
+
+    stockfish.postMessage("uci")
 
   }
 
@@ -688,20 +707,18 @@ class Board extends Component {
     }
   }
 
-  stockfish_find_best_moves(json_moves) {
+
+  stockfish_go_deeper(depth = this.props.stockfish.depth) {
     if (!stockfish) {
-      this.start_stockfish()
+      return
     }
 
-    stockfish.postMessage("stop")
-    stockfish.postMessage("ucinewgame")
-    stockfish.postMessage("position startpos moves " + json_moves.map(c => c.from + c.to + (c.promotion ? c.promotion : "")).join(" "))
-    stockfish.postMessage("go depth " + this.props.stockfish.depth)
+    stockfish.postMessage("go depth " + depth)
 
     stockfish_asked += 1
   }
 
-  stockfish_evaluate(json_moves) {
+  stockfish_find_best_moves(json_moves, depth = this.props.stockfish.depth) {
     if (!stockfish) {
       this.start_stockfish()
     }
@@ -709,13 +726,30 @@ class Board extends Component {
     stockfish.postMessage("stop")
     stockfish.postMessage("ucinewgame")
     stockfish.postMessage("position startpos moves " + json_moves.map(c => c.from + c.to + (c.promotion ? c.promotion : "")).join(" "))
-    stockfish.postMessage("eval")
+    // stockfish.postMessage("position fen " + this.state.game.fen())
+    stockfish.postMessage("go depth " + depth)
+
+    stockfish_asked += 1
+  }
+
+  stockfish_evaluate(json_moves, depth = this.props.stockfish.depth) {
+    console.log(json_moves.length)
+    if (!stockfish) {
+      this.start_stockfish()
+    }
+
+    stockfish.postMessage("stop")
+    stockfish.postMessage("ucinewgame")
+    stockfish.postMessage("position startpos moves " + json_moves.map(c => c.from + c.to + (c.promotion ? c.promotion : "")).join(" "))
+    //stockfish.postMessage("position fen " + this.state.game.fen())
+    // stockfish.postMessage("eval")
+    stockfish.postMessage("go depth " + depth)
   }
 
   stockfish_automatics(json_moves) {
     if (this.props.stockfish) {
       // evaluate position if needed
-      if (this.props.stockfish.auto_eval) this.stockfish_find_best_moves(json_moves) // this.stockfish_evaluate(json_moves)
+      if (this.props.stockfish.auto_eval) this.stockfish_evaluate(json_moves)
 
       // find best move if needed
       if (this.props.stockfish.auto_best_move && this.is_my_turn()) this.stockfish_find_best_moves(json_moves)

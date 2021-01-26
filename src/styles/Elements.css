@@ -729,7 +729,7 @@
 
 
 #bookTable tr:nth-child(even){
-  background-color: var(--onBack);
+  background-color: var(--hoverBack);
 }
 
 #bookTable .bookTableNumber{
@@ -742,5 +742,5 @@
 }
 
 #bookTable .bookTableSan:hover{
-  background-color: var(--hoverBack);
+  background-color: var(--onBack);
 }

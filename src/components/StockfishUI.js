@@ -18,13 +18,21 @@ class StockfishUI extends Component {
                         <td><CheckBox text="Position evaluation" checked={this.props.stockfish.auto_eval} click={this.props.switch_auto_eval} /></td>
                         <td>
                             <button className="simpleButton" onClick={this.props.stockfish_evaluate}>
-                                {this.props.stockfish_evaluation !== undefined ? this.props.stockfish_evaluation : "--"}
+                                {(() => {
+                                    if(this.props.stockfish_evaluation === undefined){
+                                        return "-"
+                                    }else if(isNaN(this.props.stockfish_evaluation)){
+                                        return "#"
+                                    }else{
+                                        return this.props.stockfish_evaluation
+                                    }
+                                })()}
                             </button>
                         </td>
                     </tr>
                     <tr>
                         <td><CheckBox text="Best move" checked={this.props.stockfish.auto_best_move} click={this.props.switch_auto_best_move} /></td>
-                        <td><button className="simpleButton" onClick={this.props.stockfish_find_best_moves}>{this.props.stockfish_chosen_move || "--"}</button></td>
+                        <td><button className="simpleButton" onClick={this.props.stockfish_find_best_moves}>{this.props.stockfish_chosen_move || "-"}</button></td>
                     </tr>
                     <tr>
                         <td><CheckBox text="Play agains the computer" checked={this.props.stockfish.makes_moves} click={this.props.switch_stockfish} /></td>

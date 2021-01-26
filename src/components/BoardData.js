@@ -82,8 +82,23 @@ class BoardData extends Component {
     return <div id="boardData" key="boardData">
 
     { this.props.tabIcons.length > 1 ?
-      <div id="boardDataTabIconsContainer">
-        <div id="boardDataTabIconsInnerContainer">
+      <div id="boardDataTabTopBar">
+        <div id="boardDataTabTopBarExtraInfo">
+          <span id="boardDataTabTopBarExtraInfoEvaluation">
+            {(() => {
+                if(this.props.stockfish_evaluation === undefined){
+                    return "-"
+                }else if(isNaN(this.props.stockfish_evaluation)){
+                    return "#"
+                }else{
+                    return this.props.stockfish_evaluation > 0 ? ("+"+this.props.stockfish_evaluation) : this.props.stockfish_evaluation 
+                }
+            })()}
+          </span>
+          &nbsp;
+          {"(" + this.props.stockfish_calculated_depth + "/" + this.props.stockfish.depth + ")"}
+        </div>
+        <div id="boardDataTabIconsContainer">
         {
           this.props.tabIcons.map((t, index) =>
             <div

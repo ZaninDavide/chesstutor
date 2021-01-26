@@ -53,7 +53,7 @@ class VariItem extends Component {
               }
             })()}
             {<p className="smallText">
-              {thisVari.moves.length} <Translator text={thisVari.moves.length === 1 ? "move" : "moves"} />
+              {Math.floor(thisVari.moves.length / 2) + 1}&nbsp;<Translator text={thisVari.moves.length === 1 || thisVari.moves.length === 2 ? "move" : "moves"} />
             </p>}
           </div>
         </div>
