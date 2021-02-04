@@ -9,6 +9,10 @@ class mailPage extends Component {
     this.discardMail = this.discardMail.bind(this)
   }
 
+  componentDidMount(){
+    this.props.updateInbox()
+  }
+
   acceptMail(mail, mail_id) {
     this.props.addOpening(mail)
     this.props.deleteMail(mail_id)

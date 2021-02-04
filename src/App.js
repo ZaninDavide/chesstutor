@@ -86,6 +86,9 @@ class App extends Component {
     this.get_correct_moves_data_group = this.get_correct_moves_data_group.bind(this)
     this.setWaitTime = this.setWaitTime.bind(this)
     this.setSetting = this.setSetting.bind(this)
+    this.renameVariGroup = this.renameVariGroup.bind(this)
+    this.deleteVariGroup = this.deleteVariGroup.bind(this)
+    this.updateInbox = this.updateInbox.bind(this)
   }
 
   componentDidMount() {
@@ -228,6 +231,23 @@ class App extends Component {
     // this.serverRequest("POST", "/setWaitTime", { millis })
     // this.setState({ wait_time: millis })
     this.setSetting("wait_time", millis)
+  }
+
+  async updateInbox(){
+    if (this.state.bearer) {
+      let data = await fetch(
+        SERVER_URI + "/inbox",
+        {
+          headers: {
+            Authorization: "Bearer " + this.state.bearer,
+          },
+        }
+      ).then(res => res.json())
+
+      this.setState({inbox: data.inbox ? data.inbox : []})
+    } else {
+      console.log("Log in before looking for the user's inbox")
+    }
   }
 
   /* ---------------------------- NOTIFICATIONS ---------------------------- */
@@ -389,6 +409,29 @@ class App extends Component {
 
   getOpFreeSubnames(op_index, new_vari_name, allSubNames) {
     return allSubNames.filter(subname => this.state.user_ops[op_index].variations.filter(v => v.vari_name === new_vari_name && v.vari_subname === subname).length === 0)
+  }
+
+  
+  renameVariGroup(op_index, vari_group_name, vari_group_new_name) {
+    this.setState(old => {
+      let new_user_ops = old.user_ops
+      new_user_ops[op_index].variations.map(c => {
+        if(c.vari_name === vari_group_name) c.vari_name = vari_group_new_name
+      })
+
+      this.serverRequest("POST", "/renameVariationGroup", { op_index, vari_group_name, vari_group_new_name })
+      return { user_ops: new_user_ops }
+    })
+  }
+  
+  deleteVariGroup(op_index, vari_group_name) {
+    this.setState(old => {
+      let new_user_ops = old.user_ops
+      new_user_ops[op_index].variations = new_user_ops[op_index].variations.filter(c => c.vari_name !== vari_group_name)
+
+      this.serverRequest("POST", "/deleteVariationGroup", { op_index, vari_group_name })
+      return { user_ops: new_user_ops }
+    })
   }
 
   /* ---------------------------- COMMENTS ---------------------------- */
@@ -727,6 +770,8 @@ class App extends Component {
       renameVari={this.renameVari}
       setVariSubname={this.setVariSubname}
       deleteVari={this.deleteVari}
+      renameVariGroup={this.renameVariGroup}
+      deleteVariGroup={this.deleteVariGroup}
     />
     const trainingPage = ({ match, history }) => <TrainingPage
       history={history}
@@ -817,6 +862,7 @@ class App extends Component {
       addOpening={this.addOpening}
       deleteMail={this.deleteMail}
       notify={this.notify}
+      updateInbox={this.updateInbox}
     />
     const colorTrainingPage = ({ match, history }) => <ColorTrainingPage
       history={history}

@@ -6,6 +6,7 @@ import HangingMenu from "../components/HangingMenu"
 import Modal from "../components/Modal"
 import RenameVariModal from "../components/RenameVariModal"
 import NewVariGroupModal from "../components/NewVariGroupModal"
+import VariGroupModal from "../components/VariGroupModal"
 
 
 class OpeningPage extends Component {
@@ -20,6 +21,7 @@ class OpeningPage extends Component {
       variDeleteVisible: false,
       variNewName: "",
       newVariGroupModalVisible: false,
+      variGroupModalVisible: false,
     }
     this.newVariClick = this.newVariClick.bind(this)
     this.startGame = this.startGame.bind(this)
@@ -88,6 +90,7 @@ class OpeningPage extends Component {
             <h3>{vari_name}</h3>
             <button
               className="variationExtraButton iconText"
+              onClick={() => this.setState({variGroupModalVisible: true, selected_vari_group_name: vari_name})}
             >edit</button>
           </div>
           <div id="variationFolderList">
@@ -270,6 +273,16 @@ class OpeningPage extends Component {
           history={this.props.history}
           op_index={this.props.match.params.op_index}
         ></NewVariGroupModal>
+
+        {/* EDIT VARI_GROUP MODAL */}
+        <VariGroupModal
+          visible={this.state.variGroupModalVisible}
+          close={() => this.setState({ variGroupModalVisible: false })}
+          op_index={this.props.match.params.op_index}
+          vari_group_name={this.state.selected_vari_group_name}
+          renameThisVariGroup={new_name => this.props.renameVariGroup(this.props.match.params.op_index, this.state.selected_vari_group_name, new_name) }
+          deleteThisVariGroup={() => this.props.deleteVariGroup(this.props.match.params.op_index, this.state.selected_vari_group_name)}
+        />
       </React.Fragment>
     )
   }
