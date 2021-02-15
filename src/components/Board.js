@@ -91,6 +91,7 @@ class Board extends Component {
     this.stockfish_evaluate = this.stockfish_evaluate.bind(this)
     this.stockfish_automatics = this.stockfish_automatics.bind(this)
     this.stockfish_go_deeper = this.stockfish_go_deeper.bind(this)
+    this.get_lichess_cloud_evaluation = this.get_lichess_cloud_evaluation.bind(this)
     /* refs */
     this.selectedPiece = React.createRef()
 
@@ -579,6 +580,8 @@ class Board extends Component {
     stockfish = undefined;
   }
 
+  /* ---------------------------- STOCKFISH AND CLOUD EVALUATION ---------------------------- */
+
   start_stockfish() {
 
     if (!(typeof (Worker))) {
@@ -610,7 +613,7 @@ class Board extends Component {
         if (event.data.startsWith("bestmove ")) {
           let move = event.data.split(" ")[1]
           if (stockfish_asked === 1 && !is_my_turn_now()) {
-            console.log("BEST " + move)
+            // console.log("BEST " + move)
             let remaining_time = Math.max(wait_time() - (new Date() - stockfish_request_time), 0)
             if (move.length === 4) {
               setTimeout(() => {
@@ -698,7 +701,13 @@ class Board extends Component {
 
     stockfish.postMessage("stop")
     stockfish.postMessage("ucinewgame")
-    stockfish.postMessage("position startpos moves " + json_moves.map(c => c.from + c.to + (c.promotion ? c.promotion : "")).join(" "))
+
+    if(JSON.stringify(this.state.json_moves) === JSON.stringify(json_moves)){
+      stockfish.postMessage("position fen " + this.state.game.fen())
+    }else{
+      stockfish.postMessage("position startpos moves " + json_moves.map(c => c.from + c.to + (c.promotion ? c.promotion : "")).join(" "))
+    }
+
     stockfish.postMessage("go depth " + this.props.stockfish.depth)
 
     stockfish_asked += 1
@@ -718,41 +727,107 @@ class Board extends Component {
     stockfish_asked += 1
   }
 
-  stockfish_find_best_moves(json_moves, depth = this.props.stockfish.depth) {
-    if (!stockfish) {
-      this.start_stockfish()
+  async get_lichess_cloud_evaluation(json_moves){
+    let fen;
+    let possible_moves;
+
+    if(JSON.stringify(this.state.json_moves) === JSON.stringify(json_moves)){
+      fen = this.state.game.fen()
+      possible_moves = this.state.game.moves()
+    }else{
+      let eval_game = new Chess();
+      json_moves.map(m => eval_game.move(m.san))
+      fen = eval_game.fen()
+      possible_moves = eval_game.moves()
     }
 
-    stockfish.postMessage("stop")
-    stockfish.postMessage("ucinewgame")
-    stockfish.postMessage("position startpos moves " + json_moves.map(c => c.from + c.to + (c.promotion ? c.promotion : "")).join(" "))
-    // stockfish.postMessage("position fen " + this.state.game.fen())
-    stockfish.postMessage("go depth " + depth)
 
-    stockfish_asked += 1
-  }
-
-  stockfish_evaluate(json_moves, depth = this.props.stockfish.depth) {
-    console.log(json_moves.length)
-    if (!stockfish) {
-      this.start_stockfish()
+    const en_passant = fen.split(/ /g, )[3]
+    if(en_passant !== "-"){
+      if(possible_moves.filter(m => m.piece === "p" && m.flag === "e").length === 0){
+        fen = fen.replace(" " + en_passant + " ", " - ")
+      }
     }
 
-    stockfish.postMessage("stop")
-    stockfish.postMessage("ucinewgame")
-    stockfish.postMessage("position startpos moves " + json_moves.map(c => c.from + c.to + (c.promotion ? c.promotion : "")).join(" "))
-    //stockfish.postMessage("position fen " + this.state.game.fen())
-    // stockfish.postMessage("eval")
-    stockfish.postMessage("go depth " + depth)
+    let url = "https://lichess.org/api/cloud-eval?fen=" + fen.replace(/ /g, "%20")
+    let eval_data = await (fetch(url).then(data => data.json()).then(res => res))
+
+    return eval_data
   }
 
-  stockfish_automatics(json_moves) {
+  async stockfish_find_best_moves(json_moves, lichess_eval_data, depth = this.props.stockfish.depth) {
+    const eval_data = lichess_eval_data ? lichess_eval_data : await this.get_lichess_cloud_evaluation(json_moves)
+    
+    if(eval_data.error || eval_data.depth < depth){
+      if (!stockfish) {
+        this.start_stockfish()
+      }
+  
+      stockfish.postMessage("stop")
+      stockfish.postMessage("ucinewgame")
+      
+      if(JSON.stringify(this.state.json_moves) === JSON.stringify(json_moves)){
+        stockfish.postMessage("position fen " + this.state.game.fen())
+      }else{
+        stockfish.postMessage("position startpos moves " + json_moves.map(c => c.from + c.to + (c.promotion ? c.promotion : "")).join(" "))
+      }
+
+      stockfish.postMessage("go depth " + depth)
+  
+      stockfish_asked += 1
+    }else{
+      const move_str = eval_data.pvs[0].moves.split(" ")[0]
+      this.setState({ stockfish_chosen_move: move_str[0] + move_str[1] + "-" + move_str[2] + move_str[3] })
+      this.setArrows([{
+        from: move_str[0] + move_str[1],
+        to: move_str[2] + move_str[3]
+      }])
+    }
+
+
+  }
+
+
+  async stockfish_evaluate(json_moves, lichess_eval_data, depth = this.props.stockfish.depth) {
+    const eval_data = lichess_eval_data ? lichess_eval_data : await this.get_lichess_cloud_evaluation(json_moves)
+
+    if(eval_data.error || eval_data.depth < depth){
+      // evaluate locally
+      if (!stockfish) {
+        this.start_stockfish()
+      }
+  
+      stockfish.postMessage("stop")
+      stockfish.postMessage("ucinewgame")
+
+      if(JSON.stringify(this.state.json_moves) === JSON.stringify(json_moves)){
+        stockfish.postMessage("position fen " + this.state.game.fen())
+      }else{
+        stockfish.postMessage("position startpos moves " + json_moves.map(c => c.from + c.to + (c.promotion ? c.promotion : "")).join(" "))
+      }
+
+      // stockfish.postMessage("eval")
+      stockfish.postMessage("go depth " + depth)
+    }else{
+      this.setState({ stockfish_evaluation: eval_data.pvs[0].cp / 100, stockfish_calculated_depth: eval_data.depth })
+    }
+
+  }
+
+  async stockfish_automatics(json_moves) {
     if (this.props.stockfish) {
-      // evaluate position if needed
-      if (this.props.stockfish.auto_eval) this.stockfish_evaluate(json_moves)
-
-      // find best move if needed
-      if (this.props.stockfish.auto_best_move && this.is_my_turn()) this.stockfish_find_best_moves(json_moves)
+      if(this.props.stockfish.auto_eval && this.props.stockfish.auto_best_move){  
+        // evaluate position and find the best move if needed
+        const eval_data = await this.get_lichess_cloud_evaluation(json_moves)
+        this.stockfish_evaluate(json_moves, eval_data)
+        this.stockfish_find_best_moves(json_moves, eval_data)
+      }else if (this.props.stockfish.auto_eval) {
+        // evaluate position if needed
+        this.stockfish_evaluate(json_moves)
+      }else if (this.props.stockfish.auto_best_move && this.is_my_turn()) {
+        // find best move if needed
+        this.stockfish_find_best_moves(json_moves)
+      }
     }
   }
 
