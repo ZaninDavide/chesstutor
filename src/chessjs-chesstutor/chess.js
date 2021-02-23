@@ -130,10 +130,10 @@ var Chess = function(fen) {
 
   var RANK_1 = 7;
   var RANK_2 = 6;
-  //var RANK_3 = 5;
-  //var RANK_4 = 4;
-  //var RANK_5 = 3;
-  //var RANK_6 = 2;
+  var RANK_3 = 5;
+  var RANK_4 = 4;
+  var RANK_5 = 3;
+  var RANK_6 = 2;
   var RANK_7 = 1;
   var RANK_8 = 0;
 
@@ -554,6 +554,19 @@ var Chess = function(fen) {
       }
     }
 
+    var allowedPieceType = function (type) {
+      if(!options) return true
+      if(!options.piece) return true
+      return options.piece === type
+    }
+
+    var allowedToSquare = function (square_number) {
+      if(!options) return true
+      if(!options.to) return true
+      if(Number.isFinite(options.to)) return options.to === square_number
+      return SQUARES[options.to] === square_number
+    }
+
     for (var i = first_sq; i <= last_sq; i++) {
       /* did we run off the end of the board */
       if (i & 0x88) {
@@ -562,7 +575,7 @@ var Chess = function(fen) {
       }
 
       var piece = board[i];
-      if (piece == null || piece.color !== us) {
+      if (piece == null || piece.color !== us || !allowedPieceType(piece.type)) {
         continue;
       }
 
@@ -570,13 +583,16 @@ var Chess = function(fen) {
         /* single square, non-capturing */
         var square = i + PAWN_OFFSETS[us][0];
         if (board[square] == null) {
-          add_move(board, moves, i, square, BITS.NORMAL);
+          if(allowedToSquare(square)) add_move(board, moves, i, square, BITS.NORMAL);
+          
 
           /* double square */
           var double_square = i + PAWN_OFFSETS[us][1];
-          if (second_rank[us] === rank(i) && board[double_square] == null) {
-            add_move(board, moves, i, double_square, BITS.BIG_PAWN);
-          }
+          if(allowedToSquare(double_square)){
+            if (second_rank[us] === rank(i) && board[double_square] == null) {
+              add_move(board, moves, i, double_square, BITS.BIG_PAWN);
+            }
+          } 
         }
 
         /* pawn captures */
@@ -584,10 +600,12 @@ var Chess = function(fen) {
           var pawn_square = i + PAWN_OFFSETS[us][jj];
           if (pawn_square & 0x88) continue;
 
-          if (board[pawn_square] != null && board[pawn_square].color === them) {
-            add_move(board, moves, i, pawn_square, BITS.CAPTURE);
-          } else if (pawn_square === ep_square) {
-            add_move(board, moves, i, ep_square, BITS.EP_CAPTURE);
+          if(allowedToSquare(pawn_square)){
+            if (board[pawn_square] != null && board[pawn_square].color === them) {
+              add_move(board, moves, i, pawn_square, BITS.CAPTURE);
+            } else if (pawn_square === ep_square) {
+              add_move(board, moves, i, ep_square, BITS.EP_CAPTURE);
+            }
           }
         }
       } else {
@@ -603,12 +621,14 @@ var Chess = function(fen) {
             i_square += offset;
             if (i_square & 0x88) break;
 
-            if (board[i_square] == null) {
-              add_move(board, moves, i, i_square, BITS.NORMAL);
-            } else {
-              if (board[i_square].color === us) break;
-              add_move(board, moves, i, i_square, BITS.CAPTURE);
-              break;
+            if (allowedToSquare(i_square)){
+              if (board[i_square] == null) {
+                add_move(board, moves, i, i_square, BITS.NORMAL);
+              } else {
+                if (board[i_square].color === us) break;
+                add_move(board, moves, i, i_square, BITS.CAPTURE);
+                break;
+              }
             }
 
             /* break, if knight or king */
@@ -627,6 +647,7 @@ var Chess = function(fen) {
         var castling_from = kings[us];
         var castling_to = castling_from + 2;
         if (
+          allowedToSquare(castling_to) && 
           board[castling_from + 1] == null &&
           board[castling_to] == null &&
           !attacked(them, kings[us]) &&
@@ -643,6 +664,7 @@ var Chess = function(fen) {
         var castling_to_queen_side = castling_from_queen_side - 2;
 
         if (
+          allowedToSquare(castling_to_queen_side) && 
           board[castling_from_queen_side - 1] == null &&
           board[castling_from_queen_side - 2] == null &&
           board[castling_from_queen_side - 3] == null &&
@@ -1184,8 +1206,207 @@ var Chess = function(fen) {
     return s;
   }
 
+  /// this function can be called when we are sure that the move passed is legal
+  /// in this way we save a lot of time while analysing databases of games where
+  /// there are many many moves to play and we are sure they are all legal.
+  function unsafe_move_from_san(san) {
+
+    // castel short
+    if(san === "O-O") {
+      if(turn === WHITE) return build_move( board, 116, 118, BITS.KSIDE_CASTLE ) // e1=116  g1=118
+      if(turn === BLACK) return build_move( board,   4,   6, BITS.KSIDE_CASTLE ) // e8=4    g8=6
+    }
+    // castel long
+    if(san === "O-O-O") {
+      if(turn === WHITE) return build_move( board, 116, 114, BITS.QSIDE_CASTLE ) // e1=116  c1=114
+      if(turn === BLACK) return build_move( board,   4,   2, BITS.QSIDE_CASTLE ) // e8=4    c8=2
+    }
+
+    var matches = san.match(/([KQRBNP])?([a-h])?([1-8])?(x)?([a-h][1-8])(\=[QRBN])?([+#?!])?/)
+
+    // matches[0] === san
+
+    const piece_type = (matches[1] || "P").toLowerCase()
+    const file_from = matches[2] || undefined
+    const rank_from = matches[3] || undefined
+    const is_a_capture = matches[4] ? true : false
+    const to = matches[5]
+    const to_number = SQUARES[to]
+    const promotion = matches[6] ? (matches[6].slice(1, matches[6].length)).toLowerCase() : undefined
+
+    // check if this is valid square of the board
+    // this trick works because the pieces will never move more than 8 squares
+    // and because the board is defined leaving gaps of 16 between the ranks
+    const is_valid_square = (square) => !(square & 0x88)
+
+    // get color of a square by its number
+    const get_square_color = sq_0x88 => (rank(sq_0x88) + file(sq_0x88)) % 2 === 0 ? true : false; // true=light false=dark
+
+    const FILES = {a: 0, b: 1, c: 2, d: 3, e: 4, f: 5, g: 6, h: 7}
+    const RANKS = {"1": 7, "2": 6, "3": 5, "4": 4, "5": 3, "6": 2, "7": 1, "8": 0}
+
+    // PAWN CAPTURE OR ENPASSANT
+    if (piece_type === PAWN && is_a_capture && file_from){
+      var is_enpassant = board[to_number] === null
+
+      var color_factor = turn === WHITE ? 1 : -1
+      var from_1 = to_number + 15*color_factor // possible from square
+      var from_2 = to_number + 17*color_factor // possible from square
+
+      if(is_valid_square(from_1)) if(file(from_1) === FILES[file_from] && board[from_1].type === PAWN && board[from_1].color === turn) 
+        return build_move( board, from_1, to_number, is_enpassant ? BITS.EP_CAPTURE : BITS.CAPTURE )
+
+      if(is_valid_square(from_2)) if(file(from_2) === FILES[file_from] && board[from_2].type === PAWN && board[from_2].color === turn) 
+        return build_move( board, from_2, to_number, is_enpassant ? BITS.EP_CAPTURE : BITS.CAPTURE )
+
+    }
+    // PAWN
+    if (piece_type === PAWN && !is_a_capture){
+      var color_factor = turn === WHITE ? 1 : -1
+      var from_1 = to_number + 16*color_factor // possible from square, single square pawn move
+      var from_2 = to_number + 32*color_factor // possible from square, double square pawn move (big_pawn move)
+
+      if(is_valid_square(from_1) && board[from_1] && board[from_1].type === PAWN && board[from_1].color === turn) 
+        return build_move( board, from_1, to_number, promotion ? BITS.PROMOTION : BITS.NORMAL, promotion )
+
+      if(is_valid_square(from_2) && board[from_2] && board[from_2].type === PAWN && board[from_2].color === turn) 
+        return build_move( board, from_2, to_number, BITS.BIG_PAWN )
+
+    }
+
+    // KING
+    if(piece_type === KING){
+      return build_move( board, kings[turn], to_number, is_a_capture ? BITS.CAPTURE : BITS.NORMAL )
+    }
+
+    // QUEEN, ROOK, BISHOP, KNIGHT
+    if(piece_type === QUEEN || piece_type === ROOK || piece_type === BISHOP || piece_type === KNIGHT){
+
+      // look for all pieces that could make such a move
+      let possible_from = board.map( (v,i) => { return {square_index: i, value: {...v}} } ).filter(s => {
+        // empty square
+        if(s.value === null) return false
+
+        // check if this is the wrong type of piece
+        if(s.value.type !== piece_type) return false 
+
+        // check if this piece is one of your opponent's pieces
+        if(s.value.color !== turn) return false
+
+        // a piece cannot move without changing position
+        if(to_number - s.square_index === 0) return false 
+
+        // consider given disambiguation for files and ranks
+        if(file_from) if (file(s.square_index) !== FILES[file_from]) return false
+        if(rank_from) if (rank(s.square_index) !== RANKS[rank_from]) return false
+
+        // this bishop has to be the right color bishop
+        if(s.value.type === BISHOP && get_square_color(s.square_index) !== get_square_color(to_number)) return false
+
+        // this rook has to be on the same file or rank of the "to" square
+        if(s.value.type === ROOK && rank(s.square_index) !== rank(to_number) && file(s.square_index) !== file(to_number)) return false
+
+        // we couldn't exclude this piece so keep it
+        return true 
+      })
+
+      // if there's only one piece possible then we've found it
+      if(possible_from.length === 1)
+        return build_move( board, possible_from[0].square_index, to_number, is_a_capture ? BITS.CAPTURE : BITS.NORMAL )
+
+      // if there are more possible pieces for this move try to disambiguate considering the way pieces move
+      const PIECES_RANGE = {"q": 8, "b": 8, "r": 8, "n": 1}
+      const this_piece_range = PIECES_RANGE[piece_type]
+
+      possible_from = possible_from.filter(s => {
+        const move_offset = to_number - s.square_index
+        var this_piece_offsets = PIECE_OFFSETS[piece_type]
+
+        // check if move_offset is a multiple of any this_piece_offset
+        const steps = this_piece_offsets.map(o => {
+          const f = move_offset / o
+
+          // 0 < f <= this_piece_range has to be true
+          if(f > this_piece_range || f <= 0) return 0.5
+
+          return f % 1
+        })
+
+        return steps.indexOf(0) !== -1
+      })
+
+      // again: if there's only one piece possible then we've found it
+      if(possible_from.length === 1)
+        return build_move( board, possible_from[0].square_index, to_number, is_a_capture ? BITS.CAPTURE : BITS.NORMAL )
+
+
+      // filter pieces that have obstacle inbetween the two cells
+      if(piece_type !== KNIGHT){
+
+        // consider piece occluding the way to move this piece to the "to" square
+        possible_from = possible_from.filter(s => {
+          const move_offset = to_number - s.square_index
+          const move_distance = Math.max(Math.abs(file(to_number) - file(s.square_index)), Math.abs(rank(to_number) - rank(s.square_index)))
+          const move_step = move_offset / move_distance
+
+          if(move_step % 1 !== 0) return false
+
+          var free_path = true
+
+          // look for obstacles
+          var i;
+          for(i = 1; i<Math.min(8, move_distance); i++){
+            // the square we are sampling 
+            var step_square_number = s.square_index + i*move_step      
+            // are we still inside the board and inside the valid cells of the board
+            if(is_valid_square(step_square_number)) {
+              // if there's a piece here he move cannot be done with this piece
+              if(board[step_square_number]) {
+                free_path = false
+                break;
+              }
+            }else{
+              break;
+            }
+
+          }
+
+          return free_path
+            
+        })
+
+        // again: if there's only one piece possible then we've found it
+        if(possible_from.length === 1)
+          return build_move( board, possible_from[0].square_index, to_number, is_a_capture ? BITS.CAPTURE : BITS.NORMAL )
+
+      }      
+
+      // filter pieces checking if the move is legal
+      possible_from = possible_from.filter(s => {
+        // this operation should perform quite fast because 
+        // the implementation of king_attacked() doesn't have to generate all moves
+        
+        let fake_situation = make_fake_move(build_move( board, s.square_index, to_number, is_a_capture ? BITS.CAPTURE : BITS.NORMAL ));
+        return !king_attacked(turn, fake_situation)
+      })
+
+      // again: if there's only one piece possible then we've found it
+      if(possible_from.length === 1)
+        return build_move( board, possible_from[0].square_index, to_number, is_a_capture ? BITS.CAPTURE : BITS.NORMAL )
+
+    }
+
+    // if none of those methods worked generate all moves that could give this san
+
+    return move_from_san(san, false, {
+      legal: false,
+      piece: piece_type,
+      to: to,
+    })
+  }
+
   // convert a move from Standard Algebraic Notation (SAN) to 0x88 coordinates
-  function move_from_san(move, sloppy) {
+  function move_from_san(move, sloppy, move_generation_options) {
     // strip off any move decorations: e.g Nf3+?!
     var clean_move = stripped_san(move);
 
@@ -1203,7 +1424,8 @@ var Chess = function(fen) {
       }
     }
 
-    var moves = generate_moves();
+    var moves = generate_moves(move_generation_options);    
+
     for (var i = 0, len = moves.length; i < len; i++) {
       // try the strict parser first, then the sloppy parser if requested
       // by the user
@@ -1666,7 +1888,11 @@ var Chess = function(fen) {
       var move = '';
 
       for (var half_move = 0; half_move < moves.length - 1; half_move++) {
-        move = move_from_san(moves[half_move], sloppy);
+        if(options.unsafe_san_parsing){
+          move = unsafe_move_from_san(moves[half_move]);
+        }else{
+          move = move_from_san(moves[half_move], sloppy);
+        }
 
         /* move not possible! (don't clear the board to examine to show the
          * latest valid position)
@@ -1685,7 +1911,13 @@ var Chess = function(fen) {
           set_header(['Result', move]);
         }
       } else {
-        move = move_from_san(move, sloppy);
+
+        if(options.unsafe_san_parsing){
+          move = unsafe_move_from_san(move);
+        }else{
+          move = move_from_san(move, sloppy);
+        }
+
         if (move == null) {
           return false;
         } else {
@@ -1707,7 +1939,7 @@ var Chess = function(fen) {
       return turn;
     },
 
-    move: function(move, options) {
+    move: function(move, options = {}) {
       /* The move function can be called with in the following parameters:
        *
        * .move('Nxb7')      <- where 'move' is a case-sensitive SAN string
@@ -1728,7 +1960,13 @@ var Chess = function(fen) {
       var move_obj = null;
 
       if (typeof move === 'string') {
-        move_obj = move_from_san(move, sloppy);
+        
+        if(options.unsafe_san_parsing){
+          move_obj = unsafe_move_from_san(move);
+        }else{
+          move_obj = move_from_san(move, sloppy);
+        }
+        
       } else if (typeof move === 'object') {
         var moves = generate_moves();
 

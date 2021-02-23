@@ -11,6 +11,7 @@ import NewVariModal from "./NewVariModal.js"
 import HangingMenu from "../components/HangingMenu"
 import VariationAddedModal from "../components/VariationAddedModal"
 import TrainingFinishedModal from "../components/TrainingFinishedModal"
+import LoadVariationsModal from "../components/LoadVariationsModal"
 
 import Ripples from "react-ripples"
 import BoardData from "../components/BoardData"
@@ -266,6 +267,17 @@ class Board extends Component {
             </div>
           </button> : null
           }
+          {/* LOAD VARIATIONS BUTTON */}
+          {this.props.moreMenuButtons.indexOf("load_variations") !== -1 ?
+            <button className="simpleButton hMenuButton" onClick={() => {
+              this.setState({ boardMenuVisible: false, loadVariationsModalVisible: true })
+          }}>
+            <div className="hMenuButtonContent">
+              <div className="hMenuButtonIcon">upload</div>
+              <div className="hMenuButtonLabel">Load Variations from PGN</div>
+            </div>
+          </button> : null
+          }
         </HangingMenu>
 
         {/* YOU ADDED A VARIATION! */}
@@ -283,6 +295,30 @@ class Board extends Component {
           close={() => this.setState({ trainingFinishedModalVisible: false })}
           op_index={this.props.op_index}
           history={this.props.history}
+        />
+
+        {/* LOAD VARIATIONS MODAL */}
+        <LoadVariationsModal 
+          visible={this.state.loadVariationsModalVisible}
+          close={() => this.setState({ loadVariationsModalVisible: false })}
+          addVariations={varis => {
+            varis.forEach(v => {
+              const allowed_subnames = this.props.getOpFreeSubnames(this.props.op_index, this.props.vari_name, sub_names)
+              const sub_name = allowed_subnames[0] !== undefined || allowed_subnames.length === 1 ? allowed_subnames[0] : allowed_subnames[1]
+              let game = new Chess()
+              let vari_json_moves = v.map(m => {
+                let move = game.move(m, {unsafe_san_parsing: false})
+                return {
+                  from: move.from,
+                  to: move.to,
+                  promotion: move.promotion,
+                  san: move.san,
+                }
+              })
+              this.props.createVari(this.props.vari_name, vari_json_moves, this.props.op_index, sub_name)
+            })
+            this.props.history.push("/openings/" + this.props.op_index)
+          }}
         />
       </React.Fragment>
     )
