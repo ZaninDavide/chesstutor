@@ -43,7 +43,9 @@ class CommentModal extends Component {
               <CheckBox
                 text={<Translator text={"draw_board_pdf"} />}
                 click={() => this.setState(old => { return { invertDrawBoardPDF: !old.invertDrawBoardPDF } })}
-                checked={this.state.invertDrawBoardPDF !== this.props.getDrawBoardPDF(this.props.op_index, this.props.json_moves)}
+                checked={
+                  this.props.getDrawBoardPDF(this.props.op_index, this.props.json_moves) ?  !this.state.invertDrawBoardPDF :  this.state.invertDrawBoardPDF
+                }
               />
             </div>
 

@@ -744,3 +744,18 @@
 #bookTable .bookTableSan:hover{
   background-color: var(--onBack);
 }
+
+#boardDataTreeSlide .fenViewerCanvas {
+  width: 100%;
+  max-width: 225px;
+  border-radius: var(--borderRadius);
+}
+
+#boardDataTreeSlide .fenViewerContainer{
+  width: 100%;
+  height: fit-content !important;
+  text-align: center;
+
+  margin-top: var(--mediumMargin);
+  margin-bottom: var(--mediumMargin);
+}

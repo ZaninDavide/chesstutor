@@ -780,6 +780,7 @@ class App extends Component {
       is_move_allowed={this.is_move_allowed}
       get_pc_move_data={this.get_pc_move_data}
       getComment={this.getComment}
+      getDrawBoardPDF={this.props.getDrawBoardPDF}
       editComment={this.editComment}
       setDrawBoardPDF={this.setDrawBoardPDF}
       getDrawBoardPDF={this.getDrawBoardPDF}
@@ -794,6 +795,7 @@ class App extends Component {
       match={match}
       createVari={this.createVari}
       getComment={this.getComment}
+      getDrawBoardPDF={this.props.getDrawBoardPDF}
       editComment={this.editComment}
       setDrawBoardPDF={this.setDrawBoardPDF}
       getDrawBoardPDF={this.getDrawBoardPDF}
@@ -809,6 +811,7 @@ class App extends Component {
       match={match}
       createVari={this.createVari}
       getComment={this.getComment}
+      getDrawBoardPDF={this.props.getDrawBoardPDF}
       editComment={this.editComment}
       setDrawBoardPDF={this.setDrawBoardPDF}
       getDrawBoardPDF={this.getDrawBoardPDF}
@@ -872,6 +875,7 @@ class App extends Component {
       get_pc_move_data_color={this.get_pc_move_data_color}
       get_correct_moves_data_color={this.get_correct_moves_data_color}
       getComment={this.getComment}
+      getDrawBoardPDF={this.props.getDrawBoardPDF}
       notify={this.notify}
       wait_time={this.state.settings.wait_time}
       volume={this.state.settings.volume}
@@ -884,6 +888,7 @@ class App extends Component {
       get_pc_move_data_group={this.get_pc_move_data_group}
       get_correct_moves_data_group={this.get_correct_moves_data_group}
       getComment={this.getComment}
+      getDrawBoardPDF={this.props.getDrawBoardPDF}
       notify={this.notify}
       wait_time={this.state.settings.wait_time}
       volume={this.state.settings.volume}

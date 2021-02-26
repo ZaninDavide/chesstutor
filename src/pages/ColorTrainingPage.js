@@ -29,6 +29,7 @@ class ColorTrainingPage extends Component {
           get_pc_move_data_color={this.props.get_pc_move_data_color}
           get_correct_moves_data_color={this.props.get_correct_moves_data_color}
           getComment={this.props.getComment}
+          getDrawBoardPDF={this.props.getDrawBoardPDF}
           allowCommentEdit={false}
           notify={this.props.notify}
           wait_time={this.props.wait_time}

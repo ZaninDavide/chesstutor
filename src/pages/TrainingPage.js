@@ -29,6 +29,7 @@ class TrainingPage extends Component {
           rotation={op.op_color}
           playColor={op.op_color}
           getComment={this.props.getComment}
+          getDrawBoardPDF={this.props.getDrawBoardPDF}
           allowCommentEdit={false}
           get_correct_moves_data={this.props.get_correct_moves_data}
           //setDrawBoardPDF={this.props.setDrawBoardPDF}

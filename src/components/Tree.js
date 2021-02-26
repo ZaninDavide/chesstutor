@@ -1,5 +1,7 @@
 import React, { Component } from "react"
 import { make_san_nicer, process_comment } from "../utilities/san_parsing"
+import FenViewer from "../components/FenViewer";
+import Chess from "../chessjs-chesstutor/chess.js"
 
 class Tree extends Component {
 
@@ -24,16 +26,33 @@ class Tree extends Component {
         this.props.json_moves.forEach((c, id) => {
             const moves = this.props.json_moves.slice(0, id + 1)
             const comment = this.props.getComment(this.props.op_index, moves)
+            const draw_baord = this.props.getDrawBoardPDF(this.props.op_index, moves)
+
             let move_text = make_san_nicer(c.san)
             if (id % 2 === 0) { // all white moves
                 move_text = ((id / 2) + 1).toString() + ". " + move_text
             } else if (last_long_comment) {
                 move_text = "... " + move_text
             }
-            if (comment) {
-                if (comment.length > 35 || comment.indexOf("\n") !== -1) {
+
+            if (comment || draw_baord) {
+                if (
+                    (comment ? comment.length > 35 : false) || 
+                    (comment ? comment.indexOf("\n") !== -1 : false) || 
+                    draw_baord
+                ) {
                     objects.push(<span className="treeMoveSan" key={"treeMoveSan_" + move_text}>{move_text}</span>)
-                    objects.push(<p className="treeComment" key={"treeMoveComment_" + move_text} dangerouslySetInnerHTML={{ __html: process_comment(comment) }}></p>)
+                    
+                    if(comment) {
+                        objects.push(<p className="treeComment" key={"treeMoveComment_" + move_text} dangerouslySetInnerHTML={{ __html: process_comment(comment) }}></p>)
+                    }
+                         
+                    if(draw_baord){
+                        let game = new Chess()
+                        moves.forEach(m => game.move(m))
+                        objects.push(<FenViewer fen={game.fen()} canvasSize={550} key={"FenViewer_" + JSON.stringify(moves)} />)
+                    }
+
                     last_long_comment = true
                 } else {
                     objects.push(<span className="treeMoveSan" key={"treeMoveSan_" + move_text}>{move_text}</span>)

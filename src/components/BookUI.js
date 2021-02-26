@@ -1,7 +1,5 @@
 import React, { Component } from "react"
-import CheckBox from "../components/CheckBox"
-import Translator from "../components/Translator"
-import Ripples from "react-ripples"
+import { make_san_nicer } from "../utilities/san_parsing"
 
 class BookUI extends Component {
 
@@ -68,7 +66,7 @@ class BookUI extends Component {
                 html.push(
                     <tr onClick={() => this.props.book_move(san)}>
                         <td className="bookTableNumber">{number}</td>
-                        <td className="bookTableSan">{san}</td>
+                        <td className="bookTableSan">{make_san_nicer(san)}</td>
                         <td>{op_name}</td>
                         <td>{varis}</td>
                     </tr>

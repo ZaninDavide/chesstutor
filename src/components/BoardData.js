@@ -5,6 +5,8 @@ import { process_comment } from "../utilities/san_parsing"
 import StockfishUI from "./StockfishUI";
 import BookUI from "./BookUI";
 
+import FenViewer from "../components/FenViewer"
+
 class BoardData extends Component {
 
   constructor(props) {
@@ -41,6 +43,7 @@ class BoardData extends Component {
           <Tree key="tree"
             json_moves={this.props.json_moves}
             getComment={this.props.getComment}
+            getDrawBoardPDF={this.props.getDrawBoardPDF}
             op_index={this.props.op_index}
           />
         </div>

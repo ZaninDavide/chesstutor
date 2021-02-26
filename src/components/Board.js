@@ -142,6 +142,7 @@ class Board extends Component {
             thereIsComment={thereIsComment}
             onCommentClick={this.onCommentClick}
             getComment={this.props.getComment}
+            getDrawBoardPDF={this.props.getDrawBoardPDF}
             op_index={this.props.op_index}
             json_moves={this.state.json_moves}
             stockfish={this.props.stockfish}

@@ -38,6 +38,7 @@ class GroupTrainingPage extends Component {
           get_correct_moves_data_group={this.props.get_correct_moves_data_group}
 
           getComment={this.props.getComment}
+          getDrawBoardPDF={this.props.getDrawBoardPDF}
           allowCommentEdit={false}
 
           notify={this.props.notify}
