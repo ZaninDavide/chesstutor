@@ -47,7 +47,7 @@ class VariItem extends Component {
           <div className="variItemContent">
             {(() => {
               if (thisVari.vari_subname) {
-                return <h2>{thisVari.vari_name + " "}<span className="impText">{thisVari.vari_subname}</span></h2>
+                return <h2>{thisVari.vari_name + " "}<span>{thisVari.vari_subname}</span></h2>
               } else {
                 return <h2>{thisVari.vari_name}</h2>
               }

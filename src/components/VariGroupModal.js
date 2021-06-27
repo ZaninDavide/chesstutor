@@ -12,7 +12,7 @@ class VariGroupModal extends Component {
     this.done = this.done.bind(this)
   }
 
-  componentWillReceiveProps(props){
+  UNSAFE_componentWillReceiveProps(props){
     this.setState({vari_group_name: props.vari_group_name})
   }
 

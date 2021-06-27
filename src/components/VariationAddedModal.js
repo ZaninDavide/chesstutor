@@ -4,15 +4,7 @@ import "../styles/Modal.css"
 class VariationAddedModal extends Component {
     constructor(props) {
         super(props)
-        this.getStyle = this.getStyle.bind(this);
         this.onDoneClick = this.onDoneClick.bind(this);
-    }
-
-    getStyle() {
-        return {
-            display: this.props.visible ? "block" : "none",
-            backgroundColor: this.props.visible ? "rgba(0, 0, 0, 0.8)" : "rgba(0, 0, 0, 0)",
-        }
     }
 
     onDoneClick() {
@@ -21,7 +13,7 @@ class VariationAddedModal extends Component {
 
     render() {
         return (
-            <div className="modal" onClick={this.props.close} style={this.getStyle()}>
+            <div className={"modal" + (this.props.visible ? " modalVisible" : " modalHidden")} onClick={this.props.close}>
                 <div className="modalContent" onClick={e => e.stopPropagation()}>
                     <div className="insideModal" onClick={e => e.stopPropagation()}>
                         <h2>

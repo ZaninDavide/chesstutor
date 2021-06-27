@@ -13,19 +13,11 @@ const sub_names = [
 class NewVariModal extends Component {
   constructor(props) {
     super(props)
-    this.getStyle = this.getStyle.bind(this);
     this.close = this.close.bind(this);
 
     this.state = {
       new_vari_name: "",
       new_vari_subname: ""
-    }
-  }
-
-  getStyle(){
-    return {
-      display: this.props.visible ? "block" : "none",
-      backgroundColor: this.props.visible ? "rgba(0, 0, 0, 0.8)" : "rgba(0, 0, 0, 0)",
     }
   }
 
@@ -66,7 +58,7 @@ class NewVariModal extends Component {
           />
           <select id="subNameSelector" onChange={e => this.setState({new_vari_subname: e.target.value})} value={this.state.new_vari_subname}>
             {this.props.getOpFreeSubnames ? 
-              this.props.getOpFreeSubnames(this.props.op_index, this.state.new_vari_name, sub_names).map(c => <option value={c} selected={c === this.state.new_vari_subname ? "selected" : ""} className="subNameOption">{c}</option>)
+              this.props.getOpFreeSubnames(this.props.op_index, this.state.new_vari_name, sub_names).map(c => <option value={c} key={"subname_option_" + c} className="subNameOption">{c}</option>)
             : null}
           </select>
       </Modal>

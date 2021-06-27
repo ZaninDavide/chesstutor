@@ -26,7 +26,7 @@ class Tree extends Component {
         this.props.json_moves.forEach((c, id) => {
             const moves = this.props.json_moves.slice(0, id + 1)
             const comment = this.props.getComment(this.props.op_index, moves)
-            const draw_baord = this.props.getDrawBoardPDF(this.props.op_index, moves)
+            const draw_baord = this.props.getDrawBoardPDF ? this.props.getDrawBoardPDF(this.props.op_index, moves) : false
 
             let move_text = make_san_nicer(c.san)
             if (id % 2 === 0) { // all white moves

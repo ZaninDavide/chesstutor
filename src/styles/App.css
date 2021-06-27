@@ -639,6 +639,14 @@ a {
   grid-area: content;
 }
 
+.variItemContent h2{
+  color: var(--text);
+}
+
+.variItemContent h2 span{
+  color: var(--title);
+}
+
 .opItemButton{
   color: var(--onCardBack); /* --onBack */
 }

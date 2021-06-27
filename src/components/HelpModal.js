@@ -5,16 +5,8 @@ import "../styles/Modal.css"
 class HelpModal extends Component {
   constructor(props) {
     super(props)
-    this.getStyle = this.getStyle.bind(this);
     this.close = this.close.bind(this);
     this.chooseMove = this.chooseMove.bind(this);
-  }
-
-  getStyle(){
-    return {
-      display: this.props.visible ? "block" : "none",
-      backgroundColor: this.props.visible ? "rgba(0, 0, 0, 0.8)" : "rgba(0, 0, 0, 0)",
-    }
   }
 
   close(){
@@ -57,7 +49,7 @@ class HelpModal extends Component {
 
   render() {
     return (
-      <div id="helpModal" className="modal" onClick={this.close} style={this.getStyle()}>
+      <div id="helpModal" className={"modal" + (this.props.visible ? " modalVisible" : " modalHidden")} onClick={this.close}>
         <div className="helpModalContent" onClick={e => e.stopPropagation()} style={{height: "auto"}}>
           {this.getMovesButtons(this.props.correct_moves, this.props.json_moves_length)}
         </div>

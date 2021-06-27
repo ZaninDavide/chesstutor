@@ -210,7 +210,12 @@ class OpeningPage extends Component {
         <Header title={op.op_name} mainButtonText="arrow_back"/*headerButtonContent={<span className="iconText">school</span>}*/ /> {/* play_arrow */}
         <div id="openingPage" className="page" style={this.no_variations_style(op.variations.length)}>
           {this.getVariItems(op.variations, op_index)}
-          <div id="newVariationBox" onClick={() => this.setState({ newVariGroupModalVisible: true })}>+</div>
+          <div id="newVariationBox" onClick={() => this.setState({ newVariGroupModalVisible: true })}>
+            +
+            <div>
+              <Translator text="group" />
+            </div>
+          </div>
         </div>
         <button id="playVarsButton" className="roundButton iconButton impButton"
           onClick={this.startGame}
@@ -233,8 +238,8 @@ class OpeningPage extends Component {
           {/* ARCHIVED BUTTON */}
           <button className="simpleButton hMenuButton" onClick={() => { this.hMenuClose(); this.switchArchived(); }}>
             <div className="hMenuButtonContent">
-              <div className="hMenuButtonIcon">{thisVari ? (thisVari.archived ? "unarchive" : "archive") : null}</div>
-              <div className="hMenuButtonLabel">{thisVari ? (thisVari.archived ? "Unarchive" : "Archive") : null}</div>
+              <div className="hMenuButtonIcon">{thisVari ? (thisVari.archived ? "unarchive" : "archive") : ""}</div>
+              <div className="hMenuButtonLabel">{thisVari ? (thisVari.archived ? "Unarchive" : "Archive") : ""}</div>
             </div>
 
           </button>
@@ -259,12 +264,13 @@ class OpeningPage extends Component {
           }
         </Modal>
         {/* RENAME VARI MODAL */}
-        {this.state.renameVariVisible ? <RenameVariModal
+        <RenameVariModal
           visible={this.state.renameVariVisible}
           close={() => this.setState({ renameVariVisible: false })}
-          thisVari={thisVari}
+          thisVari={this.state.renameVariVisible ? thisVari : undefined}
           renameThisVari={this.renameThisVari}
-        /> : null /*i do this so that every time you open it the modal refreshes and takes new default values*/}
+        /> 
+        {/*i do this so that every time you open it the modal refreshes and takes new default values*/}
 
         {/* NEW VARI_GROUP MODAL */}
         <NewVariGroupModal

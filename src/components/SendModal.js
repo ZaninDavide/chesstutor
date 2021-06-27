@@ -8,18 +8,10 @@ class SendModal extends Component {
     this.state = {
       sendNames: []
     }
-    this.getStyle = this.getStyle.bind(this);
     this.onDone = this.onDone.bind(this);
     this.addName = this.addName.bind(this);
     this.getNameItems = this.getNameItems.bind(this);
     this.deleteName = this.deleteName.bind(this);
-  }
-
-  getStyle() {
-    return {
-      display: this.props.visible ? "block" : "none",
-      backgroundColor: this.props.visible ? "rgba(0, 0, 0, 0.8)" : "rgba(0, 0, 0, 0)",
-    }
   }
 
   onDone() {
@@ -77,7 +69,7 @@ class SendModal extends Component {
 
   render() {
     return (
-      <div id="sendModal" className="modal" onClick={this.props.close} style={this.getStyle()}>
+      <div id="sendModal" className={"modal" + (this.props.visible ? " modalVisible" : " modalHidden")} onClick={this.props.close}>
         <div className="modalContent sendModalContent" onClick={e => e.stopPropagation()}>
           <div className="insideModal" onClick={e => e.stopPropagation()}>
             <h2><Translator text={"Send"} />&nbsp;<span style={{ color: "var(--main)" }}>{this.props.op ? this.props.op.op_name : ""}</span>&nbsp;<Translator text={"to"} />{":"}</h2>

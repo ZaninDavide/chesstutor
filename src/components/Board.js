@@ -213,7 +213,7 @@ class Board extends Component {
         />
 
         {/* COMMENT MODAL */}
-        {this.state.commentModalVisible ? <CommentModal
+        <CommentModal
           visible={this.state.commentModalVisible}
           close={() => this.setState({ commentModalVisible: false })}
           editComment={this.props.editComment}
@@ -222,7 +222,7 @@ class Board extends Component {
           getComment={this.props.getComment}
           op_index={this.props.op_index}
           json_moves={this.state.json_moves}
-        /> : null}
+        />
 
         {/* HELP MODAL */}
         {(this.props.buttons.indexOf("help") !== -1 || this.props.buttons.indexOf("multi_next") !== -1) && this.state.helpModalVisible ? <HelpModal

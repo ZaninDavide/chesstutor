@@ -1,7 +1,7 @@
 import React from "react"
 import { Link } from "react-router-dom"
 
-import { Menu } from '@szhsin/react-menu';
+// import { Menu } from '@szhsin/react-menu';
 import '@szhsin/react-menu/dist/index.css';
 
 const Header = props => {

@@ -7,18 +7,11 @@ class CommentModal extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      text: this.props.getComment(this.props.op_index, this.props.json_moves),
+      text: this.props.getComment ? this.props.getComment(this.props.op_index, this.props.json_moves) : "",
       invertDrawBoardPDF: false
     }
-    this.getStyle = this.getStyle.bind(this);
     this.onDone = this.onDone.bind(this);
-  }
-
-  getStyle() {
-    return {
-      display: this.props.visible ? "block" : "none",
-      backgroundColor: this.props.visible ? "rgba(0, 0, 0, 0.8)" : "rgba(0, 0, 0, 0)",
-    }
+    this.close = this.close.bind(this);
   }
 
   onDone() {
@@ -30,12 +23,26 @@ class CommentModal extends Component {
       }
       this.props.setDrawBoardPDF(this.props.op_index, this.props.json_moves, value)
     }
+    this.close()
+  }
+
+  UNSAFE_componentWillReceiveProps(props){
+    if(this.props.visible !== props.visible && props.visible){
+      this.setState( {
+        text: this.props.getComment ? this.props.getComment(this.props.op_index, this.props.json_moves) : "",
+        invertDrawBoardPDF: false
+      })
+    }
+  }
+
+  close() {
+    this.setState({invertDrawBoardPDF: false, text: ""})
     this.props.close()
   }
 
   render() {
     return (
-      <div id="commentModal" className="modal" onClick={this.props.close} style={this.getStyle()}>
+      <div id="commentModal" className={"modal" + (this.props.visible ? " modalVisible" : " modalHidden")} onClick={this.close}>
         <div className="modalContent tallModalContent" onClick={e => e.stopPropagation()}>
           <div className="insideModal insideCommentModal" onClick={e => e.stopPropagation()}>
             <textarea placeholder={"Comment"} onChange={e => this.setState({ text: e.target.value })} className="commentTextBox" type="text" value={this.state.text}></textarea>
@@ -44,7 +51,7 @@ class CommentModal extends Component {
                 text={<Translator text={"draw_board_pdf"} />}
                 click={() => this.setState(old => { return { invertDrawBoardPDF: !old.invertDrawBoardPDF } })}
                 checked={
-                  this.props.getDrawBoardPDF(this.props.op_index, this.props.json_moves) ?  !this.state.invertDrawBoardPDF :  this.state.invertDrawBoardPDF
+                  this.props.getDrawBoardPDF ? (this.props.getDrawBoardPDF(this.props.op_index, this.props.json_moves) ?  !this.state.invertDrawBoardPDF :  this.state.invertDrawBoardPDF) : false
                 }
               />
             </div>
@@ -71,7 +78,7 @@ class CommentModal extends Component {
             >done</button>
             <button className="simpleButton modalBackButton"
               onClick={() => {
-                this.props.close()
+                this.close()
               }}
             ><span className="iconText">close</span></button>
           </div>

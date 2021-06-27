@@ -62,6 +62,9 @@ const languages = {
     "Precision (depth)": "Precision (depth)",
     "Open on lichess.org": "Open on lichess.org",
     "Open on chess.com": "Open on chess.com",
+    "group": "group",
+    "": "",
+    null: "",
   },
   ita: {
     Openings: "Aperture",
@@ -123,6 +126,9 @@ const languages = {
     "Precision (depth)": "Profondità",
     "Open on lichess.org": "Apri con lichess.org",
     "Open on chess.com": "Apri con chess.com",
+    "group": "gruppo",
+    "": "",
+    null: "",
   }
 }
 

@@ -8,24 +8,34 @@ import Translator from "../components/Translator"
 class RenameVariModal extends Component {
   constructor(props) {
     super(props)
-    this.getStyle = this.getStyle.bind(this);
     this.close = this.close.bind(this);
 
     this.state = {
+      variOriginalName: this.props.thisVari ? this.props.thisVari.vari_name : "",
+      variOriginalSubname: this.props.thisVari ? this.props.thisVari.vari_subname : "",
       variNewName: this.props.thisVari ? this.props.thisVari.vari_name : "",
       variNewSubname: this.props.thisVari ? this.props.thisVari.vari_subname : "",
     }
-  }
 
-  getStyle() {
-    return {
-      display: this.props.visible ? "block" : "none",
-      backgroundColor: this.props.visible ? "rgba(0, 0, 0, 0.8)" : "rgba(0, 0, 0, 0)",
-    }
+    this.selectRef = React.createRef();
   }
 
   close() {
     this.props.close()
+  }
+
+  UNSAFE_componentWillReceiveProps (props) {
+    const new_variOriginalName = props.thisVari ? props.thisVari.vari_name : ""
+    const new_variOriginalSubname = props.thisVari ? props.thisVari.vari_subname : ""
+    if (new_variOriginalName !== this.state.variOriginalName || new_variOriginalSubname !== this.state.variOriginalSubname){
+      this.setState({
+        variOriginalName: new_variOriginalName,
+        variOriginalSubname: new_variOriginalSubname,
+        variNewName: new_variOriginalName,
+        variNewSubname: new_variOriginalSubname,
+      })
+      this.selectRef.current.value = new_variOriginalSubname
+    }
   }
 
   render() {
@@ -36,12 +46,11 @@ class RenameVariModal extends Component {
         onDoneClick={() => this.props.renameThisVari(this.state.variNewName, this.state.variNewSubname)}
         disabledDoneButton={this.state.variNewName.length === 0}
       >
-        {this.props.visible ?
-          <React.Fragment>
             <h2>
               <Translator text={"Rename"} />&nbsp;
                 <span style={{ color: "var(--main)" }}>
-                {this.props.thisVari.vari_name}{this.props.thisVari.vari_subname ? (" " + this.props.thisVari.vari_subname) : ""}
+                
+                {this.state.variOriginalName}{this.state.variOriginalSubname ? (" " + this.state.variOriginalSubname) : ""}
               </span>&nbsp;
                 <Translator text={"to:"} />&nbsp;
               </h2>
@@ -59,7 +68,9 @@ class RenameVariModal extends Component {
             />
             <select
               id="subNameSelector"
-              onChange={e => this.setState({ variNewSubname: e.target.value })} defaultValue={this.state.variNewSubname}
+              onChange={e => this.setState({ variNewSubname: e.target.value })} 
+              defaultValue={this.state.variOriginalSubname}
+              ref={this.selectRef} 
             >
               <option value={undefined} className="subNameOption"></option>
               <option value="A" className="subNameOption" >A</option>
@@ -143,8 +154,6 @@ class RenameVariModal extends Component {
               <option value="Y3" className="subNameOption" >Y3</option>
               <option value="Z3" className="subNameOption" >Z3</option>
             </select>
-          </React.Fragment> : null
-        }
       </Modal>
     )
   }

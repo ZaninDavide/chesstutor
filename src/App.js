@@ -455,6 +455,7 @@ class App extends Component {
     json_moves.forEach(elem => {
       str += elem.san + "|"
     });
+    if(!this.state.user_ops[op_index]) return ""
     return this.state.user_ops[op_index].comments[str]
   }
 

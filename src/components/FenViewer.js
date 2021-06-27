@@ -1,7 +1,7 @@
 import React, { Component } from "react"
 import Chess from "../chessjs-chesstutor/chess.js"
 import { pieces_names } from "../utilities/pieces_and_coords"
-import { get_piece_src } from "../utilities/file_paths"
+import { get_piece_src, printBoardSVG } from "../utilities/file_paths"
 
 const chess = new Chess();
 let ctx;
@@ -49,6 +49,58 @@ class FenViewer extends Component {
         
     }
 
+    draw_board_printable() {
+        const board = chess.board()
+        const rotated = this.state.rotated ? true : false
+
+        const w = this.canvas.current.width
+       
+        /*
+        ctx.fillStyle = '#b5a190';
+        ctx.fillRect(0, 0, w, w);
+        */
+
+        const image = new Image();
+        const drawPiece = this.drawPiece
+        
+        image.onload = function () {  
+            ctx.drawImage(image, 0, 0, w, w);
+
+            for (let line = 0; line < 8; line++) {
+                for (let collumn = 0; collumn < 8; collumn++) {
+                    /*
+                    // draw cell
+                    const color = (line + collumn) % 2 === 0
+                    if(color)  ctx.fillStyle = "#efe6d7"; // white f0d9b5
+                    if(!color) ctx.fillStyle = "#b5a190"; // black b58863
+    
+                    ctx.fillRect(
+                        line * w / 8, 
+                        collumn * w / 8, 
+                        w / 8, 
+                        w / 8
+                    );
+                    */
+    
+                    // draw piece
+                    let piece = board[line][collumn]
+                    if (piece !== null) {
+                        let type = pieces_names[piece.color === "b" ? piece.type : piece.type.toUpperCase()]
+                        if (!rotated) {
+                            drawPiece(type, { x: `${collumn}`, y: `${line}` })
+                        } else {
+                            drawPiece(type, { x: `${7 - collumn}`, y: `${7 - line}` })
+                        }
+                    }
+                }
+            }
+        };
+
+        image.src = printBoardSVG;
+
+        
+    }
+
     draw_board() {
         const board = chess.board()
         const rotated = this.state.rotated ? true : false
@@ -89,6 +141,7 @@ class FenViewer extends Component {
 
     componentDidMount(){
         ctx = this.canvas.current.getContext("2d");
+        ctx.imageSmoothingEnabled = false; // no anti-aliasing for performance
         this.setState({
             fen: this.props.fen || "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR", 
             rotated: this.props.rotated ? true : false
@@ -103,8 +156,8 @@ class FenViewer extends Component {
             <canvas 
                 className="fenViewerCanvas" 
                 ref={this.canvas}
-                width={this.props.canvasSize || 8*125}
-                height={this.props.canvasSize || 8*125}
+                width={this.props.canvasSize || 8*28}
+                height={this.props.canvasSize || 8*28}
             ></canvas>
         </div>
     }

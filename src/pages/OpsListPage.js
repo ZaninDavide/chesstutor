@@ -32,9 +32,9 @@ class OpsListPage extends Component {
     this.openSendModal = this.openSendModal.bind(this)
   }
 
-  getSeparator(text, goTo) {
-    return <div id={"opsSeparator" + text} className="opsSeparator" key={"opsSeparator" + text} onClick={() => goTo ? this.props.history.push(goTo) : null}>
-      <h3 className={text === "Archived openings" ? "alertText" : "impText"}>
+  getSeparator(text, name, goTo) {
+    return <div id={"opsSeparator" + name} className="opsSeparator" key={"opsSeparator" + name} onClick={() => goTo ? this.props.history.push(goTo) : null}>
+      <h3>
         <Translator text={text} />
       </h3>
     </div>
@@ -68,15 +68,15 @@ class OpsListPage extends Component {
       // connect all together: not_archived_white + separator + not_archived_black + separator + archived
       let all = []
       if (not_archived_white.length > 0) {
-        all.push(this.getSeparator("white", "/training/fullcolor/1"))
+        all.push(this.getSeparator("white", "White", "/training/fullcolor/1"))
         all = all.concat(not_archived_white)
       }
       if (not_archived_black.length > 0) {
-        all.push(this.getSeparator("black", "/training/fullcolor/0"))
+        all.push(this.getSeparator("black", "Black", "/training/fullcolor/0"))
         all = all.concat(not_archived_black)
       }
       if (archived.length > 0) {
-        all.push(this.getSeparator("Archived openings"))
+        all.push(this.getSeparator("Archived openings", "ArchivedOpenings"))
         all = all.concat(archived)
       }
       return all

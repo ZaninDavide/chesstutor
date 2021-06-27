@@ -10,15 +10,7 @@ class LoadVariationsModal extends Component {
     this.state = {
       text: "",
     }
-    this.getStyle = this.getStyle.bind(this);
     this.onDone = this.onDone.bind(this);
-  }
-
-  getStyle() {
-    return {
-      display: this.props.visible ? "block" : "none",
-      backgroundColor: this.props.visible ? "rgba(0, 0, 0, 0.8)" : "rgba(0, 0, 0, 0)",
-    }
   }
 
   onDone() {
@@ -29,7 +21,7 @@ class LoadVariationsModal extends Component {
 
   render() {
     return (
-      <div id="commentModal" className="modal" onClick={this.props.close} style={this.getStyle()}>
+      <div id="commentModal" className={"modal" + (this.props.visible ? " modalVisible" : " modalHidden")} onClick={this.props.close}>
         <div className="modalContent tallModalContent" onClick={e => e.stopPropagation()}>
           <div className="insideModal insideCommentModal" onClick={e => e.stopPropagation()}>
             <textarea placeholder={pgnExample} onChange={e => this.setState({ text: e.target.value })} className="commentTextBox" type="text" value={this.state.text}></textarea>

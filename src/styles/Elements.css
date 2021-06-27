@@ -543,11 +543,23 @@
 
 .treeComment{
   font-size: var(--smallTextSize);
+  animation: treeCommentAppears 200ms linear 0ms 1;
+}
+
+@keyframes treeCommentAppears {
+  from {opacity: 0;}
+  to {opacity: 1;}
 }
 
 .treeMoveSan{
   font-weight: bold;
   color: var(--main);
+  animation: treeMoveSanAppears 200ms linear 0ms 1;
+}
+
+@keyframes treeMoveSanAppears {
+  from {opacity: 0;}
+  to {opacity: 1;}
 }
 
 .loginPageLabel{
@@ -575,16 +587,36 @@
 
   font-size: var(--iconsFontSize);
   font-family: "Material Icons";
+  font-weight: bold;
   color: var(--main);
 
   cursor: pointer;
   -webkit-tap-highlight-color: var(--tap);
+
+  max-height: calc(var(--uiElementHeight) * 2);
+
+  /* TRANSITIONS */
+  transition-property: background-color;
+  transition-duration: 50ms;
+  transition-timing-function: cubic-bezier(0.3, 0, 0.7, 1);
+  transition-delay: 0s;
 }
 
 #newVariationBox:hover{
-  background-color: var(--main);
-  border: 2px solid var(--main);
-  color: var(--back);
+  background-color: var(--cardBack);
+}
+
+#newVariationBox div {
+  font-family: var(--textFont);
+  font-size: var(--titleSize);
+  height: 100%;
+  display: flex;
+  justify-content: center; /* align horizontal */
+  align-items: center; /* align vertical */
+  margin-left: var(--smallMargin);
+  position: relative;
+  top: 1px;
+  text-transform: uppercase;
 }
 
 #goodJobIconContainer, #trainingFinishedIconContainer{
@@ -603,16 +635,14 @@
 #goodJobIcon{
   /* ANIMATION */
   position: relative;
-  animation: goodJobAnimation 1s ease-in-out infinite;
-  animation-delay: 0s;
+  animation: goodJobAnimation 1s 0s ease-in-out infinite;
   will-change: transform, top;
 }
 
 #trainingFinishedIcon{
   /* ANIMATION */
   position: relative;
-  animation: trainingFinishedAnimation 1s ease-in-out infinite;
-  animation-delay: 0s;
+  animation: trainingFinishedAnimation 1s 0s ease-in-out infinite;
   will-change: transform, top;
 }
 
@@ -664,40 +694,27 @@
 @keyframes goodJobAnimation {
   0% {
     top: 0px;
-    transform: rotate(0deg);
-  }
-  25%{
     transform: rotate(-10deg);
   }
   50% {
     top: 20px;
-  }
-  75%{
     transform: rotate(10deg);
   }
   100% {
     top: 0px;
-    transform: rotate(0deg);
+    transform: rotate(-10deg);
   }
 }
 
 @keyframes trainingFinishedAnimation {
   0% {
-    top: 0px;
-    transform: rotate(0deg);
-  }
-  25%{
-    transform: rotate(-10deg);
+    transform: rotate(-10deg) scale(1);
   }
   50% {
-    top: 20px;
-  }
-  75%{
-    transform: rotate(10deg);
+    transform: rotate(10deg) scale(1.15);
   }
   100% {
-    top: 0px;
-    transform: rotate(0deg);
+    transform: rotate(-10deg) scale(1);
   }
 }
 
@@ -721,15 +738,21 @@
   border-bottom: var(--borderSize) solid var(--onBack);
 }
 
+#bookTable tr:not(#titleLineBookUI) {
+  cursor: pointer;
+}
 
 #bookTable tr:last-child {
   font-weight: bold;
   height: var(--uiElementSmallHeight);
 }
 
-
 #bookTable tr:nth-child(even){
   background-color: var(--hoverBack);
+}
+
+#bookTable tr:hover:not(#titleLineBookUI){
+  background-color: var(--onBack);
 }
 
 #bookTable .bookTableNumber{
@@ -741,15 +764,24 @@
   font-weight: bold;
 }
 
-#bookTable .bookTableSan:hover{
-  background-color: var(--onBack);
-}
-
 #boardDataTreeSlide .fenViewerCanvas {
   width: 100%;
-  max-width: 225px;
   border-radius: var(--borderRadius);
+  max-width: 224px;
 }
+
+@media (max-device-width : 500px) and (orientation : landscape) { 
+  #boardDataTreeSlide .fenViewerCanvas {
+    max-width: 160px;
+  }
+}
+
+@media (max-device-height : 860px) and (orientation : portrait) { 
+  #boardDataTreeSlide .fenViewerCanvas {
+    max-width: 160px;
+  }
+}
+
 
 #boardDataTreeSlide .fenViewerContainer{
   width: 100%;
@@ -758,4 +790,17 @@
 
   margin-top: var(--mediumMargin);
   margin-bottom: var(--mediumMargin);
+}
+
+.fenViewerCanvas{
+  animation: fenViewerAppears 500ms linear 0ms 1;
+}
+
+@keyframes fenViewerAppears {
+  from {opacity: 0;}
+  to {opacity: 1;}
+}
+
+#boardDataTreeSlide{
+  scroll-behavior: smooth;
 }
