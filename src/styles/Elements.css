@@ -435,28 +435,38 @@
 
 #notification{
   position: absolute;
-  width: 100vw;
+  left: var(--mediumMargin);
+  width: calc(100vw - 2*var(--mediumMargin));
   height: var(--headerHeight);
 
   font-size: var(--bigTextSize);
-
   text-align: center;
   line-height: var(--headerHeight);
 
   cursor: pointer;
-
-  transition: top .1s ease-out;
-  will-change: top;
-
   overflow: hidden;
+  border-radius: var(--borderRadius);
+  z-index: 5;
+
+  transition: top .1s ease-out, opacity 0.2s ease-out;
+  will-change: top, opacity;
+
+  /* SHADOWS */
+  -moz-box-shadow: var(--shadowShift) var(--shadowShift) var(--shadowBlur) var(--shadow);
+  -webkit-box-shadow: var(--shadowShift) var(--shadowShift) var(--shadowBlur) var(--shadow);
+  box-shadow: var(--shadowShift) var(--shadowShift) var(--shadowBlur) var(--shadow);
 }
 
 .notificationVisible{
-  top: 0px;
+  top: var(--mediumMargin);
+  opacity: 1;
+  pointer-events: all;
 }
 
 .notificationHidden{
-  top: calc(var(--headerHeight) * (-1));
+  top: calc(var(--mediumMargin) - 20px);
+  opacity: 0;
+  pointer-events: none;
 }
 
 .notificationNormal{

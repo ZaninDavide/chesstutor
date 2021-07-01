@@ -9,21 +9,22 @@
     overflow-y: hidden;
 
     transition: background-color 0.2s ease-out;
+    will-change: background-color;
 }
 
-.modal.modalVisible {
+.modal.modalVisible, .hMenu.menuVisible {
     pointer-events: all;
     background-color: rgba(0, 0, 0, 0.8);
 }
 
-.modal.modalHidden {
+.modal.modalHidden, .hMenu.menuHidden {
     pointer-events: none;
     background-color: transparent;
 }
 
 .modalContent{
     width: 100%;
-    max-width: 500px;
+    max-width: 400px;
     min-height: 200px;
     max-height: 60vh;
     overflow-y: hidden;
@@ -43,28 +44,110 @@
     box-shadow: var(--shadowShift) var(--shadowShift) var(--shadowBlur) var(--shadow);
 }
 
-.modalVisible .modalContent, .modalVisible #promotionModalContent{
+.modalVisible .modalContent, .modalVisible #promotionModalContent, .menuVisible .hMenuContent{
     position: relative;
     top: 0px;
     transition-property: top, opacity;
     transition-duration: 0.2s, 0.2s;
     transition-timing-function: ease-out, ease-out;
     opacity: 1;
+    will-change: top, opacity;
 }
 
-.modalHidden .modalContent, .modalHidden #promotionModalContent{
+.modalHidden .modalContent, .modalHidden #promotionModalContent, .menuHidden .hMenuContent{
     position: relative;
     top: 20px;
     transition-property: top, opacity;
     transition-duration: 0.2s, 0.2s;
     transition-timing-function: ease-out, ease-out;
     opacity: 0;
+    will-change: top, opacity;
 }
 
 .tallModalContent{
     min-height: 250px;
 }
 
+.hMenu {
+    position: fixed;
+    left:0px;
+    top:0px;
+    width: 100vw;
+    height: 100vh;
+    z-index: 4;
+    overflow-y: hidden;
+
+    transition: background-color 0.2s ease-out;
+    will-change: background-color;
+}
+
+.hMenuContent {
+    position: absolute;
+
+    width: 100%;
+    max-width: 350px;
+    max-height: 60vh;
+    overflow-y: hidden;
+
+    display: grid;
+    grid-template-rows: auto 1fr;
+
+    margin-left: auto;
+    margin-right: auto;
+    border-radius: var(--borderRadius);
+
+    background-color: var(--modalBack);
+
+    z-index: 3;
+
+    /* border: 1px solid var(--onModalBack); */
+
+    /* SHADOWS */
+    -moz-box-shadow: var(--shadowShift) var(--shadowShift) var(--shadowBlur) var(--shadow);
+    -webkit-box-shadow: var(--shadowShift) var(--shadowShift) var(--shadowBlur) var(--shadow);
+    box-shadow: var(--shadowShift) var(--shadowShift) var(--shadowBlur) var(--shadow);
+}
+
+.hMenuInside {
+    height: 100%;
+    overflow-y: auto;
+}
+
+.hMenuButton{
+    width: 100%;
+    margin: 0px !important; /* overwrite simpleButton */
+    padding: 0px !important; /* overwrite simpleButton */
+    /* height: 100% !important; */
+    /* BORDERS */
+    border: 0px;
+    border-radius: 0px;
+}
+
+.hMenuHeader {
+    display: flex;
+    align-items: center;
+    height: var(--uiElementMediumHeight);
+    overflow: hidden;
+    border-bottom: 1px solid var(--onModalBack);
+}
+
+.hMenuHeader h3 {
+    width: 100%;
+    box-sizing: border-box;
+
+    margin: 0px;
+    padding-left: var(--mediumMargin);
+    padding-right: var(--mediumMargin);
+    border-top: solid 1px var(--hoverBackColor);
+
+    max-height: 100%;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+    text-transform: uppercase;
+    text-align: center;
+    line-height: 1;
+}
 
 @media screen and (max-height: 500px) {
     .modalContent{
@@ -76,10 +159,26 @@
         max-height: unset;
         border-radius: 0;
     }
+
+    .hMenuContent{
+        /* small window */
+        height: 100vh;
+        margin-top: 0;
+        margin-bottom: 0;
+        min-height: 0;
+        max-height: unset;
+        border-radius: 0;
+    }
 }
 
 @media screen and (min-height: 501px) {
     .modalContent{
+        /* tall window */
+        margin-top: 20vh;
+        height: auto;
+    }
+
+    .hMenuContent{
         /* tall window */
         margin-top: 20vh;
         height: auto;
@@ -154,43 +253,6 @@
     grid-template-areas: "commentCheckBox";
 }
 
-.hMenuContent{
-    background-color: var(--modalBack);
-
-    position: fixed;
-    left:0px;
-    bottom:0px;
-    z-index: 3;
-
-    width: 100vw;
-
-    /*display: flex;*/
-    overflow-x: hidden; /* avoids buttons to display in the rounded corner area */
-
-    border-radius: var(--borderRadius) var(--borderRadius) 0px 0px;
-    
-    transition-property: margin-bottom;
-    transition-timing-function: cubic-bezier(0.455, 0.03, 0.515, 0.955), ease-in-out;
-    transition-duration: .2s, .2s;
-    will-change: margin-bottom;
-
-    max-height: 80vh;
-    overflow-y: auto;
-
-    margin-left: max(0.00000000000000000000000000000000000001px, calc((100vw - 400px)/2));
-    max-width: 400px;   
-}
-
-.hMenuButton{
-    width: 100%;
-    margin: 0px !important; /* overwrite simpleButton */
-    padding: 0px !important; /* overwrite simpleButton */
-    height: 100% !important;
-    /* BORDERS */
-    border: 0px;
-    border-radius: 0px;
-}
-
 @media (hover: hover) {
     .hMenuButton:hover:enabled, 
     .modalButtons button.modalButton:hover:enabled,
@@ -238,17 +300,6 @@
     font-size: var(--textSize);
 }
 
-.hMenuBack{
-    position: fixed;
-    left:0px;
-    width: 100vw;
-    height: 100vh;
-    z-index: 3;
-    transition-property: background-color;
-    transition-duration: 1s;
-    will-change: background-color;
-}
-
 .modalButton{
     margin: 0px;
     width: calc(var(--uiElementHeight) + 2*var(--mediumMargin));
@@ -270,6 +321,7 @@
     margin-bottom: 0px;
     margin-left: 0px;
     margin-right: 0px;
+    border-top: 1px solid var(--onModalBack);
 }
 
 .newSendButton{

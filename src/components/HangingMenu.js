@@ -2,29 +2,28 @@ import React, { Component } from "react"
 import "../styles/Modal.css"
 
 class HangingMenu extends Component {
-  getStyle(){
-    return {
-      marginBottom: this.props.visible ? 0 : "-100%",
-    }
-  }
-
-  getBackStyle(){
-    return {
-      display: this.props.visible ? "initial" : "none",
-      backgroundColor: this.props.visible ? "rgba(0, 0, 0, .8)" : "rgba(0, 0, 0, 0)",
-    }
-  }
 
   render() {
     return (
-      <React.Fragment>
-        <div className="hMenuBack" onClick={this.props.close} style={this.getBackStyle()}/>
-        <div className="hMenuContent" style={this.getStyle()}>
-          {this.props.children}
+      <div 
+        className={"hMenu " + (this.props.visible ? " menuVisible" : " menuHidden")}
+        onClick={this.props.close} 
+      >
+        <div 
+          className="hMenuContent"
+          onClick={e => e.stopPropagation()}
+        >
+          <div className="hMenuHeader" onClick={this.props.close}>
+            <h3>{this.props.title}</h3>
+          </div>
+          <div className="hMenuInside" onClick={e => e.stopPropagation()}>
+            {this.props.children} 
+          </div>
         </div>
-      </React.Fragment>
+      </div>
     )
   }
+
 }
 
 export default HangingMenu

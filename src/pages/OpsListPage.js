@@ -139,6 +139,8 @@ class OpsListPage extends Component {
   }
 
   render() {
+  const hmenu_op_name = this.state.hMenuOpIndex !== null ? this.props.ops[this.state.hMenuOpIndex].op_name : undefined
+
     return (
       <React.Fragment>
         <Header
@@ -161,7 +163,11 @@ class OpsListPage extends Component {
 
         {/* ---------------------------- MODALS ---------------------------- */}
 
-        <HangingMenu visible={this.state.hMenuVisible & this.props.ops.length > 0} close={this.hMenuClose}>
+        <HangingMenu 
+          visible={this.state.hMenuVisible & this.props.ops.length > 0} 
+          close={this.hMenuClose}
+          title={hmenu_op_name}
+        >
           {/* DELETE BUTTON */}
           <button className="simpleButton hMenuButton" onClick={() => { this.hMenuClose(); this.openOpDeleteModal(); }}>
             <div className="hMenuButtonContent">
@@ -218,7 +224,7 @@ class OpsListPage extends Component {
           doneButtonText={<span className="alertText iconText">delete</span>}
           onDoneClick={() => this.props.deleteOpening(this.state.hMenuOpIndex)}>
           {this.state.opDeleteVisible ?
-            <React.Fragment><h2><Translator text={"Delete permanently:"} />&nbsp;<span className="alertText">{this.props.ops[this.state.hMenuOpIndex].op_name}</span>{"?"}</h2></React.Fragment> : null
+            <React.Fragment><h2><Translator text={"Delete permanently:"} />&nbsp;<span className="alertText">{hmenu_op_name}</span>{"?"}</h2></React.Fragment> : null
           }
         </Modal>
         {/* SEND OP MODAL */}
@@ -240,7 +246,7 @@ class OpsListPage extends Component {
           {this.state.renameOpVisible ?
             <React.Fragment>
               <h2><Translator text={"Rename"} />&nbsp;
-              <span style={{ color: "var(--main)" }}>{this.props.ops[this.state.hMenuOpIndex].op_name}</span>&nbsp;
+              <span style={{ color: "var(--main)" }}>{hmenu_op_name}</span>&nbsp;
               <Translator text={"to:"} /></h2>
               <input type="text"
                 className="textBox renameTextBox"

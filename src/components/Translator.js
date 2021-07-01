@@ -65,6 +65,7 @@ const languages = {
     "group": "group",
     "": "",
     null: "",
+    "Board": "Board",
   },
   ita: {
     Openings: "Aperture",
@@ -129,6 +130,7 @@ const languages = {
     "group": "gruppo",
     "": "",
     null: "",
+    "Board": "Scacchiera",
   }
 }
 

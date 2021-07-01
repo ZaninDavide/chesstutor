@@ -12,6 +12,7 @@ import HangingMenu from "../components/HangingMenu"
 import VariationAddedModal from "../components/VariationAddedModal"
 import TrainingFinishedModal from "../components/TrainingFinishedModal"
 import LoadVariationsModal from "../components/LoadVariationsModal"
+import Translator from "../components/Translator"
 
 import Ripples from "react-ripples"
 import BoardData from "../components/BoardData"
@@ -238,7 +239,11 @@ class Board extends Component {
         /> : null}
 
         {/* MORE MENU */}
-        <HangingMenu visible={this.state.boardMenuVisible} close={() => this.setState({ boardMenuVisible: false })}>
+        <HangingMenu 
+          visible={this.state.boardMenuVisible} 
+          close={() => this.setState({ boardMenuVisible: false })}
+          title={<Translator text={"Board"}/>}
+        >
           {/* ROTATE BOARD */}
           {this.props.moreMenuButtons.indexOf("flip") !== -1 ?
             <button className="simpleButton hMenuButton" onClick={() => {
