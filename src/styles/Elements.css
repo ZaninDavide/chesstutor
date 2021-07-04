@@ -564,6 +564,21 @@
 .treeMoveSan{
   font-weight: bold;
   color: var(--main);
+  font-size: var(--titleSize);
+  display: inline-block;
+  animation: treeMoveSanAppears 200ms linear 0ms 1;
+}
+
+.treeMoveSan:hover {
+  background-color: var(--onBack);
+  border-radius: var(--borderRadius);
+  cursor: pointer;
+}
+
+.treeMovePrefix{
+  font-weight: bold;
+  color: var(--text);
+  word-break: keep-all;
   animation: treeMoveSanAppears 200ms linear 0ms 1;
 }
 

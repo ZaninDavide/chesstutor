@@ -45,6 +45,7 @@ class BoardData extends Component {
             getComment={this.props.getComment}
             getDrawBoardPDF={this.props.getDrawBoardPDF}
             op_index={this.props.op_index}
+            try_undo_n_times={this.props.try_undo_n_times}
           />
         </div>
       tabs.push(tabTree)

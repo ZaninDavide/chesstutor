@@ -13,7 +13,7 @@ class VariationPage extends Component {
   }
 
   render() {
-    const op_index = this.props.match.params.op_index
+    const op_index = parseInt(this.props.match.params.op_index)
     const op = this.props.ops[op_index]
     const vari_name = this.props.match.params.vari_name
     return (

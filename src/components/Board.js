@@ -94,6 +94,7 @@ class Board extends Component {
     this.stockfish_automatics = this.stockfish_automatics.bind(this)
     this.stockfish_go_deeper = this.stockfish_go_deeper.bind(this)
     this.get_lichess_cloud_evaluation = this.get_lichess_cloud_evaluation.bind(this)
+    this.try_undo_n_times = this.try_undo_n_times.bind(this)
     /* refs */
     this.selectedPiece = React.createRef()
 
@@ -190,6 +191,7 @@ class Board extends Component {
             get_correct_moves_data_book={this.props.get_correct_moves_data_book}
             book_move={move => this.make_move(move)}
             get_fen={this.state.game.fen}
+            try_undo_n_times={this.try_undo_n_times}
           />
         </div>
 
@@ -280,7 +282,7 @@ class Board extends Component {
           }}>
             <div className="hMenuButtonContent">
               <div className="hMenuButtonIcon">upload</div>
-              <div className="hMenuButtonLabel">Load Variations from PGN</div>
+              <div className="hMenuButtonLabel"><Translator text="Load lines from PGN"/></div>
             </div>
           </button> : null
           }
@@ -571,6 +573,48 @@ class Board extends Component {
     } else {
       console.log("Cannot undo before any move is done")
     }
+  }
+
+  try_undo_n_times(n) {
+    // you can't go back more moves than you played 
+    if (this.state.json_moves.length < n) n = this.state.json_moves.length
+    if (n === 0) return;
+
+    this.setState(old => {
+
+      let moves = []
+      let moves_list = old.json_moves
+
+      for (let index = 0; index < n; index++) {
+        // if you play with black only you can't go back to the initial position
+        if (moves_list.length === 1 && this.props.playColor === "black") break;
+        // undo the move
+        moves.push(this.state.game.undo())
+        moves_list.pop()
+      }
+
+      // if you play with white only you can't stop after a white move
+      if (moves_list.length % 2 === 1 && this.props.playColor === "white") {
+        moves.push(this.state.game.undo())
+        moves_list.pop()
+      }
+
+      // if you play with black only you can't stop after a black move
+      if (moves_list.length % 2 === 0 && this.props.playColor === "black") {
+        moves.push(this.state.game.undo())
+        moves_list.pop()
+      }
+
+      this.stockfish_automatics(moves_list)
+
+      return {
+        json_moves: moves_list,
+        moves_forward: [...moves, ...old.moves_forward],
+        stockfish_chosen_move: undefined,
+        arrows: []
+      }
+
+    })
   }
 
   pc_move(op_index, json_moves, vari_index = undefined) {
