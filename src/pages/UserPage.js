@@ -62,10 +62,10 @@ class userPage extends Component {
       <div className="settingsSection">
         <Translator text="Volume" />:&nbsp;
         <div className="optionButtonsContainer">
-          <Ripples><button onClick={() => { this.props.setVolume(0.0); this.previewVolume(0.0) }} className="simpleButton" style={{ marginRight: 0, color: this.props.volume === 0.0 ? "var(--main)" : "var(--text)" }}>Off</button></Ripples>
-          <Ripples><button onClick={() => { this.props.setVolume(0.2); this.previewVolume(0.2) }} className="simpleButton" style={{ marginRight: 0, color: this.props.volume === 0.2 ? "var(--main)" : "var(--text)" }}>Low</button></Ripples>
-          <Ripples><button onClick={() => { this.props.setVolume(0.6); this.previewVolume(0.6) }} className="simpleButton" style={{ marginRight: 0, color: this.props.volume === 0.6 ? "var(--main)" : "var(--text)" }}>Medium</button></Ripples>
-          <Ripples><button onClick={() => { this.props.setVolume(1.0); this.previewVolume(1.0) }} className="simpleButton" style={{ marginRight: 0, color: this.props.volume === 1.0 ? "var(--main)" : "var(--text)" }}>High</button></Ripples>
+          <Ripples><button onClick={() => { this.props.setVolume(0.0); this.previewVolume(0.0) }} className="simpleButton" style={{ marginRight: 0, color: this.props.volume === 0.0 ? "var(--main)" : "var(--text)" }}><Translator text={"Off"}/></button></Ripples>
+          <Ripples><button onClick={() => { this.props.setVolume(0.2); this.previewVolume(0.2) }} className="simpleButton" style={{ marginRight: 0, color: this.props.volume === 0.2 ? "var(--main)" : "var(--text)" }}><Translator text={"Low"}/></button></Ripples>
+          <Ripples><button onClick={() => { this.props.setVolume(0.6); this.previewVolume(0.6) }} className="simpleButton" style={{ marginRight: 0, color: this.props.volume === 0.6 ? "var(--main)" : "var(--text)" }}><Translator text={"Medium"}/></button></Ripples>
+          <Ripples><button onClick={() => { this.props.setVolume(1.0); this.previewVolume(1.0) }} className="simpleButton" style={{ marginRight: 0, color: this.props.volume === 1.0 ? "var(--main)" : "var(--text)" }}><Translator text={"High"}/></button></Ripples>
         </div>
       </div>
 

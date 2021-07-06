@@ -256,7 +256,7 @@ class Board extends Component {
             }}>
               <div className="hMenuButtonContent">
                 <div className="hMenuButtonIcon">import_export</div>
-                <div className="hMenuButtonLabel">Flip</div>
+                <div className="hMenuButtonLabel"><Translator text={"Flip"}/></div>
               </div>
             </button> : null
           }
@@ -271,7 +271,7 @@ class Board extends Component {
           }}>
             <div className="hMenuButtonContent">
               <div className="hMenuButtonIcon">edit</div>
-              <div className="hMenuButtonLabel">Analyse position</div>
+              <div className="hMenuButtonLabel"><Translator text={"Analyse position"}/></div>
             </div>
           </button> : null
           }

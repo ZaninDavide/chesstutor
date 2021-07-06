@@ -1,5 +1,6 @@
 import React, { Component } from "react"
 import { make_san_nicer } from "../utilities/san_parsing"
+import Translator from "./Translator";
 
 class BookUI extends Component {
 
@@ -82,7 +83,12 @@ class BookUI extends Component {
         return <table id="bookTable">
                 <tbody>
                     {this.getOptions()}
-                    <tr id="titleLineBookUI" key="titleLineBookUI"><td>N°</td><td>Move</td><td>Opening</td><td>Variation</td></tr>
+                    <tr id="titleLineBookUI" key="titleLineBookUI">
+                        <td><Translator text={"N°"}/></td>
+                        <td><Translator text={"Move"}/></td>
+                        <td><Translator text={"Opening"}/></td>
+                        <td><Translator text={"Line"}/></td>
+                    </tr>
                 </tbody>
         </table>
     }
