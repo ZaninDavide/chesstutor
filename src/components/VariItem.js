@@ -1,8 +1,7 @@
 import React, { Component } from "react"
 import Translator from "./Translator"
 import Ripples from "react-ripples"
-
-// import { Menu, MenuItem } from '@szhsin/react-menu';
+import { Menu, MenuItem } from '@szhsin/react-menu';
 
 class VariItem extends Component {
   constructor(props) {
@@ -13,6 +12,7 @@ class VariItem extends Component {
     this.rightClick = this.rightClick.bind(this);
     this.menuButtonClick = this.menuButtonClick.bind(this);
     this.openVariation = this.openVariation.bind(this);
+    this.closeMenu = this.closeMenu.bind(this);
     this.menuRef = React.createRef();
   }
 
@@ -33,6 +33,10 @@ class VariItem extends Component {
 
   openVariation() {
     this.props.history.push("/openings/" + this.props.op_index + "/" + this.props.vari_index)
+  }
+
+  closeMenu() {
+    this.setState({ menuVisible: false })
   }
 
   render() {
@@ -59,44 +63,17 @@ class VariItem extends Component {
         </div>
 
         {/* MENU */}
-        <div className="variItemButton iconText" onClick={this.menuButtonClick}>
-          more_vert
-        </div>
-
-        <div
-          className={"variItemMenu" + (this.state.menuVisible ? " variItemMenuOpened" : " variItemMenuClosed")}
-          onClick={e => {
-            this.setState({ menuVisible: false });
-            e.stopPropagation()
-          }}
-          onBlur={() => this.setState({ menuVisible: false })}
-          tabIndex="1"
-          ref={this.menuRef}
-        >
-          <span className="variItemMenuButton"
-            onClick={() => { this.props.delete(); this.setState({ menuVisible: false }) }}
-          ><span className="iconText">delete</span><span className="variItemMenuLabel">delete</span></span>
-          {/*
-          <span className="variItemMenuButton"
-            onClick={() => { this.props.switch_archive(); this.setState({ menuVisible: false }) }}
-          ><span className="iconText">{this.props.archived ? "unarchive" : "archive"}</span><span className="variItemMenuLabel">{this.props.archived ? "unarchive" : "archive"}</span></span>
-          */}
-          <span className="variItemMenuButton"
-            onClick={() => { this.props.rename(); this.setState({ menuVisible: false }) }}
-          ><span className="iconText">edit</span><span className="variItemMenuLabel">Move / Rename</span></span>
-        </div>
-
-
-        {/*
         <div className="variItemButton iconText" onClick={e => e.stopPropagation()}>
           <Menu menuButton={
-            <button className="iconButton">more_vert</button>}>
-            <MenuItem ><Translator text="Rename\Move" /></MenuItem>
-            <MenuItem ><Translator text="Archive" /></MenuItem>
-            <MenuItem ><Translator text="Delete" /></MenuItem>
+              <div className="variItemButton iconText" onClick={this.menuButtonClick} onBlur={this.closeMenu}>
+                more_vert
+              </div>
+            }
+          >
+            <MenuItem onClick={this.props.delete} className="alertText"><span className="iconText variItemMenuIcon">delete</span><Translator text="Delete" /></MenuItem>
+            <MenuItem onClick={this.props.rename}><span className="iconText variItemMenuIcon">edit</span><Translator text="Rename" /></MenuItem>
           </Menu>
         </div>
-        */}
       </Ripples>
     )
   }

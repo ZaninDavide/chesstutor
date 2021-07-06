@@ -96,7 +96,7 @@ const languages = {
     "Archived openings": "Aperture archiviate",
     "Archived variations": "Varianti archiviate",
     "Delete permanently:": "Eliminare definitivamente:",
-    "Rename": "Rinominare",
+    "Rename": "Rinomina",
     "to:": "come:",
     "Name": "Nome",
     "Language": "Lingua ⋅ Language",

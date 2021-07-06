@@ -20,7 +20,7 @@ class Tree extends Component {
         objects.push()
 
         const first_comment = this.props.getComment(this.props.op_index, [])
-        if (first_comment) objects.push(<p className="treeComment" key="treeFirstComment" dangerouslySetInnerHTML={{ __html: process_comment(first_comment) }}></p>)
+        if (first_comment) objects.push(<p className="treeComment treeFirstComment" key="treeFirstComment" dangerouslySetInnerHTML={{ __html: process_comment(first_comment) }}></p>)
 
         let last_long_comment = false
         this.props.json_moves.forEach((c, id) => {
