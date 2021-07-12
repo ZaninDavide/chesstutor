@@ -192,6 +192,8 @@ class Board extends Component {
             book_move={move => this.make_move(move)}
             get_fen={this.state.game.fen}
             try_undo_n_times={this.try_undo_n_times}
+            ops={this.props.ops}
+            match={this.props.match}
           />
         </div>
 

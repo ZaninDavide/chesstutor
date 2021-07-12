@@ -77,6 +77,8 @@ class TrainingPage extends Component {
           wait_time={this.props.wait_time}
           volume={this.props.volume}
           get_correct_moves_data_book={this.props.get_correct_moves_data_book}
+          ops={this.props.ops}
+          match={this.props.match}
         />
       </React.Fragment>
     )

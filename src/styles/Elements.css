@@ -372,8 +372,62 @@
   font-family: var(--textFont);
 }
 
-.subNameOption, select:active, select:hover {
+.subNameOption, .bookQueryOption, select:active, select:hover {
   outline: none;
+}
+
+.bookQuerySelector {
+  margin-left: var(--mediumMargin);
+  margin-right: var(--mediumMargin);
+
+  height: calc(var(--uiElementSmallHeight) + 2px); /* 2px = textbox padding */
+  max-width: 150px;
+
+  border-radius: var(--borderRadius);
+  border-radius: var(--borderRadius);
+  border: 0;
+
+  padding-left: 2px;
+
+  outline: none;
+  background-color: var(--onModalBack);
+  color: var(--clickText);
+  font-size: var(--textSize);
+  font-family: var(--textFont);
+}
+
+.opQuery {
+  margin-left: 0px;
+  margin-right: 0px;
+}
+
+.variQuery {
+  margin-left: 0px;
+  margin-right: 0px;
+  border-top-right-radius: 0px;
+  border-bottom-right-radius: 0px;
+  border-top-left-radius: var(--borderRadius);
+  border-bottom-left-radius: var(--borderRadius);
+  border: 0;
+}
+
+.subnameQuery {
+  margin-left: 0px;
+  margin-right: 0px;
+  border-top-left-radius: 0px;
+  border-bottom-left-radius: 0px;
+  border-top-right-radius: var(--borderRadius);
+  border-bottom-right-radius: var(--borderRadius);
+  border: 0;
+  border-left: var(--smallMargin) solid var(--onBack);
+}
+
+#bookQueryTable{
+  margin-left: var(--smallMargin);
+}
+
+#bookQueryTable td{
+  padding: var(--smallMargin);
 }
 
 #logoutButton{
@@ -769,11 +823,11 @@
   border-bottom: var(--borderSize) solid var(--onBack);
 }
 
-#bookTable tr:not(#titleLineBookUI) {
+#bookTable tr:not(#titleLineBookUI):not(#filterLineBookUI) {
   cursor: pointer;
 }
 
-#bookTable tr:last-child {
+#bookTable tr#titleLineBookUI {
   font-weight: bold;
   height: var(--uiElementSmallHeight);
 }
@@ -782,7 +836,7 @@
   background-color: var(--hoverBack);
 }
 
-#bookTable tr:hover:not(#titleLineBookUI){
+#bookTable tr:hover:not(#titleLineBookUI):not(#filterLineBookUI){
   background-color: var(--onBack);
 }
 
@@ -793,6 +847,10 @@
 #bookTable .bookTableSan{
   color: var(--main);
   font-weight: bold;
+}
+
+#filterLineBookUI td{
+  border-bottom: 0px;
 }
 
 #boardDataTreeSlide .fenViewerCanvas {

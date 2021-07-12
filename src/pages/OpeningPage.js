@@ -101,6 +101,13 @@ class OpeningPage extends Component {
             <div id="variationFolderLearnButtons">
               <button id="variationFolderLearn" className="barButton"
                 onClick={() => {
+                  this.props.history.push("/openings/" + this.props.match.params.op_index + "/" + vari_name + "/" + this.props.getOpColor(parseInt(this.props.match.params.op_index)) + "/[]")
+                }}
+              >
+                <span className="iconText">book</span>
+              </button>
+              <button id="variationFolderLearn" className="barButton"
+                onClick={() => {
                   this.props.history.push("/openings/training/" + this.props.match.params.op_index + "/" + vari_name)
                 }}
               >

@@ -84,6 +84,8 @@ const languages = {
     "PRECISE": "PRECISE",
     "ACCURATE": "ACCURATE",
     "DEEPER": "DEEPER",
+    "Book": "Book",
+    "Filters": "Filters",
   },
   ita: {
     Openings: "Aperture",
@@ -167,6 +169,8 @@ const languages = {
     "PRECISE": "Preciso",
     "ACCURATE": "Accurato",
     "DEEPER": "Approfondito",
+    "Book": "Libro",
+    "Filters": "Filtri",
   }
 }
 

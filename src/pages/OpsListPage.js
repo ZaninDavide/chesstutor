@@ -215,6 +215,15 @@ class OpsListPage extends Component {
               <div className="hMenuButtonLabel"><Translator text="Rename" /></div>
             </div>
           </button>
+          {/* BOOK BUTTON */}
+          <button className="simpleButton hMenuButton" 
+            onClick={() => this.props.history.push(`/openings/${this.state.hMenuOpIndex}/${this.props.ops[this.state.hMenuOpIndex].op_color}/[]`)}
+          >
+            <div className="hMenuButtonContent">
+              <div className="hMenuButtonIcon">book</div>
+              <div className="hMenuButtonLabel"><Translator text="Book" /></div>
+            </div>
+          </button>
         </HangingMenu>
         {/* DELETE OP MODAL */}
         <Modal

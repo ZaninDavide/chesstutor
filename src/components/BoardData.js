@@ -32,6 +32,8 @@ class BoardData extends Component {
             getComment={this.props.getComment}
             get_correct_moves_data_book={this.props.get_correct_moves_data_book}
             book_move={this.props.book_move}
+            ops={this.props.ops}
+            match={this.props.match}
           />
         </div>
       tabs.push(tabBook)

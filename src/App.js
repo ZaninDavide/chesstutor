@@ -722,15 +722,41 @@ class App extends Component {
     return vari_next_move
   }
 
-  get_correct_moves_data_book(json_moves) {
+  get_correct_moves_data_book(json_moves, opQuery = undefined, variQuery = undefined, subnameQuery = undefined) {
+    // opQuery: null=all true=white false=black number=op_index
+    // variQuery: null=all string=vari_name
+    // subnameQuery: null=all string=vari_subname
     let correct_moves = []
     for (let op_index = 0; op_index < this.state.user_ops.length; op_index++) {
       let op = this.state.user_ops[op_index]
-      if (!op.archived) {
+
+      let query_good = true
+      if(
+        (opQuery === true && op.op_color === "black") || // query white but op black
+        (opQuery === false && op.op_color === "white") // query black but op white
+      ){ 
+        query_good = false
+      }
+      // name doesnt match with query which is not black or white or null
+      if(opQuery !== undefined && opQuery !== null && opQuery !== true && opQuery !== false && opQuery !== op_index){
+        query_good = false
+      }
+
+      if (!op.archived && query_good) {
         for (let vari_index = 0; vari_index < op.variations.length; vari_index++) {
           // loop through all variations 
-          let vari = op.variations[vari_index]
-          if (vari.moves.length > json_moves.length && !vari.archived) { // this variation is long enougth and not archived
+          let vari = op.variations[vari_index] 
+          
+          query_good = true
+          // name doesnt match with query
+          if(variQuery !== undefined && variQuery !== null && variQuery !== vari.vari_name) 
+            query_good = false 
+          
+          // subname doesnt match with query
+          if(!(subnameQuery === "" && vari.vari_subname === undefined) && subnameQuery !== undefined && subnameQuery !== null && subnameQuery !== undefined && subnameQuery !== null && subnameQuery !== vari.vari_subname) 
+            query_good = false 
+
+          if (vari.moves.length > json_moves.length && !vari.archived && query_good) { // this variation is long enougth and not archived
             let first_moves = vari.moves.slice(0, json_moves.length)
 
             // is the variation compatible with the already done moves?
@@ -773,6 +799,9 @@ class App extends Component {
       deleteVari={this.deleteVari}
       renameVariGroup={this.renameVariGroup}
       deleteVariGroup={this.deleteVariGroup}
+      getOpColor={(op_index) => {
+        if(this.state.user_ops[op_index]) return this.state.user_ops[op_index].op_color
+      }}
     />
     const trainingPage = ({ match, history }) => <TrainingPage
       history={history}
@@ -900,6 +929,7 @@ class App extends Component {
       wait_time={this.state.settings.wait_time}
       volume={this.state.settings.volume}
       get_correct_moves_data_book={this.get_correct_moves_data_book}
+      ops={this.state.user_ops}
     />
     const redirectToLogin = () => <Redirect to="/login" />
     const redirectToHome = () => <Redirect to="/" />
@@ -929,10 +959,16 @@ class App extends Component {
               <Route path="/newOpening" render={newOpPage} />
               <Route path="/openings/training/:op_index/:vari_name" render={noOpenings ? redirectToHome : variTrainingPage} />
               <Route path="/newVariation/:op_index/:vari_name" render={newVariPage} />
+
+              <Route path="/openings/:op_index/:vari_name/:color/:moves" render={analysisPage} />
+              <Route path="/openings/:op_index/:color/:moves" render={analysisPage} />
+
               <Route path="/openings/:op_index/:vari_index" render={noOpenings ? redirectToHome : variPage} />
               <Route path="/openings/:op_index" render={/*noOpenings ? redirectToHome : */opPage} />
+
               <Route path="/training/fullcolor/:color_number" render={noOpenings ? redirectToHome : colorTrainingPage} />
               <Route path="/training/:op_index" render={noOpenings ? redirectToHome : trainingPage} />
+
               <Route path="/analysis/:color/:moves" render={analysisPage} />
               <Route path="/" render={() => { console.warn("Error 404. Redirected to home"); return redirectToHome() }} />
             </Switch>
