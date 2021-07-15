@@ -1128,16 +1128,13 @@ class Board extends Component {
       // reset dragging (it has to be done after everithing otherwise you see the piece come back)
       draggedPiece.style.left = "0px"
       draggedPiece.style.top = "0px"
-      /*this.touchCircleRef.current.style.left = "0px"
-      this.touchCircleRef.current.style.top = "0px"*/
-
     }
     clientX_down = 0
     clientY_down = 0
     on_drag = false
     left_mouse_down = false
     dragged_away = false
-    this.forceUpdate()
+    requestAnimationFrame(() => this.forceUpdate())
   }
 
   boardDrag(e) {
@@ -1155,22 +1152,22 @@ class Board extends Component {
       let deltaY = clientY - clientY_down
       dragged_away = deltaX !== 0 || deltaY !== 0 || dragged_away
 
-      this.selectedPiece.current.style.left = deltaX + "px"
-      this.selectedPiece.current.style.top = deltaY + "px"
+      if(this.selectedPiece.current.style.left !== deltaX + "px") this.selectedPiece.current.style.left = deltaX + "px"
+      if(this.selectedPiece.current.style.top !== deltaY + "px") this.selectedPiece.current.style.top = deltaY + "px"
 
-      /*this.touchCircleRef.current.style.left = deltaX + "px"
-      this.touchCircleRef.current.style.top = deltaY + "px"*/
-      // find the coordinates of the mouse
-      const coor = { x: clientX - this.refs.bContainer.offsetLeft, y: clientY - this.refs.bContainer.offsetTop }
-      coor.x = Math.floor((coor.x / this.refs.board.width) * 8) * 100
-      coor.y = Math.floor((coor.y / this.refs.board.width) * 8) * 100
-
-      // inside the board?
-      if (coor.x <= 700 && coor.y <= 700) {
-        // try to move there
-        const cell = this.cellFromCoor(coor)
-        this.setState({ mouse_over_cell: cell })
-      }
+      requestAnimationFrame(() => {
+        // find the coordinates of the mouse
+        const coor = { x: clientX - this.refs.bContainer.offsetLeft, y: clientY - this.refs.bContainer.offsetTop }
+        coor.x = Math.floor((coor.x / this.refs.board.width) * 8) * 100
+        coor.y = Math.floor((coor.y / this.refs.board.width) * 8) * 100
+  
+        // inside the board?
+        if (coor.x <= 700 && coor.y <= 700) {
+          // try to move there
+          const cell = this.cellFromCoor(coor)
+          this.setState({ mouse_over_cell: cell })
+        }
+      })
     }
   }
 
@@ -1179,9 +1176,11 @@ class Board extends Component {
     if (move) {
       if (move.flags.indexOf("c") !== -1 || move.flags.indexOf("e") !== -1) {
         capture_audio.volume = this.props.volume
+        capture_audio.currentTime = 0
         capture_audio.play()
       } else {
         move_audio.volume = this.props.volume
+        move_audio.currentTime = 0
         move_audio.play()
       }
     }
@@ -1189,6 +1188,7 @@ class Board extends Component {
 
   async play_error_sound() {
     move_audio.volume = this.props.volume
+    error_audio.currentTime = 0
     error_audio.play()
   }
 
@@ -1196,72 +1196,80 @@ class Board extends Component {
   /* ---------------------------- UI ELEMENTS ---------------------------- */
 
   next_button_click() {
-    if (this.props.playColor === "none" || this.is_my_turn()) {
-      let move_data = this.props.get_vari_next_move_data(this.props.op_index, this.props.vari_index, this.state.json_moves)
-      if (move_data !== null) {
-        this.make_move(move_data)
+    requestAnimationFrame(() => {
+      if (this.props.playColor === "none" || this.is_my_turn()) {
+        let move_data = this.props.get_vari_next_move_data(this.props.op_index, this.props.vari_index, this.state.json_moves)
+        if (move_data !== null) {
+          this.make_move(move_data)
+        }
       }
-    }
+    })
   }
 
   forward_next_button_click() {
-    if (this.state.moves_forward.length > 0) {
-      let move_data = this.state.moves_forward[0]
-      if (move_data !== null) {
-        this.make_move(move_data)
+    requestAnimationFrame(() => {
+      if (this.state.moves_forward.length > 0) {
+        let move_data = this.state.moves_forward[0]
+        if (move_data !== null) {
+          this.make_move(move_data)
+        }
       }
-    }
+    })
   }
 
   back_button_click() {
-    const before_turn = this.state.game.turn()
-    this.try_undo()
-    if (this.is_my_turn(before_turn, false)) { // undo twice
+    requestAnimationFrame(() => {
+      const before_turn = this.state.game.turn()
       this.try_undo()
-    }
+      if (this.is_my_turn(before_turn, false)) { // undo twice
+        this.try_undo()
+      }
+    })
   }
 
-  async help_button_click(can_auto_move = false) {
-    if (!this.is_my_turn()) return false
-    // get moves data [{from: "d2", to: "d4", san: "d4"}, ...]
-    let correct_moves_repetitive = []
-    if (this.props.trainColor === undefined && this.props.trainGroup === undefined) {
-      correct_moves_repetitive = this.props.get_correct_moves_data(this.props.op_index, this.state.json_moves, this.props.vari_index)
-    } else if (this.props.trainColor !== undefined) { // works with COLOR_TRAINING_MODE
-      correct_moves_repetitive = this.props.get_correct_moves_data_color(this.props.trainColor, this.state.json_moves)
-    } else if (this.props.trainGroup !== undefined) { // works with GROUP_TRAINING_MODE
-      correct_moves_repetitive = this.props.get_correct_moves_data_group(this.props.op_index, this.state.json_moves, this.props.trainGroup)
-    }
-
-    // remove doubles ([d4, d4, e4] -> [d4, e4])
-    let correct_moves_names = []
-    let correct_moves = []
-    correct_moves_repetitive.forEach(element => {
-      if (correct_moves_names.indexOf(element.san) === -1) {
-        correct_moves_names.push(element.san)
-        correct_moves.push(element)
+  help_button_click(can_auto_move = false) {
+    requestAnimationFrame(async () => {
+      if (!this.is_my_turn()) return false
+      // get moves data [{from: "d2", to: "d4", san: "d4"}, ...]
+      let correct_moves_repetitive = []
+      if (this.props.trainColor === undefined && this.props.trainGroup === undefined) {
+        correct_moves_repetitive = this.props.get_correct_moves_data(this.props.op_index, this.state.json_moves, this.props.vari_index)
+      } else if (this.props.trainColor !== undefined) { // works with COLOR_TRAINING_MODE
+        correct_moves_repetitive = this.props.get_correct_moves_data_color(this.props.trainColor, this.state.json_moves)
+      } else if (this.props.trainGroup !== undefined) { // works with GROUP_TRAINING_MODE
+        correct_moves_repetitive = this.props.get_correct_moves_data_group(this.props.op_index, this.state.json_moves, this.props.trainGroup)
       }
-    });
 
-    if (correct_moves.length > 1 || !can_auto_move) {
-      /*this.setState({
-        helpModalVisible: true,
-        helpModalCorrectMoves: correct_moves
-      })*/
-      this.setArrows(correct_moves)
-    } else if (correct_moves.length === 1) {
-      // MAKE MOVE
-      const moves_list_after = await this.make_move(correct_moves[0])
-      // COMPUTER ANSWER IF NECESSARY
-      if (this.props.playColor !== "both") {
-        if (this.props.stockfish ? this.props.stockfish.makes_moves : false) {
-          this.stockfish_move(moves_list_after)
-        } else {
-          // this.stockfish_move(moves_list_after) // TODO ERROR STOCKFISH TEST -------
-          this.pc_move(this.props.op_index, moves_list_after, this.props.vari_index)
+      // remove doubles ([d4, d4, e4] -> [d4, e4])
+      let correct_moves_names = []
+      let correct_moves = []
+      correct_moves_repetitive.forEach(element => {
+        if (correct_moves_names.indexOf(element.san) === -1) {
+          correct_moves_names.push(element.san)
+          correct_moves.push(element)
+        }
+      });
+
+      if (correct_moves.length > 1 || !can_auto_move) {
+        /*this.setState({
+          helpModalVisible: true,
+          helpModalCorrectMoves: correct_moves
+        })*/
+        this.setArrows(correct_moves)
+      } else if (correct_moves.length === 1) {
+        // MAKE MOVE
+        const moves_list_after = await this.make_move(correct_moves[0])
+        // COMPUTER ANSWER IF NECESSARY
+        if (this.props.playColor !== "both") {
+          if (this.props.stockfish ? this.props.stockfish.makes_moves : false) {
+            this.stockfish_move(moves_list_after)
+          } else {
+            // this.stockfish_move(moves_list_after) // TODO ERROR STOCKFISH TEST -------
+            this.pc_move(this.props.op_index, moves_list_after, this.props.vari_index)
+          }
         }
       }
-    }
+    })
   }
 
   boardButtons() {
@@ -1408,13 +1416,15 @@ class Board extends Component {
   }
 
   onCommentClick() {
-    if (this.props.allowCommentEdit) {
-      this.setState({ commentModalVisible: true })
-    }
+    requestAnimationFrame(() => {
+      if (this.props.allowCommentEdit) {
+        this.setState({ commentModalVisible: true })
+      }
+    })
   }
 
   setArrows(arrows) {
-    this.setState({ arrows })
+    requestAnimationFrame(() => this.setState({ arrows }))
   }
 
   makeCongrats() {

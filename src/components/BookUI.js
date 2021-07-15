@@ -86,15 +86,15 @@ class BookUI extends Component {
                     let vari_subnames = compacted_moves[san][op_name][vari_name]
                     vari_subnames.sort()
 
-                    return <>{vari_name + " "}{vari_subnames.map(sub => <span className="impText">{sub + " "}</span>)}</>
+                    return <React.Fragment key={`varifrag_${san}_${op_name}_${vari_name}`}>{vari_name + " "}{vari_subnames.map(sub => <span className="impText" key={`vari_${san}_${op_name}_${vari_name}_${sub}`}>{sub + " "}</span>)}</React.Fragment >
                 })
 
                 html.push(
-                    <tr onClick={() => this.props.book_move(san)}>
-                        <td className="bookTableNumber">{number}</td>
-                        <td className="bookTableSan">{make_san_nicer(san)}</td>
-                        <td>{op_name}</td>
-                        <td>{varis}</td>
+                    <tr onClick={() => this.props.book_move(san)} key={`santr_${san}_${op_name}}`}>
+                        <td key={`number_${number}_${san}`} className="bookTableNumber">{number}</td>
+                        <td key={`san_${number}_${san}`} className="bookTableSan">{make_san_nicer(san)}</td>
+                        <td key={`op_name_${number}_${san}`}>{op_name}</td>
+                        <td key={`varis_${number}_${san}`}>{varis}</td>
                     </tr>
                 )
             })
@@ -157,41 +157,37 @@ class BookUI extends Component {
             switch (query) {
                 case true:
                     return WHITE.toString()
-                    break;
                 case false:
                     return BLACK.toString()
-                    break;
                 case null:
                     return ALL.toString()
-                    break;
                 case undefined:
                     return ALL.toString()
-                    break;
                 default:
                     return query
             }
         }
-        return <React.Fragment>
-            <table id="bookTable">
+        return <React.Fragment key="bookFragment">
+            <table id="bookTable" key="bookTable">
                 <tbody>
                     {this.getOptions()}
                     <tr id="titleLineBookUI" key="titleLineBookUI">
-                        <td><Translator text={"N°"}/></td>
-                        <td><Translator text={"Move"}/></td>
+                        <td><Translator key="translatorN" text={"N°"}/></td>
+                        <td><Translator key="translatorMove" text={"Move"}/></td>
                         <td>
-                            <Translator text={"Opening"}/>
+                            <Translator key="translatorOpening" text={"Opening"}/>
                         </td>
                         <td>
-                            <Translator text={"Line"}/>
+                            <Translator key="translatorLine" text={"Line"}/>
                         </td>
                     </tr>
                 </tbody>
             </table>
-            <br/>
-            <h1><Translator text={"Filters"}/></h1>
-            <table id="bookQueryTable"><tbody>
-                <tr><td><Translator text={"Opening"}/>:</td><td>
-                    <select className="bookQuerySelector opQuery"
+            <br key="br"/>
+            <h1 key="titleFilters"><Translator key="translatorFilters" text={"Filters"}/></h1>
+            <table id="bookQueryTable" key="bookQueryTable"><tbody>
+                <tr key="bookQueryTableTrOpening"><td><Translator key="translatorOpening" text={"Opening"}/>:</td><td>
+                    <select className="bookQuerySelector opQuery" key="bookQueryTableOpeningSelector"
                         onChange={e => {
                             if(e.target.value === WHITE.toString()){
                                 this.setState({ opQuery: true, variQuery: null, subnameQuery: null })
@@ -205,15 +201,15 @@ class BookUI extends Component {
                         }} 
                         value={queryToValue(this.state.opQuery)}
                     >
-                        <option value={ALL} className="bookQueryOption" >{"⋅ All ⋅"}</option>
-                        <option value={WHITE} className="bookQueryOption" >{"⋅ White ⋅"}</option>
-                        <option value={BLACK} className="bookQueryOption" >{"⋅ Black ⋅"}</option>
+                        <option value={ALL} className="bookQueryOption" key="bookQueryOptionOpAll">{"⋅ All ⋅"}</option>
+                        <option value={WHITE} className="bookQueryOption" key="bookQueryOptionOpWhite">{"⋅ White ⋅"}</option>
+                        <option value={BLACK} className="bookQueryOption" key="bookQueryOptionOpBlack">{"⋅ Black ⋅"}</option>
                         {this.openingOptions()}
                     </select>    
                 </td></tr>
-                <tr><td><Translator text={"Line"}/>:</td><td>
+                <tr key="bookQueryTableTrLine"><td><Translator key="translatorLine" text={"Line"}/>:</td><td>
                     <div style={{display: "block"}}>
-                        <select className="bookQuerySelector variQuery"
+                        <select className="bookQuerySelector variQuery" key="bookQuerySelectorLine"
                             onChange={e => {
                                 if(e.target.value === ALL.toString()){
                                     this.setState({ variQuery: null, subnameQuery: null  })
@@ -223,10 +219,10 @@ class BookUI extends Component {
                             }} 
                             value={queryToValue(this.state.variQuery)}
                         >
-                            <option value={ALL} className="bookQueryOption" >{"⋅ All ⋅"}</option>
+                            <option value={ALL} className="bookQueryOption" key="bookQueryOptionLineAll">{"⋅ All ⋅"}</option>
                             {this.groupOptions()}
                         </select>
-                        <select className="bookQuerySelector subnameQuery"
+                        <select className="bookQuerySelector subnameQuery" key="bookQuerySelectorSubname"
                             onChange={e => {
                                 if(e.target.value === ALL.toString()){
                                     this.setState({ subnameQuery: null })
@@ -236,7 +232,7 @@ class BookUI extends Component {
                             }} 
                             value={queryToValue(this.state.subnameQuery)}
                         >
-                            <option value={ALL} className="bookQueryOption" >{"⋅ All ⋅"}</option>
+                            <option value={ALL} className="bookQueryOption" key="bookQueryOptionSubnameAll">{"⋅ All ⋅"}</option>
                             {this.lineOptions()}
                         </select>
                     </div>

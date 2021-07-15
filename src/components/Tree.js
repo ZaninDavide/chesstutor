@@ -65,7 +65,7 @@ class Tree extends Component {
                     if(draw_baord){
                         let game = new Chess()
                         moves.forEach(m => game.move(m))
-                        objects.push(<FenViewer fen={game.fen()} canvasSize={550} key={"FenViewer_" + JSON.stringify(moves)} />)
+                        objects.push(<FenViewer fen={game.fen()} canvasSize={224} key={"FenViewer_" + JSON.stringify(moves)} />)
                     }
 
                     last_long_comment = true

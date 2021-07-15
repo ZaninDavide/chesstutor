@@ -39,7 +39,7 @@ pointer-events: none;
 width: 12.5%;
 position: absolute;
 transition-property: transform, top, left;
-transition: 0.25s, 0.25s, 0.25s;
+transition-duration: 0.25s, 0.25s, 0.25s;
 will-change: transform, top, left;
 left: 0px;
 top: 0px;
@@ -51,6 +51,7 @@ pointer-events: none;
 -moz-transition-property: none !important;
 -o-transition-property: none !important;
 transition-property: none !important;
+will-change: top, left;
 z-index: 2;
 }
 

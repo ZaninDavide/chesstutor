@@ -853,6 +853,42 @@
   border-bottom: 0px;
 }
 
+.fenViewerContainer{
+  width: -webkit-fit-content !important;
+  width: -moz-fit-content !important;
+  width: fit-content !important;
+  height: -webkit-fit-content !important;
+  height: -moz-fit-content !important;
+  height: fit-content !important;
+  text-align: center;
+  margin-top: var(--mediumMargin);
+  margin-bottom: var(--mediumMargin);
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.fenViewerGrid{
+  width: 100%;
+  height: -webkit-fit-content !important;
+  height: -moz-fit-content !important;
+  height: fit-content !important;
+  position: relative;  
+}
+
+.fenViewerGrid .fenViewerPiece{
+  position: absolute;
+  top: 0px;
+  left: 0px;
+  width: 12.5%;
+  height: calc((100% - 4px)/8);
+}
+
+.fenViewerBackground{
+  width: 100%;
+  border-radius: var(--borderRadius);
+  max-width: 224px;
+}
+
 #boardDataTreeSlide .fenViewerCanvas {
   width: 100%;
   border-radius: var(--borderRadius);
