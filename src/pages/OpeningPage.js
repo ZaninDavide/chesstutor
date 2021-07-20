@@ -287,14 +287,39 @@ class OpeningPage extends Component {
           op_index={this.props.match.params.op_index}
         ></NewVariGroupModal>
 
+        <HangingMenu 
+          visible={this.state.variGroupModalVisible} 
+          close={() => this.setState({ variGroupModalVisible: false })}
+          title={this.state.selected_vari_group_name}
+        >
+          {/* DELETE BUTTON */}
+          <button className="simpleButton hMenuButton" 
+            onClick={() => {           
+              this.props.deleteVariGroup(this.props.match.params.op_index, this.state.selected_vari_group_name);
+              this.setState({ variGroupModalVisible: false }); 
+            }}
+          >
+            <div className="hMenuButtonContent">
+              <div className="hMenuButtonIcon"><span className="alertText">delete</span></div>
+              <div className="hMenuButtonLabel"><span className="alertText"><Translator text="Delete" /></span></div>
+            </div>
+          </button>
+          {/* EDIT BUTTON */}
+          <button className="simpleButton hMenuButton" onClick={() => this.setState({ variGroupRenameModalVisible: true, variGroupModalVisible: false })}>
+            <div className="hMenuButtonContent">
+              <div className="hMenuButtonIcon">edit</div>
+              <div className="hMenuButtonLabel"><Translator text="Rename" /></div>
+            </div>
+          </button>
+        </HangingMenu>
+
         {/* EDIT VARI_GROUP MODAL */}
         <VariGroupModal
-          visible={this.state.variGroupModalVisible}
-          close={() => this.setState({ variGroupModalVisible: false })}
+          visible={this.state.variGroupRenameModalVisible}
+          close={() => this.setState({ variGroupRenameModalVisible: false })}
           op_index={this.props.match.params.op_index}
           vari_group_name={this.state.selected_vari_group_name}
           renameThisVariGroup={new_name => this.props.renameVariGroup(this.props.match.params.op_index, this.state.selected_vari_group_name, new_name) }
-          deleteThisVariGroup={() => this.props.deleteVariGroup(this.props.match.params.op_index, this.state.selected_vari_group_name)}
         />
       </React.Fragment>
     )

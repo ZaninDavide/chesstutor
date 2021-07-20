@@ -44,12 +44,12 @@ class VariGroupModal extends Component {
                 }
               }}
             />
-            <br/><br/>
+            {/*<br/><br/>
             <h3><Translator text={"Manage group:"} /></h3>
             <button className="iconButton" onClick={() => {
               this.props.deleteThisVariGroup()
               this.props.close()
-            }}>delete</button>
+            }}>delete</button>*/}
           </React.Fragment> : null
         }     
       </Modal>
