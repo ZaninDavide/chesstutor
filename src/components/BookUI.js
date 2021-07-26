@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { make_san_nicer } from "../utilities/san_parsing"
+import { make_san_nicer_html } from "../utilities/san_parsing"
 import Translator from "./Translator";
 
 const WHITE = -100
@@ -92,7 +92,7 @@ class BookUI extends Component {
                 html.push(
                     <tr onClick={() => this.props.book_move(san)} key={`santr_${san}_${op_name}}`}>
                         <td key={`number_${number}_${san}`} className="bookTableNumber">{number}</td>
-                        <td key={`san_${number}_${san}`} className="bookTableSan">{make_san_nicer(san)}</td>
+                        <td key={`san_${number}_${san}`} className="bookTableSan" dangerouslySetInnerHTML={{__html: make_san_nicer_html(san)}}></td>
                         <td key={`op_name_${number}_${san}`}>{op_name}</td>
                         <td key={`varis_${number}_${san}`}>{varis}</td>
                     </tr>

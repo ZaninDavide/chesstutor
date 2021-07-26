@@ -26,7 +26,7 @@ class Arrows extends Component {
         to.y -= extra * Math.sin(alpha) * Math.sign(to.x - from.x)
       }
 
-      return <line x1={from.x} y1={from.y} x2={to.x} y2={to.y} style={{ markerEnd: "url(#ArrowMarker)", strokeWidth: 2.5, stroke: "var(--arrow)", opacity: .4 }} key={`arrow_${a.from}_${a.to}`} />
+      return <line x1={from.x} y1={from.y} x2={to.x} y2={to.y} style={{ markerEnd: "url(#ArrowMarker)", strokeWidth: 2, stroke: "var(--arrow)", opacity: 1 }} key={`arrow_${a.from}_${a.to}`} />
     })
   }
 

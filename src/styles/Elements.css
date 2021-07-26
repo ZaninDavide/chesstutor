@@ -606,7 +606,7 @@
 }
 
 .treeComment{
-  font-size: var(--smallTextSize);
+  font-size: var(--mediumTextSize);
   animation: treeCommentAppears 200ms linear 0ms 1;
 }
 
@@ -623,6 +623,7 @@
 
 .treeMoveSan{
   font-weight: bold;
+  line-height: 1.6;
   color: var(--main);
   font-size: var(--titleSize);
   display: inline-block;
@@ -637,6 +638,7 @@
 
 .treeMovePrefix{
   font-weight: bold;
+  font-family: var(--textFont);
   color: var(--text);
   word-break: keep-all;
   animation: treeMoveSanAppears 200ms linear 0ms 1;
@@ -928,4 +930,8 @@
 
 #boardDataTreeSlide{
   scroll-behavior: smooth;
+}
+
+#optionButtonsContainer button {
+  margin-right: 0px;
 }

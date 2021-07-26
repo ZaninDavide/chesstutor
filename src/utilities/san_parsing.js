@@ -40,6 +40,17 @@ function make_san_nicer(san, color = "white"){
     return new_san
 }
 
+function make_san_nicer_html(san, color = "white"){
+    let new_san = san
+    new_san = new_san.replace("Q", "<span class=\"chessText\">Q</span>")
+    new_san = new_san.replace("K", "<span class=\"chessText\">K</span>")
+    new_san = new_san.replace("N", "<span class=\"chessText\">N</span>")
+    new_san = new_san.replace("B", "<span class=\"chessText\">B</span>")
+    new_san = new_san.replace("R", "<span class=\"chessText\">R</span>")
+    new_san = new_san.replace("P", "<span class=\"chessText\">P</span>")
+    return new_san
+}
+
 
 function escape_html(text) {
     if(!text) return ""
@@ -63,25 +74,19 @@ function process_comment(comment_text){
     mark_down_text = mark_down_text ? mark_down_text.replace(regex_line, subst_line) : "";
 
     /* MAKE MOVES LOOK NICER */
-    mark_down_text = mark_down_text.replace(/\$\$Q/g, get_piece_text("black_queen"))
-    mark_down_text = mark_down_text.replace(/\$\$K/g, get_piece_text("black_king"))
-    mark_down_text = mark_down_text.replace(/\$\$N/g, get_piece_text("black_knight"))
-    mark_down_text = mark_down_text.replace(/\$\$B/g, get_piece_text("black_bishop"))
-    mark_down_text = mark_down_text.replace(/\$\$R/g, get_piece_text("black_rook"))
-    mark_down_text = mark_down_text.replace(/\$\$P/g, get_piece_text("black_pawn"))
-
-    mark_down_text = mark_down_text.replace(/\$Q/g, get_piece_text("white_queen"))
-    mark_down_text = mark_down_text.replace(/\$K/g, get_piece_text("white_king"))
-    mark_down_text = mark_down_text.replace(/\$N/g, get_piece_text("white_knight"))
-    mark_down_text = mark_down_text.replace(/\$B/g, get_piece_text("white_bishop"))
-    mark_down_text = mark_down_text.replace(/\$R/g, get_piece_text("white_rook"))
-    mark_down_text = mark_down_text.replace(/\$P/g, get_piece_text("white_pawn"))
+    mark_down_text = mark_down_text.replace(/\$Q/g, "<span class=\"chessText\">Q</span>")
+    mark_down_text = mark_down_text.replace(/\$K/g, "<span class=\"chessText\">K</span>")
+    mark_down_text = mark_down_text.replace(/\$N/g, "<span class=\"chessText\">N</span>")
+    mark_down_text = mark_down_text.replace(/\$B/g, "<span class=\"chessText\">B</span>")
+    mark_down_text = mark_down_text.replace(/\$R/g, "<span class=\"chessText\">R</span>")
+    mark_down_text = mark_down_text.replace(/\$P/g, "<span class=\"chessText\">P</span>")
 
     return mark_down_text
 }
 
 module.exports = {
     make_san_nicer,
+    make_san_nicer_html,
     get_piece_text,
     process_comment,
 }

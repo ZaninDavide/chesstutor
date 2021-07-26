@@ -1,7 +1,7 @@
 import Chess from "../chessjs-chesstutor/chess.js"
 import { get_piece_src, printBoardSVG } from "../utilities/file_paths"
 
-import { make_san_nicer, process_comment } from "../utilities/san_parsing"
+import { make_san_nicer_html, process_comment } from "../utilities/san_parsing"
 import { pieces_names } from "../utilities/pieces_and_coords"
 
 let max_inline_comment_length = 35
@@ -46,7 +46,7 @@ let line_moves = (moves_array, last_index, discussed_count) => {
         if(final_index % 2 === 0){
             text += (Math.floor(final_index / 2) + 1).toString() + ". "
         }
-        text += make_san_nicer(move.san) + " " 
+        text += make_san_nicer_html(move.san) + " " 
         // inline comments
         if(!discussed && comment){
             if(canCommentBeInline(comment)){

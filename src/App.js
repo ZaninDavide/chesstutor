@@ -89,6 +89,7 @@ class App extends Component {
     this.renameVariGroup = this.renameVariGroup.bind(this)
     this.deleteVariGroup = this.deleteVariGroup.bind(this)
     this.updateInbox = this.updateInbox.bind(this)
+    this.setVisualChessNotation = this.setVisualChessNotation.bind(this)
   }
 
   componentDidMount() {
@@ -131,7 +132,7 @@ class App extends Component {
           userData.language = "eng"
         }
         if (userData.settings === undefined) {
-          userData.settings = { wait_time: 500, colorTheme: "darkTheme", volume: 0.6 }
+          userData.settings = { wait_time: 500, colorTheme: "darkTheme", volume: 0.6, visual_chess_notation: true }
         } else {
           if (userData.settings.wait_time === undefined) userData.settings.wait_time = 500
           if (userData.settings.colorTheme === undefined) userData.settings.colorTheme = "darkTheme"
@@ -231,6 +232,10 @@ class App extends Component {
     // this.serverRequest("POST", "/setWaitTime", { millis })
     // this.setState({ wait_time: millis })
     this.setSetting("wait_time", millis)
+  }
+
+  setVisualChessNotation(visual){
+    this.setSetting("visual_chess_notation", visual)
   }
 
   async updateInbox(){
@@ -886,6 +891,8 @@ class App extends Component {
       setWaitTime={this.setWaitTime}
       volume={this.state.settings.volume}
       setVolume={value => this.setSetting("volume", value)}
+      setVisualChessNotation={this.setVisualChessNotation}
+      visual_chess_notation={this.state.settings.visual_chess_notation}
     />
     const mailPage = ({ match, history }) => <MailPage
       history={history}
@@ -937,10 +944,12 @@ class App extends Component {
 
     let noOpenings = this.state.user_ops.length === 0
 
+    const notation_class = "visualChessNotation" + (this.state.settings.visual_chess_notation ? "True" : "False")
+
     return (
       <LanguageProvider lang={this.state.language}>
         <Router>
-          <div id="App" className={`layout ${this.state.settings.colorTheme}`}>
+          <div id="App" className={`layout ${this.state.settings.colorTheme} ${notation_class}`}>
             <div id="loadingScreen" style={{ display: this.state.loadingVisible ? "table" : "none" }}>
               <span id="loadingScreenBottom">&nbsp;{"Loading your data... Please wait."}</span>
             </div>

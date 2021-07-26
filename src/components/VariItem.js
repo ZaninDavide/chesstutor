@@ -13,18 +13,18 @@ class VariItem extends Component {
     this.menuButtonClick = this.menuButtonClick.bind(this);
     this.openVariation = this.openVariation.bind(this);
     this.closeMenu = this.closeMenu.bind(this);
-    this.menuRef = React.createRef();
+    //this.menuRef = React.createRef();
   }
 
   menuButtonClick(e) {
     e.stopPropagation()
     this.setState({ menuVisible: true })
-    this.menuRef.current.focus()
+    //this.menuRef.current.focus()
   }
 
   rightClick(e) {
     this.setState({ menuVisible: true })
-    this.menuRef.current.focus()
+    //this.menuRef.current.focus()
 
     /* avoids the menu to open */
     e.preventDefault()
@@ -44,7 +44,7 @@ class VariItem extends Component {
     return (
       <Ripples
         className={"variItem" + (thisVari.vari_subname ? " subvariItem" : "")}
-        onContextMenu={this.rightClick}
+        /*onContextMenu={this.rightClick}*/
         onClick={this.openVariation}
       >
         <div className="variItemText">

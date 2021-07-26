@@ -1,12 +1,20 @@
 @import url("https://fonts.googleapis.com/css?family=Material+Icons&display=swap");
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap');
+
+@font-face {
+  font-family: chess;
+  src: url('https://lichess1.org/assets/_mt2ils/font/lichess.chess.woff2') format('woff2');
+  font-weight: normal;
+  font-style: normal;
+}
 
 /* ---------------------------- LAYOUT & THEMES ---------------------------- */
 
 .layout {
-  font-family: "Montserrat", "Open Sans", "Segoe UI", "Roboto", "Arial";
-  --textFont: "Montserrat", "Open Sans", "Segoe UI", "Roboto", "Arial";
-  --titleFont: "Montserrat", "Open Sans", "Segoe UI", "Roboto", "Arial";
+  font-family: "Roboto", "Montserrat", "Open Sans", sans-serif;
+  --textFont: "Roboto", "Montserrat", "Open Sans", sans-serif;
+  --titleFont: "Montserrat", "Roboto", "Open Sans", sans-serif;
 
   --smallTextSize: 13px;
   --textSize: 14px;
@@ -242,8 +250,10 @@
   h2 {
     /* TEXT */
     color: var(--title);
+    font-family: var(--titleFont);
     font-weight: var(--titleWeight);
     font-size: var(--textSize);
+    letter-spacing: 0.03em !important;
     /* SPACES */
     margin-top: var(--smallMargin);
     margin-bottom: var(--smallMargin);
@@ -253,7 +263,7 @@
 
   h3{
     /* TEXT */
-    font-family: "Montserrat";
+    font-family: var(--titleFont);
     font-size: var(--smallTextSize);
     letter-spacing: 0.5px;
     /* SPACES */
@@ -266,6 +276,7 @@
   p {
     /* TEXT */
     color: var(--text);
+    font-family: var(--textFont);
     font-weight: var(--textWeight);
     font-size: var(--textSize);
     /* SPACES */
@@ -273,6 +284,14 @@
     margin-bottom: var(--smallMargin);
     margin-left: var(--mediumMargin);
     margin-right: var(--mediumMargin);
+  }
+
+  button {
+    /* TEXT */
+    color: var(--text);
+    font-family: var(--textFont);
+    font-weight: var(--textWeight);
+    font-size: var(--textSize);
   }
   
   .alertText{
@@ -664,8 +683,8 @@ a {
   height: 100%;
 }
 
-.chessText{
-  font-family: "Segoe UI Symbol" , Arial, Helvetica, sans-serif;
+.visualChessNotationTrue .chessText{
+  font-family: chess, sans-serif;
 }
 
 .impText{

@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import { make_san_nicer, process_comment } from "../utilities/san_parsing"
+import { make_san_nicer_html, process_comment } from "../utilities/san_parsing"
 import FenViewer from "../components/FenViewer";
 import Chess from "../chessjs-chesstutor/chess.js"
 
@@ -29,17 +29,16 @@ class Tree extends Component {
             const draw_baord = this.props.getDrawBoardPDF ? this.props.getDrawBoardPDF(this.props.op_index, moves) : false
 
             let move_prefix = null
-            let move_text = make_san_nicer(c.san)
+            let move_text = make_san_nicer_html(c.san)
             if (id % 2 === 0) { // all white moves
                 move_prefix = ((id / 2) + 1).toString() + ". "
-                move_text =  move_text
             } else if (last_long_comment) {
                 move_prefix = "... "
             }
 
-            let prefix = <></>
+            let prefix = ""
             if(move_prefix) {
-                prefix = <span className="treeMovePrefix" key={"treeMovePrefix_" + move_text + "_" + id}>{move_prefix}</span>
+                prefix = '<span class="treeMovePrefix" key={treeMovePrefix_' + c.san + '_' + id + '}>' + move_prefix + '</span>'
             }
 
             let margin_style = {}
@@ -56,7 +55,9 @@ class Tree extends Component {
                     draw_baord
                 ) {        
                     // move with long comment // no margin needed          
-                    objects.push(<span onClick={onSanClick} className="treeMoveSan" key={"treeMoveSan_" + move_text + "_" + id}>{prefix}{move_text}</span>)
+                    objects.push(
+                        <span onClick={onSanClick} className="treeMoveSan" key={"treeMoveSan_" + move_text + "_" + id} dangerouslySetInnerHTML={{ __html: prefix + move_text}} />
+                    )
                     
                     if(comment) {
                         objects.push(<p className="treeComment" key={"treeMoveComment_" + move_text + "_" + id} dangerouslySetInnerHTML={{ __html: process_comment(comment) }}></p>)
@@ -72,7 +73,9 @@ class Tree extends Component {
                 } else {
                     // move with short comment
                     margin_style = {marginRight: "var(--mediumMargin)"}
-                    objects.push(<span onClick={onSanClick} className="treeMoveSan" key={"treeMoveSan_" + move_text}>{prefix}{move_text}</span>)
+                    objects.push(
+                        <span onClick={onSanClick} className="treeMoveSan" key={"treeMoveSan_" + move_text}  dangerouslySetInnerHTML={{ __html: prefix + move_text}} />
+                    )
                     objects.push("\u00A0")
                     objects.push(<span className="treeComment" style={margin_style} key={"treeMoveComment_" + move_text} dangerouslySetInnerHTML={{ __html: process_comment(comment) }}></span>)
                     objects.push("\u00A0")
@@ -81,7 +84,9 @@ class Tree extends Component {
                 }
             } else {
                 // move without comment
-                objects.push(<span onClick={onSanClick} className="treeMoveSan" style={margin_style} key={"treeMoveSan_" + move_text}>{prefix}{move_text}{"\u00A0"}</span>)
+                objects.push(
+                    <span onClick={onSanClick} className="treeMoveSan" style={margin_style} key={"treeMoveSan_" + move_text} dangerouslySetInnerHTML={{ __html: prefix + move_text + "\u00A0"}} />
+                )
                 last_long_comment = false
             }
 

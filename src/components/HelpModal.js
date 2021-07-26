@@ -1,6 +1,6 @@
 import React, { Component } from "react"
 import "../styles/Modal.css"
-
+import {make_san_nicer_html} from "../utilities/san_parsing"
 
 class HelpModal extends Component {
   constructor(props) {
@@ -22,24 +22,13 @@ class HelpModal extends Component {
     this.props.close()
   }
 
-  make_san_nicer(san, color = "white"){
-    let new_san = san
-    new_san = new_san.replace("Q", this.getPieceText(color + "_queen"))
-    new_san = new_san.replace("K", this.getPieceText(color + "_king"))
-    new_san = new_san.replace("N", this.getPieceText(color + "_knight"))
-    new_san = new_san.replace("B", this.getPieceText(color + "_bishop"))
-    new_san = new_san.replace("R", this.getPieceText(color + "_rook"))
-    new_san = new_san.replace("P", this.getPieceText(color + "_pawn"))
-    return new_san
-  }
-
   getMovesButtons(correct_moves, json_moves_length){
     let objects = []
     correct_moves.forEach(move => {
       objects.push(
         <button onClick={() => this.chooseMove(move)} className="simpleButton helpModalButton" id={"helpModalButton_" + move.san} key={"helpModalButton_" + move.san} >
-          <h2 className="chessText" style={{lineHeight: "100%"}}>
-            {Math.floor(json_moves_length / 2) + 1}{". "}{this.make_san_nicer(move.san)}
+          <h2 style={{lineHeight: "100%"}}>
+            {Math.floor(json_moves_length / 2) + 1}{". "}<React.Fragment dangerouslySetInnerHTML={{ __html: make_san_nicer_html(move.san)}} />
           </h2>
         </button>
       )
