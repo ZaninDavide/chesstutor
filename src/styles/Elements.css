@@ -844,11 +844,15 @@
 
 #bookTable .bookTableNumber{
   min-width: 30px;
+  max-width: 40px;
+  text-align: right;
 }
 
 #bookTable .bookTableSan{
   color: var(--main);
   font-weight: bold;
+  text-align: left;
+  max-width: fit-content;
 }
 
 #filterLineBookUI td{

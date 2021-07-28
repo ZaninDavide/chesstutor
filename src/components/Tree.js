@@ -1,7 +1,11 @@
 import React, { Component } from "react"
 import { make_san_nicer_html, process_comment } from "../utilities/san_parsing"
 import FenViewer from "../components/FenViewer";
+import FenViewerCanvas from "../components/FenViewerCanvas";
 import Chess from "../chessjs-chesstutor/chess.js"
+
+// JSON.stringify(moves_slice): fen
+let fen_cache = {}
 
 class Tree extends Component {
 
@@ -56,17 +60,27 @@ class Tree extends Component {
                 ) {        
                     // move with long comment // no margin needed          
                     objects.push(
-                        <span onClick={onSanClick} className="treeMoveSan" key={"treeMoveSan_" + move_text + "_" + id} dangerouslySetInnerHTML={{ __html: prefix + move_text}} />
+                        <span onClick={onSanClick} className="treeMoveSan" key={"treeMoveSan_" + id + "_" + move_text + "_" + id} dangerouslySetInnerHTML={{ __html: prefix + move_text}} />
                     )
                     
                     if(comment) {
-                        objects.push(<p className="treeComment" key={"treeMoveComment_" + move_text + "_" + id} dangerouslySetInnerHTML={{ __html: process_comment(comment) }}></p>)
+                        objects.push(<p className="treeComment" key={"treeMoveComment_" + id + "_" + move_text + "_" + id} dangerouslySetInnerHTML={{ __html: process_comment(comment) }}></p>)
                     }
                          
                     if(draw_baord){
-                        let game = new Chess()
-                        moves.forEach(m => game.move(m))
-                        objects.push(<FenViewer fen={game.fen()} canvasSize={224} key={"FenViewer_" + JSON.stringify(moves)} />)
+                        // generate fen if needed, chace it
+                        let current_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1" // start fen
+                        const moves_str = JSON.stringify(moves)
+                        if(fen_cache[moves_str]) {
+                            current_fen = fen_cache[moves_str]
+                        }else{
+                            let game = new Chess()
+                            moves.forEach(m => game.move(m))
+                            current_fen = game.fen()
+                            fen_cache[moves_str] = current_fen
+                        }
+                        // draw board
+                        objects.push(<FenViewerCanvas fen={current_fen} canvasSize={224} key={"FenViewer_" + id + "_" + moves_str} />)
                     }
 
                     last_long_comment = true
@@ -74,10 +88,10 @@ class Tree extends Component {
                     // move with short comment
                     margin_style = {marginRight: "var(--mediumMargin)"}
                     objects.push(
-                        <span onClick={onSanClick} className="treeMoveSan" key={"treeMoveSan_" + move_text}  dangerouslySetInnerHTML={{ __html: prefix + move_text}} />
+                        <span onClick={onSanClick} className="treeMoveSan" key={"treeMoveSan_" + id + "_" + move_text}  dangerouslySetInnerHTML={{ __html: prefix + move_text}} />
                     )
                     objects.push("\u00A0")
-                    objects.push(<span className="treeComment" style={margin_style} key={"treeMoveComment_" + move_text} dangerouslySetInnerHTML={{ __html: process_comment(comment) }}></span>)
+                    objects.push(<span className="treeComment" style={margin_style} key={"treeMoveComment_" + id + "_" + move_text} dangerouslySetInnerHTML={{ __html: process_comment(comment) }}></span>)
                     objects.push("\u00A0")
 
                     last_long_comment = false
@@ -85,7 +99,7 @@ class Tree extends Component {
             } else {
                 // move without comment
                 objects.push(
-                    <span onClick={onSanClick} className="treeMoveSan" style={margin_style} key={"treeMoveSan_" + move_text} dangerouslySetInnerHTML={{ __html: prefix + move_text + "\u00A0"}} />
+                    <span onClick={onSanClick} className="treeMoveSan" style={margin_style} key={"treeMoveSan_" + id + "_" + move_text} dangerouslySetInnerHTML={{ __html: prefix + move_text + "\u00A0"}} />
                 )
                 last_long_comment = false
             }

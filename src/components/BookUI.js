@@ -82,11 +82,12 @@ class BookUI extends Component {
                 let varis = Object.keys(compacted_moves[san][op_name])
                 varis.sort()
                 
-                varis = varis.map(vari_name => {
-                    let vari_subnames = compacted_moves[san][op_name][vari_name]
-                    vari_subnames.sort()
+                varis = varis.map((vari_name, vid) => {
+                    // let vari_subnames = compacted_moves[san][op_name][vari_name]
+                    // vari_subnames.sort()
+                    // let vari_subnames_objects = vari_subnames.map(sub => <span className="impText" key={`vari_${san}_${op_name}_${vari_name}_${sub}`}>{sub + " "}</span>)
 
-                    return <React.Fragment key={`varifrag_${san}_${op_name}_${vari_name}`}>{vari_name + " "}{vari_subnames.map(sub => <span className="impText" key={`vari_${san}_${op_name}_${vari_name}_${sub}`}>{sub + " "}</span>)}</React.Fragment >
+                    return <React.Fragment key={`varifrag_${san}_${op_name}_${vari_name}`}>{vid === 0 ? "" : " ⋅ "}{vari_name}</React.Fragment >
                 })
 
                 html.push(
