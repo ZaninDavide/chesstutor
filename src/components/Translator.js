@@ -86,6 +86,9 @@ const languages = {
     "DEEPER": "DEEPER",
     "Book": "Book",
     "Filters": "Filters",
+    "Small board": "Small board",
+    "Large board": "Large board",
+    "You just trained on": "You just trained on",
   },
   ita: {
     Openings: "Aperture",
@@ -171,6 +174,9 @@ const languages = {
     "DEEPER": "Approfondito",
     "Book": "Libro",
     "Filters": "Filtri",
+    "Small board": "Scacchiera piccola",
+    "Large board": "Scacchiera grande",
+    "You just trained on": "Ti sei allenato su"
   }
 }
 

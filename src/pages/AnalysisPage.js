@@ -58,7 +58,7 @@ class TrainingPage extends Component {
         <Board
           history={this.props.history}
           buttons={["more", "back", "forward_next"]}
-          moreMenuButtons={["flip"]}
+          moreMenuButtons={["flip", "smallBoard"]}
           rotation={color}
           playColor={this.state.playColor}
           allowCommentEdit={false}

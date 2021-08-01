@@ -1,241 +1,259 @@
-
 #boardContainer {
-  position: relative; /* necessary for the pieces */
+  position: relative;
+  /* necessary for the pieces */
   grid-area: boardContainer;
   margin-bottom: -4px;
 }
 
 #boardSVG {
-width: 100%;
-/*
+  width: 100%;
+  /*
 max-height: calc(100vh - var(--headerHeight) - var(--uiElementHeight) - 80px);
 max-width: calc(100vh - var(--headerHeight) - var(--uiElementHeight) - 80px);
 */
-border-radius: var(--borderRadius);
+  border-radius: var(--borderRadius);
 }
 
 #touchCircle {
-width: 17.67766953%;
-height: 17.67766953%;
-margin: 0px;
-position: absolute;
-will-change: transform;
-border-radius: 50%;
-background-color: rgba(0, 0, 0, 0.3);
-z-index: 0;
-pointer-events: none;
+  width: 17.67766953%;
+  height: 17.67766953%;
+  margin: 0px;
+  position: absolute;
+  will-change: transform;
+  border-radius: 50%;
+  background-color: rgba(0, 0, 0, 0.3);
+  z-index: 0;
+  pointer-events: none;
 }
 
 .selection {
-width: 12.5%;
-position: absolute;
-opacity: 0.6;
-background-color: rgb(115, 194, 51);
-z-index: 0;
-pointer-events: none;
+  width: 12.5%;
+  position: absolute;
+  opacity: 0.6;
+  background-color: rgb(115, 194, 51);
+  z-index: 0;
+  pointer-events: none;
 }
 
 .pieceSVG {
-width: 12.5%;
-position: absolute;
-transition-property: transform, top, left;
-transition-duration: 0.25s, 0.25s, 0.25s;
-will-change: transform, top, left;
-left: 0px;
-top: 0px;
-pointer-events: none;
+  width: 12.5%;
+  position: absolute;
+  transition-property: transform, top, left;
+  transition-duration: 0.25s, 0.25s, 0.25s;
+  will-change: transform, top, left;
+  left: 0px;
+  top: 0px;
+  pointer-events: none;
 }
 
-.pieceSVG.noAnimationPiece{
--webkit-transition-property: none !important;
--moz-transition-property: none !important;
--o-transition-property: none !important;
-transition-property: none !important;
-will-change: top, left;
-z-index: 2;
+.pieceSVG.noAnimationPiece {
+  -webkit-transition-property: none !important;
+  -moz-transition-property: none !important;
+  -o-transition-property: none !important;
+  transition-property: none !important;
+  will-change: top, left;
+  z-index: 2;
 }
 
-.pieceSVG.staticPiece{
-left: 0px !important;
-top: 0px !important;
+.pieceSVG.staticPiece {
+  left: 0px !important;
+  top: 0px !important;
 }
 
 .pieceSVG[draggable="false"] {
-user-drag: none;
-user-select: none;
--moz-user-select: none;
--webkit-user-drag: none;
--webkit-user-select: none;
--ms-user-select: none;
-
-/* filter: drop-shadow(0px 6px 10px rgba(0, 0, 0, 0.2)); // TODO */ 
+  user-drag: none;
+  user-select: none;
+  -moz-user-select: none;
+  -webkit-user-drag: none;
+  -webkit-user-select: none;
+  -ms-user-select: none;
+  /* filter: drop-shadow(0px 6px 10px rgba(0, 0, 0, 0.2)); // TODO */
 }
 
+/*   VERTICAL */
 @media (max-width: 105vh) {
-#boardGrid{
-  display: grid;
-  width: 100%;
-  height:  calc(100vh - var(--headerHeight));
-  max-width: calc(100vh - var(--headerHeight) - var(--uiElementMediumHeight) - 80px);
-  grid-template-rows: auto 1fr var(--uiElementMediumHeight); /*  auto var(--uiElementMediumHeight) 1fr */
-  grid-template-areas: "boardContainer" "boardData" "boardUI"; /* "boardContainer" "boardUI" "boardData" */
-}
+  #boardGrid {
+    display: grid;
+    width: 100%;
+    height: calc(100vh - var(--headerHeight));
+    max-width: calc(100vh - var(--headerHeight) - var(--uiElementMediumHeight) - 80px);
+    grid-template-rows: auto 1fr var(--uiElementMediumHeight);
+    /*  auto var(--uiElementMediumHeight) 1fr */
+    grid-template-areas: "boardContainer" "boardData" "boardUI";
+    /* "boardContainer" "boardUI" "boardData" */
+  }
+
+  #boardGrid.smallBoard {
+    max-width: 100vw;
+    grid-template-columns: 1fr;
+  }
+  #boardGrid.smallBoard #boardContainer {
+    margin-left: 20%;
+    margin-right: 20%;
+  }
 }
 
+/* HORIZONTAL SQUARE-LIKE RECTANGLE */
 @media (min-width: 105vh) and (max-width: 133vh) {
-#boardGrid{
-  display: grid;
-  width: 100%;
-  height: calc(100vh - var(--headerHeight));
-  grid-template-rows: 1fr var(--uiElementMediumHeight);
-  grid-template-columns: calc(100vh - var(--headerHeight) - var(--uiElementMediumHeight)) 1fr;
-  grid-template-areas: "boardContainer boardData" "boardUI boardData";
-}
+  #boardGrid {
+    display: grid;
+    width: 100%;
+    height: calc(100vh - var(--headerHeight));
+    grid-template-rows: 1fr var(--uiElementMediumHeight);
+    grid-template-columns: calc(100vh - var(--headerHeight) - var(--uiElementMediumHeight)) 1fr;
+    grid-template-areas: "boardContainer boardData" "boardUI boardData";
+  }
+  #boardGrid.smallBoard {
+    grid-template-columns: calc(60vh - var(--headerHeight) - var(--uiElementMediumHeight)) 1fr;
+  }
 }
 
+/* LANDSCAPE */
 @media (min-width: 133vh) {
-#boardGrid{
-  display: grid;
-  width: 100%;
-  height: calc(100vh - var(--headerHeight));
-  grid-template-rows: 1fr var(--uiElementMediumHeight);
-  grid-template-columns: calc(100vh - var(--headerHeight)) 1fr;
-  grid-template-areas: "boardContainer boardData" "boardContainer boardUI";
-
-  /*grid-template-columns: calc(100vh - var(--headerHeight) - var(--uiElementMediumHeight)) 1fr;*/
-  /*grid-template-areas: "boardContainer boardData" "boardUI boardData";*/
+  #boardGrid {
+    display: grid;
+    width: 100%;
+    height: calc(100vh - var(--headerHeight));
+    grid-template-rows: 1fr var(--uiElementMediumHeight);
+    grid-template-columns: calc(100vh - var(--headerHeight)) 1fr;
+    grid-template-areas: "boardContainer boardData" "boardContainer boardUI";
+    /*grid-template-columns: calc(100vh - var(--headerHeight) - var(--uiElementMediumHeight)) 1fr;*/
+    /*grid-template-areas: "boardContainer boardData" "boardUI boardData";*/
+  }
+  #boardGrid.smallBoard {
+    grid-template-columns: calc(60vh - var(--headerHeight)) 1fr;
+  }
 }
-}
 
+/* LARGE */
 @media (min-width: 1200px) and (min-height: 800px) {
-#boardContainer{
-  width: 95%;
-  height: 95%;
-  margin-left: 2.5%;
-  margin-top: min(1%, var(--smallMargin));
+  #boardContainer {
+    width: 95%;
+    height: 95%;
+    margin-left: 2.5%;
+    margin-top: min(1%, var(--smallMargin));
+  }
 }
 
-}
-
+/* TO SMALL FOR BIG ICONS */
 @media (min-width: 1000px) and (min-height: 600px) {
-.boardDataTabIcon{
-  font-size: calc(var(--iconsFontSize)*0.75) !important;
+  .boardDataTabIcon {
+    font-size: calc(var(--iconsFontSize)*0.75) !important;
+  }
+  #boardDataTabTopBar {
+    font-size: var(--titleSize);
+  }
+}
+
+#boardUI {
+  min-height: var(--uiElementMediumHeight);
+  width: 100%;
+  /*background-color: rgba(0, 0, 0, 0.15); add to make the gap between boardContainer and boardUI visible*/
+  grid-area: boardUI;
+  display: flex;
+}
+
+#boardData {
+  grid-area: boardData;
+  overflow-y: hidden;
+  display: grid;
+  grid-template-rows: auto 1fr;
+}
+
+#boardDataSwipe {
+  overflow-y: hidden;
+}
+
+.boardDataSlide {
+  padding: var(--mediumMargin);
+  padding-top: var(--smallMargin);
+  overflow-y: auto;
+  box-sizing: border-box;
+}
+
+#boardDataSwipe div, #boardDataSwipe div .react-swipeable-view-container {
+  height: 100%;
+}
+
+#movesTree {
+  height: auto !important;
+  max-width: 500px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+#boardDataCommentSlide {
+  height: 100%;
+  box-sizing: border-box;
+  font-size: var(--smallTextSize);
+  white-space: pre-wrap;
+  cursor: pointer;
+  -webkit-tap-highlight-color: var(--tap);
+}
+
+.boardButton {
+  margin: 0px !important;
+  /* overwrite simpleButton */
+  flex-grow: 1;
+  /* TEXT */
+  font-family: "Material Icons" !important;
+  /* overwrite simpleButton */
+  font-size: var(--iconsFontSize) !important;
+  /* overwrite simpleButton */
+  text-align: center;
+  vertical-align: middle;
+  line-height: var(--uiElementMediumHeight) !important;
+  /* = height*/
+  height: var(--uiElementMediumHeight) !important;
 }
 
 #boardDataTabTopBar {
-  font-size: var(--titleSize);
-}
-}
-
-#boardUI{
-min-height: var(--uiElementMediumHeight);
-width: 100%;
-/*background-color: rgba(0, 0, 0, 0.15); add to make the gap between boardContainer and boardUI visible*/
-grid-area: boardUI;
-display: flex;
-}
-
-#boardData{
-grid-area: boardData;
-overflow-y: hidden;
-display: grid;
-grid-template-rows: auto 1fr;
+  height: fit-content;
+  z-index: 2;
+  pointer-events: none;
+  margin-left: var(--smallMargin);
+  margin-right: var(--smallMargin);
+  border-bottom: solid var(--borderSize) var(--onBack);
+  padding-top: 2px;
+  display: grid;
+  grid-template-columns: 1fr auto;
 }
 
-#boardDataSwipe{
-overflow-y: hidden;
+#boardDataTabTopBarExtraInfo {
+  padding-top: 1px;
 }
 
-.boardDataSlide{
-padding: var(--mediumMargin);
-padding-top: var(--smallMargin);
-overflow-y: auto;
-box-sizing: border-box;
+#boardDataTabTopBarExtraInfoEvaluation {
+  font-weight: bold;
 }
 
-#boardDataSwipe div, #boardDataSwipe div .react-swipeable-view-container{
-height: 100%;
-}
-
-#movesTree{
-height: auto !important;
-  
-max-width: 500px;
-margin-left: auto;
-margin-right: auto;
-}
-
-
-#boardDataCommentSlide{
-height: 100%;
-box-sizing: border-box;
-font-size: var(--smallTextSize);
-white-space: pre-wrap;
-cursor: pointer;
--webkit-tap-highlight-color: var(--tap);
-}
-
-.boardButton{
-margin: 0px !important; /* overwrite simpleButton */
-flex-grow: 1;
-/* TEXT */
-font-family: "Material Icons" !important; /* overwrite simpleButton */
-font-size: var(--iconsFontSize) !important; /* overwrite simpleButton */
-text-align: center;
-vertical-align: middle;
-line-height: var(--uiElementMediumHeight) !important; /* = height*/
-height: var(--uiElementMediumHeight) !important;
-}
-
-#boardDataTabTopBar{
-height: fit-content;
-z-index: 2;
-pointer-events: none;
-margin-left: var(--smallMargin);
-margin-right: var(--smallMargin);
-border-bottom: solid var(--borderSize) var(--onBack);
-padding-top: 2px;
-
-display: grid;
-grid-template-columns: 1fr auto;
-}
-
-#boardDataTabTopBarExtraInfo{
-padding-top: 1px;
-}
-
-#boardDataTabTopBarExtraInfoEvaluation{
-font-weight: bold;
-}
-
-#boardDataTabIconsContainer{    
-text-align: right;
-width: calc(100% - 2*calc(var(--smallMargin)));
-margin-left: var(--smallMargin);
-margin-right: var(--mediumMargin);
-padding-top: 1px;
-
-/*border-bottom-left-radius: var(--borderRadius);
+#boardDataTabIconsContainer {
+  text-align: right;
+  width: calc(100% - 2*calc(var(--smallMargin)));
+  margin-left: var(--smallMargin);
+  margin-right: var(--mediumMargin);
+  padding-top: 1px;
+  /*border-bottom-left-radius: var(--borderRadius);
 border-bottom-right-radius: var(--borderRadius);*/
-pointer-events: all;
+  pointer-events: all;
 }
 
-.boardDataTabIcon{
-font-size: var(--smallTextSize);
-font-family: "Material Icons";
-display: inline-block;
-background-color: var(--backColor);
-padding-right: var(--smallMargin);
-margin-right: var(--smallMargin);
-cursor: pointer;
-border-right: solid var(--borderSize) var(--onBack);
+.boardDataTabIcon {
+  font-size: var(--smallTextSize);
+  font-family: "Material Icons";
+  display: inline-block;
+  background-color: var(--backColor);
+  padding-right: var(--smallMargin);
+  margin-right: var(--smallMargin);
+  cursor: pointer;
+  border-right: solid var(--borderSize) var(--onBack);
 }
 
-.boardDataTabIcon:last-child{
-border-right: 0px;
-margin-right: 0px;
+.boardDataTabIcon:last-child {
+  border-right: 0px;
+  margin-right: 0px;
 }
 
-#arrows_svg{
-position: absolute;
+#arrows_svg {
+  position: absolute;
 }

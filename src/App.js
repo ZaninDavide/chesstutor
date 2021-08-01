@@ -90,6 +90,7 @@ class App extends Component {
     this.deleteVariGroup = this.deleteVariGroup.bind(this)
     this.updateInbox = this.updateInbox.bind(this)
     this.setVisualChessNotation = this.setVisualChessNotation.bind(this)
+    this.get_compatible_variations = this.get_compatible_variations.bind(this)
   }
 
   componentDidMount() {
@@ -783,6 +784,61 @@ class App extends Component {
     return correct_moves
   }
 
+  get_compatible_variations(json_moves, opQuery = undefined, variQuery = undefined, subnameQuery = undefined) {
+    // opQuery: null=all true=white false=black number=op_index
+    // variQuery: null=all string=vari_name
+    // subnameQuery: null=all string=vari_subname
+    let compatible_varis = []
+    for (let op_index = 0; op_index < this.state.user_ops.length; op_index++) {
+      let op = this.state.user_ops[op_index]
+
+      let query_good = true
+      if(
+        (opQuery === true && op.op_color === "black") || // query white but op black
+        (opQuery === false && op.op_color === "white") // query black but op white
+      ){ 
+        query_good = false
+      }
+      // name doesnt match with query which is not black or white or null
+      if(opQuery !== undefined && opQuery !== null && opQuery !== true && opQuery !== false && opQuery !== op_index){
+        query_good = false
+      }
+
+      if (!op.archived && query_good) {
+        for (let vari_index = 0; vari_index < op.variations.length; vari_index++) {
+          // loop through all variations 
+          let vari = op.variations[vari_index] 
+          
+          query_good = true
+          // name doesnt match with query
+          if(variQuery !== undefined && variQuery !== null && variQuery !== vari.vari_name) 
+            query_good = false 
+          
+          // subname doesnt match with query
+          if(!(subnameQuery === "" && vari.vari_subname === undefined) && subnameQuery !== undefined && subnameQuery !== null && subnameQuery !== undefined && subnameQuery !== null && subnameQuery !== vari.vari_subname) 
+            query_good = false 
+
+          if (vari.moves.length >= json_moves.length && !vari.archived && query_good) { // this variation is long enougth and not archived
+            let first_moves = vari.moves.slice(0, json_moves.length)
+
+            // is the variation compatible with the already done moves?
+            if (JSON.stringify(first_moves) === JSON.stringify(json_moves)) {
+              // add the variation to the list
+              compatible_varis.push({
+                op_index: op_index,
+                op_name: op.op_name,
+                vari_name: vari.vari_name,
+                vari_subname: vari.vari_subname,
+              })
+            }
+
+          }
+        }
+      }
+    }
+    return compatible_varis
+  }
+
   /* ---------------------------- RENDER ---------------------------- */
   render() {
     const opsListPage = ({ history }) => <OpsListPage
@@ -820,6 +876,7 @@ class App extends Component {
       setDrawBoardPDF={this.setDrawBoardPDF}
       getDrawBoardPDF={this.getDrawBoardPDF}
       get_correct_moves_data={this.get_correct_moves_data}
+      get_compatible_variations={this.get_compatible_variations}
       notify={this.notify}
       wait_time={this.state.settings.wait_time}
       volume={this.state.settings.volume}
@@ -854,6 +911,7 @@ class App extends Component {
       get_pc_move_data={this.get_pc_move_data}
       is_move_allowed={this.is_move_allowed}
       get_correct_moves_data={this.get_correct_moves_data}
+      get_compatible_variations={this.get_compatible_variations}
       notify={this.notify}
       wait_time={this.state.settings.wait_time}
       volume={this.state.settings.volume}
@@ -911,6 +969,7 @@ class App extends Component {
       is_move_allowed_color={this.is_move_allowed_color}
       get_pc_move_data_color={this.get_pc_move_data_color}
       get_correct_moves_data_color={this.get_correct_moves_data_color}
+      get_compatible_variations={this.get_compatible_variations}
       getComment={this.getComment}
       getDrawBoardPDF={this.props.getDrawBoardPDF}
       notify={this.notify}
@@ -924,6 +983,7 @@ class App extends Component {
       is_move_allowed_group={this.is_move_allowed_group}
       get_pc_move_data_group={this.get_pc_move_data_group}
       get_correct_moves_data_group={this.get_correct_moves_data_group}
+      get_compatible_variations={this.get_compatible_variations}
       getComment={this.getComment}
       getDrawBoardPDF={this.props.getDrawBoardPDF}
       notify={this.notify}

@@ -23,7 +23,7 @@ class TrainingPage extends Component {
           history={this.props.history}
           op_index={op_index}
           buttons={["back", "help", "more"]}
-          moreMenuButtons={["analyse", "flip"]}
+          moreMenuButtons={["analyse", "flip", "smallBoard"]}
           is_move_allowed={this.props.is_move_allowed}
           get_pc_move_data={this.props.get_pc_move_data}
           rotation={op.op_color}
@@ -32,6 +32,7 @@ class TrainingPage extends Component {
           getDrawBoardPDF={this.props.getDrawBoardPDF}
           allowCommentEdit={false}
           get_correct_moves_data={this.props.get_correct_moves_data}
+          get_compatible_variations={this.props.get_compatible_variations}
           //setDrawBoardPDF={this.props.setDrawBoardPDF}
           //getDrawBoardPDF={this.props.getDrawBoardPDF}
           notify={this.props.notify}

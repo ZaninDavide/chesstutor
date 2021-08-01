@@ -23,11 +23,12 @@ class ColorTrainingPage extends Component {
           playColor={color}
 
           buttons={["back", "help", "more"]}
-          moreMenuButtons={["analyse", "flip"]}
+          moreMenuButtons={["analyse", "flip", "smallBoard"]}
 
           is_move_allowed_color={this.props.is_move_allowed_color}
           get_pc_move_data_color={this.props.get_pc_move_data_color}
           get_correct_moves_data_color={this.props.get_correct_moves_data_color}
+          get_compatible_variations={this.props.get_compatible_variations}
           getComment={this.props.getComment}
           getDrawBoardPDF={this.props.getDrawBoardPDF}
           allowCommentEdit={false}

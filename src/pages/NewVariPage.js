@@ -25,7 +25,7 @@ class VariationPage extends Component {
           op_index={op_index}
           vari_name={vari_name}
           buttons={["back", "done", "multi_next", "more", "add_comment"]}
-          moreMenuButtons={["flip", "load_variations"]}
+          moreMenuButtons={["flip", "load_variations", "smallBoard"]}
           rotation={op.op_color}
           playColor={"both"}
           editComment={this.props.editComment}

@@ -57,6 +57,7 @@ class Board extends Component {
       },
       stockfish_evaluation: undefined,
       stockfish_calculated_depth: 0,
+      smallBoard: false,
     }
     /* functions */
     this.newGame = this.newGame.bind(this)
@@ -95,6 +96,8 @@ class Board extends Component {
     this.stockfish_go_deeper = this.stockfish_go_deeper.bind(this)
     this.get_lichess_cloud_evaluation = this.get_lichess_cloud_evaluation.bind(this)
     this.try_undo_n_times = this.try_undo_n_times.bind(this)
+    this.resetBoard = this.resetBoard.bind(this);
+    this.onStart = this.onStart.bind(this);
     /* refs */
     this.selectedPiece = React.createRef()
 
@@ -112,7 +115,7 @@ class Board extends Component {
       <React.Fragment>
         {/* --------------------------------------- BOARD --------------------------------------- */}
 
-        <div id="boardGrid" key="boardGrid">
+        <div id="boardGrid" key="boardGrid" className={this.state.smallBoard ? "smallBoard" : ""}>
           <div id="boardContainer"
             ref={"bContainer"}
             key="boardContainer"
@@ -262,6 +265,17 @@ class Board extends Component {
               </div>
             </button> : null
           }
+          {this.props.moreMenuButtons.indexOf("smallBoard") !== -1 ?
+            <button className="simpleButton hMenuButton" onClick={() => {
+              this.setState({ boardMenuVisible: false })
+              this.setState(old => {return{smallBoard: !old.smallBoard}})
+            }}>
+              <div className="hMenuButtonContent">
+                <div className="hMenuButtonIcon">zoom_out_map</div>
+                <div className="hMenuButtonLabel"><Translator text={this.state.smallBoard ? "Large board" : "Small board"}/></div>
+              </div>
+            </button> : null
+          }
           {/* ANALYSIS BUTTON */}
           {this.props.moreMenuButtons.indexOf("analyse") !== -1 ?
             <button className="simpleButton hMenuButton" onClick={() => {
@@ -305,6 +319,13 @@ class Board extends Component {
           close={() => this.setState({ trainingFinishedModalVisible: false })}
           op_index={this.props.op_index}
           history={this.props.history}
+          done={this.resetBoard}
+          json_moves={this.state.json_moves}
+          trainColor={this.props.trainColor}
+          trainGroup={this.props.trainGroup}
+          vari_name={this.props.vari_name}
+          vari_subname={this.props.vari_subname}
+          get_compatible_variations={this.props.get_compatible_variations}
         />
 
         {/* LOAD VARIATIONS MODAL */}
@@ -334,10 +355,7 @@ class Board extends Component {
     )
   }
 
-  componentDidMount() {
-    // called when the component is first created
-    // this.testChess() // test
-
+  onStart() {
     if (this.props.startMoves) {
       /*const fen = this.props.startFen.split("_").join("/")*/
       /*const turn = this.state.game.load(fen)*/
@@ -356,6 +374,11 @@ class Board extends Component {
         this.pc_move(this.props.op_index, [])
       }
     }
+  }
+
+  componentDidMount() {
+    // called when the component is first created
+    this.onStart()
   }
 
   componentWillUnmount() {
@@ -1154,8 +1177,6 @@ class Board extends Component {
 
       if(this.selectedPiece.current.style.left !== deltaX + "px") this.selectedPiece.current.style.left = deltaX + "px"
       if(this.selectedPiece.current.style.top !== deltaY + "px") this.selectedPiece.current.style.top = deltaY + "px"
-
-      requestAnimationFrame(() => {
         // find the coordinates of the mouse
         const coor = { x: clientX - this.refs.bContainer.offsetLeft, y: clientY - this.refs.bContainer.offsetTop }
         coor.x = Math.floor((coor.x / this.refs.board.width) * 8) * 100
@@ -1164,10 +1185,11 @@ class Board extends Component {
         // inside the board?
         if (coor.x <= 700 && coor.y <= 700) {
           // try to move there
-          const cell = this.cellFromCoor(coor)
-          this.setState({ mouse_over_cell: cell })
+          requestAnimationFrame(() => {
+            const cell = this.cellFromCoor(coor)
+            this.setState({ mouse_over_cell: cell })
+          })
         }
-      })
     }
   }
 
@@ -1432,6 +1454,16 @@ class Board extends Component {
     this.setState({ trainingFinishedModalVisible: true })
   }
 
+  resetBoard() {
+    this.setState(old => {return { 
+      json_moves: [], 
+      json_moves_length: 0, 
+      moves_forward: old.json_moves, 
+      game: new Chess(), 
+      selected_cell: undefined, 
+      arrows: [] 
+    }}, this.onStart)
+  }
 }
 
 export default Board

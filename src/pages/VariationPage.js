@@ -27,8 +27,10 @@ class VariationPage extends Component {
           history={this.props.history}
           op_index={op_index}
           vari_index={vari_index}
+          vari_name={vari.vari_name}
+          vari_subname={vari.vari_subname}
           buttons={in_training ? ["back", "help", "stopTrainThis", "more"] : ["back", "single_next", "trainThis", "more", "add_comment"]}
-          moreMenuButtons={["analyse", "flip"]}
+          moreMenuButtons={["analyse", "flip", "smallBoard"]}
           rotation={op.op_color}
           playColor={in_training ? op.op_color : "none"}
           editComment={this.props.editComment}
@@ -45,6 +47,7 @@ class VariationPage extends Component {
           get_pc_move_data={this.props.get_pc_move_data}
           is_move_allowed={this.props.is_move_allowed}
           get_correct_moves_data={this.props.get_correct_moves_data}
+          get_compatible_variations={this.props.get_compatible_variations}
           notify={this.props.notify}
           wait_time={this.props.wait_time}
           volume={this.props.volume}
