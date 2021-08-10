@@ -90,7 +90,7 @@
   --back: #030304; /* #000000 */
   --hoverBack: #0e0e0e;
   --onBack: #1d1d1d;
-  --headerBack: #000000;
+  --headerBack: var(--back);
   --text: #c7c7c7;
   --title: #ffffff;
   --clickText: #ffffff;
@@ -137,7 +137,6 @@
   overflow: hidden;
   /* COLORS */
   background-color: var(--back);
-  /* background-image: linear-gradient(var(--backColor) 50%, #131311); */ /*151513*/
   /* TEXT */
   color: var(--text);
   font-weight: var(--textWeight);

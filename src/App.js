@@ -283,7 +283,11 @@ class App extends Component {
     if (op_object.op_name !== undefined && op_object.op_color !== undefined) {
       /* Update state and database */
       const op_index = this.state.user_ops.length // index of the new opening
-      this.state.user_ops.push(op_object)
+      this.setState(old => {
+        return {
+          user_ops: [...old.user_ops, JSON.parse(JSON.stringify(op_object))]
+        }
+      })
 
       this.serverRequest("POST", "/addOpening", op_object)
       return op_index
@@ -355,7 +359,13 @@ class App extends Component {
     if (vari_object.vari_name !== undefined) {
       /* Update state and database */
       const vari_index = this.state.user_ops[op_index].variations.length // index of the new variation
-      this.state.user_ops[op_index].variations.push(vari_object)
+      this.setState(old => {
+        let new_ops = old.user_ops
+        new_ops[op_index].variations.push(JSON.parse(JSON.stringify(vari_object)))
+        return {
+          user_ops: new_ops
+        }
+      })
 
       this.serverRequest("POST", "/addVariation/" + op_index, vari_object)
       return vari_index

@@ -179,18 +179,18 @@ class OpeningPage extends Component {
   }
 
   renameThisVari(variNewName, variNewSubname) {
-    const op_index = this.props.match.params.op_index
+    const op_index = parseInt(this.props.match.params.op_index)
     this.props.renameVari(op_index, this.state.hMenuVariIndex, variNewName)
     this.props.setVariSubname(op_index, this.state.hMenuVariIndex, variNewSubname)
   }
 
   deleteThisVari() {
-    const op_index = this.props.match.params.op_index
+    const op_index = parseInt(this.props.match.params.op_index)
     this.props.deleteVari(op_index, this.state.hMenuVariIndex)
   }
 
   switchArchived(vari_index) {
-    const op_index = this.props.match.params.op_index
+    const op_index = parseInt(this.props.match.params.op_index)
     if (vari_index !== undefined) {
       this.props.switchVariArchived(op_index, vari_index)
     } else {
@@ -209,7 +209,7 @@ class OpeningPage extends Component {
   }
 
   render() {
-    const op_index = this.props.match.params.op_index
+    const op_index = parseInt(this.props.match.params.op_index)
     const op = this.props.ops[op_index]
     const thisVari = this.state.hMenuVariIndex !== undefined ? this.props.ops[op_index].variations[this.state.hMenuVariIndex] : null
     return (
