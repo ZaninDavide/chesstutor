@@ -138,18 +138,20 @@ class Board extends Component {
             {this.boardButtons()}
           </div>
           <BoardData
-            tabIcons={
-              this.props.stockfish ?
-                ["book", "computer"]
-                :
-                ["list"] // , "comment"
-            }
+            tabs={this.props.tabs}
+
+            op_index={this.props.op_index}
+            json_moves={this.state.json_moves}
+            ops={this.props.ops}
+            match={this.props.match}
+            vari_index={this.props.vari_index}
+            vari_name={this.props.vari_name}
+            vari_subname={this.props.vari_subname}
+            
             thereIsComment={thereIsComment}
             onCommentClick={this.onCommentClick}
             getComment={this.props.getComment}
             getDrawBoardPDF={this.props.getDrawBoardPDF}
-            op_index={this.props.op_index}
-            json_moves={this.state.json_moves}
             stockfish={this.props.stockfish}
             switch_stockfish={() => {
               this.props.switch_stockfish(() => {
@@ -195,8 +197,6 @@ class Board extends Component {
             book_move={move => this.make_move(move)}
             get_fen={this.state.game.fen}
             try_undo_n_times={this.try_undo_n_times}
-            ops={this.props.ops}
-            match={this.props.match}
           />
         </div>
 

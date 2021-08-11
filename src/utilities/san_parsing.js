@@ -84,9 +84,23 @@ function process_comment(comment_text){
     return mark_down_text
 }
 
+function parse_moves_list(moves){
+    let moves_parsed = ""
+    moves.forEach((move, i) => {
+        if(i % 2 === 0){
+            // white's move
+            moves_parsed += (Math.floor(i / 2) + 1).toString() + ". "
+        }
+        moves_parsed += move.san + " "
+    });
+    moves_parsed.trimEnd() // remove last empy space
+    return moves_parsed
+}
+
 module.exports = {
     make_san_nicer,
     make_san_nicer_html,
     get_piece_text,
     process_comment,
+    parse_moves_list,
 }

@@ -57,12 +57,18 @@ class TrainingPage extends Component {
         <Header mainButtonText="arrow_back" title={<Translator text={"Analysis"} />} />
         <Board
           history={this.props.history}
+          ops={this.props.ops}
+          match={this.props.match}
+
           buttons={["more", "back", "forward_next"]}
           moreMenuButtons={["flip", "smallBoard"]}
+          tabs={["book", "stockfish"]}
+
           rotation={color}
           playColor={this.state.playColor}
           allowCommentEdit={false}
           startMoves={this.props.match.params.moves}
+
           stockfish={{
             makes_moves: this.state.stockfish,
             show_arrows: true,
@@ -74,11 +80,10 @@ class TrainingPage extends Component {
           switch_auto_eval={this.switch_auto_eval}
           switch_auto_best_move={this.switch_auto_best_move}
           set_stockfish_depth={depth => this.setState({ stockfish_depth: depth})}
+
+          get_correct_moves_data_book={this.props.get_correct_moves_data_book}
           wait_time={this.props.wait_time}
           volume={this.props.volume}
-          get_correct_moves_data_book={this.props.get_correct_moves_data_book}
-          ops={this.props.ops}
-          match={this.props.match}
         />
       </React.Fragment>
     )

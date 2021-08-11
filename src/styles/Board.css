@@ -182,15 +182,6 @@ max-width: calc(100vh - var(--headerHeight) - var(--uiElementHeight) - 80px);
   margin-right: auto;
 }
 
-#boardDataCommentSlide {
-  height: 100%;
-  box-sizing: border-box;
-  font-size: var(--smallTextSize);
-  white-space: pre-wrap;
-  cursor: pointer;
-  -webkit-tap-highlight-color: var(--tap);
-}
-
 .boardButton {
   margin: 0px !important;
   /* overwrite simpleButton */

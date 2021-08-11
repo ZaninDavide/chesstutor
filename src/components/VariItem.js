@@ -1,7 +1,7 @@
 import React, { Component } from "react"
 import Translator from "./Translator"
 import Ripples from "react-ripples"
-import { Menu, MenuItem } from '@szhsin/react-menu';
+import { Menu, MenuItem } from '@szhsin/react-menu'
 
 class VariItem extends Component {
   constructor(props) {
@@ -39,8 +39,28 @@ class VariItem extends Component {
     this.setState({ menuVisible: false })
   }
 
+  parse_moves_list_html(moves){
+    let moves_parsed = []
+    moves.forEach((move, i) => {
+        if(i % 2 === 0){
+            // white's move
+            moves_parsed.push(
+                <span className="parsed_moves_number">{(Math.floor(i / 2) + 1).toString() + ". "}</span>
+            )
+        }
+        moves_parsed.push(
+          <span className="parsed_moves_san">{move.san}{(i !== moves.length -1 ? <>&nbsp;</> : "")}</span>
+        )
+    })
+    return moves_parsed
+  }
+
   render() {
     const thisVari = this.props.vari
+
+    const moves_count = thisVari.moves.length === 0 ? 0 : Math.floor(thisVari.moves.length / 2) + 1
+    const move_label = thisVari.moves.length === 1 || thisVari.moves.length === 2 ? "move" : "moves"
+
     return (
       <Ripples
         className={"variItem" + (thisVari.vari_subname ? " subvariItem" : "")}
@@ -49,16 +69,13 @@ class VariItem extends Component {
       >
         <div className="variItemText">
           <div className="variItemContent">
-            {(() => {
-              if (thisVari.vari_subname) {
-                return <h2>{thisVari.vari_name + " "}<span>{thisVari.vari_subname}</span></h2>
-              } else {
-                return <h2>{thisVari.vari_name}</h2>
-              }
-            })()}
-            {<p className="smallText">
-              {Math.floor(thisVari.moves.length / 2) + 1}&nbsp;<Translator text={thisVari.moves.length === 1 || thisVari.moves.length === 2 ? "move" : "moves"} />
-            </p>}
+            <h2>
+              {thisVari.vari_name}
+              {thisVari.vari_subname && <>&nbsp;<span>{thisVari.vari_subname}</span></>}
+            </h2>
+            <p className="smallText">
+              {moves_count}&nbsp;<Translator text={move_label}/>
+            </p>
           </div>
         </div>
 

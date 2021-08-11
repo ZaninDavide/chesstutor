@@ -651,6 +651,16 @@ a {
   color: var(--title);
 }
 
+.variItemContent p {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.variItemText {
+  overflow: hidden;
+}
+
 .opItemButton{
   color: var(--onCardBack); /* --onBack */
 }

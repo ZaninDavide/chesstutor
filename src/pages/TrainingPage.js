@@ -20,21 +20,24 @@ class TrainingPage extends Component {
         <Header mainButtonText="arrow_back" goTo={"/openings/" + op_index} title={<React.Fragment><Translator text={"Training"} />{": " + op.op_name}</React.Fragment>} />
         <Board
           key="trainingBoard"
+
           history={this.props.history}
           op_index={op_index}
+
           buttons={["back", "help", "more"]}
           moreMenuButtons={["analyse", "flip", "smallBoard"]}
-          is_move_allowed={this.props.is_move_allowed}
-          get_pc_move_data={this.props.get_pc_move_data}
+          tabs={["moves"]}
+
           rotation={op.op_color}
           playColor={op.op_color}
+
+          is_move_allowed={this.props.is_move_allowed}
+          get_pc_move_data={this.props.get_pc_move_data}
           getComment={this.props.getComment}
           getDrawBoardPDF={this.props.getDrawBoardPDF}
           allowCommentEdit={false}
           get_correct_moves_data={this.props.get_correct_moves_data}
           get_compatible_variations={this.props.get_compatible_variations}
-          //setDrawBoardPDF={this.props.setDrawBoardPDF}
-          //getDrawBoardPDF={this.props.getDrawBoardPDF}
           notify={this.props.notify}
           wait_time={this.props.wait_time}
           volume={this.props.volume}

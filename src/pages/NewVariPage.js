@@ -21,13 +21,18 @@ class NewVariPage extends Component {
         <Header mainButtonText="arrow_back" goTo={"/openings/" + op_index} title={<React.Fragment>{op.op_name + " ⋅ " + vari_name + " ⋅ "}<Translator text={"New variation"} /></React.Fragment>} />
         <Board
           history={this.props.history}
-          createVari={this.props.createVari}
+          
           op_index={op_index}
           vari_name={vari_name}
+          
           buttons={["back", "done", "multi_next", "more", "add_comment"]}
           moreMenuButtons={["flip", "load_variations", "smallBoard"]}
+          tabs={["moves"]}
+
           rotation={op.op_color}
           playColor={"both"}
+
+          createVari={this.props.createVari}
           editComment={this.props.editComment}
           setDrawBoardPDF={this.props.setDrawBoardPDF}
           getDrawBoardPDF={this.props.getDrawBoardPDF}

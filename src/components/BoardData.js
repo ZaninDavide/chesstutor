@@ -4,8 +4,14 @@ import Tree from "./Tree"
 import { process_comment } from "../utilities/san_parsing"
 import StockfishUI from "./StockfishUI";
 import BookUI from "./BookUI";
+import VariInfoUI from "./VariInfoUI";
 
-import FenViewer from "../components/FenViewer"
+const tab_to_icon = {
+  "moves": "list",
+  "book": "book",
+  "stockfish": "computer",
+  "vari_info": "info"
+}
 
 class BoardData extends Component {
 
@@ -23,8 +29,38 @@ class BoardData extends Component {
 
   render() {
     let tabs = []
+    let extra_info_bar = []
 
-    if (this.props.tabIcons.indexOf("book") !== -1) {
+    // MOVES TAB
+    if (this.props.tabs.indexOf("moves") !== -1) {
+      const tabTree =
+        <div id="boardDataTreeSlide" key="boardDataTreeSlide" className="boardDataSlide">
+          <Tree key="tree"
+            json_moves={this.props.json_moves}
+            getComment={this.props.getComment}
+            getDrawBoardPDF={this.props.getDrawBoardPDF}
+            op_index={this.props.op_index}
+            try_undo_n_times={this.props.try_undo_n_times}
+          />
+        </div>
+      tabs.push(tabTree)
+    }
+
+    // VARIATION INFO TAB
+    if (this.props.tabs.indexOf("vari_info") !== -1) {
+      const tabVariInfo =
+        <div id="boardDataBookSlide" key="boardDataBookSlide" className="boardDataSlide">
+          <VariInfoUI key="variInfo"
+            vari_index={this.props.vari_index}
+            vari_name={this.props.vari_name}
+            vari_subname={this.props.vari_subname}
+          />
+        </div>
+      tabs.push(tabVariInfo)
+    }
+
+    // BOOK TAB
+    if (this.props.tabs.indexOf("book") !== -1) {
       const tabBook =
         <div id="boardDataBookSlide" key="boardDataBookSlide" className="boardDataSlide">
           <BookUI key="book"
@@ -39,36 +75,8 @@ class BoardData extends Component {
       tabs.push(tabBook)
     }
 
-    if (this.props.tabIcons.indexOf("list") !== -1) {
-      const tabTree =
-        <div id="boardDataTreeSlide" key="boardDataTreeSlide" className="boardDataSlide">
-          <Tree key="tree"
-            json_moves={this.props.json_moves}
-            getComment={this.props.getComment}
-            getDrawBoardPDF={this.props.getDrawBoardPDF}
-            op_index={this.props.op_index}
-            try_undo_n_times={this.props.try_undo_n_times}
-          />
-        </div>
-      tabs.push(tabTree)
-    }
-
-    /*
-    if (this.props.tabIcons.indexOf("comment") !== -1) {
-      const tabComment =
-        <div id="boardDataCommentSlide" key="boardDataCommentSlide" className="boardDataSlide"
-          onClick={this.props.onCommentClick}
-        >
-          {this.props.thereIsComment
-            ? this.comment()
-            : <div id="noCommentIcon" className="iconText">comment</div>
-          }
-        </div>
-      tabs.push(tabComment)
-    }
-    */
-
-    if (this.props.tabIcons.indexOf("computer") !== -1) {
+    // STOCKFISH TAB
+    if (this.props.tabs.indexOf("stockfish") !== -1) {
       const tabStockfish = <StockfishUI key="stockfishUI"
         stockfish={this.props.stockfish}
         stockfish_find_best_moves={this.props.stockfish_find_best_moves}
@@ -82,36 +90,41 @@ class BoardData extends Component {
         get_fen={this.props.get_fen}
       />
 
+      let stockfish_extra = <>
+        <span id="boardDataTabTopBarExtraInfoEvaluation">
+          {(() => {
+              if(this.props.stockfish_evaluation === undefined){
+                  return "-"
+              }else if(isNaN(this.props.stockfish_evaluation)){
+                  return "#"
+              }else{
+                  return this.props.stockfish_evaluation > 0 ? ("+"+this.props.stockfish_evaluation) : this.props.stockfish_evaluation 
+              }
+          })()}
+        </span>
+        &nbsp;
+        {"(" + this.props.stockfish_calculated_depth + "/" + this.props.stockfish.depth + ")"}
+      </>
+
       tabs.push(tabStockfish)
+      extra_info_bar.push(stockfish_extra)
     }
 
     return <div id="boardData" key="boardData">
 
-    { this.props.tabIcons.length > 1 ?
+    { this.props.tabs.length > 1 ?
       <div id="boardDataTabTopBar">
         <div id="boardDataTabTopBarExtraInfo">
-          <span id="boardDataTabTopBarExtraInfoEvaluation">
-            {(() => {
-                if(this.props.stockfish_evaluation === undefined){
-                    return "-"
-                }else if(isNaN(this.props.stockfish_evaluation)){
-                    return "#"
-                }else{
-                    return this.props.stockfish_evaluation > 0 ? ("+"+this.props.stockfish_evaluation) : this.props.stockfish_evaluation 
-                }
-            })()}
-          </span>
-          &nbsp;
-          {"(" + this.props.stockfish_calculated_depth + "/" + this.props.stockfish.depth + ")"}
+          {this.props.tabs.length > 1 || extra_info_bar.length ? extra_info_bar : null}
         </div>
         <div id="boardDataTabIconsContainer">
         {
-          this.props.tabIcons.map((t, index) =>
+          this.props.tabs.map((t, index) =>
             <div
               className={"boardDataTabIcon" + (this.state.tab === index ? " impText" : "")}
               key={"boardDataTabIcon_" + t}
               onClick={() => this.setTab(index)}
-            >{t}</div>
+            >{tab_to_icon[t]}</div>
           )
         }
         </div>

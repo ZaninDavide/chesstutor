@@ -22,6 +22,7 @@ class GroupTrainingPage extends Component {
         <Header mainButtonText="arrow_back" goTo={"/openings/" + op_index} title={"Training ⋅ " + vari_name} />
         <Board
           key="colorTrainingBoard"
+
           history={this.props.history}
 
           trainGroup={vari_name}
@@ -32,16 +33,15 @@ class GroupTrainingPage extends Component {
 
           buttons={["back", "help", "more"]}
           moreMenuButtons={["analyse", "flip", "smallBoard"]}
+          tabs={["moves"]}
 
           is_move_allowed_group={this.props.is_move_allowed_group}
           get_pc_move_data_group={this.props.get_pc_move_data_group}
           get_correct_moves_data_group={this.props.get_correct_moves_data_group}
           get_compatible_variations={this.props.get_compatible_variations}
-
           getComment={this.props.getComment}
           getDrawBoardPDF={this.props.getDrawBoardPDF}
           allowCommentEdit={false}
-
           notify={this.props.notify}
           wait_time={this.props.wait_time}
           volume={this.props.volume}
