@@ -2,13 +2,14 @@ import React, { Component } from "react"
 import Header from "../components/Header"
 import Board from "../components/Board"
 import Translator from "../components/Translator"
+import { OPENING_TRAINING_MODE } from "../utilities/constants"
 
 class TrainingPage extends Component {
   constructor(props) {
     super(props)
 
-    if (props.ops.length < props.match.params.op_index) {
-      console.log("VariationPage: constructor: This opening do not exists.")
+    if (props.ops.length < parseInt(props.match.params.op_index)) {
+      console.log("TrainingPage: constructor: This opening do not exists.")
     }
   }
 
@@ -20,6 +21,7 @@ class TrainingPage extends Component {
         <Header mainButtonText="arrow_back" goTo={"/openings/" + op_index} title={<React.Fragment><Translator text={"Training"} />{": " + op.op_name}</React.Fragment>} />
         <Board
           key="trainingBoard"
+          mode={OPENING_TRAINING_MODE}
 
           history={this.props.history}
           op_index={op_index}

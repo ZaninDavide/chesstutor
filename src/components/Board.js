@@ -3,6 +3,7 @@ import Chess from "../chessjs-chesstutor/chess.js"
 
 import { cells, cells_rotated, cell_coords, cell_coords_rotated, pieces_names, sub_names } from "../utilities/pieces_and_coords"
 import { get_piece_src, get_board_svg, get_board_rotated_svg, sound_capture, sound_move, sound_error } from "../utilities/file_paths"
+import { VARI_TRAINING_MODE, GROUP_TRAINING_MODE, OPENING_TRAINING_MODE, COLOR_TRAINING_MODE, SMART_TRAINING_MODE, FREE_PLAYING_MODE, NEW_VARI_MODE, AGAINST_STOCKFISH_MODE } from "../utilities/constants"
 
 import PromotionModal from "../components/PromotionModal"
 import CommentModal from "../components/CommentModal"
@@ -34,6 +35,8 @@ let move_audio
 let capture_audio
 let error_audio
 
+let last_props_rotation = false
+
 class Board extends Component {
   constructor(props) {
     super(props)
@@ -58,6 +61,7 @@ class Board extends Component {
       stockfish_evaluation: undefined,
       stockfish_calculated_depth: 0,
       smallBoard: false,
+      smart_training_errors_counter: 0,
     }
     /* functions */
     this.newGame = this.newGame.bind(this)
@@ -106,6 +110,14 @@ class Board extends Component {
     error_audio = new Audio(sound_error)
   }
 
+  static getDerivedStateFromProps(props) {
+    if(last_props_rotation !== props.rotation){
+      last_props_rotation = props.rotation
+      return { rotated: props.rotation === "black" ? true : false };
+    }
+    return {}
+ }
+
   /* ---------------------------- COMPONENT ---------------------------- */
 
   render() {
@@ -140,22 +152,27 @@ class Board extends Component {
           <BoardData
             tabs={this.props.tabs}
 
-            op_index={this.props.op_index}
+            op_index={this.props.op_index || this.props.target_vari_op_index}
             json_moves={this.state.json_moves}
             ops={this.props.ops}
             match={this.props.match}
-            vari_index={this.props.vari_index}
-            vari_name={this.props.vari_name}
-            vari_subname={this.props.vari_subname}
+            vari_index={this.props.vari_index || this.props.target_vari_op_index}
+            vari_name={this.props.vari_name || this.props.target_vari_name}
+            vari_subname={this.props.vari_subname || this.props.target_vari_subname}
+            vari_op_name={
+              this.props.ops && ((this.props.op_index !== undefined && this.props.op_index !== null) || (this.props.target_vari_op_index !== undefined && this.props.target_vari_op_index !== null)) ? 
+              this.props.ops[(this.props.op_index || this.props.target_vari_op_index)].op_name : null              
+            }
             
             thereIsComment={thereIsComment}
             onCommentClick={this.onCommentClick}
             getComment={this.props.getComment}
             getDrawBoardPDF={this.props.getDrawBoardPDF}
+            board_mode={this.props.mode}
             stockfish={this.props.stockfish}
             switch_stockfish={() => {
               this.props.switch_stockfish(() => {
-                if (!this.is_my_turn()/* && (this.props.stockfish ? this.props.stockfish.makes_moves : false)*/) {
+                if (!this.is_my_turn()) {
                   this.stockfish_move(this.state.json_moves)
                 }
               })
@@ -366,12 +383,13 @@ class Board extends Component {
       this.forceUpdate()
     }
 
-    // pc make first move if the player playes as black
+    // pc make first move if the player plays as black
     if (this.props.playColor === "black") {
-      if (this.props.stockfish ? this.props.stockfish.makes_moves : false) {
+      if (this.props.mode === AGAINST_STOCKFISH_MODE) {
+        if(!this.props.stockfish) { console.log("Board: onStart() error. stockfish missing"); return false }
         this.stockfish_move([])
       } else {
-        this.pc_move(this.props.op_index, [])
+        this.pc_move([])
       }
     }
   }
@@ -499,7 +517,7 @@ class Board extends Component {
 
   async try_move(move_data) {
     // move data is an object: {from: "d2", to: "d5", promotion: undefined}
-    // as default move_data.from = this.state.selectedCell
+    // as default move_data.from = this.state.selected_cell
 
     if (!this.is_my_turn(this.state.game.turn())) {
       console.log("You can't move during the computer's turn.")
@@ -520,33 +538,63 @@ class Board extends Component {
         move_data.promotion = promotion
       }
 
-      let move_allowed = true
-      if (this.props.is_move_allowed) { // TODO - should check if it is not the turn of the computer
+      const mode = this.props.mode
+
+      let is_this_move_allowed = true
+      let is_this_move_smart_alternative = false
+      if (mode === OPENING_TRAINING_MODE || mode === VARI_TRAINING_MODE) {
+        // OPENING_TRAINING_MODE & VARI_TRAINING_MODE
+        if(!this.props.is_move_allowed) { console.log("Board: try_move() error. is_move_allowed missing"); return false } 
+        // TODO - should check if it is not the turn of the computer
         // if the function exists try and see if this move is allowed(i don't mean illegal, if the move cannot be done for other reasons)
-        move_allowed = this.props.is_move_allowed(this.props.op_index, this.state.json_moves, move_data, this.props.vari_index) // if var_index exists it looks only into it
+        // if var_index exists it looks only into it
+        is_this_move_allowed = this.props.is_move_allowed(this.props.op_index, this.state.json_moves, move_data, this.props.vari_index)
       }
-      // works in COLOR_TRAINING_MODE
-      if (this.props.is_move_allowed_color) {
-        move_allowed = this.props.is_move_allowed_color(this.props.trainColor, this.state.json_moves, move_data)
+      else if (mode === COLOR_TRAINING_MODE) {
+        // COLOR_TRAINING_MODE
+        if(!this.props.is_move_allowed_color) { console.log("Board: try_move() error. is_move_allowed_color missing"); return false } 
+        is_this_move_allowed = this.props.is_move_allowed_color(this.props.trainColor, this.state.json_moves, move_data)
       }
-      // works in GROUP_TRAINING_MODE
-      if (this.props.is_move_allowed_group) {
-        move_allowed = this.props.is_move_allowed_group(this.props.op_index, this.state.json_moves, move_data, this.props.trainGroup)
+      else if (mode === GROUP_TRAINING_MODE) {
+        // GROUP_TRAINING_MODE
+        if(!this.props.is_move_allowed_group) { console.log("Board: try_move() error. is_move_allowed_group missing"); return false } 
+        is_this_move_allowed = this.props.is_move_allowed_group(this.props.op_index, this.state.json_moves, move_data, this.props.trainGroup)
+      }
+      else if (mode === SMART_TRAINING_MODE) {
+        // SMART_TRAINING_MODE
+        if(!this.props.is_move_allowed) { console.log("Board: try_move() error. is_move_allowed missing"); return false } 
+        is_this_move_allowed = this.props.is_move_allowed(this.props.target_vari_op_index, this.state.json_moves, move_data, this.props.target_vari_index)
+      
+        if(!is_this_move_allowed){
+          // is this an alternative move but not the one we want you to train on?
+          if(!this.props.is_move_allowed_color) { console.log("Board: try_move() error. is_move_allowed_color missing"); return false } 
+          is_this_move_smart_alternative = this.props.is_move_allowed_color(this.props.target_vari_color, this.state.json_moves, move_data)
+        }
       }
 
 
-      if (move_allowed) { // allowed as default
+      if (is_this_move_allowed) { // allowed as default
         // MAKE THE MOVE
         let moves_list_after = await this.make_move(move_data)
+
+        // If you are not playing for both sides the computer or stockfish has to move 
         if (this.props.playColor !== "both") {
-          if (this.props.stockfish ? this.props.stockfish.makes_moves : false) {
+          if (mode === AGAINST_STOCKFISH_MODE) {
+            if(!this.props.stockfish) { console.log("Board: try_move() error. stockfish missing"); return false }
+            // If stockfish is on and is allowed to make moves
             this.stockfish_move(moves_list_after)
           } else {
-            this.pc_move(this.props.op_index, moves_list_after, this.props.vari_index)
+            // Let the computer figure out what to move next 
+            this.pc_move(moves_list_after, this.props.vari_index)
           }
         }
+      } else if (is_this_move_smart_alternative) {
+        // TODO: play okay sound
+        this.props.notify("It's okay. Find another good move.", "important")
+        return false
       } else {
         this.play_error_sound()
+        if(mode === SMART_TRAINING_MODE) this.setState(old => ({smart_training_errors_counter: old.smart_training_errors_counter + 1}))
         return false
       }
 
@@ -642,44 +690,86 @@ class Board extends Component {
     })
   }
 
-  pc_move(op_index, json_moves, vari_index = undefined) {
-    /*if (this.is_my_turn(this.state.game.turn())) {
-      console.log("The computer can't move during the player's turn.")
-      return;
-    }*/
+  pc_move(json_moves, vari_index = undefined) {
+    const mode = this.props.mode
+    const is_congrats_mode = 
+      mode === OPENING_TRAINING_MODE ||
+      mode === VARI_TRAINING_MODE ||
+      mode === COLOR_TRAINING_MODE ||
+      mode === GROUP_TRAINING_MODE;
 
-    let move_data = this.props.get_pc_move_data ? this.props.get_pc_move_data(op_index, json_moves, vari_index) : null
-    if (this.props.trainColor !== undefined) {
-      // works with COLOR_TRAINING_MODE
+    let move_data = null
+
+    if (mode === OPENING_TRAINING_MODE || mode === VARI_TRAINING_MODE) {
+      // OPENING_TRAINING_MODE & VARI_TRAINING_MODE
+      if(this.props.get_pc_move_data === undefined) { console.log("Board: pc_move() error. get_pc_move_data missing"); return false }
+      move_data = this.props.get_pc_move_data(this.props.op_index, json_moves, vari_index)
+      
+    } else if (mode === COLOR_TRAINING_MODE) {
+      // COLOR_TRAINING_MODE
+      if(this.props.trainColor === undefined) { console.log("Board: pc_move() error. trainColor missing"); return false }
+      if(this.props.get_pc_move_data_color === undefined) { console.log("Board: pc_move() error. get_pc_move_data_color missing"); return false }
       move_data = this.props.get_pc_move_data_color(this.props.trainColor, json_moves)
-    } else if (this.props.trainGroup !== undefined) {
-      // works with GROUP_TRAINING_MODE
-      move_data = this.props.get_pc_move_data_group(op_index, json_moves, this.props.trainGroup)
+    
+    } else if (mode === GROUP_TRAINING_MODE) { 
+      // GROUP_TRAINING_MODE
+      if(this.props.trainGroup === undefined) { console.log("Board: pc_move() error. trainGroup missing"); return false }
+      if(this.props.get_pc_move_data_group === undefined) { console.log("Board: pc_move() error. get_pc_move_data_group missing"); return false }
+      move_data = this.props.get_pc_move_data_group(this.props.op_index, json_moves, this.props.trainGroup)
+    
+    } else if (mode === SMART_TRAINING_MODE) { 
+      // SMART_TRAINING_MODE
+      if(this.props.target_vari_op_index === undefined) { console.log("Board: pc_move() error. target_vari_op_index missing"); return false }
+      if(this.props.target_vari_index === undefined) { console.log("Board: pc_move() error. target_vari_index missing"); return false }
+      if(this.props.get_pc_move_data === undefined) { console.log("Board: pc_move() error. get_pc_move_data missing"); return false }
+      move_data = this.props.get_pc_move_data(this.props.target_vari_op_index, json_moves, this.props.target_vari_index)
     }
 
+
     if (move_data !== null) {
+      // WAIT AND PLAY THE COMPUTER MOVE, THEN CHECK IF THE TRAINING HAS FINISHED
       setTimeout(async () => {
         // the pc makes his move
         let pc_move_data = await await this.make_move(move_data)
 
         // now that pc has moved is the training finished?
         let correct_moves_repetitive = []
-        if (this.props.trainColor === undefined && this.props.trainGroup === undefined) {
+
+        if (mode === OPENING_TRAINING_MODE || mode === VARI_TRAINING_MODE) {
+          // OPENING_TRAINING_MODE & VARI_TRAINING_MODE
+          if(this.props.get_correct_moves_data === undefined) { console.log("Board: pc_move() error. get_correct_moves_data missing"); return false }
           correct_moves_repetitive = this.props.get_correct_moves_data(this.props.op_index, pc_move_data, this.props.vari_index)
-        } else if (this.props.trainColor !== undefined) { // works with COLOR_TRAINING_MODE
+          
+        } else if (mode === COLOR_TRAINING_MODE) {
+          // COLOR_TRAINING_MODE
+          if(this.props.trainColor === undefined) { console.log("Board: pc_move() error. trainColor missing"); return false }
+          if(this.props.get_correct_moves_data_color === undefined) { console.log("Board: pc_move() error. get_correct_moves_data_color missing"); return false }
           correct_moves_repetitive = this.props.get_correct_moves_data_color(this.props.trainColor, pc_move_data)
-        } else if (this.props.trainGroup !== undefined) { // works with GROUP_TRAINING_MODE
+        
+        } else if (mode === GROUP_TRAINING_MODE) { 
+          // GROUP_TRAINING_MODE
+          if(this.props.trainGroup === undefined) { console.log("Board: pc_move() error. trainGroup missing"); return false }
+          if(this.props.get_correct_moves_data_group === undefined) { console.log("Board: pc_move() error. get_correct_moves_data_group missing"); return false }
           correct_moves_repetitive = this.props.get_correct_moves_data_group(this.props.op_index, pc_move_data, this.props.trainGroup)
+
+        } else if (mode === SMART_TRAINING_MODE) { 
+          // SMART_TRAINING_MODE
+          if(this.props.get_correct_moves_data === undefined) { console.log("Board: pc_move() error. get_correct_moves_data missing"); return false }
+          correct_moves_repetitive = this.props.get_correct_moves_data(this.props.target_vari_op_index, pc_move_data, this.props.target_vari_index)
         }
 
-        if (correct_moves_repetitive.length === 0) {
+        if (correct_moves_repetitive.length === 0 && is_congrats_mode) {
           // training finished
           this.makeCongrats()
+        } else if (correct_moves_repetitive.length === 0 && mode === SMART_TRAINING_MODE){
+          this.props.onSmartTrainingVariFinished(this.state.smart_training_errors_counter, this.resetBoard)
         }
 
       }, this.props.wait_time)
-    } else {
+    } else if (is_congrats_mode) {
       this.makeCongrats()
+    } else if (mode === SMART_TRAINING_MODE){
+      this.props.onSmartTrainingVariFinished(this.state.smart_training_errors_counter, this.resetBoard)
     }
   }
 
@@ -1250,16 +1340,34 @@ class Board extends Component {
   }
 
   help_button_click(can_auto_move = false) {
+    const mode = this.props.mode
     requestAnimationFrame(async () => {
       if (!this.is_my_turn()) return false
       // get moves data [{from: "d2", to: "d4", san: "d4"}, ...]
+
       let correct_moves_repetitive = []
-      if (this.props.trainColor === undefined && this.props.trainGroup === undefined) {
+
+      if (mode === OPENING_TRAINING_MODE || mode === VARI_TRAINING_MODE) {
+        // OPENING_TRAINING_MODE & VARI_TRAINING_MODE
+        if(this.props.get_correct_moves_data === undefined) { console.log("Board: help_button_click() error. get_correct_moves_data missing"); return false }
         correct_moves_repetitive = this.props.get_correct_moves_data(this.props.op_index, this.state.json_moves, this.props.vari_index)
-      } else if (this.props.trainColor !== undefined) { // works with COLOR_TRAINING_MODE
+        
+      } else if (mode === COLOR_TRAINING_MODE) {
+        // COLOR_TRAINING_MODE
+        if(this.props.trainColor === undefined) { console.log("Board: help_button_click() error. trainColor missing"); return false }
+        if(this.props.get_correct_moves_data_color === undefined) { console.log("Board: help_button_click() error. get_correct_moves_data_color missing"); return false }
         correct_moves_repetitive = this.props.get_correct_moves_data_color(this.props.trainColor, this.state.json_moves)
-      } else if (this.props.trainGroup !== undefined) { // works with GROUP_TRAINING_MODE
+      
+      } else if (mode === GROUP_TRAINING_MODE) { 
+        // GROUP_TRAINING_MODE
+        if(this.props.trainGroup === undefined) { console.log("Board: help_button_click() error. trainGroup missing"); return false }
+        if(this.props.get_correct_moves_data_group === undefined) { console.log("Board: help_button_click() error. get_correct_moves_data_group missing"); return false }
         correct_moves_repetitive = this.props.get_correct_moves_data_group(this.props.op_index, this.state.json_moves, this.props.trainGroup)
+      
+      } else if (mode === SMART_TRAINING_MODE) {
+        // OPENING_TRAINING_MODE & VARI_TRAINING_MODE
+        if(this.props.get_correct_moves_data === undefined) { console.log("Board: help_button_click() error. get_correct_moves_data missing"); return false }
+        correct_moves_repetitive = this.props.get_correct_moves_data(this.props.target_vari_op_index, this.state.json_moves, this.props.target_vari_index)
       }
 
       // remove doubles ([d4, d4, e4] -> [d4, e4])
@@ -1283,7 +1391,8 @@ class Board extends Component {
         const moves_list_after = await this.make_move(correct_moves[0])
         // COMPUTER ANSWER IF NECESSARY
         if (this.props.playColor !== "both") {
-          if (this.props.stockfish ? this.props.stockfish.makes_moves : false) {
+          if (this.props.mode === AGAINST_STOCKFISH_MODE) {
+            if(!this.props.stockfish) { console.log("Board: help_button_click() error. stockfish missing"); return false }
             this.stockfish_move(moves_list_after)
           } else {
             // this.stockfish_move(moves_list_after) // TODO ERROR STOCKFISH TEST -------
@@ -1461,7 +1570,8 @@ class Board extends Component {
       moves_forward: old.json_moves, 
       game: new Chess(), 
       selected_cell: undefined, 
-      arrows: [] 
+      arrows: [],
+      smart_training_errors_counter: 0,
     }}, this.onStart)
   }
 }

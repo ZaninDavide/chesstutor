@@ -15,6 +15,7 @@ import MailPage from "./pages/MailPage"
 import ColorTrainingPage from "./pages/ColorTrainingPage"
 import GroupTrainingPage from "./pages/GroupTrainingPage"
 import AnalysisPage from "./pages/AnalysisPage"
+import SmartTrainingPage from "./pages/SmartTrainingPage"
 
 import Notification from "./components/Notification"
 
@@ -22,6 +23,10 @@ import "./styles/App.css" // css by CLASSES + MAIN COMPONENTS
 import "./styles/Elements.css" // css by ID + SECONDARY COMPONENTS
 import "./styles/Modal.css"
 import { LanguageProvider } from "./components/LanguageContext"
+
+import dayjs from "dayjs"
+const duration = require('dayjs/plugin/duration')
+dayjs.extend(duration)
 
 const SERVER_URI = "https://chesstutorserver.herokuapp.com" // "http://localhost:5000"
 
@@ -91,6 +96,7 @@ class App extends Component {
     this.updateInbox = this.updateInbox.bind(this)
     this.setVisualChessNotation = this.setVisualChessNotation.bind(this)
     this.get_compatible_variations = this.get_compatible_variations.bind(this)
+    this.updateVariScore = this.updateVariScore.bind(this)
   }
 
   componentDidMount() {
@@ -448,6 +454,35 @@ class App extends Component {
       this.serverRequest("POST", "/deleteVariationGroup", { op_index, vari_group_name })
       return { user_ops: new_user_ops }
     })
+  }
+
+  updateVariScore(op_index, vari_index, number_of_errors, factor, schedule, must_repeat, callback) {
+    // randomize schedule with 10% variability
+    const jitter = 1 + (Math.random() * 2 - 1) * 0.1
+    schedule = Math.round(schedule * jitter)
+    
+    const vari_new_score = {
+      factor: factor,
+      schedule: schedule,
+      must_repeat: must_repeat,
+      next_date: dayjs().add(schedule, "days").toDate(), // local time
+      total_errors: 0,
+      total_trainings: 0, 
+    }
+
+    this.setState(old => {
+      let new_user_ops = old.user_ops
+
+      const err = new_user_ops[op_index].variations[vari_index].vari_score ? new_user_ops[op_index].variations[vari_index].vari_score.total_errors : 0
+      const tra = new_user_ops[op_index].variations[vari_index].vari_score ? new_user_ops[op_index].variations[vari_index].vari_score.total_trainings : 0      
+      vari_new_score.total_errors = err + number_of_errors
+      vari_new_score.total_trainings = tra + 1
+
+      new_user_ops[op_index].variations[vari_index].vari_score = vari_new_score
+
+      this.serverRequest("POST", "/setVariationScore/" + op_index + "/" + vari_index, { new_vari_score: vari_new_score })
+      return { user_ops: new_user_ops }
+    }, callback)
   }
 
   /* ---------------------------- COMMENTS ---------------------------- */
@@ -913,7 +948,6 @@ class App extends Component {
       match={match}
       createVari={this.createVari}
       getComment={this.getComment}
-      getDrawBoardPDF={this.props.getDrawBoardPDF}
       editComment={this.editComment}
       setDrawBoardPDF={this.setDrawBoardPDF}
       getDrawBoardPDF={this.getDrawBoardPDF}
@@ -1008,6 +1042,21 @@ class App extends Component {
       get_correct_moves_data_book={this.get_correct_moves_data_book}
       ops={this.state.user_ops}
     />
+    const smartTrainingPage = ({ match, history }) => <SmartTrainingPage
+      history={history}
+      match={match}
+      ops={this.state.user_ops}
+      notify={this.notify}
+      wait_time={this.state.settings.wait_time}
+      volume={this.state.settings.volume}
+      updateVariScore={this.updateVariScore}
+      get_pc_move_data={this.get_pc_move_data}
+      get_correct_moves_data={this.get_correct_moves_data}
+      is_move_allowed={this.is_move_allowed}
+      is_move_allowed_color={this.is_move_allowed_color}
+      getComment={this.getComment}
+      getDrawBoardPDF={this.getDrawBoardPDF}
+    />
     const redirectToLogin = () => <Redirect to="/login" />
     const redirectToHome = () => <Redirect to="/" />
     let needLogin = (!this.state.username && !this.state.loadingVisible)
@@ -1045,6 +1094,7 @@ class App extends Component {
               <Route path="/openings/:op_index/:vari_index" render={noOpenings ? redirectToHome : variPage} />
               <Route path="/openings/:op_index" render={/*noOpenings ? redirectToHome : */opPage} />
 
+              <Route path="/training/smart" render={/*noOpenings ? redirectToHome : */smartTrainingPage} exact />
               <Route path="/training/fullcolor/:color_number" render={noOpenings ? redirectToHome : colorTrainingPage} />
               <Route path="/training/:op_index" render={noOpenings ? redirectToHome : trainingPage} />
 

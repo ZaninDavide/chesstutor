@@ -30,7 +30,7 @@ class Tree extends Component {
         this.props.json_moves.forEach((c, id) => {
             const moves = this.props.json_moves.slice(0, id + 1)
             const comment = this.props.getComment(this.props.op_index, moves)
-            const draw_baord = this.props.getDrawBoardPDF ? this.props.getDrawBoardPDF(this.props.op_index, moves) : false
+            const draw_board = this.props.getDrawBoardPDF ? this.props.getDrawBoardPDF(this.props.op_index, moves) : false
 
             let move_prefix = null
             let move_text = make_san_nicer_html(c.san)
@@ -52,11 +52,11 @@ class Tree extends Component {
 
             let onSanClick = () => this.props.try_undo_n_times(this.props.json_moves.length - id - 1)
 
-            if (comment || draw_baord) {
+            if (comment || draw_board) {
                 if (
                     (comment ? comment.length > 35 : false) || 
                     (comment ? comment.indexOf("\n") !== -1 : false) || 
-                    draw_baord
+                    draw_board
                 ) {        
                     // move with long comment // no margin needed          
                     objects.push(
@@ -67,7 +67,7 @@ class Tree extends Component {
                         objects.push(<p className="treeComment" key={"treeMoveComment_" + id + "_" + move_text + "_" + id} dangerouslySetInnerHTML={{ __html: process_comment(comment) }}></p>)
                     }
                          
-                    if(draw_baord){
+                    if(draw_board){
                         // generate fen if needed, chace it
                         let current_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1" // start fen
                         const moves_str = JSON.stringify(moves)

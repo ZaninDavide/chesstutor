@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "@szhsin/react-menu": "^1.0.3",
+    "dayjs": "^1.10.6",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",
     "react-ripples": "^2.2.1",

@@ -88,6 +88,7 @@ class BoardData extends Component {
         switch_auto_best_move={this.props.switch_auto_best_move}
         set_stockfish_depth={this.props.set_stockfish_depth}
         get_fen={this.props.get_fen}
+        board_mode={this.props.board_mode}
       />
 
       let stockfish_extra = <>
@@ -110,6 +111,13 @@ class BoardData extends Component {
       extra_info_bar.push(stockfish_extra)
     }
 
+    // OPENING TITLE - EXTRA INFO
+    if (this.props.tabs.indexOf("op_name") !== -1) {
+      let op_name_extra = <span>{this.props.vari_op_name || ""}</span>
+
+      extra_info_bar.push(op_name_extra)
+    }
+
     return <div id="boardData" key="boardData">
 
     { this.props.tabs.length > 1 ?
@@ -119,7 +127,7 @@ class BoardData extends Component {
         </div>
         <div id="boardDataTabIconsContainer">
         {
-          this.props.tabs.map((t, index) =>
+          this.props.tabs.filter(c => tab_to_icon[c]).map((t, index) =>
             <div
               className={"boardDataTabIcon" + (this.state.tab === index ? " impText" : "")}
               key={"boardDataTabIcon_" + t}

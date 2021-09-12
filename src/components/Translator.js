@@ -89,6 +89,7 @@ const languages = {
     "Small board": "Small board",
     "Large board": "Large board",
     "You just trained on": "You just trained on",
+    "Daily training": "Daily training",
   },
   ita: {
     Openings: "Aperture",
@@ -176,7 +177,8 @@ const languages = {
     "Filters": "Filtri",
     "Small board": "Scacchiera piccola",
     "Large board": "Scacchiera grande",
-    "You just trained on": "Ti sei allenato su"
+    "You just trained on": "Ti sei allenato su",
+    "Daily training": "Ripasso giornaliero",
   }
 }
 

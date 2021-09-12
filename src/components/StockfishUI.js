@@ -3,6 +3,7 @@ import CheckBox from "../components/CheckBox"
 // import TrainingFinishedModal from "./TrainingFinishedModal"
 import Translator from "../components/Translator"
 import Ripples from "react-ripples"
+import { AGAINST_STOCKFISH_MODE } from "../utilities/constants"
 
 class StockfishUI extends Component {
 
@@ -35,7 +36,7 @@ class StockfishUI extends Component {
                         <td><button className="simpleButton" onClick={this.props.stockfish_find_best_moves}>{this.props.stockfish_chosen_move || "-"}</button></td>
                     </tr>
                     <tr>
-                        <td><CheckBox text="Play agains the computer" checked={this.props.stockfish.makes_moves} click={this.props.switch_stockfish} /></td>
+                        <td><CheckBox text="Play agains the computer" checked={this.props.board_mode === AGAINST_STOCKFISH_MODE} click={this.props.switch_stockfish} /></td>
                         <td></td>
                     </tr>
                     <tr style={{ lineHeight: "var(--uiElementSmallHeight)", height: "var(--uiElementSmallHeight)" }}>
@@ -61,19 +62,6 @@ class StockfishUI extends Component {
             <a href={"https://www.chess.com/analysis?fen=" + this.props.get_fen()} target="_blank">
                 <button className="simpleButton"><Translator text={"Open on chess.com"} /></button>
             </a>
-
-            {/*
-            <h2>{"Stockfish settings:"}</h2>
-            <CheckBox text={"Play against stockfish"} checked={this.props.stockfish.makes_moves} click={this.props.switch_stockfish} /><br />
-            <CheckBox text={"Evaluate position"} checked={this.props.stockfish.auto_eval} click={() => { }} /><br />
-            <CheckBox text={"Find best move"} checked={this.props.stockfish.auto_best_move} click={() => { }} /><br />
-
-            <p>{"Depth: "}{this.props.stockfish.depth}</p>
-            <button className="simpleButton" onClick={this.props.stockfish_find_best_moves}>BEST MOVE</button>
-            <br />
-            <button className="simpleButton" onClick={this.props.stockfish_evaluate}>EVALUATE {this.props.stockfish_evaluation}</button>
-        */}
-
         </div>
     }
 }

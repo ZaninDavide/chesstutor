@@ -2,6 +2,7 @@ import React, { Component } from "react"
 import Header from "../components/Header"
 import Board from "../components/Board"
 import Translator from "../components/Translator"
+import { COLOR_TRAINING_MODE } from "../utilities/constants"
 
 class ColorTrainingPage extends Component {
   /*constructor(props) {
@@ -16,6 +17,7 @@ class ColorTrainingPage extends Component {
         <Header mainButtonText="arrow_back" goTo={"/"} title={<React.Fragment><Translator text={"Training"} />{": "}<Translator text={color + " openings"} /></React.Fragment>} />
         <Board
           key="colorTrainingBoard"
+          mode={COLOR_TRAINING_MODE}
           history={this.props.history}
 
           trainColor={color}

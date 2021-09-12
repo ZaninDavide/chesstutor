@@ -2,12 +2,13 @@ import React, { Component } from "react"
 import Header from "../components/Header"
 import Board from "../components/Board"
 import Translator from "../components/Translator"
+import { FREE_PLAYING_MODE, AGAINST_STOCKFISH_MODE } from "../utilities/constants"
 
 class TrainingPage extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      stockfish: false,
+      stockfish_plays: false,
       stockfish_auto_eval: false,
       stockfish_auto_best_move: false,
       stockfish_depth: 8,
@@ -20,15 +21,16 @@ class TrainingPage extends Component {
 
   switch_stockfish(callback) {
     this.setState(old => {
-      if (old.stockfish) {
+      console.log(old.stockfish_plays)
+      if (old.stockfish_plays) {
         return {
           playColor: "both",
-          stockfish: false
+          stockfish_plays: false
         }
       } else {
         return {
           playColor: this.props.match.params.color,
-          stockfish: true,
+          stockfish_plays: true,
         }
       }
     }, callback)
@@ -56,6 +58,9 @@ class TrainingPage extends Component {
       <React.Fragment>
         <Header mainButtonText="arrow_back" title={<Translator text={"Analysis"} />} />
         <Board
+          key="analysisBoard"
+          mode={this.state.stockfish_plays ? AGAINST_STOCKFISH_MODE : FREE_PLAYING_MODE}
+
           history={this.props.history}
           ops={this.props.ops}
           match={this.props.match}
@@ -70,7 +75,6 @@ class TrainingPage extends Component {
           startMoves={this.props.match.params.moves}
 
           stockfish={{
-            makes_moves: this.state.stockfish,
             show_arrows: true,
             depth: this.state.stockfish_depth,
             auto_eval: this.state.stockfish_auto_eval,

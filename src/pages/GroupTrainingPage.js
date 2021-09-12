@@ -1,6 +1,7 @@
 import React, { Component } from "react"
 import Header from "../components/Header"
 import Board from "../components/Board"
+import { GROUP_TRAINING_MODE } from "../utilities/constants"
 
 class GroupTrainingPage extends Component {
   /*constructor(props) {
@@ -22,6 +23,7 @@ class GroupTrainingPage extends Component {
         <Header mainButtonText="arrow_back" goTo={"/openings/" + op_index} title={"Training ⋅ " + vari_name} />
         <Board
           key="colorTrainingBoard"
+          mode={GROUP_TRAINING_MODE}
 
           history={this.props.history}
 

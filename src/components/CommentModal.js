@@ -51,7 +51,7 @@ class CommentModal extends Component {
                 text={<Translator text={"draw_board_pdf"} />}
                 click={() => this.setState(old => { return { invertDrawBoardPDF: !old.invertDrawBoardPDF } })}
                 checked={
-                  this.props.getDrawBoardPDF ? (this.props.getDrawBoardPDF(this.props.op_index, this.props.json_moves) ?  !this.state.invertDrawBoardPDF :  this.state.invertDrawBoardPDF) : false
+                  (this.props.getDrawBoardPDF && this.props.op_index !== undefined && this.props.op_index !== null) ? (this.props.getDrawBoardPDF(this.props.op_index, this.props.json_moves) ?  !this.state.invertDrawBoardPDF :  this.state.invertDrawBoardPDF) : false
                 }
               />
             </div>

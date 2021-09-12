@@ -2,6 +2,7 @@ import React, { Component } from "react"
 import Header from "../components/Header"
 import Board from "../components/Board"
 import Translator from "../components/Translator"
+import { NEW_VARI_MODE } from "../utilities/constants"
 
 class NewVariPage extends Component {
   constructor(props) {
@@ -20,6 +21,8 @@ class NewVariPage extends Component {
       <React.Fragment>
         <Header mainButtonText="arrow_back" goTo={"/openings/" + op_index} title={<React.Fragment>{op.op_name + " ⋅ " + vari_name + " ⋅ "}<Translator text={"New variation"} /></React.Fragment>} />
         <Board
+          key="newVariBoard"
+          mode={NEW_VARI_MODE}
           history={this.props.history}
           
           op_index={op_index}

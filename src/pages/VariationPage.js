@@ -1,6 +1,7 @@
 import React, { Component } from "react"
 import Header from "../components/Header"
 import Board from "../components/Board"
+import { SPECTATOR_MODE, VARI_TRAINING_MODE } from "../utilities/constants"
 
 class VariationPage extends Component {
   constructor(props) {
@@ -24,6 +25,7 @@ class VariationPage extends Component {
         <Header mainButtonText="arrow_back" goTo={"/openings/" + op_index} title={<React.Fragment>{op.op_name + " ⋅ " + vari.vari_name + " " + (vari.vari_subname || "")}</React.Fragment>} />
         <Board
           key="variationBoard"
+          mode={in_training ? VARI_TRAINING_MODE : SPECTATOR_MODE}
           
           history={this.props.history}
           op_index={op_index}
