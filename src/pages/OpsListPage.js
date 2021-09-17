@@ -5,6 +5,7 @@ import Translator from "../components/Translator"
 import HangingMenu from "../components/HangingMenu"
 import Modal from "../components/Modal"
 import SendModal from "../components/SendModal"
+import SmartTrainingBox from "../components/SmartTrainingBox"
 
 import generatePDF from "../generatePDF/generatePDF.js"
 
@@ -149,13 +150,18 @@ class OpsListPage extends Component {
             <Menu menuButton={
               <button id="headerButton" className="iconButton">menu</button>}>
               <MenuItem onClick={() => this.props.history.push("/analysis/white/[]")}><Translator text="Free analisys" /></MenuItem>
-              <MenuItem onClick={() => this.props.history.push("/training/smart")}><Translator text="Daily training" /></MenuItem>
               <MenuItem onClick={() => this.props.history.push("/mail")}><Translator text="Messages" /></MenuItem>
               <MenuItem onClick={() => this.props.history.push("/profile")}><Translator text="Settings" /></MenuItem>
             </Menu>
           }
         />
         <div id="opsListPage" className={"page"} style={this.no_openings_style(this.props.ops.length)}>
+          {
+            this.props.ops.length > 0 ? 
+              <SmartTrainingBox targets_list={this.props.targets_list} history={this.props.history} />
+            : null
+          }
+          
           {this.getOpItems(this.props.ops)}
           <button id="newOpButton" className="roundButton iconButton impButton" onClick={this.newOpButton}>
             add

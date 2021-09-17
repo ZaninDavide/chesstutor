@@ -90,6 +90,7 @@ const languages = {
     "Large board": "Large board",
     "You just trained on": "You just trained on",
     "Daily training": "Daily training",
+    "Lines to revise today": "Lines to revise today",
   },
   ita: {
     Openings: "Aperture",
@@ -179,6 +180,7 @@ const languages = {
     "Large board": "Scacchiera grande",
     "You just trained on": "Ti sei allenato su",
     "Daily training": "Ripasso giornaliero",
+    "Lines to revise today": "Varianti da ripassare oggi",
   }
 }
 

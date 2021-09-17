@@ -49,7 +49,8 @@ class App extends Component {
       loadingVisible: true,
       notification: { text: "Congrats", type: "important" },
       notification_visible: false,
-      settings: { wait_time: 500, colorTheme: "darkTheme", volume: 0.6 }
+      settings: { wait_time: 500, colorTheme: "darkTheme", volume: 0.6 },
+      targets_list: [] // list of targets to train smartly
     }
 
     this.createOp = this.createOp.bind(this)
@@ -97,6 +98,10 @@ class App extends Component {
     this.setVisualChessNotation = this.setVisualChessNotation.bind(this)
     this.get_compatible_variations = this.get_compatible_variations.bind(this)
     this.updateVariScore = this.updateVariScore.bind(this)
+    this.smart_training_init = this.smart_training_init.bind(this)
+    this.smart_traning_get_target_vari = this.smart_traning_get_target_vari.bind(this)
+    this.smartTrainingVariFinished = this.smartTrainingVariFinished.bind(this)
+    this.onSmartTrainingVariFinished = this.onSmartTrainingVariFinished.bind(this)
   }
 
   componentDidMount() {
@@ -155,6 +160,8 @@ class App extends Component {
           inbox: userData.inbox,
           loadingVisible: false, // LOADING SCREEN NOW HIDDEN
         }
+      }, () => {
+        this.smart_training_init()
       })
     } else {
       console.log("Log in before looking for user data")
@@ -884,6 +891,162 @@ class App extends Component {
     return compatible_varis
   }
 
+  /* ---------------------------- SMART TRAINIG ---------------------------- */
+
+  smart_training_init() {
+    // calculate the targets_list
+    if(this.state.user_ops){
+      let start_targets_list = []
+
+      this.state.user_ops.forEach((op, op_index) => {
+        if(op.archived) return;
+
+        op.variations.forEach((vari, vari_index) => {
+          // decide if this variation needs to be studied
+          let ok = false
+
+          if(vari.vari_score){
+            // this vari is must_repeat
+            if(vari.vari_score.must_repeat) ok = true
+
+            // is time for this variation to be studied?
+            const next_date = dayjs(vari.vari_score.next_date).hour(0).minute(0).second(0).millisecond(0)
+            const today = dayjs().hour(0).minute(0).second(0).millisecond(0)
+            const days_diff = dayjs.duration(today.diff(next_date)).asDays()
+            if(days_diff >= 0) ok = true
+          }else{
+            ok = true
+          }
+
+          if(ok) start_targets_list.push({
+            vari_color: op.op_color,
+            vari_op_index: op_index,
+            vari_index: vari_index,
+          })
+        })
+      })
+
+      // you don't need to train now
+      if(start_targets_list.length === 0) {
+        // this.notify("You don't need to train any more for today.", "important")
+        return false
+      }else{
+        // this.notify("You have " + start_targets_list.length + " variations to train on for today.", "important")
+      }
+
+      this.setState({
+        targets_list: start_targets_list,
+      })
+    }
+  }
+
+  number_of_errors_to_quality(n) {
+    return Math.max(0, Math.floor(5 - n))
+  }
+
+  get_new_vari_score(quality, lastSchedule, lastFactor) {
+    let newFac
+    let curSchedule
+
+    if (quality == null || quality < 0 || quality > 5) {
+        quality = 0
+    }
+
+    let calcFactor = function(oldFac, quality) {
+      return oldFac + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02))
+    }
+
+    if (lastSchedule === 1) {
+        curSchedule = 6
+        newFac = 2.5
+    } else if (lastSchedule == null) {
+        curSchedule = 1
+        newFac = 2.5
+    } else {
+        if (quality < 3) {
+            newFac = lastFactor
+            curSchedule = lastSchedule
+        } else {
+            newFac = calcFactor(lastFactor, quality)
+
+            if (newFac < 1.3) {
+                newFac = 1.3
+            }
+
+            curSchedule = Math.round(lastSchedule * newFac)
+        }
+    }
+
+    return {
+        factor: newFac,
+        schedule: curSchedule,
+        must_repeat: quality <= 3,
+    }
+  }
+
+  smart_traning_get_target_vari() {
+    const target_vari_color = this.state.targets_list.length > 0 ? this.state.targets_list[0].vari_color : "none"
+    const target_vari_op_index = this.state.targets_list.length > 0 ? this.state.targets_list[0].vari_op_index : null
+    const target_vari_index = this.state.targets_list.length > 0 ? this.state.targets_list[0].vari_index : null
+    let smart_training_target_vari = null;
+    if(
+      target_vari_color !== null &&
+      target_vari_color !== "none" &&
+      target_vari_op_index !== null &&
+      target_vari_index !== null &&
+      this.state.user_ops && 
+      this.state.user_ops.length > target_vari_op_index &&
+      this.state.user_ops[target_vari_op_index].variations.length > target_vari_index
+    ){
+      smart_training_target_vari = this.state.user_ops[target_vari_op_index].variations[target_vari_index]
+    }
+    return smart_training_target_vari
+  }
+
+  smartTrainingVariFinished(number_of_errors, callback) {
+    const target_vari = this.smart_traning_get_target_vari()
+    const target_vari_op_index = this.state.targets_list.length > 0 ? this.state.targets_list[0].vari_op_index : null
+    const target_vari_index = this.state.targets_list.length > 0 ? this.state.targets_list[0].vari_index : null
+
+    if(target_vari){
+      const new_vari_score = this.get_new_vari_score(
+        this.number_of_errors_to_quality(number_of_errors),
+        target_vari.vari_score ? target_vari.vari_score.schedule : null,
+        target_vari.vari_score ? target_vari.vari_score.factor : null
+      )
+  
+      this.updateVariScore(
+        target_vari_op_index, 
+        target_vari_index,
+        number_of_errors,
+        new_vari_score.factor,
+        new_vari_score.schedule,
+        new_vari_score.must_repeat,
+        callback
+      )
+    }
+
+  }
+
+  onSmartTrainingVariFinished(number_of_errors, resetBoard_callback) {
+    // save this training
+    this.smartTrainingVariFinished(number_of_errors, () => {
+      if(this.state.targets_list.length <= 1) {
+        // TODO: BIGGER CONGRATS + SEND THE USER TO THE HOME PAGE
+        this.notify("You don't need to train any more for today.", "important")
+        return false
+      }else{
+        this.setState(old => {
+          let new_targets_list = old.targets_list
+          new_targets_list.shift() // remove first element
+          return {
+            targets_list: new_targets_list,
+          }
+        }, () => setTimeout(resetBoard_callback, 500)) // TODO: you can try to move even if you have finished
+      }
+    })
+  }
+
   /* ---------------------------- RENDER ---------------------------- */
   render() {
     const opsListPage = ({ history }) => <OpsListPage
@@ -894,6 +1057,7 @@ class App extends Component {
       sendOpening={this.sendOpening}
       switchArchivedOpening={this.switchArchivedOpening}
       username={this.state.username}
+      targets_list={this.state.targets_list}
     />
     const opPage = ({ match, history }) => <OpeningPage
       ops={this.state.user_ops}
@@ -916,7 +1080,7 @@ class App extends Component {
       is_move_allowed={this.is_move_allowed}
       get_pc_move_data={this.get_pc_move_data}
       getComment={this.getComment}
-      getDrawBoardPDF={this.props.getDrawBoardPDF}
+      getDrawBoardPDF={this.getDrawBoardPDF}
       editComment={this.editComment}
       setDrawBoardPDF={this.setDrawBoardPDF}
       getDrawBoardPDF={this.getDrawBoardPDF}
@@ -932,7 +1096,7 @@ class App extends Component {
       match={match}
       createVari={this.createVari}
       getComment={this.getComment}
-      getDrawBoardPDF={this.props.getDrawBoardPDF}
+      getDrawBoardPDF={this.getDrawBoardPDF}
       editComment={this.editComment}
       setDrawBoardPDF={this.setDrawBoardPDF}
       getDrawBoardPDF={this.getDrawBoardPDF}
@@ -1015,7 +1179,7 @@ class App extends Component {
       get_correct_moves_data_color={this.get_correct_moves_data_color}
       get_compatible_variations={this.get_compatible_variations}
       getComment={this.getComment}
-      getDrawBoardPDF={this.props.getDrawBoardPDF}
+      getDrawBoardPDF={this.getDrawBoardPDF}
       notify={this.notify}
       wait_time={this.state.settings.wait_time}
       volume={this.state.settings.volume}
@@ -1029,7 +1193,7 @@ class App extends Component {
       get_correct_moves_data_group={this.get_correct_moves_data_group}
       get_compatible_variations={this.get_compatible_variations}
       getComment={this.getComment}
-      getDrawBoardPDF={this.props.getDrawBoardPDF}
+      getDrawBoardPDF={this.getDrawBoardPDF}
       notify={this.notify}
       wait_time={this.state.settings.wait_time}
       volume={this.state.settings.volume}
@@ -1049,13 +1213,15 @@ class App extends Component {
       notify={this.notify}
       wait_time={this.state.settings.wait_time}
       volume={this.state.settings.volume}
-      updateVariScore={this.updateVariScore}
       get_pc_move_data={this.get_pc_move_data}
       get_correct_moves_data={this.get_correct_moves_data}
       is_move_allowed={this.is_move_allowed}
       is_move_allowed_color={this.is_move_allowed_color}
       getComment={this.getComment}
       getDrawBoardPDF={this.getDrawBoardPDF}
+      onSmartTrainingVariFinished={this.onSmartTrainingVariFinished}
+      get_target_vari={this.smart_traning_get_target_vari}
+      targets_list={this.state.targets_list}
     />
     const redirectToLogin = () => <Redirect to="/login" />
     const redirectToHome = () => <Redirect to="/" />

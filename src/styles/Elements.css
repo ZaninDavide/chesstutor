@@ -935,3 +935,39 @@
 .parsed_moves_san {
   font-weight: bold;
 }
+
+#smartTrainingBox {
+  background-color: var(--onBack);
+  border-radius: var(--borderRadius);
+  margin: var(--mediumMargin);
+  padding: var(--mediumMargin);
+  display: grid;
+  grid-template-rows: 1fr auto;
+  
+  -moz-box-shadow: var(--shadowShift) var(--shadowShift) var(--shadowBlur) var(--shadow);
+  -webkit-box-shadow: var(--shadowShift) var(--shadowShift) var(--shadowBlur) var(--shadow);
+  box-shadow: var(--shadowShift) var(--shadowShift) var(--shadowBlur) var(--shadow);
+}
+
+#smartTrainingBoxInfo {
+  padding-bottom: var(--mediumMargin);
+}
+
+#smartTrainingBoxInfo p {
+  margin: var(--smallMargin);
+}
+
+#smartTrainingBoxButtons {
+
+}
+
+#smartTrainingButton{
+  border-radius: var(--borderRadius);
+  margin-left: auto;
+  margin-right: auto;
+  width: 100%;
+  max-width: 500px;
+  display: block;
+  height: var(--uiElementMediumHeight);
+  line-height: var(--uiElementMediumHeight);
+}
