@@ -43,16 +43,7 @@ class OpItem extends Component {
           more_vert
         </div>
       </Ripples>
-      <hr width="calc(100% - var(--mediumMargin)*2)" style={{
-        border: "0px",
-        borderTop: "1px solid var(--hoverBack)",
-        marginLeft: "var(--mediumMargin)",
-        marginRight: "var(--mediumMargin)",
-        marginTop: "-1px",
-        marginBottom: "-1px",
-        pointerEvents: "none"
-      }}
-      />
+      <hr />
     </>
   }
 }

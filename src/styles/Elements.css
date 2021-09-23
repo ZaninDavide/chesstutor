@@ -15,7 +15,7 @@
 }
 
 #opsListPage{
-  padding-bottom: calc(var(--uiElementHeight) + var(--mediumMargin) + var(--smallMargin));
+  padding-bottom: calc(var(--uiElementHeight) + 2*var(--mediumMargin));
 }
 
 #openingPage{
@@ -173,6 +173,7 @@
   -webkit-line-clamp: 2;
   -webkit-box-orient: vertical;  
   overflow: hidden;
+  font-size: 17px;
 }
 
 .variationFolder{
@@ -184,6 +185,7 @@
   -moz-box-shadow: var(--shadowShift) var(--shadowShift) var(--shadowBlur) var(--shadow);
   -webkit-box-shadow: var(--shadowShift) var(--shadowShift) var(--shadowBlur) var(--shadow);
   box-shadow: var(--shadowShift) var(--shadowShift) var(--shadowBlur) var(--shadow);
+  border: 1px solid var(--shadow);
 
   display: grid;
   grid-template-rows: auto auto 1fr;
@@ -267,12 +269,12 @@
 #variationFolderLearn:first-child {
   border-top-left-radius: var(--borderRadius) !important;
   border-bottom-left-radius: var(--borderRadius) !important;
-  border-left: 0px;
+  border-left: 1px solid var(--shadow);
 }
 #variationFolderLearn:last-child {
   border-top-right-radius: var(--borderRadius) !important;
   border-bottom-right-radius: var(--borderRadius) !important;
-  border-right: 0px;
+  border-right: 1px solid var(--shadow);
 }
 
 #variationFolderLearn {
@@ -285,8 +287,10 @@
   height: var(--uiElementMediumHeight);
   line-height: var(--uiElementMediumHeight);
   border-radius: 0px;
-  border-left: solid var(--cardBack) var(--borderSize);
-  border-right: solid var(--cardBack) var(--borderSize);
+  border-left: none;
+  border-right: none;
+  border-top: 1px solid var(--shadow);
+  border-bottom: 1px solid var(--shadow);
 }
 
 #variationFolderLearn:hover{
@@ -303,22 +307,24 @@
 
 .opsSeparator, #archivedVarsSeparator{
   width: 100%;  
+  box-sizing: border-box;
 
-  height: var(--uiElementMediumHeight);
-  line-height: var(--uiElementMediumHeight);
-
-  color: var(--main);
+  height: var(--uiElementHeight);
+  line-height: var(--uiElementHeight);
+  padding: var(--mediumMargin);
 
   margin: 0px;
   overflow: hidden;
   /*border-top: solid 1px var(--hoverBackColor);*/
-
-  text-align: center;
-
+  text-align: left;
   display: flex;
   align-items: center;
+  text-transform: capitalize;
+}
 
-  text-transform: uppercase;
+.opsSeparator h3, #archivedVarsSeparator h3 {
+  font-size: var(--titleSize);
+  color: var(--main);
 }
 
 #opsSeparatorWhite, #opsSeparatorBlack{
@@ -937,9 +943,18 @@
 }
 
 #smartTrainingBox {
-  background-color: var(--onBack);
+  background-color: var(--cardBack);
   border-radius: var(--borderRadius);
-  margin: var(--mediumMargin);
+  box-sizing: border-box;
+
+  width: calc(100% - 2*var(--mediumMargin));
+  max-width: 500px;
+  margin-bottom: var(--smallMargin);
+  margin-top: var(--smallMargin);
+  margin-left: auto;
+  margin-right: auto;
+
+
   padding: var(--mediumMargin);
   display: grid;
   grid-template-rows: 1fr auto;
@@ -947,6 +962,7 @@
   -moz-box-shadow: var(--shadowShift) var(--shadowShift) var(--shadowBlur) var(--shadow);
   -webkit-box-shadow: var(--shadowShift) var(--shadowShift) var(--shadowBlur) var(--shadow);
   box-shadow: var(--shadowShift) var(--shadowShift) var(--shadowBlur) var(--shadow);
+  border: 1px solid var(--shadow);
 }
 
 #smartTrainingBoxInfo {

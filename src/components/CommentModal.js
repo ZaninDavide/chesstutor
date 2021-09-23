@@ -45,7 +45,7 @@ class CommentModal extends Component {
       <div id="commentModal" className={"modal" + (this.props.visible ? " modalVisible" : " modalHidden")} onClick={this.close}>
         <div className="modalContent tallModalContent" onClick={e => e.stopPropagation()}>
           <div className="insideModal insideCommentModal" onClick={e => e.stopPropagation()}>
-            <textarea placeholder={"Comment"} onChange={e => this.setState({ text: e.target.value })} className="commentTextBox" type="text" value={this.state.text}></textarea>
+            <textarea placeholder={"Comment"} onChange={e => this.setState({ text: e.target.value })} className="commentTextBox" type="text" value={this.state.text || ""}></textarea>
             <div style={{ marginLeft: "var(--mediumMargin)" }}>
               <CheckBox
                 text={<Translator text={"draw_board_pdf"} />}

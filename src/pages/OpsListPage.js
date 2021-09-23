@@ -140,7 +140,7 @@ class OpsListPage extends Component {
   }
 
   render() {
-  const hmenu_op_name = this.state.hMenuOpIndex !== null ? this.props.ops[this.state.hMenuOpIndex].op_name : undefined
+  const hmenu_op_name = this.state.hMenuOpIndex !== null ? (this.props.ops[this.state.hMenuOpIndex] ? this.props.ops[this.state.hMenuOpIndex].op_name : undefined) : undefined
 
     return (
       <React.Fragment>

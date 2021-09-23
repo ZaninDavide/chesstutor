@@ -1,6 +1,4 @@
 @import url("https://fonts.googleapis.com/css?family=Material+Icons&display=swap");
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;600;700&display=swap');
 
 @font-face {
   font-family: chess;
@@ -9,17 +7,24 @@
   font-style: normal;
 }
 
+@font-face {
+  font-family: Inter;
+  src: url('/files/inter.ttf') format('ttf');
+  font-weight: normal;
+  font-style: normal;
+}
+
 /* ---------------------------- LAYOUT & THEMES ---------------------------- */
 
 .layout {
-  font-family: "Roboto", "Montserrat", "Open Sans", sans-serif;
-  --textFont: "Roboto", "Montserrat", "Open Sans", sans-serif;
-  --titleFont: "Montserrat", "Roboto", "Open Sans", sans-serif;
+  font-family: "Inter", "Helvetica", "Roboto", "Open Sans", sans-serif;
+  --textFont: "Inter", "Helvetica", "Roboto", "Open Sans", sans-serif;
+  --titleFont: "Inter", "Helvetica", "Roboto", "Open Sans", sans-serif;
 
   --smallTextSize: 13px;
   --textSize: 14px;
   --bigTextSize: 15px;
-  --titleSize: 15px;
+  --titleSize: 16px;
   --iconsFontSize: 24px;
 
   --thinWeight: 300;
@@ -49,8 +54,8 @@
 }
 
 .lightTheme {
-  --main: #419ad0;
-  --hoverMain: #3c8abb;
+  --main: #41d0a1;
+  --hoverMain: #39c294;
   --alert: #f14b4b;
   --hoverAlert: #b63737;
   --arrow: #419ad0;
@@ -59,18 +64,18 @@
   --shadow: #2f4f601c;
   --shadowBlur: 10px;
   --shadowShift: 5px;
-  --back: #fff;
+  --back: #f5f8f9;
   --hoverBack: #eee;
-  --onBack: #f5f7f9;
-  --headerBack: #fff;
+  --onBack: #d5d5d5;
+  --headerBack: #f5f8f9;
   --text: #3e3e3e;
   --title: #162528;
   --clickText: #333232;
   --disabledClickText: #646464;
   --disabledButtonText: #646464;
-  --cardBack: #f5f8f9;
+  --cardBack: #fbfeff;
   --hoverCard: #ecf1f7;
-  --onCardBack: #525151;
+  --onCardBack: #7f9199;
   --modalBack: #fafbfc;
   --hoverModalBack: #e9edf0;
   --onModalBack: #fff;
@@ -273,6 +278,17 @@
     font-family: var(--textFont);
     font-weight: var(--textWeight);
     font-size: var(--textSize);
+  }
+
+  hr {
+    width: calc(100% - var(--mediumMargin)*2);
+    border: 0px;
+    border-top: 1px solid var(--onBack);
+    margin-left: var(--mediumMargin);
+    margin-right: var(--mediumMargin);
+    margin-top: -1px;
+    margin-bottom: -1px;
+    pointer-events: none;
   }
   
   .alertText{

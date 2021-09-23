@@ -113,7 +113,7 @@ class BoardData extends Component {
 
     // OPENING TITLE - EXTRA INFO
     if (this.props.tabs.indexOf("op_name") !== -1) {
-      let op_name_extra = <span>{this.props.vari_op_name || ""}</span>
+      let op_name_extra = <span key="opening_title">{this.props.vari_op_name || ""}</span>
 
       extra_info_bar.push(op_name_extra)
     }

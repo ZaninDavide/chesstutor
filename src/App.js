@@ -102,6 +102,7 @@ class App extends Component {
     this.smart_traning_get_target_vari = this.smart_traning_get_target_vari.bind(this)
     this.smartTrainingVariFinished = this.smartTrainingVariFinished.bind(this)
     this.onSmartTrainingVariFinished = this.onSmartTrainingVariFinished.bind(this)
+    this.play_training_finished_sound = this.play_training_finished_sound.bind(this)
   }
 
   componentDidMount() {
@@ -274,6 +275,12 @@ class App extends Component {
   notify(text, type = "normal", milliseconds = 3000) {
     this.setState({ notification: { text, type }, notification_visible: true })
     setTimeout(() => this.setState({ notification_visible: false }), milliseconds)
+  }
+
+  play_training_finished_sound() {
+    let audio = new Audio("/files/sound_training_finished.mp3")
+    audio.volume = this.state.settings.volume || 0.6
+    audio.play()
   }
 
   /* ---------------------------- OPENINGS ---------------------------- */
@@ -893,12 +900,12 @@ class App extends Component {
 
   /* ---------------------------- SMART TRAINIG ---------------------------- */
 
-  smart_training_init() {
+  smart_training_init(user_ops = this.state.user_ops) {
     // calculate the targets_list
-    if(this.state.user_ops){
+    if(user_ops){
       let start_targets_list = []
 
-      this.state.user_ops.forEach((op, op_index) => {
+      user_ops.forEach((op, op_index) => {
         if(op.archived) return;
 
         op.variations.forEach((vari, vari_index) => {
@@ -1034,6 +1041,7 @@ class App extends Component {
       if(this.state.targets_list.length <= 1) {
         // TODO: BIGGER CONGRATS + SEND THE USER TO THE HOME PAGE
         this.notify("You don't need to train any more for today.", "important")
+        this.play_training_finished_sound()
         return false
       }else{
         this.setState(old => {

@@ -1507,13 +1507,14 @@ class Board extends Component {
         b_objects.push(
           <button id="trainThisButton" key="trainThisButton" className="simpleButton boardButton impButton"
             onClick={() => {
-              let newPlayColor = this.props.set_in_training(true)
-              if (
-                (newPlayColor === "black" && this.state.json_moves.length % 2 === 0) ||
-                (newPlayColor === "white" && this.state.json_moves.length % 2 === 1)
-              ) { // if it's the turn of the pc to move
-                this.pc_move(this.props.op_index, this.state.json_moves, this.props.vari_index)
-              }
+              this.props.set_in_training(true, (newPlayColor) => {
+                if (
+                  (newPlayColor === "black" && this.state.json_moves.length % 2 === 0) ||
+                  (newPlayColor === "white" && this.state.json_moves.length % 2 === 1)
+                ) { // if it's the turn of the pc to move
+                  this.pc_move(this.state.json_moves, this.props.vari_index)
+                }
+              })
             }}
           >school</button>
         )

@@ -164,6 +164,8 @@ class BookUI extends Component {
                     return ALL.toString()
                 case undefined:
                     return ALL.toString()
+                case NaN:
+                    return ALL.toString()
                 default:
                     return query
             }

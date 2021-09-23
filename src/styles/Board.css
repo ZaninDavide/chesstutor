@@ -12,6 +12,10 @@ max-height: calc(100vh - var(--headerHeight) - var(--uiElementHeight) - 80px);
 max-width: calc(100vh - var(--headerHeight) - var(--uiElementHeight) - 80px);
 */
   border-radius: var(--borderRadius);
+  
+  -moz-box-shadow: var(--shadowShift) var(--shadowShift) var(--shadowBlur) var(--shadow);
+  -webkit-box-shadow: var(--shadowShift) var(--shadowShift) var(--shadowBlur) var(--shadow);
+  box-shadow: var(--shadowShift) var(--shadowShift) var(--shadowBlur) var(--shadow);
 }
 
 #touchCircle {
@@ -151,6 +155,8 @@ max-width: calc(100vh - var(--headerHeight) - var(--uiElementHeight) - 80px);
   /*background-color: rgba(0, 0, 0, 0.15); add to make the gap between boardContainer and boardUI visible*/
   grid-area: boardUI;
   display: flex;
+
+  border-top: 1px solid var(--onBack);
 }
 
 #boardData {
