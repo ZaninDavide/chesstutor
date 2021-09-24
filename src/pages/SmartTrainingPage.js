@@ -10,7 +10,7 @@ class SmartTrainingPage extends Component {
   }
 
   render() {
-    const smart_training_target_vari = this.props.get_target_vari()
+    const smart_training_target_vari = this.props.get_target_vari(this.props.targets_list)
     const target_vari_color = this.props.targets_list.length > 0 ? this.props.targets_list[0].vari_color : "none"
     const target_vari_op_index = this.props.targets_list.length > 0 ? this.props.targets_list[0].vari_op_index : null
     const target_vari_index = this.props.targets_list.length > 0 ? this.props.targets_list[0].vari_index : null
@@ -36,6 +36,7 @@ class SmartTrainingPage extends Component {
           target_vari_color={target_vari_color}
           target_vari_name={target_vari_name}
           target_vari_subname={target_vari_subname}
+          targets_list={this.props.targets_list}
 
           get_pc_move_data={this.props.get_pc_move_data}
           get_correct_moves_data={this.props.get_correct_moves_data}

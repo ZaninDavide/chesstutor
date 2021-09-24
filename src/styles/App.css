@@ -58,7 +58,7 @@
   --hoverMain: #39c294;
   --alert: #f14b4b;
   --hoverAlert: #b63737;
-  --arrow: #419ad0;
+  --arrow: #41d0a1;
   --ripple: rgb(255 255 255/10%);
   --tap: rgb(144 144 144/25%);
   --shadow: #2f4f601c;
@@ -67,7 +67,7 @@
   --back: #f5f8f9;
   --hoverBack: #eee;
   --onBack: #d5d5d5;
-  --headerBack: #f5f8f9;
+  --headerBack: var(--back);
   --text: #3e3e3e;
   --title: #162528;
   --clickText: #333232;
@@ -78,10 +78,12 @@
   --onCardBack: #7f9199;
   --modalBack: #fafbfc;
   --hoverModalBack: #e9edf0;
-  --onModalBack: #fff;
+  --onModalBack: #eee;
+  --cardButtonsBack: #fff;
+  --cardButtonsHover: #f7f7f7;
 }
 
-.darkTheme {
+.darkTheme, .autoTheme {
   --main: #43ce76;
   --hoverMain: #31b862;
   --alert: #f14b4b;
@@ -107,6 +109,40 @@
   --modalBack: #191919;
   --hoverModalBack: #1f1f1f;
   --onModalBack: #252525;
+  --cardButtonsBack: #252525;
+  --cardButtonsHover: #2c2c2c;
+}
+
+@media (prefers-color-scheme: light) {
+  .autoTheme {
+    --main: #41d0a1;
+    --hoverMain: #39c294;
+    --alert: #f14b4b;
+    --hoverAlert: #b63737;
+    --arrow: #41d0a1;
+    --ripple: rgb(255 255 255/10%);
+    --tap: rgb(144 144 144/25%);
+    --shadow: #2f4f601c;
+    --shadowBlur: 10px;
+    --shadowShift: 5px;
+    --back: #f5f8f9;
+    --hoverBack: #eee;
+    --onBack: #d5d5d5;
+    --headerBack: var(--back);
+    --text: #3e3e3e;
+    --title: #162528;
+    --clickText: #333232;
+    --disabledClickText: #646464;
+    --disabledButtonText: #646464;
+    --cardBack: #fbfeff;
+    --hoverCard: #ecf1f7;
+    --onCardBack: #7f9199;
+    --modalBack: #fafbfc;
+    --hoverModalBack: #e9edf0;
+    --onModalBack: #eee;
+    --cardButtonsBack: #fff;
+    --cardButtonsHover: #f7f7f7;
+  }
 }
 
 /* ---------------------------- CONTAINERS ---------------------------- */

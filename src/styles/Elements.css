@@ -278,7 +278,7 @@
 }
 
 #variationFolderLearn {
-  background-color: var(--onModalBack);
+  background-color: var(--cardButtonsBack);
   color: var(--main);
   flex-grow: 1;
   position: relative;
@@ -294,7 +294,7 @@
 }
 
 #variationFolderLearn:hover{
-  background-color: var(--hoverCard);
+  background-color: var(--cardButtonsHover);
 }
 
 #variationFolderLearn span {

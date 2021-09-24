@@ -49,7 +49,7 @@ class BoardData extends Component {
     // VARIATION INFO TAB
     if (this.props.tabs.indexOf("vari_info") !== -1) {
       const tabVariInfo =
-        <div id="boardDataBookSlide" key="boardDataBookSlide" className="boardDataSlide">
+        <div id="boardDataVariInfoSlide" key="boardDataVariInfoSlide" className="boardDataSlide">
           <VariInfoUI key="variInfo"
             vari_index={this.props.vari_index}
             vari_name={this.props.vari_name}

@@ -2,7 +2,6 @@ import React, { Component } from "react"
 import { BrowserRouter as Router, Switch, Route, Redirect } from "react-router-dom"
 
 import OpeningPage from "./pages/OpeningPage"
-// import CreateVariPage from "./pages/CreateVariPage"
 import OpsListPage from "./pages/OpsListPage"
 import VariationPage from "./pages/VariationPage"
 import NewOpPage from "./pages/NewOpPage"
@@ -23,14 +22,18 @@ import "./styles/App.css" // css by CLASSES + MAIN COMPONENTS
 import "./styles/Elements.css" // css by ID + SECONDARY COMPONENTS
 import "./styles/Modal.css"
 import { LanguageProvider } from "./components/LanguageContext"
+import { shuffle } from "./utilities/shuffle"
 
 import dayjs from "dayjs"
 const duration = require('dayjs/plugin/duration')
 dayjs.extend(duration)
 
+
 const SERVER_URI = "https://chesstutorserver.herokuapp.com" // "http://localhost:5000"
 
 const defaultOps = []
+
+const seed = Math.round(100000*Math.random())
 
 class App extends Component {
   constructor(props) {
@@ -49,8 +52,7 @@ class App extends Component {
       loadingVisible: true,
       notification: { text: "Congrats", type: "important" },
       notification_visible: false,
-      settings: { wait_time: 500, colorTheme: "darkTheme", volume: 0.6 },
-      targets_list: [] // list of targets to train smartly
+      settings: { wait_time: 500, colorTheme: "darkTheme", volume: 0.6 }
     }
 
     this.createOp = this.createOp.bind(this)
@@ -98,7 +100,7 @@ class App extends Component {
     this.setVisualChessNotation = this.setVisualChessNotation.bind(this)
     this.get_compatible_variations = this.get_compatible_variations.bind(this)
     this.updateVariScore = this.updateVariScore.bind(this)
-    this.smart_training_init = this.smart_training_init.bind(this)
+    this.get_smart_training_targets = this.get_smart_training_targets.bind(this)
     this.smart_traning_get_target_vari = this.smart_traning_get_target_vari.bind(this)
     this.smartTrainingVariFinished = this.smartTrainingVariFinished.bind(this)
     this.onSmartTrainingVariFinished = this.onSmartTrainingVariFinished.bind(this)
@@ -161,8 +163,6 @@ class App extends Component {
           inbox: userData.inbox,
           loadingVisible: false, // LOADING SCREEN NOW HIDDEN
         }
-      }, () => {
-        this.smart_training_init()
       })
     } else {
       console.log("Log in before looking for user data")
@@ -900,15 +900,15 @@ class App extends Component {
 
   /* ---------------------------- SMART TRAINIG ---------------------------- */
 
-  smart_training_init(user_ops = this.state.user_ops) {
+  get_smart_training_targets(user_ops = this.state.user_ops) {
     // calculate the targets_list
     if(user_ops){
       let start_targets_list = []
 
-      user_ops.forEach((op, op_index) => {
+      shuffle(user_ops.map((v,i) => {v.op_index = i; return v}), seed).forEach((op) => {
         if(op.archived) return;
 
-        op.variations.forEach((vari, vari_index) => {
+        shuffle(op.variations.map((c,j) => {c.vari_index=j; return c}), seed).forEach((vari) => {
           // decide if this variation needs to be studied
           let ok = false
 
@@ -927,8 +927,8 @@ class App extends Component {
 
           if(ok) start_targets_list.push({
             vari_color: op.op_color,
-            vari_op_index: op_index,
-            vari_index: vari_index,
+            vari_op_index: op.op_index,
+            vari_index: vari.vari_index,
           })
         })
       })
@@ -936,14 +936,14 @@ class App extends Component {
       // you don't need to train now
       if(start_targets_list.length === 0) {
         // this.notify("You don't need to train any more for today.", "important")
-        return false
+        return []
       }else{
         // this.notify("You have " + start_targets_list.length + " variations to train on for today.", "important")
       }
 
-      this.setState({
-        targets_list: start_targets_list,
-      })
+      return start_targets_list
+    }else{
+      return []
     }
   }
 
@@ -991,10 +991,11 @@ class App extends Component {
     }
   }
 
-  smart_traning_get_target_vari() {
-    const target_vari_color = this.state.targets_list.length > 0 ? this.state.targets_list[0].vari_color : "none"
-    const target_vari_op_index = this.state.targets_list.length > 0 ? this.state.targets_list[0].vari_op_index : null
-    const target_vari_index = this.state.targets_list.length > 0 ? this.state.targets_list[0].vari_index : null
+  smart_traning_get_target_vari(targets_list) {
+    const target_vari_color = targets_list.length > 0 ? targets_list[0].vari_color : "none"
+    const target_vari_op_index = targets_list.length > 0 ? targets_list[0].vari_op_index : null
+    const target_vari_index = targets_list.length > 0 ? targets_list[0].vari_index : null
+
     let smart_training_target_vari = null;
     if(
       target_vari_color !== null &&
@@ -1010,10 +1011,10 @@ class App extends Component {
     return smart_training_target_vari
   }
 
-  smartTrainingVariFinished(number_of_errors, callback) {
-    const target_vari = this.smart_traning_get_target_vari()
-    const target_vari_op_index = this.state.targets_list.length > 0 ? this.state.targets_list[0].vari_op_index : null
-    const target_vari_index = this.state.targets_list.length > 0 ? this.state.targets_list[0].vari_index : null
+  smartTrainingVariFinished(targets_list, number_of_errors, callback) {
+    const target_vari = this.smart_traning_get_target_vari(targets_list)
+    const target_vari_op_index = targets_list.length > 0 ? targets_list[0].vari_op_index : null
+    const target_vari_index = targets_list.length > 0 ? targets_list[0].vari_index : null
 
     if(target_vari){
       const new_vari_score = this.get_new_vari_score(
@@ -1035,28 +1036,24 @@ class App extends Component {
 
   }
 
-  onSmartTrainingVariFinished(number_of_errors, resetBoard_callback) {
+  onSmartTrainingVariFinished(targets_list, number_of_errors, resetBoard_callback) {
     // save this training
-    this.smartTrainingVariFinished(number_of_errors, () => {
-      if(this.state.targets_list.length <= 1) {
+    this.smartTrainingVariFinished(targets_list, number_of_errors, () => {
+      if(targets_list.length <= 1) {
         // TODO: BIGGER CONGRATS + SEND THE USER TO THE HOME PAGE
         this.notify("You don't need to train any more for today.", "important")
         this.play_training_finished_sound()
         return false
       }else{
-        this.setState(old => {
-          let new_targets_list = old.targets_list
-          new_targets_list.shift() // remove first element
-          return {
-            targets_list: new_targets_list,
-          }
-        }, () => setTimeout(resetBoard_callback, 500)) // TODO: you can try to move even if you have finished
+        setTimeout(resetBoard_callback, 500) // TODO: you can try to move even if you have finished
       }
     })
   }
 
   /* ---------------------------- RENDER ---------------------------- */
   render() {
+    let targets_list = this.get_smart_training_targets()
+
     const opsListPage = ({ history }) => <OpsListPage
       ops={this.state.user_ops}
       history={history}
@@ -1065,7 +1062,7 @@ class App extends Component {
       sendOpening={this.sendOpening}
       switchArchivedOpening={this.switchArchivedOpening}
       username={this.state.username}
-      targets_list={this.state.targets_list}
+      targets_list={targets_list}
     />
     const opPage = ({ match, history }) => <OpeningPage
       ops={this.state.user_ops}
@@ -1229,7 +1226,7 @@ class App extends Component {
       getDrawBoardPDF={this.getDrawBoardPDF}
       onSmartTrainingVariFinished={this.onSmartTrainingVariFinished}
       get_target_vari={this.smart_traning_get_target_vari}
-      targets_list={this.state.targets_list}
+      targets_list={targets_list}
     />
     const redirectToLogin = () => <Redirect to="/login" />
     const redirectToHome = () => <Redirect to="/" />

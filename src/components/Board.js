@@ -762,14 +762,14 @@ class Board extends Component {
           // training finished
           this.makeCongrats()
         } else if (correct_moves_repetitive.length === 0 && mode === SMART_TRAINING_MODE){
-          this.props.onSmartTrainingVariFinished(this.state.smart_training_errors_counter, this.resetBoard)
+          this.props.onSmartTrainingVariFinished(this.props.targets_list, this.state.smart_training_errors_counter, this.resetBoard)
         }
 
       }, this.props.wait_time)
     } else if (is_congrats_mode) {
       this.makeCongrats()
     } else if (mode === SMART_TRAINING_MODE){
-      this.props.onSmartTrainingVariFinished(this.state.smart_training_errors_counter, this.resetBoard)
+      this.props.onSmartTrainingVariFinished(this.props.targets_list, this.state.smart_training_errors_counter, this.resetBoard)
     }
   }
 

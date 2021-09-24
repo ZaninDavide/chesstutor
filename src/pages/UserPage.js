@@ -57,6 +57,7 @@ class userPage extends Component {
         <div className="optionButtonsContainer">
           <Ripples><button className="simpleButton" onClick={() => this.props.setTheme("darkTheme")} style={{ marginRight: 0, color: this.props.colorTheme === "darkTheme" ? "var(--main)" : "var(--text)" }}><Translator text={"Dark"} /></button></Ripples>
           <Ripples><button className="simpleButton" onClick={() => this.props.setTheme("lightTheme")} style={{ marginLeft: 0, color: this.props.colorTheme === "lightTheme" ? "var(--main)" : "var(--text)" }}><Translator text={"Light"} /></button></Ripples>
+          <Ripples><button className="simpleButton" onClick={() => this.props.setTheme("autoTheme")} style={{ marginLeft: 0, color: this.props.colorTheme === "autoTheme" ? "var(--main)" : "var(--text)" }}><Translator text={"Auto"} /></button></Ripples>
         </div>
       </div>
       <div className="settingsSection">

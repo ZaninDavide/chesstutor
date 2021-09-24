@@ -59,7 +59,7 @@ class VariItem extends Component {
     const thisVari = this.props.vari
 
     const moves_count = thisVari.moves.length === 0 ? 0 : Math.floor(thisVari.moves.length / 2) + 1
-    const move_label = thisVari.moves.length === 1 || thisVari.moves.length === 2 ? "move" : "moves"
+    const move_label = moves_count <= 1 ? "move" : "moves"
 
     return (
       <Ripples
