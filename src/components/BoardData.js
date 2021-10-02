@@ -8,7 +8,7 @@ import VariInfoUI from "./VariInfoUI";
 
 const tab_to_icon = {
   "moves": "list",
-  "book": "book",
+  "book": "menu_book",
   "stockfish": "computer",
   "vari_info": "info"
 }

@@ -17,6 +17,7 @@ class Tree extends Component {
     tree() {
         // if we are in color mode: TODO combine all comments from all opening of that color
         if (this.props.op_index === undefined || this.props.op_index === null) {
+            console.log("Tree: missing opening index")
             return null;
         }
 

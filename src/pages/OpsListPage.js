@@ -227,7 +227,7 @@ class OpsListPage extends Component {
             onClick={() => this.props.history.push(`/openings/${this.state.hMenuOpIndex}/${this.props.ops[this.state.hMenuOpIndex].op_color}/[]`)}
           >
             <div className="hMenuButtonContent">
-              <div className="hMenuButtonIcon">book</div>
+              <div className="hMenuButtonIcon">menu_book</div>
               <div className="hMenuButtonLabel"><Translator text="Book" /></div>
             </div>
           </button>

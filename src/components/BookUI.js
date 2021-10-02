@@ -24,9 +24,10 @@ class BookUI extends Component {
     }
 
     componentDidMount() {
-        const op_index = parseInt(this.props.match.params.op_index)
+        const op_index = this.props.match.params.op_index
         const vari_name = this.props.match.params.vari_name
-        if (op_index !== undefined) {
+        if (op_index !== undefined && op_index !== null) {
+            console.log(op_index)
             this.setState({opQuery: parseInt(op_index)})
         }
         if (vari_name !== undefined) {
@@ -132,7 +133,7 @@ class BookUI extends Component {
 
         vari_names.sort()
 
-        return vari_names.map(v => <option value={v} key={"vari_"+v} className="bookQueryOption" >{v}</option>)
+        return vari_names.map(v => <option value={v} key={"vari_"+v} className="bookQueryOption">{v}</option>)
     }
 
     lineOptions() {
@@ -150,11 +151,12 @@ class BookUI extends Component {
 
         subnames.sort()
 
-        return subnames.map(s => <option value={s} key={"subname_"+s} className="bookQueryOption" >{s}</option>)
+        return subnames.map(s => <option value={s} key={"subname_"+s} className="bookQueryOption">{s}</option>)
     }
 
     render() {
         const queryToValue = (query) => {
+            if(typeof(query) === "float" && isNaN(query)) return ALL.toString()
             switch (query) {
                 case true:
                     return WHITE.toString()

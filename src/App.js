@@ -52,7 +52,7 @@ class App extends Component {
       loadingVisible: true,
       notification: { text: "Congrats", type: "important" },
       notification_visible: false,
-      settings: { wait_time: 500, colorTheme: "darkTheme", volume: 0.6 }
+      settings: { wait_time: 500, colorTheme: "autoTheme", volume: 0.6 }
     }
 
     this.createOp = this.createOp.bind(this)
@@ -147,10 +147,10 @@ class App extends Component {
           userData.language = "eng"
         }
         if (userData.settings === undefined) {
-          userData.settings = { wait_time: 500, colorTheme: "darkTheme", volume: 0.6, visual_chess_notation: true }
+          userData.settings = { wait_time: 500, colorTheme: "autoTheme", volume: 0.6, visual_chess_notation: true }
         } else {
           if (userData.settings.wait_time === undefined) userData.settings.wait_time = 500
-          if (userData.settings.colorTheme === undefined) userData.settings.colorTheme = "darkTheme"
+          if (userData.settings.colorTheme === undefined) userData.settings.colorTheme = "autoTheme"
           if (userData.settings.volume === undefined) userData.settings.volume = 0.6 /* from 0 to 1 */
         }
 
@@ -940,15 +940,18 @@ class App extends Component {
       }else{
         // this.notify("You have " + start_targets_list.length + " variations to train on for today.", "important")
       }
-
       return start_targets_list
     }else{
       return []
     }
   }
 
-  number_of_errors_to_quality(n) {
-    return Math.max(0, Math.floor(5 - n))
+  number_of_errors_to_quality(n, line_length) {
+    const normalized = Math.round(n * 7 / Math.max(7, line_length / 2))
+    const quality = {
+      0: 5, 1: 4, 2: 3, 3: 3, 4: 2, 5: 2, 6: 1 // the others are 0
+    }
+    return quality[normalized] || 0
   }
 
   get_new_vari_score(quality, lastSchedule, lastFactor) {
@@ -1018,7 +1021,7 @@ class App extends Component {
 
     if(target_vari){
       const new_vari_score = this.get_new_vari_score(
-        this.number_of_errors_to_quality(number_of_errors),
+        this.number_of_errors_to_quality(number_of_errors, target_vari.moves.length),
         target_vari.vari_score ? target_vari.vari_score.schedule : null,
         target_vari.vari_score ? target_vari.vari_score.factor : null
       )

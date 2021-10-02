@@ -386,6 +386,7 @@
 
 /* @szhsin/react-menu */
 .rc-menu-container {
+    position: absolute;
     background-color: var(--modalBack);
 }
 

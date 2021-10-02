@@ -62,6 +62,7 @@ class Board extends Component {
       stockfish_calculated_depth: 0,
       smallBoard: false,
       smart_training_errors_counter: 0,
+      smart_training_error_made_here: false,
     }
     /* functions */
     this.newGame = this.newGame.bind(this)
@@ -152,7 +153,13 @@ class Board extends Component {
           <BoardData
             tabs={this.props.tabs}
 
-            op_index={this.props.op_index || this.props.target_vari_op_index}
+            op_index={
+              this.props.target_vari_op_index === undefined || this.props.target_vari_op_index === null 
+            ? 
+              this.props.op_index
+            :
+              this.props.target_vari_op_index
+            }
             json_moves={this.state.json_moves}
             ops={this.props.ops}
             match={this.props.match}
@@ -504,6 +511,7 @@ class Board extends Component {
           return {
             json_moves: moves_list,
             moves_forward: new_moves_forward,
+            smart_training_error_made_here: false,
           }
         }
       }, () => {
@@ -588,13 +596,18 @@ class Board extends Component {
             this.pc_move(moves_list_after, this.props.vari_index)
           }
         }
+
       } else if (is_this_move_smart_alternative) {
         // TODO: play okay sound
         this.props.notify("It's okay. Find another good move.", "important")
         return false
       } else {
         this.play_error_sound()
-        if(mode === SMART_TRAINING_MODE) this.setState(old => ({smart_training_errors_counter: old.smart_training_errors_counter + 1}))
+        if(mode === SMART_TRAINING_MODE && !this.state.smart_training_error_made_here) 
+          this.setState(old => ({
+            smart_training_errors_counter: old.smart_training_errors_counter + 1, 
+            smart_training_error_made_here: true
+          }))
         return false
       }
 
@@ -1573,6 +1586,7 @@ class Board extends Component {
       selected_cell: undefined, 
       arrows: [],
       smart_training_errors_counter: 0,
+      smart_training_error_made_here: false,
     }}, this.onStart)
   }
 }

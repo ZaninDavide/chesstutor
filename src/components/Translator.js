@@ -91,6 +91,8 @@ const languages = {
     "You just trained on": "You just trained on",
     "Daily training": "Daily training",
     "Lines to revise today": "Lines to revise today",
+    "It's okay. Find another good move.": "It's okay. Find another good move.",
+    "You don't need to train any more for today.": "You don't need to train any more for today.",
   },
   ita: {
     Openings: "Aperture",
@@ -181,6 +183,8 @@ const languages = {
     "You just trained on": "Ti sei allenato su",
     "Daily training": "Ripasso giornaliero",
     "Lines to revise today": "Varianti da ripassare oggi",
+    "It's okay. Find another good move.": "Va bene. Trova un'alternativa.",
+    "You don't need to train any more for today.": "Per oggi hai finito, non serve che ti alleni ulteriormente.",
   }
 }
 

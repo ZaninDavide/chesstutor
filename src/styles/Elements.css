@@ -387,7 +387,7 @@
   margin-right: var(--mediumMargin);
 
   height: calc(var(--uiElementSmallHeight) + 2px); /* 2px = textbox padding */
-  max-width: 150px;
+  max-width: 250px;
 
   border-radius: var(--borderRadius);
   border-radius: var(--borderRadius);
@@ -425,7 +425,7 @@
   border-top-right-radius: var(--borderRadius);
   border-bottom-right-radius: var(--borderRadius);
   border: 0;
-  border-left: var(--smallMargin) solid var(--onBack);
+  border-left: var(--smallMargin) solid var(--back);
 }
 
 #bookQueryTable{
@@ -841,8 +841,7 @@
 }
 
 #bookTable .bookTableNumber{
-  min-width: 30px;
-  max-width: 40px;
+  width: 35px;
   text-align: right;
 }
 

@@ -128,7 +128,7 @@ class SignupPage extends Component {
   render() {
     return (
       <React.Fragment>
-        <Header title={<Translator text={"Sign up"} />} goTo="/login" />
+        <Header title={<Translator text={"Sign up"} />} goTo="/login" mainButtonText="arrow_back" />
         <div id="loginPage" className="page">
           <div id="loginPageBody">
             <h2 className="loginPageLabel"><Translator text={"Username"} />:</h2>
