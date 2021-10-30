@@ -11,12 +11,74 @@ class LoadVariationsModal extends Component {
       text: "",
     }
     this.onDone = this.onDone.bind(this);
+    this.game_to_variations = this.game_to_variations.bind(this);
   }
 
   onDone() {
-    let vars = game_to_variations(this.state.text)
+    let vars = this.game_to_variations(this.state.text)
     this.props.addVariations(vars)
     this.props.close()
+  }
+
+  /*
+  1. e4 d5 2. exd5 Qxd5 3. Nc3 (3. Nf3 Bg4 (3... Nc6 4. d4) 4. Be2 Nc6 5. O-O (5. d4 O-O-O) 5... O-O-O 6. Nc3 Qd7 7. b4 Nf6 8. b5 Bxf3 9. Bxf3 Nd4 10. a4 Qf5) ( 3. d4 Nf6 4. Nc3) (3. c4 Qe4+ 4. Qe2 Qxe2+ 5. Bxe2 Nc6) 3... Qa5 (3... Qd8 4. d4 Nf6 5. Nf3 Bg4 6. Bc4 e6 7. O-O Nc6) (3... Qd6 4. d4 Nf6 5. Nf3 a6 6. Be2 Nc6 7. O-O Bf5 8. Be3 O-O-O) 4. d4 (4. Bc4 Nf6 5. Nf3 Bg4 6. O-O e6) (4. b4 Qxb4 5. Rb1 Qd6 6. d4 Nf6 7. g3 Nc6) (4. Nf3 Nf6 5. Bc4 Bg4 6. O-O Nc6) 4... Nf6 5. Nf3 (5. Bd2 c6 6. Nf3 Bg4 7. Bc4 e6 8. O-O Qc7 9. Re1 Be7) 5... Bg4 (5... Bf5 6. Bc4 e6 7. Bd2 c6 8. O-O Qc7 9. Re1 Be7 10. Rc1 Nbd7) 6. h3 Bh5 7. Be2 (7. g4 Bg6 8. Ne5 e6 9. h4) 7... Nc6 8. O-O O-O-O 9. Be3 e5
+  */
+  game_to_variations(text) {
+    // I want to extract from text all possible ways of ending the game, so all possible variations
+
+    // remove move numbers
+    text = text.replace(/\n+/gm, " ").replace(/[0-9]+\.+\s*/gm, "").replace(/\(\s/gm, "(").trim();
+    // e4 d5 exd5 Qxd5 Nc3 (Nf3 Bg4 (Nc6 d4) Be2 Nc6 O-O (d4 O-O-O) O-O-O Nc3 Qd7 b4 Nf6 b5 Bxf3 Bxf3 Nd4 a4 Qf5) ( d4 Nf6 Nc3) (c4 Qe4+ Qe2 Qxe2+ Bxe2 Nc6) Qa5 (Qd8 d4 Nf6 Nf3 Bg4 Bc4 e6 O-O Nc6) (Qd6 d4 Nf6 Nf3 a6 Be2 Nc6 O-O Bf5 Be3 O-O-O) d4 (Bc4 Nf6 Nf3 Bg4 O-O e6) (b4 Qxb4 Rb1 Qd6 d4 Nf6 g3 Nc6) (Nf3 Nf6 Bc4 Bg4 O-O Nc6) Nf6 Nf3 (Bd2 c6 Nf3 Bg4 Bc4 e6 O-O Qc7 Re1 Be7) Bg4 (Bf5 Bc4 e6 Bd2 c6 O-O Qc7 Re1 Be7 Rc1 Nbd7) h3 Bh5 Be2 (g4 Bg6 Ne5 e6 h4) Nc6 O-O O-O-O Be3 e5
+
+    let ready_vars = []
+    let active_vars = [[]] // start with one empty variation
+  
+    let san = ""
+
+    text.split("").forEach(letter => {
+        switch (letter) {
+            case "(":
+                // add this san to the current variation
+                if(active_vars.length > 0 && san) active_vars[active_vars.length - 1].push(san)
+                san = ""
+                // start a new variation from this point
+                if(active_vars.length > 0){
+                    let new_vari = [...active_vars[active_vars.length - 1]]
+                    new_vari.pop() // the variation starts from the move before
+                    active_vars.push(new_vari)
+                }else{
+                    active_vars.push([])
+                }
+                break;
+            case ")":
+                // add this san to the current variation
+                if(active_vars.length > 0 && san) active_vars[active_vars.length - 1].push(san)
+                san = ""
+                // end this variation
+                if(active_vars.length > 0) ready_vars.push(active_vars.pop())
+                break;
+            case " ":
+                // add this san to the current variation
+                if(active_vars.length > 0 && san) active_vars[active_vars.length - 1].push(san)
+                san = ""
+                break;
+            default:
+                san += letter
+                break;
+        }
+    });
+
+    if(active_vars.length > 0) {
+        if(active_vars.length > 0 && san) active_vars[active_vars.length - 1].push(san)
+        ready_vars.push(active_vars.pop())
+    }
+
+    if(active_vars.length !== 0) {
+      this.props.notify("Incomplete lines found were found inside this PGN.", "error")
+      console.log("Incomplete lines found were found inside this PGN.")
+    }
+
+    return ready_vars
   }
 
   render() {
@@ -42,64 +104,6 @@ class LoadVariationsModal extends Component {
     )
   }
 
-}
-
-/*
-1. e4 d5 2. exd5 Qxd5 3. Nc3 (3. Nf3 Bg4 (3... Nc6 4. d4) 4. Be2 Nc6 5. O-O (5. d4 O-O-O) 5... O-O-O 6. Nc3 Qd7 7. b4 Nf6 8. b5 Bxf3 9. Bxf3 Nd4 10. a4 Qf5) ( 3. d4 Nf6 4. Nc3) (3. c4 Qe4+ 4. Qe2 Qxe2+ 5. Bxe2 Nc6) 3... Qa5 (3... Qd8 4. d4 Nf6 5. Nf3 Bg4 6. Bc4 e6 7. O-O Nc6) (3... Qd6 4. d4 Nf6 5. Nf3 a6 6. Be2 Nc6 7. O-O Bf5 8. Be3 O-O-O) 4. d4 (4. Bc4 Nf6 5. Nf3 Bg4 6. O-O e6) (4. b4 Qxb4 5. Rb1 Qd6 6. d4 Nf6 7. g3 Nc6) (4. Nf3 Nf6 5. Bc4 Bg4 6. O-O Nc6) 4... Nf6 5. Nf3 (5. Bd2 c6 6. Nf3 Bg4 7. Bc4 e6 8. O-O Qc7 9. Re1 Be7) 5... Bg4 (5... Bf5 6. Bc4 e6 7. Bd2 c6 8. O-O Qc7 9. Re1 Be7 10. Rc1 Nbd7) 6. h3 Bh5 7. Be2 (7. g4 Bg6 8. Ne5 e6 9. h4) 7... Nc6 8. O-O O-O-O 9. Be3 e5
-*/
-function game_to_variations(text) {
-  // I want to extract from text all possible ways of ending the game, so all possible variations
-
-  // remove move numbers
-  text = text.replace(/[0-9]+\.+\s/gm, "").replace(/\(\s/gm, "(").trim();
-  // e4 d5 exd5 Qxd5 Nc3 (Nf3 Bg4 (Nc6 d4) Be2 Nc6 O-O (d4 O-O-O) O-O-O Nc3 Qd7 b4 Nf6 b5 Bxf3 Bxf3 Nd4 a4 Qf5) ( d4 Nf6 Nc3) (c4 Qe4+ Qe2 Qxe2+ Bxe2 Nc6) Qa5 (Qd8 d4 Nf6 Nf3 Bg4 Bc4 e6 O-O Nc6) (Qd6 d4 Nf6 Nf3 a6 Be2 Nc6 O-O Bf5 Be3 O-O-O) d4 (Bc4 Nf6 Nf3 Bg4 O-O e6) (b4 Qxb4 Rb1 Qd6 d4 Nf6 g3 Nc6) (Nf3 Nf6 Bc4 Bg4 O-O Nc6) Nf6 Nf3 (Bd2 c6 Nf3 Bg4 Bc4 e6 O-O Qc7 Re1 Be7) Bg4 (Bf5 Bc4 e6 Bd2 c6 O-O Qc7 Re1 Be7 Rc1 Nbd7) h3 Bh5 Be2 (g4 Bg6 Ne5 e6 h4) Nc6 O-O O-O-O Be3 e5
-
-  let ready_vars = []
-  let active_vars = [[]] // start with one empty variation
- 
-  let san = ""
-
-  text.split("").forEach(letter => {
-      switch (letter) {
-          case "(":
-              // add this san to the current variation
-              if(active_vars.length > 0 && san) active_vars[active_vars.length - 1].push(san)
-              san = ""
-              // start a new variation from this point
-              if(active_vars.length > 0){
-                  let new_vari = [...active_vars[active_vars.length - 1]]
-                  new_vari.pop() // the variation starts from the move before
-                  active_vars.push(new_vari)
-              }else{
-                  active_vars.push([])
-              }
-              break;
-          case ")":
-              // add this san to the current variation
-              if(active_vars.length > 0 && san) active_vars[active_vars.length - 1].push(san)
-              san = ""
-              // end this variation
-              if(active_vars.length > 0) ready_vars.push(active_vars.pop())
-              break;
-          case " ":
-              // add this san to the current variation
-              if(active_vars.length > 0 && san) active_vars[active_vars.length - 1].push(san)
-              san = ""
-              break;
-          default:
-              san += letter
-              break;
-      }
-  });
-
-  if(active_vars.length > 0) {
-      if(active_vars.length > 0 && san) active_vars[active_vars.length - 1].push(san)
-      ready_vars.push(active_vars.pop())
-  }
-
-  if(active_vars.length !== 0) console.log("Error loading variations from this PGN. Incomplete lines found")
-
-  return ready_vars
 }
 
 export default LoadVariationsModal
