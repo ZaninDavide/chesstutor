@@ -15,6 +15,7 @@ class BookUI extends Component {
             opQuery: null,
             variQuery: null,
             subnameQuery: null,
+            filtersVisible: false,
         }
 
         this.getOptions = this.getOptions.bind(this);
@@ -156,7 +157,7 @@ class BookUI extends Component {
 
     render() {
         const queryToValue = (query) => {
-            if(typeof(query) === "float" && isNaN(query)) return ALL.toString()
+            if(typeof(query) === "number" && isNaN(query)) return ALL.toString()
             switch (query) {
                 case true:
                     return WHITE.toString()
@@ -189,8 +190,15 @@ class BookUI extends Component {
                 </tbody>
             </table>
             <br key="br"/>
-            <h1 key="titleFilters"><Translator key="translatorFilters" text={"Filters"}/></h1>
-            <table id="bookQueryTable" key="bookQueryTable"><tbody>
+            <h1 key="titleFilters" onClick={() => this.setState(old => {return{filtersVisible: !old.filtersVisible}})}>
+                <div
+                id="filter_chevron" 
+                style={{"textTransform": "none"}} 
+                className={"iconText" + (this.state.filtersVisible ? " filter_chevron_rotated" : "")}
+                >expand_more</div>
+                <Translator key="translatorFilters" text={"Filters"}/>
+            </h1>
+            <table id="bookQueryTable" key="bookQueryTable" className={this.state.filtersVisible ? "bookQueryTable_visible" : "bookQueryTable_hidden"}><tbody>
                 <tr key="bookQueryTableTrOpening"><td><Translator key="translatorOpening" text={"Opening"}/>:</td><td>
                     <select className="bookQuerySelector opQuery" key="bookQueryTableOpeningSelector"
                         onChange={e => {

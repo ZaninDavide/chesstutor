@@ -20,6 +20,7 @@ class OpsListPage extends Component {
       opDeleteVisible: false,
       opNewName: "",
       sendVisible: false,
+      archiveVisible: false
     }
     this.getOpItems = this.getOpItems.bind(this)
     this.newOpButton = this.newOpButton.bind(this)
@@ -31,11 +32,30 @@ class OpsListPage extends Component {
     this.no_openings_style = this.no_openings_style.bind(this)
     this.closeSendModal = this.closeSendModal.bind(this)
     this.openSendModal = this.openSendModal.bind(this)
+    this.getArchiveSeparator = this.getArchiveSeparator.bind(this)
   }
 
   getSeparator(text, name, goTo) {
     return <div id={"opsSeparator" + name} className="opsSeparator" key={"opsSeparator" + name} onClick={() => goTo ? this.props.history.push(goTo) : null}>
       <h3>
+        <Translator text={text} />
+      </h3>
+    </div>
+  }
+
+  getArchiveSeparator(text, name) {
+    return <div 
+      id={"opsSeparator" + name} 
+      className="opsSeparator" 
+      key={"opsSeparator" + name} 
+      onClick={() => this.setState(old => {return {archiveVisible: !old.archiveVisible}})}
+    >
+      <h3>
+        <div
+          id="archive_chevron" 
+          style={{"textTransform": "none"}} 
+          className={"iconText" + (this.state.archiveVisible ? " archive_chevron_rotated" : "")}
+        >expand_more</div>
         <Translator text={text} />
       </h3>
     </div>
@@ -77,8 +97,9 @@ class OpsListPage extends Component {
         all = all.concat(not_archived_black)
       }
       if (archived.length > 0) {
-        all.push(this.getSeparator("Archived openings", "ArchivedOpenings"))
-        all = all.concat(archived)
+        all.push(this.getArchiveSeparator("Archived openings", "ArchivedOpenings"))
+        let open_or_closed = this.state.archiveVisible ? "archiveVisible" : "archiveClosed"
+        all = all.concat([<div id="archive" key="archive" className={open_or_closed}>{archived}</div>])
       }
       return all
     } else {

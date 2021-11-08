@@ -5,10 +5,6 @@ import Translator from "../components/Translator"
 import { SMART_TRAINING_MODE } from "../utilities/constants"
 
 class SmartTrainingPage extends Component {
-  constructor(props) {
-    super(props)
-  }
-
   render() {
     const smart_training_target_vari = this.props.get_target_vari(this.props.targets_list)
     const target_vari_color = this.props.targets_list.length > 0 ? this.props.targets_list[0].vari_color : "none"
@@ -21,7 +17,7 @@ class SmartTrainingPage extends Component {
       <React.Fragment>
         <Header mainButtonText="arrow_back" goTo={"/"} title={<React.Fragment><Translator text={"Daily training"} /></React.Fragment>} />
         <Board
-          key="trainingBoard"
+          key="smartTrainingBoard"
           mode={SMART_TRAINING_MODE}
 
           history={this.props.history}

@@ -7,9 +7,9 @@ import { AGAINST_STOCKFISH_MODE } from "../utilities/constants"
 
 class StockfishUI extends Component {
 
-    constructor(props) {
-        super(props)
-    }
+    // constructor(props) {
+    //     super(props)
+    // }
 
     render() {
         return <div id="boardDataStockfishSlide" key="boardDataStockfishSlide" className="boardDataSlide">

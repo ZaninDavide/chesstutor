@@ -2,10 +2,6 @@ import React, { Component } from "react"
 import Ripples from "react-ripples"
 
 class CheckBox extends Component {
-    constructor(props) {
-        super(props)
-    }
-
     render() {
         return (
             <Ripples className="checkBoxContainer">

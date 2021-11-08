@@ -739,6 +739,10 @@ a {
   will-change: opacity, transform, top, left;
 }
 
+.optionButtonsContainer .simpleButton {
+  height: var(--uiElementMediumHeight);
+  line-height: var(--uiElementMediumHeight);
+}
 
 @media (hover: hover) {
   .opItem:hover{

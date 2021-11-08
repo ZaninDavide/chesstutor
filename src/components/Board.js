@@ -21,23 +21,21 @@ import Arrows from "../components/Arrows"
 
 import "../styles/Board.css"
 
-let stockfish;
-let stockfish_asked = 0;
-let stockfish_request_time = new Date();
+class Board extends Component { 
+  stockfish_worker = undefined;
+  stockfish_asked = 0;
+  stockfish_request_time = new Date();
 
-let clientX_down = 0
-let clientY_down = 0
-let left_mouse_down = false
-let on_drag = false
-let dragged_away = false
+  clientX_down = 0
+  clientY_down = 0
+  left_mouse_down = false
+  on_drag = false
+  dragged_away = false
 
-let move_audio
-let capture_audio
-let error_audio
+  move_audio
+  capture_audio
+  error_audio
 
-let last_props_rotation = false
-
-class Board extends Component {
   constructor(props) {
     super(props)
     this.state = {
@@ -103,21 +101,29 @@ class Board extends Component {
     this.try_undo_n_times = this.try_undo_n_times.bind(this)
     this.resetBoard = this.resetBoard.bind(this);
     this.onStart = this.onStart.bind(this);
+    this.keydown_event = this.keydown_event.bind(this);
     /* refs */
     this.selectedPiece = React.createRef()
-
-    move_audio = new Audio(sound_move)
-    capture_audio = new Audio(sound_capture)
-    error_audio = new Audio(sound_error)
+    
+    this.move_audio = new Audio(sound_move)
+    this.capture_audio = new Audio(sound_capture)
+    this.error_audio = new Audio(sound_error)
   }
 
   static getDerivedStateFromProps(props) {
-    if(last_props_rotation !== props.rotation){
-      last_props_rotation = props.rotation
-      return { rotated: props.rotation === "black" ? true : false };
-    }
-    return {}
- }
+    return { rotated: props.rotation === "black" ? true : false };
+  }
+
+  componentDidMount() {
+    // called when the component is first created
+    this.onStart()
+    window.addEventListener("keydown", this.keydown_event)
+  }
+
+  componentWillUnmount() {
+    this.close_stockfish()    
+    window.removeEventListener("keydown", this.keydown_event)
+  }
 
   /* ---------------------------- COMPONENT ---------------------------- */
 
@@ -423,15 +429,6 @@ class Board extends Component {
         this.pc_move([])
       }
     }
-  }
-
-  componentDidMount() {
-    // called when the component is first created
-    this.onStart()
-  }
-
-  componentWillUnmount() {
-    this.close_stockfish()
   }
 
   /* ---------------------------- DEBUG ---------------------------- */
@@ -811,11 +808,11 @@ class Board extends Component {
   }
 
   close_stockfish() {
-    if (stockfish) {
-      stockfish.terminate()
+    if (this.stockfish_worker) {
+      this.stockfish_worker.terminate()
     }
-    stockfish_asked = 0;
-    stockfish = undefined;
+    this.stockfish_worker = 0;
+    this.stockfish_worker = undefined;
   }
 
   /* ---------------------------- STOCKFISH AND CLOUD EVALUATION ---------------------------- */
@@ -830,7 +827,7 @@ class Board extends Component {
 
     let wasmSupported = typeof WebAssembly === 'object' && WebAssembly.validate(Uint8Array.of(0x0, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00));
 
-    stockfish = new Worker(wasmSupported ? '/stockfish/stockfish.wasm.js' : '/stockfish/stockfish.js');
+    this.stockfish_worker = new Worker(wasmSupported ? '/stockfish/stockfish.wasm.js' : '/stockfish/stockfish.js');
 
     let make_this_move = move => this.make_move(move)
     let is_my_turn_now = () => this.is_my_turn(this.state.game.turn())
@@ -842,17 +839,17 @@ class Board extends Component {
     let wait_time = () => this.props.wait_time
     let auto_eval = () => this.props.stockfish.auto_eval
     let auto_best_move = () => this.props.stockfish.auto_best_move
-    let eval_color_factor = () => this.state.game.turn() == "w" ? 1 : -1 
+    let eval_color_factor = () => this.state.game.turn() === "w" ? 1 : -1 
 
-    stockfish.addEventListener('message', async function (event) {
+    this.stockfish_worker.addEventListener('message', async function (event) {
       console.log(event.data)
 
         // MAKE THE BEST MOVE
         if (event.data.startsWith("bestmove ")) {
           let move = event.data.split(" ")[1]
-          if (stockfish_asked === 1 && !is_my_turn_now()) {
+          if (this.stockfish_worker === 1 && !is_my_turn_now()) {
             // console.log("BEST " + move)
-            let remaining_time = Math.max(wait_time() - (new Date() - stockfish_request_time), 0)
+            let remaining_time = Math.max(wait_time() - (new Date() - this.stockfish_request_time), 0)
             if (move.length === 4) {
               setTimeout(() => {
                 make_this_move({
@@ -875,7 +872,7 @@ class Board extends Component {
           } else {
             console.log("LOST CALCULATION " + move)
           }
-          stockfish_asked -= 1
+          this.stockfish_worker -= 1
 
           // SHOW WHAT STOCKFISH IS THINKING
         } else if (event.data.startsWith("info depth ") && event.data.indexOf("currmove ") === -1 && stockfish_arrows()) {
@@ -923,46 +920,46 @@ class Board extends Component {
             setEvaluation(parseFloat(value))
           }
         } else if(event.data.startsWith("uciok")){
-          stockfish.postMessage("setoption name UCI_AnalyseMode value true");
-          stockfish.postMessage("setoption name Analysis Contempt value Off");
+          this.stockfish_worker.postMessage("setoption name UCI_AnalyseMode value true");
+          this.stockfish_worker.postMessage("setoption name Analysis Contempt value Off");
         }
     });
 
-    stockfish.postMessage("uci")
+    this.stockfish_worker.postMessage("uci")
 
   }
 
   stockfish_move(json_moves) {
-    if (!stockfish) {
+    if (!this.stockfish_worker) {
       this.start_stockfish()
     }
 
-    stockfish.postMessage("stop")
-    stockfish.postMessage("ucinewgame")
+    this.stockfish_worker.postMessage("stop")
+    this.stockfish_worker.postMessage("ucinewgame")
 
     if(JSON.stringify(this.state.json_moves) === JSON.stringify(json_moves)){
-      stockfish.postMessage("position fen " + this.state.game.fen())
+      this.stockfish_worker.postMessage("position fen " + this.state.game.fen())
     }else{
-      stockfish.postMessage("position startpos moves " + json_moves.map(c => c.from + c.to + (c.promotion ? c.promotion : "")).join(" "))
+      this.stockfish_worker.postMessage("position startpos moves " + json_moves.map(c => c.from + c.to + (c.promotion ? c.promotion : "")).join(" "))
     }
 
-    stockfish.postMessage("go depth " + this.props.stockfish.depth)
+    this.stockfish_worker.postMessage("go depth " + this.props.stockfish.depth)
 
-    stockfish_asked += 1
-    if (new Date() - stockfish_request_time > 500) {
-      stockfish_request_time = new Date()
+    this.stockfish_worker += 1
+    if (new Date() - this.stockfish_request_time > 500) {
+      this.stockfish_request_time = new Date()
     }
   }
 
 
   stockfish_go_deeper(depth = this.props.stockfish.depth) {
-    if (!stockfish) {
+    if (!this.stockfish_worker) {
       return
     }
 
-    stockfish.postMessage("go depth " + depth)
+    this.stockfish_worker.postMessage("go depth " + depth)
 
-    stockfish_asked += 1
+    this.stockfish_worker += 1
   }
 
   async get_lichess_cloud_evaluation(json_moves){
@@ -997,22 +994,22 @@ class Board extends Component {
     const eval_data = lichess_eval_data ? lichess_eval_data : await this.get_lichess_cloud_evaluation(json_moves)
     
     if(eval_data.error || eval_data.depth < depth){
-      if (!stockfish) {
+      if (!this.stockfish_worker) {
         this.start_stockfish()
       }
   
-      stockfish.postMessage("stop")
-      stockfish.postMessage("ucinewgame")
+      this.stockfish_worker.postMessage("stop")
+      this.stockfish_worker.postMessage("ucinewgame")
       
       if(JSON.stringify(this.state.json_moves) === JSON.stringify(json_moves)){
-        stockfish.postMessage("position fen " + this.state.game.fen())
+        this.stockfish_worker.postMessage("position fen " + this.state.game.fen())
       }else{
-        stockfish.postMessage("position startpos moves " + json_moves.map(c => c.from + c.to + (c.promotion ? c.promotion : "")).join(" "))
+        this.stockfish_worker.postMessage("position startpos moves " + json_moves.map(c => c.from + c.to + (c.promotion ? c.promotion : "")).join(" "))
       }
 
-      stockfish.postMessage("go depth " + depth)
+      this.stockfish_worker.postMessage("go depth " + depth)
   
-      stockfish_asked += 1
+      this.stockfish_worker += 1
     }else{
       const move_str = eval_data.pvs[0].moves.split(" ")[0]
       this.setState({ stockfish_chosen_move: move_str[0] + move_str[1] + "-" + move_str[2] + move_str[3] })
@@ -1031,21 +1028,21 @@ class Board extends Component {
 
     if(eval_data.error || eval_data.depth < depth){
       // evaluate locally
-      if (!stockfish) {
+      if (!this.stockfish_worker) {
         this.start_stockfish()
       }
   
-      stockfish.postMessage("stop")
-      stockfish.postMessage("ucinewgame")
+      this.stockfish_worker.postMessage("stop")
+      this.stockfish_worker.postMessage("ucinewgame")
 
       if(JSON.stringify(this.state.json_moves) === JSON.stringify(json_moves)){
-        stockfish.postMessage("position fen " + this.state.game.fen())
+        this.stockfish_worker.postMessage("position fen " + this.state.game.fen())
       }else{
-        stockfish.postMessage("position startpos moves " + json_moves.map(c => c.from + c.to + (c.promotion ? c.promotion : "")).join(" "))
+        this.stockfish_worker.postMessage("position startpos moves " + json_moves.map(c => c.from + c.to + (c.promotion ? c.promotion : "")).join(" "))
       }
 
       // stockfish.postMessage("eval")
-      stockfish.postMessage("go depth " + depth)
+      this.stockfish_worker.postMessage("go depth " + depth)
     }else{
       this.setState({ stockfish_evaluation: eval_data.pvs[0].cp / 100, stockfish_calculated_depth: eval_data.depth })
     }
@@ -1099,7 +1096,7 @@ class Board extends Component {
       id={"piece" + id}
       key={"piece" + id}
       ref={is_selected ? this.selectedPiece : null}
-      className={is_selected ? "pieceSVG noAnimationPiece" : "pieceSVG staticPiece"} /* && on_drag  */
+      className={is_selected ? "pieceSVG noAnimationPiece" : "pieceSVG staticPiece"} /* && this.on_drag  */
       alt={"Piece file missing"}
       draggable={false}
     />
@@ -1140,7 +1137,7 @@ class Board extends Component {
   touchCircle() {
     let over = this.state.mouse_over_cell
     let sel = this.state.selected_cell
-    if (over === undefined || sel === undefined || !dragged_away) return <div key="touchCircle" />
+    if (over === undefined || sel === undefined || !this.dragged_away) return <div key="touchCircle" />
 
     let coor = this.cellCoordinates(over)
     coor.x = coor.x / Math.sqrt(2) - 100 / 8
@@ -1149,7 +1146,7 @@ class Board extends Component {
     return <div style={{ transform: `translate(calc(${coor.x}% - 2px), calc(${coor.y}% - 4px))` }} key="touchCircle" id="touchCircle" />
     // return <div style={{ transform: `translate(${coor.x/1.5 - 17.25}%, ${coor.y/1.5 - 19.75}%)` }} key="touchCircle" id="touchCircle" />
 
-    /*if(!this.state.selected_cell || !on_drag) return <div key="touchCircle" ref={this.touchCircleRef} />
+    /*if(!this.state.selected_cell || !this.on_drag) return <div key="touchCircle" ref={this.touchCircleRef} />
     let coor = this.cellCoordinates(this.cellFromCoor(this.state.selected_cell))
     return <div id="touchCircle" ref={this.touchCircleRef} key="touchCircle" style={{ transform: `translate(${coor.x}%, ${coor.y}%)` }} />*/
   }
@@ -1227,8 +1224,8 @@ class Board extends Component {
       clientX = e.touches[0].clientX;
       clientY = e.touches[0].clientY;
     }
-    clientX_down = clientX
-    clientY_down = clientY
+    this.clientX_down = clientX
+    this.clientY_down = clientY
     const coor = { x: clientX - this.refs.bContainer.offsetLeft, y: clientY - this.refs.bContainer.offsetTop }
     coor.x = Math.floor((coor.x / this.refs.board.width) * 8) * 100
     coor.y = Math.floor((coor.y / this.refs.board.width) * 8) * 100
@@ -1241,8 +1238,8 @@ class Board extends Component {
       }
 
       const selection_res = this.try_select_cell(cell)
-      on_drag = selection_res ? true : false
-      left_mouse_down = true
+      this.on_drag = selection_res ? true : false
+      this.left_mouse_down = true
       this.setState({ mouse_over_cell: cell })
     }
   }
@@ -1279,16 +1276,16 @@ class Board extends Component {
       draggedPiece.style.left = "0px"
       draggedPiece.style.top = "0px"
     }
-    clientX_down = 0
-    clientY_down = 0
-    on_drag = false
-    left_mouse_down = false
-    dragged_away = false
+    this.clientX_down = 0
+    this.clientY_down = 0
+    this.on_drag = false
+    this.left_mouse_down = false
+    this.dragged_away = false
     requestAnimationFrame(() => this.forceUpdate())
   }
 
   boardDrag(e) {
-    if (this.state.selected_cell && this.selectedPiece.current && left_mouse_down && on_drag) {
+    if (this.state.selected_cell && this.selectedPiece.current && this.left_mouse_down && this.on_drag) {
       let clientX = e.clientX
       let clientY = e.clientY
 
@@ -1298,9 +1295,9 @@ class Board extends Component {
       }
 
       //move piece
-      let deltaX = clientX - clientX_down
-      let deltaY = clientY - clientY_down
-      dragged_away = deltaX !== 0 || deltaY !== 0 || dragged_away
+      let deltaX = clientX - this.clientX_down
+      let deltaY = clientY - this.clientY_down
+      this.dragged_away = deltaX !== 0 || deltaY !== 0 || this.dragged_away
 
       if(this.selectedPiece.current.style.left !== deltaX + "px") this.selectedPiece.current.style.left = deltaX + "px"
       if(this.selectedPiece.current.style.top !== deltaY + "px") this.selectedPiece.current.style.top = deltaY + "px"
@@ -1324,21 +1321,21 @@ class Board extends Component {
     // move is what the game.move() function returns
     if (move) {
       if (move.flags.indexOf("c") !== -1 || move.flags.indexOf("e") !== -1) {
-        capture_audio.volume = this.props.volume
-        capture_audio.currentTime = 0
-        capture_audio.play()
+        this.capture_audio.volume = this.props.volume
+        this.capture_audio.currentTime = 0
+        this.capture_audio.play()
       } else {
-        move_audio.volume = this.props.volume
-        move_audio.currentTime = 0
-        move_audio.play()
+        this.move_audio.volume = this.props.volume
+        this.move_audio.currentTime = 0
+        this.move_audio.play()
       }
     }
   }
 
   async play_error_sound() {
-    move_audio.volume = this.props.volume
-    error_audio.currentTime = 0
-    error_audio.play()
+    this.move_audio.volume = this.props.volume
+    this.error_audio.currentTime = 0
+    this.error_audio.play()
   }
 
 
@@ -1612,6 +1609,29 @@ class Board extends Component {
       smart_training_errors_counter: 0,
       smart_training_error_made_here: false,
     }}, this.onStart)
+  }
+
+  keydown_event(e) {
+    if(e.keyCode === 37 && this.props.buttons.indexOf("back") !== -1){ // left
+      this.back_button_click()
+    }else if(e.keyCode === 39){ // right
+      if(
+        this.props.buttons.indexOf("single_next") !== -1 &&
+        (this.is_my_turn() || this.props.playColor === "none") && this.props.get_vari_next_move_data(this.props.op_index, this.props.vari_index, this.state.json_moves)
+      ){ this.next_button_click() }
+      else if(
+        this.props.buttons.indexOf("forward_next") !== -1 && 
+        this.state.moves_forward.length > 0
+      ) { this.forward_next_button_click() }
+      else if(
+        this.props.buttons.indexOf("multi_next") !== -1 &&
+        this.is_my_turn()
+      ) { this.help_button_click(true) }
+      else if(
+        this.props.buttons.indexOf("help") !== -1 &&
+        this.is_my_turn()
+      ) { this.help_button_click(false) }
+    }
   }
 }
 

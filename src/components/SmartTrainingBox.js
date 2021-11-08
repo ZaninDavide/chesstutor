@@ -2,10 +2,6 @@ import React, { Component } from "react"
 import Translator from "./Translator"
 
 class SmartTrainingBox extends Component {
-    constructor(props) {
-        super(props)
-    }
-
     render() {
         const to_study = this.props.targets_list.length
         return <div id="smartTrainingBox" key="smartTrainingBox">

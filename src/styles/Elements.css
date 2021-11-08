@@ -467,19 +467,26 @@
   border-top: 2px solid var(--main);
 }
 
-
 .mailItem{
   padding-top: var(--smallMargin);
   padding-bottom: var(--smallMargin);
   display: grid;
   grid-template-columns: 1fr auto;
   width: 100%;
-  cursor: pointer;
   -webkit-tap-highlight-color: var(--tap);
+  margin: var(--mediumMargin);
+  width: calc(100% - 2*var(--mediumMargin));
+  background-color: var(--cardBack);
+  border-radius: var(--borderRadius);
+  border: 1px solid var(--shadow);
+
+  /* SHADOWS */
+  -moz-box-shadow: var(--shadowShift) var(--shadowShift) var(--shadowBlur) var(--shadow);
+  -webkit-box-shadow: var(--shadowShift) var(--shadowShift) var(--shadowBlur) var(--shadow);
+  box-shadow: var(--shadowShift) var(--shadowShift) var(--shadowBlur) var(--shadow);
 }
 
-
-.mailItemCloseButton{
+.mailItemAddButton{
   margin-left: var(--smallMargin);
   margin-right: 0px;
   margin-top: 0px;
@@ -488,9 +495,25 @@
   height: 100%;
 }
 
+.mailItemCloseButton{
+  margin: 0px;
+  line-height: 100%;
+  height: 100%;
+}
+
 .mailItemOpenButton{
   margin-left: 0px;
   margin-right: var(--smallMargin);
+}
+
+.mailParagraph{
+  text-align: justify;
+  margin-top: var(--mediumMargin);
+}
+
+.mailParagraphHr{
+  margin-top: var(--mediumMargin);
+  border-color: var(--onCardBack);
 }
 
 #notification{
@@ -510,7 +533,7 @@
 
   transition: top .1s ease-out, opacity 0.2s ease-out;
   will-change: top, opacity;
-
+  
   /* SHADOWS */
   -moz-box-shadow: var(--shadowShift) var(--shadowShift) var(--shadowBlur) var(--shadow);
   -webkit-box-shadow: var(--shadowShift) var(--shadowShift) var(--shadowBlur) var(--shadow);
@@ -584,11 +607,12 @@
   #opsSeparatorWhite:hover, #opsSeparatorBlack:hover{
     background-color: var(--hoverBack);
   }
-  .mailItem:hover{
-    background-color: var(--hoverBack);
-  }
   .mailItemCloseButton:hover{
     color: var(--alert);
+    background-color: transparent;
+  }
+  .mailItemAddButton:hover{
+    color: var(--main);
     background-color: transparent;
   }
 }
@@ -910,7 +934,6 @@
   }
 }
 
-
 #boardDataTreeSlide .fenViewerContainer{
   width: 100%;
   height: fit-content !important;
@@ -985,4 +1008,45 @@
   display: block;
   height: var(--uiElementMediumHeight);
   line-height: var(--uiElementMediumHeight);
+}
+
+#opsSeparatorArchivedOpenings{
+  padding-left: 0px;
+}
+
+#opsSeparatorArchivedOpenings:hover{
+  background-color: var(--hoverBack);
+  cursor: pointer;
+}
+
+#archive{
+  transition: max-height 1s;
+  transform: scaleY(1);    
+  opacity: 1;
+  transform-origin: top;
+  transition: transform 0.25s ease, opacity 0.25s linear;
+}
+
+#bookQueryTable {
+  transition: transform 0.25s ease, opacity 0.25s linear;
+  transform-origin: top;
+  opacity: 1;
+}
+
+#archive.archiveClosed, #bookQueryTable.bookQueryTable_hidden{
+  overflow: visible;
+  height: 0px;
+  transform: scaleY(0);
+  opacity: 0;
+}
+
+#archive_chevron, #filter_chevron {
+  display: inline-block;
+  transition: transform 0.25s ease;
+  transform: rotate(0deg);
+  cursor: pointers;
+}
+
+#archive_chevron.archive_chevron_rotated, #filter_chevron.filter_chevron_rotated{
+  transform: rotate(180deg);
 }

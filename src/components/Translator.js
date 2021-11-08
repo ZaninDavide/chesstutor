@@ -93,6 +93,7 @@ const languages = {
     "Lines to revise today": "Lines to revise today",
     "It's okay. Find another good move.": "It's okay. Find another good move.",
     "You don't need to train any more for today.": "You don't need to train any more for today.",
+    "discard_mail": "Do you really want to delete this message?",
   },
   ita: {
     Openings: "Aperture",
@@ -185,6 +186,7 @@ const languages = {
     "Lines to revise today": "Varianti da ripassare oggi",
     "It's okay. Find another good move.": "Va bene. Trova un'alternativa.",
     "You don't need to train any more for today.": "Per oggi hai finito, non serve che ti alleni ulteriormente.",
+    "discard_mail": "Sei sicuro di voler eliminare questo messaggio?",
   }
 }
 

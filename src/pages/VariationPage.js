@@ -45,7 +45,6 @@ class VariationPage extends Component {
           setDrawBoardPDF={this.props.setDrawBoardPDF}
           getDrawBoardPDF={this.props.getDrawBoardPDF}
           getComment={this.props.getComment}
-          getDrawBoardPDF={this.props.getDrawBoardPDF}
           get_vari_next_move_data={this.props.get_vari_next_move_data}
           get_pc_move_data={this.props.get_pc_move_data}
           is_move_allowed={this.props.is_move_allowed}

@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import Translator from "./Translator";
+// import Translator from "./Translator";
 
 class VariInfoUI extends Component {
 

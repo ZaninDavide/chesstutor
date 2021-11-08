@@ -451,7 +451,7 @@ class App extends Component {
   renameVariGroup(op_index, vari_group_name, vari_group_new_name) {
     this.setState(old => {
       let new_user_ops = old.user_ops
-      new_user_ops[op_index].variations.map(c => {
+      new_user_ops[op_index].variations.forEach(c => {
         if(c.vari_name === vari_group_name) c.vari_name = vari_group_new_name
       })
 
@@ -1088,7 +1088,6 @@ class App extends Component {
       is_move_allowed={this.is_move_allowed}
       get_pc_move_data={this.get_pc_move_data}
       getComment={this.getComment}
-      getDrawBoardPDF={this.getDrawBoardPDF}
       editComment={this.editComment}
       setDrawBoardPDF={this.setDrawBoardPDF}
       getDrawBoardPDF={this.getDrawBoardPDF}
@@ -1104,7 +1103,6 @@ class App extends Component {
       match={match}
       createVari={this.createVari}
       getComment={this.getComment}
-      getDrawBoardPDF={this.getDrawBoardPDF}
       editComment={this.editComment}
       setDrawBoardPDF={this.setDrawBoardPDF}
       getDrawBoardPDF={this.getDrawBoardPDF}

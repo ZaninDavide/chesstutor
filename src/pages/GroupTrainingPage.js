@@ -22,7 +22,7 @@ class GroupTrainingPage extends Component {
       <React.Fragment>
         <Header mainButtonText="arrow_back" goTo={"/openings/" + op_index} title={"Training ⋅ " + vari_name} />
         <Board
-          key="colorTrainingBoard"
+          key="groupTrainingBoard"
           mode={GROUP_TRAINING_MODE}
 
           history={this.props.history}

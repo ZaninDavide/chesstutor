@@ -91,8 +91,8 @@ class BoardData extends Component {
         board_mode={this.props.board_mode}
       />
 
-      let stockfish_extra = <>
-        <span id="boardDataTabTopBarExtraInfoEvaluation">
+      let stockfish_extra = <React.Fragment key="stockfishExtraFragment">
+        <span id="boardDataTabTopBarExtraInfoEvaluation" key="boardDataTabTopBarExtraInfoEvaluation">
           {(() => {
               if(this.props.stockfish_evaluation === undefined){
                   return "-"
@@ -105,7 +105,7 @@ class BoardData extends Component {
         </span>
         &nbsp;
         {"(" + this.props.stockfish_calculated_depth + "/" + this.props.stockfish.depth + ")"}
-      </>
+      </React.Fragment>
 
       tabs.push(tabStockfish)
       extra_info_bar.push(stockfish_extra)

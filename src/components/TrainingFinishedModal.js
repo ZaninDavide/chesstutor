@@ -5,11 +5,11 @@ import Translator from "./Translator"
 let varis_str = ""
 
 class TrainingFinishedModal extends Component {
+/*
     constructor(props) {
         super(props)
-        // this.onDoneClick = this.onDoneClick.bind(this);
+        this.onDoneClick = this.onDoneClick.bind(this);
     }
-/*
     onDoneClick() {
         if (this.props.op_index) {
             this.props.history.push("/openings/" + this.props.op_index)
