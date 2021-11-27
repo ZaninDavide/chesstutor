@@ -340,62 +340,6 @@
   }
 }
 
-/* ---------------------------- PRINT ---------------------------- */
-
-@media print{
-
-  #App{
-    display: none;
-  }
-  
-  @page{ 
-      size: auto;   /* auto is the initial value */ 
-      /* this affects the margin in the printer settings */ 
-      margin: 20mm 20mm 20mm 20mm;  
-  }
-
-  #sheet {
-    column-count: 2;
-    height: 100%;
-    font-family: "Segoe UI", "Arial", "Calibri", "Roboto";
-  }
-
-  #sheet p{
-    text-align: justify;
-  }
-
-  /*#sheet .lineMoves{
-    font-weight: bold;
-  }*/
-
-  #sheet .boardContainerPDF{
-    width: 100%;
-    text-align: center;
-  }
-
-  #sheet .boardGridPDF{
-    position: relative;
-  }
-
-  #sheet .boardSVG_PDF{
-    width: 60mm;
-  }
-
-  #sheet .piecePDF{
-    position: absolute;
-    width: calc(60mm / 8);
-  }
-
-  #sheet #watermarkPDF{
-    font-size: 10px;
-    text-align: right;
-  }
-
-  #sheet .inlineCommentPDF{
-    font-weight: normal;
-  }
-} 
-
 /* ---------------------------- BUTTONS ---------------------------- */
 
 button {

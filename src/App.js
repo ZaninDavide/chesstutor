@@ -21,6 +21,7 @@ import Notification from "./components/Notification"
 import "./styles/App.css" // css by CLASSES + MAIN COMPONENTS
 import "./styles/Elements.css" // css by ID + SECONDARY COMPONENTS
 import "./styles/Modal.css"
+import "./styles/Print.css" // css by CLASSES + MAIN COMPONENTS
 import { LanguageProvider } from "./components/LanguageContext"
 import { shuffle } from "./utilities/shuffle"
 
@@ -1056,6 +1057,8 @@ class App extends Component {
   /* ---------------------------- RENDER ---------------------------- */
   render() {
     let targets_list = this.get_smart_training_targets()
+
+    console.log(this.state.user_ops)
 
     const opsListPage = ({ history }) => <OpsListPage
       ops={this.state.user_ops}

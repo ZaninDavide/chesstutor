@@ -1,0 +1,198 @@
+/* ---------------------------- PRINT ---------------------------- */
+
+@media print{
+
+    #App{
+      display: none;
+    }
+    
+    @page{ 
+        size: auto;   /* auto is the initial value */ 
+        /* this affects the margin in the printer settings */ 
+        margin: 20mm 20mm 20mm 20mm;
+
+    }
+  
+    #sheet {
+      column-count: 2;
+      column-gap: 15mm;
+      height: 100%;
+      width: 100%;
+      font-family: var(--textFont);
+    }
+  
+    #sheet p{
+      text-align: justify;
+    }
+  
+    #sheet .boardContainerPDF{
+      width: 100%;
+      text-align: center;
+      margin: 3mm;
+    }
+  
+    #sheet .boardGridPDF{
+      position: relative;
+    }
+  
+    #sheet .boardSVG_PDF{
+      width: 40mm;
+    }
+    
+    #sheet .boardGridPDF::after{
+      content: "";
+      display: inline-block;
+      box-sizing: border-box;
+      position: relative;
+      left: 1mm;
+      bottom: 37mm;
+      border: 0.1mm solid black;
+      width: 2mm;
+      height: 2mm;
+      border-radius: 0.5mm;
+    }
+
+    #sheet .boardGridPDF.rotated.black_to_move::after{
+      left: 1mm;
+      bottom: 37mm;
+      width: 0mm;
+      height: 0mm;
+      border: 1mm solid black;
+    }
+    #sheet .boardGridPDF.rotated.white_to_move::after{
+      left: 1mm;
+      bottom: 1mm;
+    }
+
+    #sheet .boardGridPDF:not(.rotated).black_to_move::after{
+      left: 1mm;
+      bottom: 1mm;
+      width: 0mm;
+      height: 0mm;
+      border: 1mm solid black;
+    }
+    #sheet .boardGridPDF:not(.rotated).white_to_move::after{
+      left: 1mm;
+      bottom: 37mm;
+    }
+
+
+
+    #sheet .piecePDF{
+      position: absolute;
+      width: calc(40mm / 8);
+    }
+  
+    #sheet .pdf_inline_comment{
+      font-weight: normal;
+      font-style: italic;
+    }
+
+    #sheet .pdf_inline_comment:not(:last-child){
+      margin-right: 1.5mm;
+    }
+  
+    #sheet .mono_line .pdf_inline_comment:nth-last-child(2){
+      margin-right: 0;
+    }
+
+    #sheet .moves_container:only-child {
+      width: 100%;
+    }
+    
+    #sheet .moves_container {
+      box-sizing: border-box;
+      display: block;
+    }
+  
+    #sheet .pdf_node {
+      width: 100%;
+      box-sizing: border-box;
+      padding-left: 2mm;
+      border-left: 1px solid black;
+      border-radius: 3px;
+      margin-top: 3mm;
+      margin-bottom: 3mm;
+    }
+  
+    #sheet .move_san_container {
+      margin-right: 1mm;
+    }
+
+    #sheet .move_san_container.numbered_move:not(.starter_move):not(:first-child) {
+      margin-left: 2mm;
+    }
+
+    #sheet .move_san_container.inline_commented_move {
+      margin-right: 1mm;
+    }
+
+    /* #sheet .move_san_container:not(.starter_move) .move_san_number { */
+    #sheet .move_san_number {
+      font-size: 8pt;
+    }
+  
+    #sheet .move_san {
+      /* font-weight: bold; */
+      word-break: keep-all;
+      display: inline-block;
+    }
+  
+    #sheet .pdf_comment {
+      display: block;
+      text-align: justify;
+      padding-left: 2mm;
+      margin-top: 2mm;
+      margin-bottom: 2mm;
+    }
+    
+    #sheet .chessText{
+      font-family: chess, sans-serif;
+      font-weight: normal !important;
+    }
+  
+    #sheet h1 {
+      font-size: 18pt;
+    }
+  
+    #sheet h2 {
+      font-size: 14pt;
+    }
+  
+    #sheet {
+      font-size: 10pt;
+    }
+
+    #sheet .mono_line {
+      margin-right: 2mm;
+    }
+    
+    #sheet .mono_line:not(.starter_mono_line) {
+      margin-left: 2mm;
+    }
+
+    #sheet .mono_line .move_san_container:nth-last-child(2) {
+      margin-right: 0 !important;
+    }
+
+    #sheet .mono_line .move_san_container:nth-child(2) {
+      margin-left: 0 !important;
+    }
+
+    #sheet .mono_line .mono_line_bracket_open::before {
+        content: "(";
+        font-size: 14px;
+        position: relative;
+        display: inline-block;
+        height: 0px;
+    }
+
+    #sheet .mono_line .mono_line_bracket_close::before {
+        content: ")";
+        font-size: 14px;
+        position: relative;
+        display: inline-block;
+        height: 0px;
+    }
+
+}   

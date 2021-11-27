@@ -7,11 +7,25 @@ class CommentModal extends Component {
   constructor(props) {
     super(props)
     this.state = {
+      last_text_received: "",
       text: this.props.getComment ? this.props.getComment(this.props.op_index, this.props.json_moves) : "",
-      invertDrawBoardPDF: false
+      invertDrawBoardPDF: false,
+      now_visible: false,
     }
     this.onDone = this.onDone.bind(this);
     this.close = this.close.bind(this);
+  }
+
+  static getDerivedStateFromProps(props, state) {
+    if(props.visible){
+      const comment = props.getComment ? props.getComment(props.op_index, props.json_moves) : ""
+      return {
+        text: state.last_text_received !== comment ? comment : state.text,
+        last_text_received: comment,
+        now_visible: true,
+        invertDrawBoardPDF: !state.now_visible ? false : state.invertDrawBoardPDF
+      }
+    }
   }
 
   onDone() {
@@ -24,15 +38,6 @@ class CommentModal extends Component {
       this.props.setDrawBoardPDF(this.props.op_index, this.props.json_moves, value)
     }
     this.close()
-  }
-
-  UNSAFE_componentWillReceiveProps(props){
-    if(this.props.visible !== props.visible && props.visible){
-      this.setState( {
-        text: this.props.getComment ? this.props.getComment(this.props.op_index, this.props.json_moves) : "",
-        invertDrawBoardPDF: false
-      })
-    }
   }
 
   close() {
