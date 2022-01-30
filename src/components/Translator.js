@@ -94,6 +94,9 @@ const languages = {
     "It's okay. Find another good move.": "It's okay. Find another good move.",
     "You don't need to train any more for today.": "You don't need to train any more for today.",
     "discard_mail": "Do you really want to delete this message?",
+    "Show position evaluation": "Show position evaluation",
+    "Show best move": "Show best move",
+    "In-cloud analisys": "In-cloud analisys (lichess.org)"
   },
   ita: {
     Openings: "Aperture",
@@ -187,6 +190,9 @@ const languages = {
     "It's okay. Find another good move.": "Va bene. Trova un'alternativa.",
     "You don't need to train any more for today.": "Per oggi hai finito, non serve che ti alleni ulteriormente.",
     "discard_mail": "Sei sicuro di voler eliminare questo messaggio?",
+    "Show position evaluation": "Valuta posizione",
+    "Show best move": "Mostra la mossa migliore",
+    "In-cloud analisys": "Analisi nel cloud (lichess.org)"
   }
 }
 

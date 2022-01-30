@@ -79,32 +79,25 @@ class BoardData extends Component {
     if (this.props.tabs.indexOf("stockfish") !== -1) {
       const tabStockfish = <StockfishUI key="stockfishUI"
         stockfish={this.props.stockfish}
-        stockfish_find_best_moves={this.props.stockfish_find_best_moves}
-        stockfish_evaluate={this.props.stockfish_evaluate}
-        stockfish_evaluation={this.props.stockfish_evaluation}
-        switch_stockfish={this.props.switch_stockfish}
-        stockfish_chosen_move={this.props.stockfish_chosen_move}
-        switch_auto_eval={this.props.switch_auto_eval}
-        switch_auto_best_move={this.props.switch_auto_best_move}
-        set_stockfish_depth={this.props.set_stockfish_depth}
         get_fen={this.props.get_fen}
         board_mode={this.props.board_mode}
+
+        stockfish_switch_show_best={this.props.stockfish_switch_show_best}
+        stockfish_switch_show_eval={this.props.stockfish_switch_show_eval}
+        stockfish_set_depth={this.props.stockfish_set_depth}
+        stockfish_switch_use_lichess_cloud={this.props.stockfish_switch_use_lichess_cloud}
       />
 
       let stockfish_extra = <React.Fragment key="stockfishExtraFragment">
         <span id="boardDataTabTopBarExtraInfoEvaluation" key="boardDataTabTopBarExtraInfoEvaluation">
-          {(() => {
-              if(this.props.stockfish_evaluation === undefined){
-                  return "-"
-              }else if(isNaN(this.props.stockfish_evaluation)){
-                  return "#"
-              }else{
-                  return this.props.stockfish_evaluation > 0 ? ("+"+this.props.stockfish_evaluation) : this.props.stockfish_evaluation 
-              }
-          })()}
+          {this.props.stockfish.show_eval ? this.props.stockfish.eval : null}
         </span>
         &nbsp;
-        {"(" + this.props.stockfish_calculated_depth + "/" + this.props.stockfish.depth + ")"}
+        {
+          this.props.stockfish.show_eval || this.props.stockfish.show_best ? (
+            "(" + this.props.stockfish.calculated_depth + "/" + this.props.stockfish.depth + ")"
+          ) : null
+        }
       </React.Fragment>
 
       tabs.push(tabStockfish)

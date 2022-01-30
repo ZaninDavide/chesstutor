@@ -1968,7 +1968,7 @@ var Chess = function(fen) {
         }
         
       } else if (typeof move === 'object') {
-        var moves = generate_moves();
+        var moves = generate_moves(options);
 
         /* convert the pretty move object to an ugly move object */
         for (var i = 0, len = moves.length; i < len; i++) {

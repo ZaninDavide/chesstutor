@@ -81,6 +81,7 @@
   --onModalBack: #eee;
   --cardButtonsBack: #fff;
   --cardButtonsHover: #f7f7f7;
+  --hoverBookTable: rgb(226, 226, 226);
 }
 
 .darkTheme, .autoTheme {
@@ -111,6 +112,7 @@
   --onModalBack: #252525;
   --cardButtonsBack: #252525;
   --cardButtonsHover: #2c2c2c;
+  --hoverBookTable: #1d1d1d;
 }
 
 @media (prefers-color-scheme: light) {
@@ -142,7 +144,8 @@
     --onModalBack: #eee;
     --cardButtonsBack: #fff;
     --cardButtonsHover: #f7f7f7;
-  }
+    --hoverBookTable: rgb(226, 226, 226);
+}
 }
 
 /* ---------------------------- CONTAINERS ---------------------------- */

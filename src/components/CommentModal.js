@@ -26,6 +26,7 @@ class CommentModal extends Component {
         invertDrawBoardPDF: !state.now_visible ? false : state.invertDrawBoardPDF
       }
     }
+    return null;
   }
 
   onDone() {

@@ -861,7 +861,7 @@
 }
 
 #bookTable tr:hover:not(#titleLineBookUI):not(#filterLineBookUI){
-  background-color: var(--onBack);
+  background-color: var(--hoverBookTable);
 }
 
 #bookTable .bookTableNumber{
@@ -1027,26 +1027,31 @@
   transition: transform 0.25s ease, opacity 0.25s linear;
 }
 
-#bookQueryTable {
+.togglePanel {  
+  height: fit-content !important;
+  border-left: var(--borderSize) var(--onBack) solid;
+  margin-left: var(--mediumMargin);
+  padding: var(--smallMargin);
+
   transition: transform 0.25s ease, opacity 0.25s linear;
   transform-origin: top;
   opacity: 1;
 }
 
-#archive.archiveClosed, #bookQueryTable.bookQueryTable_hidden{
+#archive.archiveClosed, .togglePanel_hidden{
   overflow: visible;
   height: 0px;
   transform: scaleY(0);
   opacity: 0;
 }
 
-#archive_chevron, #filter_chevron {
+#archive_chevron, .togglePanelChevron {
   display: inline-block;
   transition: transform 0.25s ease;
   transform: rotate(0deg);
   cursor: pointers;
 }
 
-#archive_chevron.archive_chevron_rotated, #filter_chevron.filter_chevron_rotated{
+#archive_chevron.archive_chevron_rotated, .panel_chevron_rotated{
   transform: rotate(180deg);
 }

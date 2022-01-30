@@ -1,5 +1,6 @@
 import React, { Component } from "react"
 import { make_san_nicer_html } from "../utilities/san_parsing"
+import TogglePanel from "./TogglePanel";
 import Translator from "./Translator";
 
 const WHITE = -100
@@ -15,7 +16,6 @@ class BookUI extends Component {
             opQuery: null,
             variQuery: null,
             subnameQuery: null,
-            filtersVisible: false,
         }
 
         this.getOptions = this.getOptions.bind(this);
@@ -189,68 +189,61 @@ class BookUI extends Component {
                     </tr>
                 </tbody>
             </table>
-            <br key="br"/>
-            <h1 key="titleFilters" onClick={() => this.setState(old => {return{filtersVisible: !old.filtersVisible}})}>
-                <div
-                id="filter_chevron" 
-                style={{"textTransform": "none"}} 
-                className={"iconText" + (this.state.filtersVisible ? " filter_chevron_rotated" : "")}
-                >expand_more</div>
-                <Translator key="translatorFilters" text={"Filters"}/>
-            </h1>
-            <table id="bookQueryTable" key="bookQueryTable" className={this.state.filtersVisible ? "bookQueryTable_visible" : "bookQueryTable_hidden"}><tbody>
-                <tr key="bookQueryTableTrOpening"><td><Translator key="translatorOpening" text={"Opening"}/>:</td><td>
-                    <select className="bookQuerySelector opQuery" key="bookQueryTableOpeningSelector"
-                        onChange={e => {
-                            if(e.target.value === WHITE.toString()){
-                                this.setState({ opQuery: true, variQuery: null, subnameQuery: null })
-                            }else if(e.target.value === BLACK.toString()){
-                                this.setState({ opQuery: false, variQuery: null, subnameQuery: null })
-                            }else if(e.target.value === ALL.toString()){
-                                this.setState({ opQuery: null, variQuery: null, subnameQuery: null })
-                            }else{
-                                this.setState({ opQuery: parseInt(e.target.value), variQuery: null, subnameQuery: null })
-                            }
-                        }} 
-                        value={queryToValue(this.state.opQuery)}
-                    >
-                        <option value={ALL} className="bookQueryOption" key="bookQueryOptionOpAll">{"⋅ All ⋅"}</option>
-                        <option value={WHITE} className="bookQueryOption" key="bookQueryOptionOpWhite">{"⋅ White ⋅"}</option>
-                        <option value={BLACK} className="bookQueryOption" key="bookQueryOptionOpBlack">{"⋅ Black ⋅"}</option>
-                        {this.openingOptions()}
-                    </select>    
-                </td></tr>
-                <tr key="bookQueryTableTrLine"><td><Translator key="translatorLine" text={"Line"}/>:</td><td>
-                    <div style={{display: "block"}}>
-                        <select className="bookQuerySelector variQuery" key="bookQuerySelectorLine"
+            <TogglePanel title="Filters" panelName="bookFiltersPanel">
+                <table id="bookQueryTable" key="bookQueryTable"><tbody>
+                    <tr key="bookQueryTableTrOpening"><td><Translator key="translatorOpening" text={"Opening"}/>:</td><td>
+                        <select className="bookQuerySelector opQuery" key="bookQueryTableOpeningSelector"
                             onChange={e => {
-                                if(e.target.value === ALL.toString()){
-                                    this.setState({ variQuery: null, subnameQuery: null  })
+                                if(e.target.value === WHITE.toString()){
+                                    this.setState({ opQuery: true, variQuery: null, subnameQuery: null })
+                                }else if(e.target.value === BLACK.toString()){
+                                    this.setState({ opQuery: false, variQuery: null, subnameQuery: null })
+                                }else if(e.target.value === ALL.toString()){
+                                    this.setState({ opQuery: null, variQuery: null, subnameQuery: null })
                                 }else{
-                                    this.setState({ variQuery: e.target.value, subnameQuery: null  })
+                                    this.setState({ opQuery: parseInt(e.target.value), variQuery: null, subnameQuery: null })
                                 }
                             }} 
-                            value={queryToValue(this.state.variQuery)}
+                            value={queryToValue(this.state.opQuery)}
                         >
-                            <option value={ALL} className="bookQueryOption" key="bookQueryOptionLineAll">{"⋅ All ⋅"}</option>
-                            {this.groupOptions()}
-                        </select>
-                        <select className="bookQuerySelector subnameQuery" key="bookQuerySelectorSubname"
-                            onChange={e => {
-                                if(e.target.value === ALL.toString()){
-                                    this.setState({ subnameQuery: null })
-                                }else{
-                                    this.setState({ subnameQuery: e.target.value })
-                                }
-                            }} 
-                            value={queryToValue(this.state.subnameQuery)}
-                        >
-                            <option value={ALL} className="bookQueryOption" key="bookQueryOptionSubnameAll">{"⋅ All ⋅"}</option>
-                            {this.lineOptions()}
-                        </select>
-                    </div>
-                </td></tr>
-            </tbody></table>
+                            <option value={ALL} className="bookQueryOption" key="bookQueryOptionOpAll">{"⋅ All ⋅"}</option>
+                            <option value={WHITE} className="bookQueryOption" key="bookQueryOptionOpWhite">{"⋅ White ⋅"}</option>
+                            <option value={BLACK} className="bookQueryOption" key="bookQueryOptionOpBlack">{"⋅ Black ⋅"}</option>
+                            {this.openingOptions()}
+                        </select>    
+                    </td></tr>
+                    <tr key="bookQueryTableTrLine"><td><Translator key="translatorLine" text={"Line"}/>:</td><td>
+                        <div style={{display: "block"}}>
+                            <select className="bookQuerySelector variQuery" key="bookQuerySelectorLine"
+                                onChange={e => {
+                                    if(e.target.value === ALL.toString()){
+                                        this.setState({ variQuery: null, subnameQuery: null  })
+                                    }else{
+                                        this.setState({ variQuery: e.target.value, subnameQuery: null  })
+                                    }
+                                }} 
+                                value={queryToValue(this.state.variQuery)}
+                            >
+                                <option value={ALL} className="bookQueryOption" key="bookQueryOptionLineAll">{"⋅ All ⋅"}</option>
+                                {this.groupOptions()}
+                            </select>
+                            <select className="bookQuerySelector subnameQuery" key="bookQuerySelectorSubname"
+                                onChange={e => {
+                                    if(e.target.value === ALL.toString()){
+                                        this.setState({ subnameQuery: null })
+                                    }else{
+                                        this.setState({ subnameQuery: e.target.value })
+                                    }
+                                }} 
+                                value={queryToValue(this.state.subnameQuery)}
+                            >
+                                <option value={ALL} className="bookQueryOption" key="bookQueryOptionSubnameAll">{"⋅ All ⋅"}</option>
+                                {this.lineOptions()}
+                            </select>
+                        </div>
+                    </td></tr>
+                </tbody></table>
+            </TogglePanel>
         </React.Fragment>
         
     }

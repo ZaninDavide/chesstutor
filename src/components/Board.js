@@ -18,14 +18,11 @@ import Translator from "../components/Translator"
 import Ripples from "react-ripples"
 import BoardData from "../components/BoardData"
 import Arrows from "../components/Arrows"
+import Stockfish from "../stockfish_uci/stockfish_uci"
 
 import "../styles/Board.css"
 
-class Board extends Component { 
-  stockfish_worker = undefined;
-  stockfish_asked = 0;
-  stockfish_request_time = new Date();
-
+class Board extends Component {
   clientX_down = 0
   clientY_down = 0
   left_mouse_down = false
@@ -35,9 +32,17 @@ class Board extends Component {
   move_audio
   capture_audio
   error_audio
-
+  
+  engine = new Stockfish(
+    this.stockfish_set_eval.bind(this), 
+    this.stockfish_set_best.bind(this),
+    this.stockfish_set_calculated_depth.bind(this),
+    this.setArrows.bind(this),
+    this.get_use_lichess_cloud.bind(this)
+  )
   constructor(props) {
     super(props)
+
     this.state = {
       game: new Chess(),
       json_moves: [], // moves' history in the correct format (see vari.moves)
@@ -56,11 +61,19 @@ class Board extends Component {
         name: "",
         subname: "",
       },
-      stockfish_evaluation: undefined,
-      stockfish_calculated_depth: 0,
       smallBoard: false,
       smart_training_errors_counter: 0,
       smart_training_error_made_here: false,
+      stockfish: {
+        active: false,
+        depth: 8,
+        show_eval: false,
+        show_best: false,
+        use_lichess_cloud: true,
+        eval: 0,
+        best: "",
+        calculated_depth: 0,
+      },
     }
     /* functions */
     this.newGame = this.newGame.bind(this)
@@ -90,18 +103,14 @@ class Board extends Component {
     this.forward_next_button_click = this.forward_next_button_click.bind(this)
     this.setArrows = this.setArrows.bind(this)
     this.makeCongrats = this.makeCongrats.bind(this)
-    this.start_stockfish = this.start_stockfish.bind(this)
-    this.close_stockfish = this.close_stockfish.bind(this)
-    this.stockfish_move = this.stockfish_move.bind(this)
-    this.stockfish_find_best_moves = this.stockfish_find_best_moves.bind(this)
-    this.stockfish_evaluate = this.stockfish_evaluate.bind(this)
-    this.stockfish_automatics = this.stockfish_automatics.bind(this)
-    this.stockfish_go_deeper = this.stockfish_go_deeper.bind(this)
-    this.get_lichess_cloud_evaluation = this.get_lichess_cloud_evaluation.bind(this)
     this.try_undo_n_times = this.try_undo_n_times.bind(this)
-    this.resetBoard = this.resetBoard.bind(this);
-    this.onStart = this.onStart.bind(this);
-    this.keydown_event = this.keydown_event.bind(this);
+    this.resetBoard = this.resetBoard.bind(this)
+    this.onStart = this.onStart.bind(this)
+    this.keydown_event = this.keydown_event.bind(this)
+    this.stockfish_switch_show_eval = this.stockfish_switch_show_eval.bind(this)
+    this.stockfish_switch_show_best = this.stockfish_switch_show_best.bind(this)
+    this.stockfish_set_depth = this.stockfish_set_depth.bind(this)
+    this.stockfish_switch_use_lichess_cloud = this.stockfish_switch_use_lichess_cloud.bind(this)
     /* refs */
     this.selectedPiece = React.createRef()
     
@@ -121,7 +130,7 @@ class Board extends Component {
   }
 
   componentWillUnmount() {
-    this.close_stockfish()    
+    this.engine.quit()
     window.removeEventListener("keydown", this.keydown_event)
   }
 
@@ -182,51 +191,16 @@ class Board extends Component {
             getComment={this.props.getComment}
             getDrawBoardPDF={this.props.getDrawBoardPDF}
             board_mode={this.props.mode}
-            stockfish={this.props.stockfish}
-            switch_stockfish={() => {
-              this.props.switch_stockfish(() => {
-                if (!this.is_my_turn()) {
-                  this.stockfish_move(this.state.json_moves)
-                }
-              })
-            }}
-            switch_auto_eval={() => {
-              this.setState({stockfish_evaluation: undefined})
-              this.props.switch_auto_eval(() => {
-                if (this.props.stockfish) {
-                  if (this.props.stockfish.auto_eval) {
-                    this.stockfish_evaluate(this.state.json_moves)
-                  }
-                }
-              })
-            }}
-            switch_auto_best_move={() => {
-              this.props.switch_auto_best_move(() => {
-                if (this.props.stockfish) {
-                  if (this.props.stockfish.auto_best_move) {
-                    this.stockfish_find_best_moves(this.state.json_moves)
-                  } else {
-                    this.setArrows([])
-                    this.setState({ stockfish_chosen_move: undefined })
-                  }
-                }
-              })
-            }}
-            stockfish_find_best_moves={() => this.stockfish_find_best_moves(this.state.json_moves)}
-            stockfish_evaluate={() => this.stockfish_evaluate(this.state.json_moves)}
-            stockfish_evaluation={this.state.stockfish_evaluation}
-            stockfish_chosen_move={this.state.stockfish_chosen_move}
-            stockfish_calculated_depth={this.state.stockfish_calculated_depth}
-            set_stockfish_depth={depth => {
-              this.props.set_stockfish_depth(depth)
-              if (this.props.stockfish.auto_eval || this.props.stockfish.auto_best_move) {
-                this.stockfish_go_deeper(depth)
-              }
-            }}
             get_correct_moves_data_book={this.props.get_correct_moves_data_book}
             book_move={move => this.make_move(move)}
             get_fen={this.state.game.fen}
             try_undo_n_times={this.try_undo_n_times}
+
+            stockfish={this.state.stockfish}
+            stockfish_switch_show_best={this.stockfish_switch_show_best}
+            stockfish_switch_show_eval={this.stockfish_switch_show_eval}
+            stockfish_set_depth={this.stockfish_set_depth}
+            stockfish_switch_use_lichess_cloud={this.stockfish_switch_use_lichess_cloud}
           />
         </div>
 
@@ -415,19 +389,15 @@ class Board extends Component {
       /*const turn = this.state.game.load(fen)*/
 
       let moves = JSON.parse(this.props.startMoves);
-      moves.forEach(m => this.state.game.move(m.san))
-      this.setState({ json_moves: moves })
+      moves.forEach(m => this.state.game.move(m.san));
+      this.engine.set_moves(moves);
+      this.setState({ json_moves: moves });
       this.forceUpdate()
     }
 
     // pc make first move if the player plays as black
     if (this.props.playColor === "black") {
-      if (this.props.mode === AGAINST_STOCKFISH_MODE) {
-        if(!this.props.stockfish) { console.log("Board: onStart() error. stockfish missing"); return false }
-        this.stockfish_move([])
-      } else {
-        this.pc_move([])
-      }
+      this.pc_move([])
     }
   }
 
@@ -497,7 +467,6 @@ class Board extends Component {
 
     this.play_move_sound(move)
     this.setArrows([])
-    this.setState({ stockfish_evaluation: undefined, stockfish_chosen_move: undefined, setCalculatedDepth: 0 })
 
     return new Promise(res => {
       this.setState(old => {
@@ -511,10 +480,14 @@ class Board extends Component {
           promotion: move.promotion,
           san: move.san,
         })
+        
         // store moves_list to return it later
         res(moves_list)
 
-        this.stockfish_automatics(moves_list)
+        this.engine.move(move.from + move.to + (move.promotion || ""))
+        if(this.state.stockfish.show_best || this.state.stockfish.show_eval) {
+          this.engine.go()
+        }
 
         // if the move is not the one you came back from clear the history otherwise remove that move from the history
         let clearMovesForward = true
@@ -606,16 +579,9 @@ class Board extends Component {
         // MAKE THE MOVE
         let moves_list_after = await this.make_move(move_data)
 
-        // If you are not playing for both sides the computer or stockfish has to move 
         if (this.props.playColor !== "both") {
-          if (mode === AGAINST_STOCKFISH_MODE) {
-            if(!this.props.stockfish) { console.log("Board: try_move() error. stockfish missing"); return false }
-            // If stockfish is on and is allowed to make moves
-            this.stockfish_move(moves_list_after)
-          } else {
-            // Let the computer figure out what to move next 
-            this.pc_move(moves_list_after, this.props.vari_index)
-          }
+          // Let the computer figure out what to move next 
+          this.pc_move(moves_list_after, this.props.vari_index)
         }
 
       } else if (is_this_move_smart_alternative) {
@@ -662,6 +628,11 @@ class Board extends Component {
       let move = this.state.game.undo()
       // remove arrows in case there were any
       this.setArrows([])
+      // ask for stockfish evaluation if needed
+      this.engine.undo()
+      if(this.state.stockfish.show_best || this.state.stockfish.show_eval) {
+        this.engine.go()
+      }
       // pop the move out of the list of all moves of the game 
       this.setState(old => {
         // add this move to moves_forward
@@ -669,12 +640,9 @@ class Board extends Component {
         let moves_list = old.json_moves
         moves_list.pop()
 
-        this.stockfish_automatics(moves_list)
-
         return {
           json_moves: moves_list,
           moves_forward: [move, ...old.moves_forward],
-          stockfish_chosen_move: undefined
         }
       })
     } else {
@@ -712,12 +680,9 @@ class Board extends Component {
         moves_list.pop()
       }
 
-      this.stockfish_automatics(moves_list)
-
       return {
         json_moves: moves_list,
         moves_forward: [...moves, ...old.moves_forward],
-        stockfish_chosen_move: undefined,
         arrows: []
       }
 
@@ -807,263 +772,59 @@ class Board extends Component {
     }
   }
 
-  close_stockfish() {
-    if (this.stockfish_worker) {
-      this.stockfish_worker.terminate()
-    }
-    this.stockfish_worker = 0;
-    this.stockfish_worker = undefined;
+  /* ---------------------------- STOCKFISH UI ---------------------------- */
+
+  stockfish_switch_show_eval() {
+    this.setState(old => {
+      return {stockfish: {...old.stockfish, show_eval: !old.stockfish.show_eval}
+    }}, () => {
+      if(this.state.stockfish.show_eval) this.engine.go()
+    })
   }
 
-  /* ---------------------------- STOCKFISH AND CLOUD EVALUATION ---------------------------- */
-
-  start_stockfish() {
-
-    if (!(typeof (Worker))) {
-      console.log("Workers needs to be supported in order to use Stockfish.") // TODO: notify the user
-      return false;
-    } 
-
-
-    let wasmSupported = typeof WebAssembly === 'object' && WebAssembly.validate(Uint8Array.of(0x0, 0x61, 0x73, 0x6d, 0x01, 0x00, 0x00, 0x00));
-
-    this.stockfish_worker = new Worker(wasmSupported ? '/stockfish/stockfish.wasm.js' : '/stockfish/stockfish.js');
-
-    let make_this_move = move => this.make_move(move)
-    let is_my_turn_now = () => this.is_my_turn(this.state.game.turn())
-    let stockfish_arrows = () => this.props.stockfish ? this.props.stockfish.show_arrows : false // should always exists
-    let setArrows = arr => this.setArrows(arr)
-    let setCalculatedDepth = value => this.setState({ stockfish_calculated_depth: value })
-    let setEvaluation = value => this.setState({ stockfish_evaluation: value })
-    let setChosenMove = value => this.setState({ stockfish_chosen_move: value })
-    let wait_time = () => this.props.wait_time
-    let auto_eval = () => this.props.stockfish.auto_eval
-    let auto_best_move = () => this.props.stockfish.auto_best_move
-    let eval_color_factor = () => this.state.game.turn() === "w" ? 1 : -1 
-
-    this.stockfish_worker.addEventListener('message', async function (event) {
-      console.log(event.data)
-
-        // MAKE THE BEST MOVE
-        if (event.data.startsWith("bestmove ")) {
-          let move = event.data.split(" ")[1]
-          if (this.stockfish_worker === 1 && !is_my_turn_now()) {
-            // console.log("BEST " + move)
-            let remaining_time = Math.max(wait_time() - (new Date() - this.stockfish_request_time), 0)
-            if (move.length === 4) {
-              setTimeout(() => {
-                make_this_move({
-                  from: move[0] + move[1],
-                  to: move[2] + move[3]
-                })
-              }, remaining_time)
-            } else if (move.length === 5) {
-              setTimeout(() => {
-                make_this_move({
-                  from: move[0] + move[1],
-                  to: move[2] + move[3],
-                  promotion: move[4]
-                })
-              }, remaining_time)
-            }
-            else {
-              console.log("Unknown move format: " + move)
-            }
-          } else {
-            console.log("LOST CALCULATION " + move)
-          }
-          this.stockfish_worker -= 1
-
-          // SHOW WHAT STOCKFISH IS THINKING
-        } else if (event.data.startsWith("info depth ") && event.data.indexOf("currmove ") === -1 && stockfish_arrows()) {
-
-          let depth = parseInt(event.data.split(" ")[2])
-          setCalculatedDepth(depth)
-
-          if(auto_eval()) {
-            let splitted = event.data.split("cp ")
-            let data = splitted[splitted.length - 1].split(" ")
-            if(data.length >= 1){
-              setEvaluation(parseInt(data[0]) / 100 * eval_color_factor())
-            }
-          }
-
-          if(auto_best_move()){
-            let splitted = event.data.split("pv ")
-            let moves = splitted[splitted.length - 1].split(" ").map(m => {
-              return {
-                from: m[0] + m[1],
-                to: m[2] + m[3]
-              }
-            })
-
-            // if it contains currmove
-            /*
-            let splitted = event.data.slice(currmove, event.data.length).split(" ")
-            moves = [{
-              from: splitted[1][0] + splitted[1][1],
-              to: splitted[1][2] + splitted[1][3]
-            }]
-            */
-  
-            setArrows(moves ? [moves[0]] : [])
-            setChosenMove(moves ? moves[0].from + "-" + moves[0].to : undefined)
-          
-          }
-
-
-          // EVALUATE POSITION
-        } else if (event.data.startsWith("Total Evaluation: ")) {
-          let splitted = event.data.split(" ")
-          if (splitted.length >= 3) {
-            let value = splitted[2]
-            setEvaluation(parseFloat(value))
-          }
-        } else if(event.data.startsWith("uciok")){
-          this.stockfish_worker.postMessage("setoption name UCI_AnalyseMode value true");
-          this.stockfish_worker.postMessage("setoption name Analysis Contempt value Off");
-        }
-    });
-
-    this.stockfish_worker.postMessage("uci")
-
-  }
-
-  stockfish_move(json_moves) {
-    if (!this.stockfish_worker) {
-      this.start_stockfish()
-    }
-
-    this.stockfish_worker.postMessage("stop")
-    this.stockfish_worker.postMessage("ucinewgame")
-
-    if(JSON.stringify(this.state.json_moves) === JSON.stringify(json_moves)){
-      this.stockfish_worker.postMessage("position fen " + this.state.game.fen())
-    }else{
-      this.stockfish_worker.postMessage("position startpos moves " + json_moves.map(c => c.from + c.to + (c.promotion ? c.promotion : "")).join(" "))
-    }
-
-    this.stockfish_worker.postMessage("go depth " + this.props.stockfish.depth)
-
-    this.stockfish_worker += 1
-    if (new Date() - this.stockfish_request_time > 500) {
-      this.stockfish_request_time = new Date()
-    }
-  }
-
-
-  stockfish_go_deeper(depth = this.props.stockfish.depth) {
-    if (!this.stockfish_worker) {
-      return
-    }
-
-    this.stockfish_worker.postMessage("go depth " + depth)
-
-    this.stockfish_worker += 1
-  }
-
-  async get_lichess_cloud_evaluation(json_moves){
-    let fen;
-    let possible_moves;
-
-    if(JSON.stringify(this.state.json_moves) === JSON.stringify(json_moves)){
-      fen = this.state.game.fen()
-      possible_moves = this.state.game.moves()
-    }else{
-      let eval_game = new Chess();
-      json_moves.map(m => eval_game.move(m.san))
-      fen = eval_game.fen()
-      possible_moves = eval_game.moves()
-    }
-
-
-    const en_passant = fen.split(/ /g, )[3]
-    if(en_passant !== "-"){
-      if(possible_moves.filter(m => m.piece === "p" && m.flag === "e").length === 0){
-        fen = fen.replace(" " + en_passant + " ", " - ")
-      }
-    }
-
-    let url = "https://lichess.org/api/cloud-eval?fen=" + fen.replace(/ /g, "%20")
-    let eval_data = await (fetch(url).then(data => data.json()).then(res => res))
-
-    return eval_data
-  }
-
-  async stockfish_find_best_moves(json_moves, lichess_eval_data, depth = this.props.stockfish.depth) {
-    const eval_data = lichess_eval_data ? lichess_eval_data : await this.get_lichess_cloud_evaluation(json_moves)
-    
-    if(eval_data.error || eval_data.depth < depth){
-      if (!this.stockfish_worker) {
-        this.start_stockfish()
-      }
-  
-      this.stockfish_worker.postMessage("stop")
-      this.stockfish_worker.postMessage("ucinewgame")
-      
-      if(JSON.stringify(this.state.json_moves) === JSON.stringify(json_moves)){
-        this.stockfish_worker.postMessage("position fen " + this.state.game.fen())
+  stockfish_switch_show_best() {
+    this.setState(old => {
+      if(old.stockfish.show_best) {
+        return {stockfish: {...old.stockfish, show_best: !old.stockfish.show_best}, arrows: []}
       }else{
-        this.stockfish_worker.postMessage("position startpos moves " + json_moves.map(c => c.from + c.to + (c.promotion ? c.promotion : "")).join(" "))
+        return {stockfish: {...old.stockfish, show_best: !old.stockfish.show_best}}
       }
-
-      this.stockfish_worker.postMessage("go depth " + depth)
-  
-      this.stockfish_worker += 1
-    }else{
-      const move_str = eval_data.pvs[0].moves.split(" ")[0]
-      this.setState({ stockfish_chosen_move: move_str[0] + move_str[1] + "-" + move_str[2] + move_str[3] })
-      this.setArrows([{
-        from: move_str[0] + move_str[1],
-        to: move_str[2] + move_str[3]
-      }])
-    }
-
-
+    }, () => {
+      if(this.state.stockfish.show_best) this.engine.go()
+    })
   }
 
-
-  async stockfish_evaluate(json_moves, lichess_eval_data, depth = this.props.stockfish.depth) {
-    const eval_data = lichess_eval_data ? lichess_eval_data : await this.get_lichess_cloud_evaluation(json_moves)
-
-    if(eval_data.error || eval_data.depth < depth){
-      // evaluate locally
-      if (!this.stockfish_worker) {
-        this.start_stockfish()
+  stockfish_switch_use_lichess_cloud() {
+    this.setState(old => {
+      return {stockfish: {...old.stockfish, use_lichess_cloud: !old.stockfish.use_lichess_cloud}}
+    }, () => {
+      if(this.state.stockfish.show_eval || this.state.stockfish.show_best){
+        this.engine.go()
       }
-  
-      this.stockfish_worker.postMessage("stop")
-      this.stockfish_worker.postMessage("ucinewgame")
-
-      if(JSON.stringify(this.state.json_moves) === JSON.stringify(json_moves)){
-        this.stockfish_worker.postMessage("position fen " + this.state.game.fen())
-      }else{
-        this.stockfish_worker.postMessage("position startpos moves " + json_moves.map(c => c.from + c.to + (c.promotion ? c.promotion : "")).join(" "))
-      }
-
-      // stockfish.postMessage("eval")
-      this.stockfish_worker.postMessage("go depth " + depth)
-    }else{
-      this.setState({ stockfish_evaluation: eval_data.pvs[0].cp / 100, stockfish_calculated_depth: eval_data.depth })
-    }
-
+    })
   }
 
-  async stockfish_automatics(json_moves) {
-    if (this.props.stockfish) {
-      if(this.props.stockfish.auto_eval && this.props.stockfish.auto_best_move){  
-        // evaluate position and find the best move if needed
-        const eval_data = await this.get_lichess_cloud_evaluation(json_moves)
-        this.stockfish_evaluate(json_moves, eval_data)
-        this.stockfish_find_best_moves(json_moves, eval_data)
-      }else if (this.props.stockfish.auto_eval) {
-        // evaluate position if needed
-        this.stockfish_evaluate(json_moves)
-      }else if (this.props.stockfish.auto_best_move && this.is_my_turn()) {
-        // find best move if needed
-        this.stockfish_find_best_moves(json_moves)
-      }
-    }
+  stockfish_set_eval(value) {
+    this.setState(old => {return {stockfish: {...old.stockfish, eval: value}}})
+  }
+
+  stockfish_set_best(value) {
+    this.setState(old => {return {stockfish: {...old.stockfish, best: value}}})
+  }
+
+  stockfish_set_calculated_depth(value) {
+    this.setState(old => {return {stockfish: {...old.stockfish, calculated_depth: value}}})
+  }
+
+  stockfish_set_depth(value) {
+    this.setState(old => {return {stockfish: {...old.stockfish, depth: value}}})
+    const old_depth = this.engine.depth
+    this.engine.set_depth(value)
+    if(old_depth < value && (this.state.stockfish.show_best || this.state.stockfish.show_eval)) this.engine.go()
+  }
+
+  get_use_lichess_cloud() {
+    return this.state.stockfish.use_lichess_cloud
   }
 
   /* ---------------------------- BOARD MANAGEMENT ---------------------------- */
@@ -1425,13 +1186,7 @@ class Board extends Component {
         const moves_list_after = await this.make_move(correct_moves[0])
         // COMPUTER ANSWER IF NECESSARY
         if (this.props.playColor !== "both") {
-          if (this.props.mode === AGAINST_STOCKFISH_MODE) {
-            if(!this.props.stockfish) { console.log("Board: help_button_click() error. stockfish missing"); return false }
-            this.stockfish_move(moves_list_after)
-          } else {
-            // this.stockfish_move(moves_list_after) // TODO ERROR STOCKFISH TEST -------
-            this.pc_move(this.props.op_index, moves_list_after, this.props.vari_index)
-          }
+          this.pc_move(this.props.op_index, moves_list_after, this.props.vari_index)
         }
       }
     })
@@ -1589,8 +1344,10 @@ class Board extends Component {
     })
   }
 
-  setArrows(arrows) {
-    requestAnimationFrame(() => this.setState({ arrows }))
+  setArrows(arrows, check_show_best = false) {
+    if(!check_show_best || this.state.stockfish.show_best){
+      requestAnimationFrame(() => this.setState({ arrows }))
+    }
   }
 
   makeCongrats() {
