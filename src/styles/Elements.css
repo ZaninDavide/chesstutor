@@ -840,44 +840,48 @@
   padding: 0px;
 }
 
-#bookTable {
+.bookTable {
   width: 100%;
   border: 0px;
   border-collapse: collapse;
 }
 
-#bookTable td {
+.bookTable td {
   padding: var(--smallMargin);
   border-bottom: var(--borderSize) solid var(--onBack);
 }
 
-#bookTable tr:not(#titleLineBookUI):not(#filterLineBookUI) {
+.bookTable tr:not(.titleLineBookUI):not(#filterLineBookUI) {
   cursor: pointer;
 }
 
-#bookTable tr#titleLineBookUI {
+.bookTable tr.titleLineBookUI {
   font-weight: bold;
   height: var(--uiElementSmallHeight);
 }
 
-#bookTable tr:nth-child(even){
+.bookTable tr:nth-child(even){
   background-color: var(--hoverBack);
 }
 
-#bookTable tr:hover:not(#titleLineBookUI):not(#filterLineBookUI){
+.bookTable tr:hover:not(.titleLineBookUI):not(#filterLineBookUI){
   background-color: var(--hoverBookTable);
 }
 
-#bookTable .bookTableNumber{
+.bookTable .bookTableNumber{
   width: 35px;
   text-align: right;
 }
 
-#bookTable .bookTableSan{
+.bookTable .bookTableSan{
   color: var(--main);
   font-weight: bold;
   text-align: left;
   max-width: fit-content;
+}
+
+h2.bookTableLabel {
+
 }
 
 #filterLineBookUI td{
@@ -1059,4 +1063,16 @@
 
 #archive_chevron.archive_chevron_rotated, .panel_chevron_rotated{
   transform: rotate(180deg);
+}
+
+.winrateBar {
+  margin-top: 2px;
+  margin-bottom: 2px;
+  width: calc(100% - 2*var(--smallMargin));
+  border-radius: var(--borderRadius);
+  border: 1px solid var(--winrateBarBorderColor);
+  height: 10px !important;
+  margin-right: var(--smallMargin);
+  box-sizing: border-box;
+  opacity: 0.5;
 }

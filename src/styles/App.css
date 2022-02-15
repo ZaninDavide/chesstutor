@@ -82,6 +82,7 @@
   --cardButtonsBack: #fff;
   --cardButtonsHover: #f7f7f7;
   --hoverBookTable: rgb(226, 226, 226);
+  --winrateBarBorderColor: black;
 }
 
 .darkTheme, .autoTheme {
@@ -113,6 +114,7 @@
   --cardButtonsBack: #252525;
   --cardButtonsHover: #2c2c2c;
   --hoverBookTable: #1d1d1d;
+  --winrateBarBorderColor: white;
 }
 
 @media (prefers-color-scheme: light) {
@@ -145,7 +147,8 @@
     --cardButtonsBack: #fff;
     --cardButtonsHover: #f7f7f7;
     --hoverBookTable: rgb(226, 226, 226);
-}
+    --winrateBarBorderColor: black;
+  }
 }
 
 /* ---------------------------- CONTAINERS ---------------------------- */
