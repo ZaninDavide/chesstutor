@@ -13,7 +13,7 @@ class NewVariGroupModal extends Component {
   }
 
   done(){
-    this.props.history.push("/newVariation/" + this.props.op_index + "/" + this.state.new_vari_name)
+    this.props.history.push("/newVariation/" + this.props.op_index + "/" + this.state.new_vari_name.trim())
   }
 
   render() {
@@ -24,6 +24,7 @@ class NewVariGroupModal extends Component {
         close={this.props.close}
         doneButtonText={<span className="impText iconText">add</span>}
         onDoneClick={this.done}
+        disabledDoneButton={this.state.new_vari_name.trim().length === 0}
       >
         {this.props.visible ? 
           <React.Fragment>

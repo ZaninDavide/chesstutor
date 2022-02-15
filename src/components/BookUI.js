@@ -12,12 +12,6 @@ class BookUI extends Component {
     constructor(props) {
         super(props)
 
-        this.state = {
-            opQuery: null,
-            variQuery: null,
-            subnameQuery: null,
-        }
-
         this.getOptions = this.getOptions.bind(this);
         this.openingOptions = this.openingOptions.bind(this);
         this.groupOptions = this.groupOptions.bind(this);
@@ -25,19 +19,18 @@ class BookUI extends Component {
     }
 
     componentDidMount() {
-        const op_index = this.props.match.params.op_index
-        const vari_name = this.props.match.params.vari_name
+        const op_index = this.props.op_index || (this.props.match ? this.props.match.params.op_index : null)
+        const vari_name = this.props.match ? this.props.match.params.vari_name : null
         if (op_index !== undefined && op_index !== null) {
-            console.log(op_index)
-            this.setState({opQuery: parseInt(op_index)})
+            this.props.set_book_query_op_index(parseInt(op_index))
         }
-        if (vari_name !== undefined) {
-            this.setState({variQuery: vari_name})
+        if (vari_name !== undefined && vari_name !== null) {
+            this.props.set_book_query_vari_name(vari_name)
         }
     }
 
     getOptions() {
-        let moves = this.props.get_correct_moves_data_book(this.props.json_moves, this.state.opQuery, this.state.variQuery, this.state.subnameQuery)
+        let moves = this.props.get_correct_moves_data_book(this.props.json_moves, this.props.opQuery, this.props.variQuery, this.props.subnameQuery)
         let number = this.props.json_moves.length
         if(number % 2 !== 0) { 
             number = (Math.floor(number/2) + 1) + " ..."
@@ -121,7 +114,7 @@ class BookUI extends Component {
     }
 
     groupOptions() {
-        let op = this.state.opQuery
+        let op = this.props.opQuery
         if(op === WHITE || op === BLACK || op === null || op === undefined || !this.props.ops[op]) return null;
 
         let vari_names = [] 
@@ -138,10 +131,10 @@ class BookUI extends Component {
     }
 
     lineOptions() {
-        let op = this.state.opQuery
+        let op = this.props.opQuery
         if(op === WHITE || op === BLACK || op === null || op === undefined || !this.props.ops[op]) return null;
 
-        let vari_name = this.state.variQuery
+        let vari_name = this.props.variQuery
         if(vari_name === null || vari_name === undefined) return null;
 
         let subnames = []
@@ -195,16 +188,16 @@ class BookUI extends Component {
                         <select className="bookQuerySelector opQuery" key="bookQueryTableOpeningSelector"
                             onChange={e => {
                                 if(e.target.value === WHITE.toString()){
-                                    this.setState({ opQuery: true, variQuery: null, subnameQuery: null })
+                                    this.props.set_book_query(true, null, null)
                                 }else if(e.target.value === BLACK.toString()){
-                                    this.setState({ opQuery: false, variQuery: null, subnameQuery: null })
+                                    this.props.set_book_query(false, null, null)
                                 }else if(e.target.value === ALL.toString()){
-                                    this.setState({ opQuery: null, variQuery: null, subnameQuery: null })
+                                    this.props.set_book_query(null, null, null)
                                 }else{
-                                    this.setState({ opQuery: parseInt(e.target.value), variQuery: null, subnameQuery: null })
+                                    this.props.set_book_query(parseInt(e.target.value), null, null)
                                 }
                             }} 
-                            value={queryToValue(this.state.opQuery)}
+                            value={queryToValue(this.props.opQuery)}
                         >
                             <option value={ALL} className="bookQueryOption" key="bookQueryOptionOpAll">{"⋅ All ⋅"}</option>
                             <option value={WHITE} className="bookQueryOption" key="bookQueryOptionOpWhite">{"⋅ White ⋅"}</option>
@@ -217,12 +210,14 @@ class BookUI extends Component {
                             <select className="bookQuerySelector variQuery" key="bookQuerySelectorLine"
                                 onChange={e => {
                                     if(e.target.value === ALL.toString()){
-                                        this.setState({ variQuery: null, subnameQuery: null  })
+                                        this.props.set_book_query_vari_name(null)
+                                        this.props.set_book_query_vari_subname(null)
                                     }else{
-                                        this.setState({ variQuery: e.target.value, subnameQuery: null  })
+                                        this.props.set_book_query_vari_name(e.target.value)
+                                        this.props.set_book_query_vari_subname(null)
                                     }
                                 }} 
-                                value={queryToValue(this.state.variQuery)}
+                                value={queryToValue(this.props.variQuery)}
                             >
                                 <option value={ALL} className="bookQueryOption" key="bookQueryOptionLineAll">{"⋅ All ⋅"}</option>
                                 {this.groupOptions()}
@@ -230,12 +225,12 @@ class BookUI extends Component {
                             <select className="bookQuerySelector subnameQuery" key="bookQuerySelectorSubname"
                                 onChange={e => {
                                     if(e.target.value === ALL.toString()){
-                                        this.setState({ subnameQuery: null })
+                                        this.props.set_book_query_vari_subname(null)
                                     }else{
-                                        this.setState({ subnameQuery: e.target.value })
+                                        this.props.set_book_query_vari_subname(e.target.value)
                                     }
                                 }} 
-                                value={queryToValue(this.state.subnameQuery)}
+                                value={queryToValue(this.props.subnameQuery)}
                             >
                                 <option value={ALL} className="bookQueryOption" key="bookQueryOptionSubnameAll">{"⋅ All ⋅"}</option>
                                 {this.lineOptions()}

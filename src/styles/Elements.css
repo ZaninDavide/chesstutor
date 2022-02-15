@@ -582,6 +582,10 @@
   background: url(/files/no_inbox.svg) center center / contain no-repeat;
 }
 
+#userPage {
+  padding-left: var(--mediumMargin);
+}
+
 #userPage, #mailPage{
   /*display: grid;
   grid-template-rows: 1fr var(--uiElementMediumHeight);*/
@@ -1029,18 +1033,19 @@
 
 .togglePanel {  
   height: fit-content !important;
+  max-height: fit-content;
   border-left: var(--borderSize) var(--onBack) solid;
   margin-left: var(--mediumMargin);
   padding: var(--smallMargin);
 
-  transition: transform 0.25s ease, opacity 0.25s linear;
+  transition: transform 0.25s ease, opacity 0.25s linear, height 0.25s linear;
   transform-origin: top;
   opacity: 1;
 }
 
 #archive.archiveClosed, .togglePanel_hidden{
   overflow: visible;
-  height: 0px;
+  max-height: 0px !important;
   transform: scaleY(0);
   opacity: 0;
 }

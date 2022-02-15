@@ -10,7 +10,7 @@ class FenViewer extends Component {
         super(props)
         this.state = {
             fen: "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR",
-            rotated: false,
+            rotated: this.props.rotated,
             board: chess.board(),
         }
     }
@@ -48,13 +48,13 @@ class FenViewer extends Component {
                         let x = collumn * 100
                         let y = line * 100
                         pieces.push(
-                            <img key={`${type}_${collumn}_${line}`} src={get_piece_src(type, "small")} style={{transform: `translate(${x}%, ${y}%)`}} className="fenViewerPiece"/>
+                            <img key={`${type}_${collumn}_${line}`} src={get_piece_src(type, "standard")} style={{transform: `translate(${x}%, ${y}%)`}} className="fenViewerPiece"/>
                         )
                     } else {
                         let x = 700 - collumn * 100
                         let y = 700 - line * 100
                         pieces.push(
-                            <img key={`${type}_${collumn}_${line}`} src={get_piece_src(type, "small")} style={{transform: `translate(${x}%, ${y}%)`}} className="fenViewerPiece"/>
+                            <img key={`${type}_${collumn}_${line}`} src={get_piece_src(type, "standard")} style={{transform: `translate(${x}%, ${y}%)`}} className="fenViewerPiece"/>
                         )
                     }
                 }

@@ -2,6 +2,7 @@ import React, { Component } from "react"
 import Header from "../components/Header"
 import Translator from "../components/Translator"
 import Ripples from "react-ripples"
+import TogglePanel from "../components/TogglePanel"
 
 import { sound_move } from "../utilities/file_paths"
 
@@ -44,81 +45,69 @@ class userPage extends Component {
     }
 
     const profilePage = () => <div id="profile" key="profile">
-      <h3 className="profilePageTitle"><Translator text="General" /></h3>
-      <div className="settingsSection">
-        <Translator text="Language" />:&nbsp;
-        <div className="optionButtonsContainer">
-          <Ripples><button className="simpleButton" onClick={() => this.props.setLanguage("eng")} style={{ marginRight: 0, color: this.props.language === "eng" ? "var(--main)" : "var(--text)" }}><Translator text={"ENG"} /></button></Ripples>
-          <Ripples><button className="simpleButton" onClick={() => this.props.setLanguage("ita")} style={{ marginLeft: 0, color: this.props.language === "ita" ? "var(--main)" : "var(--text)" }}><Translator text={"ITA"} /></button></Ripples>
+      <TogglePanel title="General" panelName="settingsGeneralPanel" startOpen>
+        <div className="settingsSection">
+          <Translator text="Language" />:&nbsp;
+          <div className="optionButtonsContainer">
+            <Ripples><button className="simpleButton" onClick={() => this.props.setLanguage("eng")} style={{ marginRight: 0, color: this.props.language === "eng" ? "var(--main)" : "var(--text)" }}><Translator text={"ENG"} /></button></Ripples>
+            <Ripples><button className="simpleButton" onClick={() => this.props.setLanguage("ita")} style={{ marginLeft: 0, color: this.props.language === "ita" ? "var(--main)" : "var(--text)" }}><Translator text={"ITA"} /></button></Ripples>
+          </div>
         </div>
-      </div>
-      <div className="settingsSection">
-        <Translator text="Color theme" />:&nbsp;
-        <div className="optionButtonsContainer">
-          <Ripples><button className="simpleButton" onClick={() => this.props.setTheme("darkTheme")} style={{ marginRight: 0, color: this.props.colorTheme === "darkTheme" ? "var(--main)" : "var(--text)" }}><Translator text={"Dark"} /></button></Ripples>
-          <Ripples><button className="simpleButton" onClick={() => this.props.setTheme("lightTheme")} style={{ marginLeft: 0, color: this.props.colorTheme === "lightTheme" ? "var(--main)" : "var(--text)" }}><Translator text={"Light"} /></button></Ripples>
-          <Ripples><button className="simpleButton" onClick={() => this.props.setTheme("autoTheme")} style={{ marginLeft: 0, color: this.props.colorTheme === "autoTheme" ? "var(--main)" : "var(--text)" }}><Translator text={"Auto"} /></button></Ripples>
+        <div className="settingsSection">
+          <Translator text="Color theme" />:&nbsp;
+          <div className="optionButtonsContainer">
+            <Ripples><button className="simpleButton" onClick={() => this.props.setTheme("darkTheme")} style={{ marginRight: 0, color: this.props.colorTheme === "darkTheme" ? "var(--main)" : "var(--text)" }}><Translator text={"Dark"} /></button></Ripples>
+            <Ripples><button className="simpleButton" onClick={() => this.props.setTheme("lightTheme")} style={{ marginLeft: 0, color: this.props.colorTheme === "lightTheme" ? "var(--main)" : "var(--text)" }}><Translator text={"Light"} /></button></Ripples>
+            <Ripples><button className="simpleButton" onClick={() => this.props.setTheme("autoTheme")} style={{ marginLeft: 0, color: this.props.colorTheme === "autoTheme" ? "var(--main)" : "var(--text)" }}><Translator text={"Auto"} /></button></Ripples>
+          </div>
         </div>
-      </div>
-      <div className="settingsSection">
-        <Translator text="Volume" />:&nbsp;
-        <div className="optionButtonsContainer">
-          <Ripples><button onClick={() => { this.props.setVolume(0.0); this.previewVolume(0.0) }} className="simpleButton" style={{ color: this.props.volume === 0.0 ? "var(--main)" : "var(--text)" }}><Translator text={"Off"}/></button></Ripples>
-          <Ripples><button onClick={() => { this.props.setVolume(0.2); this.previewVolume(0.2) }} className="simpleButton" style={{ color: this.props.volume === 0.2 ? "var(--main)" : "var(--text)" }}><Translator text={"Low"}/></button></Ripples>
-          <Ripples><button onClick={() => { this.props.setVolume(0.6); this.previewVolume(0.6) }} className="simpleButton" style={{ color: this.props.volume === 0.6 ? "var(--main)" : "var(--text)" }}><Translator text={"Medium"}/></button></Ripples>
-          <Ripples><button onClick={() => { this.props.setVolume(1.0); this.previewVolume(1.0) }} className="simpleButton" style={{ color: this.props.volume === 1.0 ? "var(--main)" : "var(--text)" }}><Translator text={"High"}/></button></Ripples>
+        <div className="settingsSection">
+          <Translator text="Volume" />:&nbsp;
+          <div className="optionButtonsContainer">
+            <Ripples><button onClick={() => { this.props.setVolume(0.0); this.previewVolume(0.0) }} className="simpleButton" style={{ color: this.props.volume === 0.0 ? "var(--main)" : "var(--text)" }}><Translator text={"Off"}/></button></Ripples>
+            <Ripples><button onClick={() => { this.props.setVolume(0.2); this.previewVolume(0.2) }} className="simpleButton" style={{ color: this.props.volume === 0.2 ? "var(--main)" : "var(--text)" }}><Translator text={"Low"}/></button></Ripples>
+            <Ripples><button onClick={() => { this.props.setVolume(0.6); this.previewVolume(0.6) }} className="simpleButton" style={{ color: this.props.volume === 0.6 ? "var(--main)" : "var(--text)" }}><Translator text={"Medium"}/></button></Ripples>
+            <Ripples><button onClick={() => { this.props.setVolume(1.0); this.previewVolume(1.0) }} className="simpleButton" style={{ color: this.props.volume === 1.0 ? "var(--main)" : "var(--text)" }}><Translator text={"High"}/></button></Ripples>
+          </div>
         </div>
-      </div>
-      <div className="settingsSection">
-        <Translator text="Chess Notation" />:&nbsp;
-        <div className="optionButtonsContainer">
-          <Ripples><button onClick={() => { this.props.setVisualChessNotation(true) }} className="simpleButton" style={{ fontFamily: "chess", color: this.props.visual_chess_notation ? "var(--main)" : "var(--text)" }}><Translator text={"Qa1"}/></button></Ripples>
-          <Ripples><button onClick={() => { this.props.setVisualChessNotation(false) }} className="simpleButton" style={{ color: !this.props.visual_chess_notation ? "var(--main)" : "var(--text)" }}><Translator text={"Qa1"}/></button></Ripples>
+        <div className="settingsSection">
+          <Translator text="Chess Notation" />:&nbsp;
+          <div className="optionButtonsContainer">
+            <Ripples><button onClick={() => { this.props.setVisualChessNotation(true) }} className="simpleButton" style={{ fontFamily: "chess", color: this.props.visual_chess_notation ? "var(--main)" : "var(--text)" }}><Translator text={"Qa1"}/></button></Ripples>
+            <Ripples><button onClick={() => { this.props.setVisualChessNotation(false) }} className="simpleButton" style={{ color: !this.props.visual_chess_notation ? "var(--main)" : "var(--text)" }}><Translator text={"Qa1"}/></button></Ripples>
+          </div>
         </div>
-      </div>
-
-      <h3 className="profilePageTitle"><Translator text="Training" /></h3>
-      <div className="settingsSection">
-        <Translator text="Computer waits before moving (ms)" />:&nbsp;
-        <div className="optionButtonsContainer">
-          <Ripples><button onClick={() => this.props.setWaitTime(0)} className="simpleButton" style={{ marginRight: 0, color: this.props.wait_time === 0 ? "var(--main)" : "var(--text)" }}>0</button></Ripples>
-          <Ripples><button onClick={() => this.props.setWaitTime(250)} className="simpleButton" style={{ marginRight: 0, color: this.props.wait_time === 250 ? "var(--main)" : "var(--text)" }}>250</button></Ripples>
-          <Ripples><button onClick={() => this.props.setWaitTime(500)} className="simpleButton" style={{ marginRight: 0, color: this.props.wait_time === 500 ? "var(--main)" : "var(--text)" }}>500</button></Ripples>
-          <Ripples><button onClick={() => this.props.setWaitTime(1000)} className="simpleButton" style={{ marginLeft: 0, color: this.props.wait_time === 1000 ? "var(--main)" : "var(--text)" }}>1000</button></Ripples>
-          <Ripples><button onClick={() => this.props.setWaitTime(2000)} className="simpleButton" style={{ marginLeft: 0, color: this.props.wait_time === 2000 ? "var(--main)" : "var(--text)" }}>2000</button></Ripples>
+      </TogglePanel>
+      
+      <TogglePanel title="Training" name="settingsTraingingPanel">
+        <div className="settingsSection">
+          <Translator text="Computer waits before moving (ms)" />:&nbsp;
+          <div className="optionButtonsContainer">
+            <Ripples><button onClick={() => this.props.setWaitTime(0)} className="simpleButton" style={{ marginRight: 0, color: this.props.wait_time === 0 ? "var(--main)" : "var(--text)" }}>0</button></Ripples>
+            <Ripples><button onClick={() => this.props.setWaitTime(250)} className="simpleButton" style={{ marginRight: 0, color: this.props.wait_time === 250 ? "var(--main)" : "var(--text)" }}>250</button></Ripples>
+            <Ripples><button onClick={() => this.props.setWaitTime(500)} className="simpleButton" style={{ marginRight: 0, color: this.props.wait_time === 500 ? "var(--main)" : "var(--text)" }}>500</button></Ripples>
+            <Ripples><button onClick={() => this.props.setWaitTime(1000)} className="simpleButton" style={{ marginLeft: 0, color: this.props.wait_time === 1000 ? "var(--main)" : "var(--text)" }}>1000</button></Ripples>
+            <Ripples><button onClick={() => this.props.setWaitTime(2000)} className="simpleButton" style={{ marginLeft: 0, color: this.props.wait_time === 2000 ? "var(--main)" : "var(--text)" }}>2000</button></Ripples>
+          </div>
         </div>
-      </div>
-
-      <h3 className="profilePageTitle"><Translator text="Profile" /></h3>
-      <div className="settingsSection">
-        <button
-          onClick={this.props.logout}
-          id="logoutButton" className="simpleButton"
-        ><Translator text="Log out" /></button>
-      </div>
+      </TogglePanel>
+      
+      <TogglePanel title="Profile" name="settingsProfilePanel">
+        <div className="settingsSection">
+          <button
+            onClick={this.props.downloadDatabase}
+            id="downloadDataBaseButton" className="simpleButton"
+          ><Translator text="Download database" /></button>
+        </div>
+        <div className="settingsSection">
+          <button
+            onClick={this.props.logout}
+            id="logoutButton" className="simpleButton"
+          ><Translator text="Log out" /></button>
+        </div>
+      </TogglePanel>
     </div>
-    /*
-        const inboxPage = () => this.props.inbox.length === 0 ? <div id="emptyInbox" /> : <div id="mailItemContainer">
-          {this.props.inbox.map((mail, index) =>
-            <div className="mailItem" onClick={() => this.click(mail, index)} key={"mailItem_" + index + "_" + mail.op_name + "_" + mail.creator_email}>
-              <div className="mailItemLeft">
-                <h2>{mail.op_name}</h2>
-                <p>{mail.creator_email}</p>
-              </div>
-              <div className="mailItemRight">
-                <button className="iconButton mailItemCloseButton"
-                  onClick={e => {
-                    e.stopPropagation()
-                    this.discardMail(index)
-                  }}
-                >
-                  close
-                </button>
-              </div>
-            </div>
-          )}
-        </div>
-    */
+
     return (
       <React.Fragment>
         <Header title={this.props.username} mainButtonText="arrow_back" />

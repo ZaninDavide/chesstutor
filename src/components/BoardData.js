@@ -41,6 +41,7 @@ class BoardData extends Component {
             getDrawBoardPDF={this.props.getDrawBoardPDF}
             op_index={this.props.op_index}
             try_undo_n_times={this.props.try_undo_n_times}
+            rotated={this.props.rotated}
           />
         </div>
       tabs.push(tabTree)
@@ -70,6 +71,14 @@ class BoardData extends Component {
             book_move={this.props.book_move}
             ops={this.props.ops}
             match={this.props.match}
+            op_index={this.props.op_index}
+            opQuery={this.props.book_query_op_index}
+            variQuery={this.props.book_query_vari_name}
+            subnameQuery={this.props.book_query_vari_subname}
+            set_book_query_op_index={this.props.set_book_query_op_index}
+            set_book_query_vari_name={this.props.set_book_query_vari_name}
+            set_book_query_vari_subname={this.props.set_book_query_vari_subname}
+            set_book_query={this.props.set_book_query}
           />
         </div>
       tabs.push(tabBook)

@@ -14,6 +14,7 @@ class FenViewerCanvas extends Component {
             rotated: false,
         }
         this.draw_board = this.draw_board.bind(this);
+        this.draw_board_printable = this.draw_board_printable.bind(this);
         this.drawPiece = this.drawPiece.bind(this);
 
         this.canvas = React.createRef();

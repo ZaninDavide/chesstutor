@@ -276,6 +276,8 @@ class OpeningPage extends Component {
           close={() => this.setState({ renameVariVisible: false })}
           thisVari={this.state.renameVariVisible ? thisVari : undefined}
           renameThisVari={this.renameThisVari}
+          getOpFreeSubnames={this.props.getOpFreeSubnames}
+          op_index={this.props.match.params.op_index}
         /> 
         {/*i do this so that every time you open it the modal refreshes and takes new default values*/}
 

@@ -27,6 +27,7 @@ class SendModal extends Component {
 
       let new_names = old.sendName.split(", ").join(",").split(",")
       new_names.forEach(name => {
+        name = name.trim()
         if (name && old_names.indexOf(name) === -1) {
           // old_names.push(name)
           old_names.splice(0, 0, name)
@@ -59,9 +60,9 @@ class SendModal extends Component {
   getNameItems() {
     return this.state.sendNames.map((name, index) => {
       return <div key={"sendNameItem_" + name} className="sendNameItem">
-        <button className="simpleButton iconText"
+        <button className="simpleButton iconText sendModalDeleteNameButton"
           onClick={() => this.deleteName(index)}
-        >delete</button>
+        >cancel</button>
         <div className="sendNameLabel">{name}</div>
       </div>
     })

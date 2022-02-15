@@ -1,14 +1,13 @@
 import React, { Component } from "react"
 import Chess from "../chessjs-chesstutor/chess.js"
 
-import { cells, cells_rotated, cell_coords, cell_coords_rotated, pieces_names, sub_names } from "../utilities/pieces_and_coords"
+import { cells, cells_rotated, cell_coords, cell_coords_rotated, pieces_names } from "../utilities/pieces_and_coords"
 import { get_piece_src, get_board_svg, get_board_rotated_svg, sound_capture, sound_move, sound_error } from "../utilities/file_paths"
 import { VARI_TRAINING_MODE, GROUP_TRAINING_MODE, OPENING_TRAINING_MODE, COLOR_TRAINING_MODE, SMART_TRAINING_MODE, FREE_PLAYING_MODE, NEW_VARI_MODE, AGAINST_STOCKFISH_MODE } from "../utilities/constants"
 
 import PromotionModal from "../components/PromotionModal"
 import CommentModal from "../components/CommentModal"
 import HelpModal from "../components/HelpModal"
-import NewVariModal from "./NewVariModal.js"
 import HangingMenu from "../components/HangingMenu"
 import VariationAddedModal from "../components/VariationAddedModal"
 import TrainingFinishedModal from "../components/TrainingFinishedModal"
@@ -32,6 +31,8 @@ class Board extends Component {
   move_audio
   capture_audio
   error_audio
+
+  first_time_rotation = true
   
   engine = new Stockfish(
     this.stockfish_set_eval.bind(this), 
@@ -47,7 +48,6 @@ class Board extends Component {
       game: new Chess(),
       json_moves: [], // moves' history in the correct format (see vari.moves)
       selected_cell: undefined, // undefined or "d4"
-      variNameModalVisible: false,
       new_vari_name: "",
       rotated: this.props.rotation === "black" ? true : false,
       promotionModalVisible: false,
@@ -74,6 +74,9 @@ class Board extends Component {
         best: "",
         calculated_depth: 0,
       },
+      book_query_op_index: null,
+      book_query_vari_name: null,
+      book_query_vari_subname: null,
     }
     /* functions */
     this.newGame = this.newGame.bind(this)
@@ -83,8 +86,6 @@ class Board extends Component {
     this.boardClick = this.boardClick.bind(this)
     this.clickCell = this.clickCell.bind(this)
     this.try_undo = this.try_undo.bind(this)
-    this.closeVariNameModal = this.closeVariNameModal.bind(this);
-    this.openVariNameModal = this.openVariNameModal.bind(this);
     this.createThisVariation = this.createThisVariation.bind(this);
     this.boardDown = this.boardDown.bind(this);
     this.boardUp = this.boardUp.bind(this);
@@ -119,11 +120,14 @@ class Board extends Component {
     this.error_audio = new Audio(sound_error)
   }
 
-  static getDerivedStateFromProps(props) {
-    return { rotated: props.rotation === "black" ? true : false };
-  }
+  // static getDerivedStateFromProps(props) {
+  // }
 
   componentDidMount() {
+    if(this.first_time_rotation){
+      this.first_time_rotation = false
+      this.setState({ rotated: this.props.rotation === "black" ? true : false });
+    }
     // called when the component is first created
     this.onStart()
     window.addEventListener("keydown", this.keydown_event)
@@ -138,7 +142,6 @@ class Board extends Component {
 
   render() {
     let thereIsComment = !(this.props.op_index === undefined || !this.state.json_moves) ? this.props.getComment(this.props.op_index, this.state.json_moves) : false
-
     return (
       <React.Fragment>
         {/* --------------------------------------- BOARD --------------------------------------- */}
@@ -183,7 +186,7 @@ class Board extends Component {
             vari_subname={this.props.vari_subname || this.props.target_vari_subname}
             vari_op_name={
               this.props.ops && ((this.props.op_index !== undefined && this.props.op_index !== null) || (this.props.target_vari_op_index !== undefined && this.props.target_vari_op_index !== null)) ? 
-              this.props.ops[(this.props.op_index || this.props.target_vari_op_index)].op_name : null              
+              (this.props.ops[(this.props.op_index || this.props.target_vari_op_index)] ? this.props.ops[(this.props.op_index || this.props.target_vari_op_index)].op_name : null) : null              
             }
             
             thereIsComment={thereIsComment}
@@ -201,20 +204,26 @@ class Board extends Component {
             stockfish_switch_show_eval={this.stockfish_switch_show_eval}
             stockfish_set_depth={this.stockfish_set_depth}
             stockfish_switch_use_lichess_cloud={this.stockfish_switch_use_lichess_cloud}
+
+            book_query_op_index={this.state.book_query_op_index}
+            book_query_vari_name={this.state.book_query_vari_name}
+            book_query_vari_subname={this.state.book_query_vari_subname}
+
+            set_book_query_op_index={index => this.setState({book_query_op_index: index})}
+            set_book_query_vari_name={name => this.setState({book_query_vari_name: name})}
+            set_book_query_vari_subname={subname => this.setState({book_query_vari_subname: subname})}
+            set_book_query={(index, name, subname) => this.setState({
+              book_query_op_index: index,
+              book_query_vari_name: name,
+              book_query_vari_subname: subname
+            })}
+
+            rotated={this.state.rotated}
           />
         </div>
 
 
         {/* --------------------------------------- MODALS --------------------------------------- */}
-
-        {/* CREATE NEW VARIATION MODAL */}
-        <NewVariModal
-          close={this.closeVariNameModal}
-          visible={this.state.variNameModalVisible}
-          createThisVariation={this.createThisVariation}
-          op_index={this.props.op_index}
-          getOpFreeSubnames={this.props.getOpFreeSubnames}
-        />
 
         {/* CHOOSE PROMOTION PIECE MODAL */}
         <PromotionModal
@@ -258,10 +267,7 @@ class Board extends Component {
           {/* ROTATE BOARD */}
           {this.props.moreMenuButtons.indexOf("flip") !== -1 ?
             <button className="simpleButton hMenuButton" onClick={() => {
-              this.setState({ boardMenuVisible: false })
-              //this.props.history.push("/analysis/" + this.props.rotation + "/" + this.state.game.fen().split("/").join("_"))
-              //this.props.history.push("/analysis/" + this.props.rotation + "/" + this.state.game.pgn().split(" ").join("_"))
-              this.setState(old => {return{rotated: !old.rotated}})
+              this.setState(old => {return { boardMenuVisible: false, rotated: !old.rotated } })
             }}>
               <div className="hMenuButtonContent">
                 <div className="hMenuButtonIcon">import_export</div>
@@ -339,17 +345,13 @@ class Board extends Component {
           notify={this.props.notify}
           addVariations={varis => {
             // it would be better to explore the tree to avoid redoing the same moves
-            let allowed_subnames = this.props.getOpFreeSubnames(this.props.op_index, this.props.vari_name, sub_names)
+            let allowed_subnames = this.props.getOpFreeSubnames(varis.length, this.props.op_index, this.props.vari_name, false)
             varis.forEach(v => {
               if(v.length > 0){
                 let sub_name;
-                if(allowed_subnames[0] !== undefined || allowed_subnames.length === 1){
-                  sub_name = allowed_subnames[0]
-                  allowed_subnames = allowed_subnames.filter((x, i) => i !== 0)
-                }else{
-                  sub_name = allowed_subnames[1]
-                  allowed_subnames = allowed_subnames.filter((x, i) => i !== 1)
-                }
+                
+                sub_name = allowed_subnames[0]
+                allowed_subnames = allowed_subnames.filter((x, i) => i !== 0)
   
                 let game = new Chess()
                 let got_error = false
@@ -1163,6 +1165,11 @@ class Board extends Component {
         // OPENING_TRAINING_MODE & VARI_TRAINING_MODE
         if(this.props.get_correct_moves_data === undefined) { console.log("Board: help_button_click() error. get_correct_moves_data missing"); return false }
         correct_moves_repetitive = this.props.get_correct_moves_data(this.props.target_vari_op_index, this.state.json_moves, this.props.target_vari_index)
+
+      } else if (mode === NEW_VARI_MODE) {
+        // NEW_VARI_MODE
+        if(this.props.get_correct_moves_data_book === undefined) { console.log("Board: help_button_click() error. get_correct_moves_data_book missing"); return false }
+        correct_moves_repetitive = this.props.get_correct_moves_data_book(this.state.json_moves, this.state.book_query_op_index, this.state.book_query_vari_name, this.state.book_query_vari_subname)
       }
 
       // remove doubles ([d4, d4, e4] -> [d4, e4])
@@ -1271,11 +1278,10 @@ class Board extends Component {
       if (this.props.buttons.indexOf("done") !== -1) {
         b_objects.push(
           <button id="doneButton" key="doneButton" className="simpleButton boardButton"
-            // onClick={this.openVariNameModal}
             onClick={() => {
-              const allowed_subnames = this.props.getOpFreeSubnames(this.props.op_index, this.props.vari_name, sub_names)
-              const sub_name = allowed_subnames[0] !== undefined || allowed_subnames.length === 1 ? allowed_subnames[0] : allowed_subnames[1]
-              this.createThisVariation(this.props.vari_name, sub_name)
+              const allowed_subnames = this.props.getOpFreeSubnames(1, this.props.op_index, this.props.vari_name, false)
+              console.log("SUBNAMES: ", allowed_subnames)
+              this.createThisVariation(this.props.vari_name, allowed_subnames[0])
             }}
             disabled={this.state.json_moves.length === 0}
           >add</button>
@@ -1313,14 +1319,6 @@ class Board extends Component {
     return b_objects.map((button, i) => <Ripples className="simpleButton boardButton" key={b_names[i] + "_ripple"}>{button}</Ripples>)
   }
 
-  closeVariNameModal() {
-    this.setState({ variNameModalVisible: false })
-  }
-
-  openVariNameModal() {
-    this.setState({ variNameModalVisible: true })
-  }
-
   createThisVariation(name, subname = undefined) {
     if (name.length !== 0) {
       /*let vari_index = */this.props.createVari(name, this.state.json_moves, this.props.op_index, subname)
@@ -1328,7 +1326,7 @@ class Board extends Component {
 
       // this.props.notify(`${name} ${subname} created!`, "important")
       this.setState({
-        variNameModalVisible: false, variationAddedModalVisible: true, variationAddedNames: {
+        variationAddedModalVisible: true, variationAddedNames: {
           name: name,
           subname: subname
         }

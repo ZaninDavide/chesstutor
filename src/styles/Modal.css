@@ -308,6 +308,14 @@
     float: right;
 }
 
+.modalButton:disabled,
+.modalButton[disabled],
+.modalButton:disabled span.impText, 
+.modalButton[disabled] span.impText
+{
+    color: var(--disabledClickText) !important;
+}
+
 .modalBackButton{
     margin: 0px;
     width: calc(var(--uiElementHeight) + 2*var(--mediumMargin));
@@ -326,9 +334,20 @@
 
 .newSendButton{
     padding: 0 !important;
-    width: var(--uiElementHeight);
+    width: var(--uiElementSmallHeight);
     height: var(--uiElementHeight);
     line-height: var(--uiElementHeight);
+    border-radius: var(--borderRadius) !important;
+}
+
+.sendNameItem:not(:last-child) {
+  border-bottom: 1px solid var(--onModalBack);
+}
+
+.sendModalDeleteNameButton {
+  border-radius: var(--borderRadius) !important;
+  height: var(--uiElementMediumHeight) !important;
+  line-height: var(--uiElementMediumHeight) !important;
 }
 
 #sendTextbox{
@@ -353,7 +372,8 @@
 
 .sendNameLabel{
     text-overflow: ellipsis;
-    line-height: var(--uiElementHeight);
+    height: var(--uiElementMediumHeight);
+    line-height: var(--uiElementMediumHeight);
 }
 
 #loadingScreen{

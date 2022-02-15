@@ -5,7 +5,7 @@ class TogglePanel extends Component {
     constructor(props) {
         super(props)
         this.state = {
-            panelVisible: props.startOpened,
+            panelVisible: props.startOpen,
         }
     }
 

@@ -106,6 +106,7 @@ class App extends Component {
     this.smartTrainingVariFinished = this.smartTrainingVariFinished.bind(this)
     this.onSmartTrainingVariFinished = this.onSmartTrainingVariFinished.bind(this)
     this.play_training_finished_sound = this.play_training_finished_sound.bind(this)
+    this.downloadDatabase = this.downloadDatabase.bind(this)
   }
 
   componentDidMount() {
@@ -207,12 +208,12 @@ class App extends Component {
     })
   }
 
-  updateDB(new_ops = this.state.user_ops, language = "eng", settings = { wait_time: 500, colorTheme: "darkTheme", volume: 0.5 }) {
+  updateDB(new_ops = this.state.user_ops, language = "eng", settings = { wait_time: 500, colorTheme: "darkTheme", volume: 0.5 }, inbox = []) {
     /*if (new_ops.toString() !== this.state.user_ops.toString()) {
       // Warning you that you are saving in the database something that is different from what the user sees now
       console.log("updateDB: database and state won't match. the database will be updated aniway")
     }*/
-    this.updateUserData({ user_ops: new_ops, language, settings }, this.state.bearer)
+    this.updateUserData({ user_ops: new_ops, language, settings, inbox}, this.state.bearer)
   }
 
   rememberMeLocally(username, bearer) {
@@ -269,6 +270,21 @@ class App extends Component {
     } else {
       console.log("Log in before looking for the user's inbox")
     }
+  }
+
+  downloadDatabase() {
+    var element = document.createElement('a');
+    element.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(
+      JSON.stringify(this.state.user_ops)
+    ));
+    element.setAttribute('download', this.state.username + "_data.json");
+
+    element.style.display = 'none';
+    document.body.appendChild(element);
+
+    element.click();
+
+    document.body.removeChild(element);
   }
 
   /* ---------------------------- NOTIFICATIONS ---------------------------- */
@@ -444,8 +460,38 @@ class App extends Component {
     })
   }
 
+  /* DEPRECATED
   getOpFreeSubnames(op_index, new_vari_name, allSubNames) {
     return allSubNames.filter(subname => this.state.user_ops[op_index].variations.filter(v => v.vari_name === new_vari_name && v.vari_subname === subname).length === 0)
+  }
+  */
+
+  getOpFreeSubnames(how_many, op_index, new_vari_name, ok_empty_subname = false) {
+    let varis = this.state.user_ops[op_index].variations.filter(v => v.vari_name === new_vari_name)
+    
+    let free_subnames = []
+    
+    if(ok_empty_subname && varis.filter(v => v.vari_subname === undefined).length === 0){
+      // if the empty subname is free add it
+      free_subnames.push(undefined)
+    }
+
+    let number = 1
+    let letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
+    while(free_subnames.length < how_many) {
+      let number_str = number == 1 ? "" : number.toString()
+      for(let l of letters) {
+        let subn = l + number_str;
+        if(varis.filter(v => v.vari_subname == subn).length === 0){
+          // if this subname is free add it
+          free_subnames.push(subn)
+          if(free_subnames.length >= how_many) break;
+        }
+      }
+      number += 1;
+    }
+
+    return free_subnames;
   }
 
   
@@ -1058,7 +1104,7 @@ class App extends Component {
   render() {
     let targets_list = this.get_smart_training_targets()
 
-    console.log(this.state.user_ops)
+    // console.log(this.state.user_ops)
 
     const opsListPage = ({ history }) => <OpsListPage
       ops={this.state.user_ops}
@@ -1083,6 +1129,7 @@ class App extends Component {
       getOpColor={(op_index) => {
         if(this.state.user_ops[op_index]) return this.state.user_ops[op_index].op_color
       }}
+      getOpFreeSubnames={this.getOpFreeSubnames}
     />
     const trainingPage = ({ match, history }) => <TrainingPage
       history={history}
@@ -1110,6 +1157,8 @@ class App extends Component {
       setDrawBoardPDF={this.setDrawBoardPDF}
       getDrawBoardPDF={this.getDrawBoardPDF}
       get_correct_moves_data={this.get_correct_moves_data}
+      get_correct_moves_data_group={this.get_correct_moves_data_group}
+      get_correct_moves_data_book={this.get_correct_moves_data_book}
       getOpFreeSubnames={this.getOpFreeSubnames}
       notify={this.notify}
       wait_time={this.state.settings.wait_time}
@@ -1168,6 +1217,7 @@ class App extends Component {
       setVolume={value => this.setSetting("volume", value)}
       setVisualChessNotation={this.setVisualChessNotation}
       visual_chess_notation={this.state.settings.visual_chess_notation}
+      downloadDatabase={this.downloadDatabase}
     />
     const mailPage = ({ match, history }) => <MailPage
       history={history}

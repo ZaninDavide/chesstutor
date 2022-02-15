@@ -24,13 +24,14 @@ class NewVariPage extends Component {
           key="newVariBoard"
           mode={NEW_VARI_MODE}
           history={this.props.history}
-          
+          ops={this.props.ops}
+
           op_index={op_index}
           vari_name={vari_name}
           
           buttons={["back", "done", "multi_next", "more", "add_comment"]}
           moreMenuButtons={["flip", "load_variations", "smallBoard"]}
-          tabs={["moves"]}
+          tabs={["moves", "book", "stockfish"]}
 
           rotation={op.op_color}
           playColor={"both"}
@@ -41,7 +42,7 @@ class NewVariPage extends Component {
           getDrawBoardPDF={this.props.getDrawBoardPDF}
           getComment={this.props.getComment}
           allowCommentEdit={true}
-          get_correct_moves_data={this.props.get_correct_moves_data}
+          get_correct_moves_data_book={this.props.get_correct_moves_data_book}
           getOpFreeSubnames={this.props.getOpFreeSubnames}
           notify={this.props.notify}
           wait_time={this.props.wait_time}
