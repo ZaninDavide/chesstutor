@@ -9,15 +9,15 @@ class TogglePanel extends Component {
         }
     }
 
-    render() { return (<>
-        <h1 key="titleTogglePanel" onClick={() => this.setState(old => { return{panelVisible: !old.panelVisible} })}>
+    render() { return (<div className="togglePanelContainer">
+        <h2 key="titleTogglePanel" onClick={() => this.setState(old => { return{panelVisible: !old.panelVisible} })}>
             <div
                 id={`togglePanelChevron_${this.props.panelName}`} 
                 style={{"textTransform": "none"}} 
                 className={"iconText togglePanelChevron" + (this.state.panelVisible ? " panel_chevron_rotated" : "")}
-            >expand_more</div>
+            >chevron_right</div>
             <Translator text={this.props.title}/>
-        </h1>
+        </h2>
         <div id={`togglePanel_${this.props.panelName}`} key={`togglePanel_${this.props.panelName}`} 
             className={ this.state.panelVisible ? 
                 "togglePanel togglePanel_visible" : "togglePanel togglePanel_hidden"
@@ -25,7 +25,7 @@ class TogglePanel extends Component {
         >
             {this.props.children}
         </div>
-    </>)}
+    </div>)}
 }
 
 export default TogglePanel

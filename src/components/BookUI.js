@@ -288,7 +288,7 @@ class BookUI extends Component {
             </> : null}
             {this.state.show_masters ? this.mastersBook() : null}
             <br />
-            <TogglePanel title="Database">
+            <TogglePanel title="Dataset">
                 <CheckBox 
                     text={<Translator text={"My repertoire"} />} 
                     checked={this.state.show_mine} 
@@ -296,7 +296,7 @@ class BookUI extends Component {
                 />
                 <br />
                 <CheckBox 
-                    text={<Translator text={"Masters database"} />} 
+                    text={<Translator text={"Masters games"} />} 
                     checked={this.state.show_masters} 
                     click={() => this.setState(old => {return {show_masters: !old.show_masters}})}
                 />

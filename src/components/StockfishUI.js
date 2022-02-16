@@ -58,6 +58,7 @@ class StockfishUI extends Component {
                     </tr>
                 </tbody>
             </table>
+            {/*
             <TogglePanel title="Extra" panelName="stockfishExtraPanel">
                 <a href={"https://lichess.org/analysis/standard/" + this.props.get_fen()} target="_blank">
                     <button className="simpleButton"><Translator text={"Open on lichess.org"} /></button>
@@ -66,6 +67,7 @@ class StockfishUI extends Component {
                     <button className="simpleButton"><Translator text={"Open on chess.com"} /></button>
                 </a>
             </TogglePanel>
+            */}
         </div>
     }
 }

@@ -47,7 +47,7 @@
   width: calc(100% - 10px); /* 10px = padding-left; */
   /* max-width: 400px; */
 
-  background-color: var(--onBack);
+  background-color: var(--textBoxBack);
   color: var(--title);
   font-size: var(--textSize);
   font-family: inherit;
@@ -425,7 +425,7 @@
   border-top-right-radius: var(--borderRadius);
   border-bottom-right-radius: var(--borderRadius);
   border: 0;
-  border-left: var(--smallMargin) solid var(--back);
+  border-left: var(--smallMargin) solid var(--cardBack);
 }
 
 #bookQueryTable{
@@ -582,10 +582,6 @@
   background: url(/files/no_inbox.svg) center center / contain no-repeat;
 }
 
-#userPage {
-  padding-left: var(--mediumMargin);
-}
-
 #userPage, #mailPage{
   /*display: grid;
   grid-template-rows: 1fr var(--uiElementMediumHeight);*/
@@ -627,7 +623,7 @@
   font-size: var(--textSize);
   margin-top: var(--smallMargin);
   margin-bottom: var(--smallMargin);
-  margin-left: var(--largeMargin);
+  margin-left: var(--mediumMargin);
   margin-right: var(--mediumMargin);
 }
 
@@ -804,6 +800,30 @@
   border-bottom-right-radius: var(--borderRadius);
 }
 
+.togglePanelContainer .optionButtonsContainer{
+  display: inline-block;
+  margin-left: var(--smallMargin);
+  border-left: var(--borderSize) solid var(--onModalBack);
+  border-top: var(--borderSize) solid var(--onModalBack);
+  border-bottom: var(--borderSize) solid var(--onModalBack);
+}
+
+.togglePanelContainer .optionButtonsContainer:nth-child(1) {
+  border-left: var(--borderSize) solid var(--onModalBack);
+  border-top: var(--borderSize) solid var(--onModalBack);
+  border-bottom: var(--borderSize) solid var(--onModalBack);
+}
+
+.togglePanelContainer .optionButtonsContainer:last-child {
+  border-right: var(--borderSize) solid var(--onModalBack);
+  border-top: var(--borderSize) solid var(--onModalBack);
+  border-bottom: var(--borderSize) solid var(--onModalBack);
+}
+
+.togglePanelContainer .optionButtonsContainer button:hover {
+  background-color: var(--hoverCard);
+}
+
 @keyframes goodJobAnimation {
   0% {
     top: 0px;
@@ -878,10 +898,6 @@
   font-weight: bold;
   text-align: left;
   max-width: fit-content;
-}
-
-h2.bookTableLabel {
-
 }
 
 #filterLineBookUI td{
@@ -1003,10 +1019,6 @@ h2.bookTableLabel {
   margin: var(--smallMargin);
 }
 
-#smartTrainingBoxButtons {
-
-}
-
 #smartTrainingButton{
   border-radius: var(--borderRadius);
   margin-left: auto;
@@ -1038,13 +1050,49 @@ h2.bookTableLabel {
 .togglePanel {  
   height: fit-content !important;
   max-height: fit-content;
-  border-left: var(--borderSize) var(--onBack) solid;
-  margin-left: var(--mediumMargin);
   padding: var(--smallMargin);
+  margin: var(--smallMargin);
 
   transition: transform 0.25s ease, opacity 0.25s linear, height 0.25s linear;
   transform-origin: top;
   opacity: 1;
+}
+
+.togglePanelContainer {
+  height: auto !important;
+  
+  border: 1px solid var(--shadow);
+  border-radius: var(--borderRadius);
+  background-color: var(--cardBack);
+  margin: var(--mediumMargin);
+  box-shadow: var(--shadowShift) var(--shadowShift) var(--shadowBlur) var(--shadow);
+}
+
+.togglePanel_visible {
+  border-top: var(--borderSize) solid var(--onModalBack);
+}
+
+.togglePanel_hidden {
+  padding-top: 0;
+  padding-bottom: 0;
+  margin-top: 0;
+  margin-bottom: 0;
+}
+
+.togglePanelContainer h2 {
+  border-radius: var(--borderRadius);
+  margin-left: var(--smallMargin);
+  margin-right: var(--smallMargin);
+  cursor: pointer;
+}
+
+.togglePanelContainer h2:hover {
+  background-color: var(--hoverCard);
+}
+
+.togglePanelChevron {
+  margin-right: var(--smallMargin);
+  margin-left: var(--smallMargin);
 }
 
 #archive.archiveClosed, .togglePanel_hidden{
@@ -1062,7 +1110,7 @@ h2.bookTableLabel {
 }
 
 #archive_chevron.archive_chevron_rotated, .panel_chevron_rotated{
-  transform: rotate(180deg);
+  transform: rotate(90deg);
 }
 
 .winrateBar {

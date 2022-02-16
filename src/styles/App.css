@@ -83,6 +83,7 @@
   --cardButtonsHover: #f7f7f7;
   --hoverBookTable: rgb(226, 226, 226);
   --winrateBarBorderColor: black;
+  --textBoxBack: #eee;
 }
 
 .darkTheme, .autoTheme {
@@ -115,6 +116,7 @@
   --cardButtonsHover: #2c2c2c;
   --hoverBookTable: #1d1d1d;
   --winrateBarBorderColor: white;
+  --textBoxBack: #252525;
 }
 
 @media (prefers-color-scheme: light) {
@@ -148,6 +150,7 @@
     --cardButtonsHover: #f7f7f7;
     --hoverBookTable: rgb(226, 226, 226);
     --winrateBarBorderColor: black;
+    --textBoxBack: #eee;
   }
 }
 
@@ -259,7 +262,8 @@
 @media not print{
 
   body{
-    background-color: #1d1d1b;
+    background-color: var(--back);
+    -webkit-tap-highlight-color: var(--tap);
   }
 
   h1 {
@@ -368,6 +372,15 @@ input {
   vertical-align: middle;
   line-height: var(--uiElementHeight); /* = height*/
   margin: 0px;
+
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+  /* Support for IE. */
+  font-feature-settings: 'liga';
 }
 
 .iconButton {

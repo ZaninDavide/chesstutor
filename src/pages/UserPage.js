@@ -49,8 +49,8 @@ class userPage extends Component {
         <div className="settingsSection">
           <Translator text="Language" />:&nbsp;
           <div className="optionButtonsContainer">
-            <Ripples><button className="simpleButton" onClick={() => this.props.setLanguage("eng")} style={{ marginRight: 0, color: this.props.language === "eng" ? "var(--main)" : "var(--text)" }}><Translator text={"ENG"} /></button></Ripples>
-            <Ripples><button className="simpleButton" onClick={() => this.props.setLanguage("ita")} style={{ marginLeft: 0, color: this.props.language === "ita" ? "var(--main)" : "var(--text)" }}><Translator text={"ITA"} /></button></Ripples>
+            <Ripples><button className="simpleButton" onClick={() => this.props.setLanguage("eng")} style={{ marginRight: 0, color: this.props.language === "eng" ? "var(--main)" : "var(--text)" }}>ENG</button></Ripples>
+            <Ripples><button className="simpleButton" onClick={() => this.props.setLanguage("ita")} style={{ marginLeft: 0, color: this.props.language === "ita" ? "var(--main)" : "var(--text)" }}>ITA</button></Ripples>
           </div>
         </div>
         <div className="settingsSection">
@@ -73,8 +73,8 @@ class userPage extends Component {
         <div className="settingsSection">
           <Translator text="Chess Notation" />:&nbsp;
           <div className="optionButtonsContainer">
-            <Ripples><button onClick={() => { this.props.setVisualChessNotation(true) }} className="simpleButton" style={{ fontFamily: "chess", color: this.props.visual_chess_notation ? "var(--main)" : "var(--text)" }}><Translator text={"Qa1"}/></button></Ripples>
-            <Ripples><button onClick={() => { this.props.setVisualChessNotation(false) }} className="simpleButton" style={{ color: !this.props.visual_chess_notation ? "var(--main)" : "var(--text)" }}><Translator text={"Qa1"}/></button></Ripples>
+            <Ripples><button onClick={() => { this.props.setVisualChessNotation(true) }} className="simpleButton" style={{ fontFamily: "chess", color: this.props.visual_chess_notation ? "var(--main)" : "var(--text)" }}>Qa1</button></Ripples>
+            <Ripples><button onClick={() => { this.props.setVisualChessNotation(false) }} className="simpleButton" style={{ color: !this.props.visual_chess_notation ? "var(--main)" : "var(--text)" }}>Qa1</button></Ripples>
           </div>
         </div>
       </TogglePanel>

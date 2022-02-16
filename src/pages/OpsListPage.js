@@ -55,7 +55,7 @@ class OpsListPage extends Component {
           id="archive_chevron" 
           style={{"textTransform": "none"}} 
           className={"iconText" + (this.state.archiveVisible ? " archive_chevron_rotated" : "")}
-        >expand_more</div>
+        >chevron_right</div>
         <Translator text={text} />
       </h3>
     </div>
