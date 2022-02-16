@@ -5,6 +5,7 @@ import { process_comment } from "../utilities/san_parsing"
 import StockfishUI from "./StockfishUI";
 import BookUI from "./BookUI";
 import VariInfoUI from "./VariInfoUI";
+import { getEco } from "../utilities/eco_codes"
 
 const tab_to_icon = {
   "moves": "list",
@@ -110,14 +111,28 @@ class BoardData extends Component {
       </React.Fragment>
 
       tabs.push(tabStockfish)
-      extra_info_bar.push(stockfish_extra)
+      if(this.props.stockfish.show_eval || this.props.stockfish.show_best) {
+        extra_info_bar.push(stockfish_extra)
+      }
     }
+
+    let separator = <span>&nbsp;&nbsp;</span>
 
     // OPENING TITLE - EXTRA INFO
     if (this.props.tabs.indexOf("op_name") !== -1) {
       let op_name_extra = <span key="opening_title">{this.props.vari_op_name || ""}</span>
 
+      if(extra_info_bar.length > 0) extra_info_bar.push(separator)
       extra_info_bar.push(op_name_extra)
+    }
+
+    // OPENING ECO - EXTRA INFO
+    if (this.props.tabs.indexOf("op_eco") !== -1) {
+      let eco = getEco(this.props.json_moves.map(m => m.san))
+      let op_eco_extra = <span key="opening_eco">{eco ? eco.long_name : ""}</span>
+
+      if(extra_info_bar.length > 0) extra_info_bar.push(separator)
+      extra_info_bar.push(op_eco_extra)
     }
 
     return <div id="boardData" key="boardData">

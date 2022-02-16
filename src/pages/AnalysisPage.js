@@ -67,7 +67,7 @@ class TrainingPage extends Component {
 
           buttons={["more", "back", "forward_next"]}
           moreMenuButtons={["flip", "smallBoard"]}
-          tabs={["book", "stockfish"]}
+          tabs={["book", "stockfish", "op_eco"]}
 
           rotation={color}
           playColor={this.state.playColor}
