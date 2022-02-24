@@ -75,7 +75,6 @@ const languages = {
     "Low": "Low",
     "Medium": "Medium",
     "High": "High",
-    "N°": "N°",
     "Move": "Move",
     "Opening": "Opening",
     "Line": "Line",
@@ -85,7 +84,7 @@ const languages = {
     "ACCURATE": "ACCURATE",
     "DEEPER": "DEEPER",
     "Book": "Book",
-    "Filters": "Repertoire Filters",
+    "Filters": "Filter my Repertoire",
     "Small board": "Small board",
     "Large board": "Large board",
     "You just trained on": "You just trained on",
@@ -103,6 +102,9 @@ const languages = {
     "Auto": "Auto",
     "Volume": "Volume",
     "Chess Notation": "Chess Notation",
+    "Masters": "Masters",
+    "Games": "Games",
+    "Winrate WDB": "Winrate WDB",
   },
   ita: {
     Openings: "Aperture",
@@ -177,7 +179,6 @@ const languages = {
     "Low": "Basso",
     "Medium": "Medio",
     "High": "Alto",
-    "N°": "N°",
     "Move": "Mossa",
     "Opening": "Apertura",
     "Line": "Variante",
@@ -187,7 +188,7 @@ const languages = {
     "ACCURATE": "Accurato",
     "DEEPER": "Approfondito",
     "Book": "Libro",
-    "Filters": "Filtra Repertorio",
+    "Filters": "Filtra il mio Repertorio",
     "Small board": "Scacchiera piccola",
     "Large board": "Scacchiera grande",
     "You just trained on": "Ti sei allenato su",
@@ -205,6 +206,9 @@ const languages = {
     "Auto": "Auto",
     "Volume": "Volume",
     "Chess Notation": "Notazione",
+    "Masters": "Maestri",
+    "Games": "Partire",
+    "Winrate WDB": "Vittorie BPN",
   }
 }
 

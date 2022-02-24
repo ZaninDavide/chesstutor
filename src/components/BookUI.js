@@ -1,5 +1,5 @@
 import React, { Component, Suspense } from "react"
-import { make_san_nicer_html } from "../utilities/san_parsing"
+import { make_san_nicer_html, move_to_fromto } from "../utilities/san_parsing"
 import TogglePanel from "./TogglePanel";
 import Translator from "./Translator";
 import CheckBox from "./CheckBox";
@@ -153,9 +153,7 @@ class BookUI extends Component {
     }
 
     getMastersMoves() {
-        let res = get_lichess_master_games(this.props.json_moves.map(m => 
-            m.from + m.to + (m.promotion ? m.promotion.toLowerCase() : "")
-        ))
+        let res = get_lichess_master_games(this.props.json_moves.map(move_to_fromto))
         return res;
     }
 
@@ -164,7 +162,7 @@ class BookUI extends Component {
                 <tbody>
                     {this.getOptions()}
                     <tr className="titleLineBookUI" key="titleLineBookUIMine">
-                        <td><Translator key="translatorN" text={"N°"}/></td>
+                        <td>#</td>
                         <td><Translator key="translatorMove" text={"Move"}/></td>
                         <td>
                             <Translator key="translatorOpening" text={"Opening"}/>
@@ -190,7 +188,7 @@ class BookUI extends Component {
                     </Suspense>
                 </ErrorBoundary>
                 <tr className="titleLineBookUI" key="titleLineBookUIMasters">
-                    <td><Translator text={"N°"}/></td>
+                    <td>#</td>
                     <td><Translator text={"Move"}/></td>
                     <td><Translator text={"Rating"}/></td>
                     <td><Translator text={"Winrate WDB"}/></td>

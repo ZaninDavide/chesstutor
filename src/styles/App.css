@@ -65,7 +65,7 @@
   --shadowBlur: 10px;
   --shadowShift: 5px;
   --back: #f5f8f9;
-  --hoverBack: #eee;
+  --hoverBack: #e9ecf0;
   --onBack: #d5d5d5;
   --headerBack: var(--back);
   --text: #3e3e3e;
@@ -132,7 +132,7 @@
     --shadowBlur: 10px;
     --shadowShift: 5px;
     --back: #f5f8f9;
-    --hoverBack: #eee;
+    --hoverBack: #e9ecf0;
     --onBack: #d5d5d5;
     --headerBack: var(--back);
     --text: #3e3e3e;

@@ -97,10 +97,15 @@ function parse_moves_list(moves){
     return moves_parsed
 }
 
+function move_to_fromto(move) {
+    return move.from + move.to + (move.promotion ? move.promotion.toLowerCase() : "");
+}
+
 module.exports = {
     make_san_nicer,
     make_san_nicer_html,
     get_piece_text,
     process_comment,
     parse_moves_list,
+    move_to_fromto,
 }

@@ -22,7 +22,6 @@ class Tree extends Component {
         }
 
         let objects = []
-        objects.push()
 
         const first_comment = this.props.getComment(this.props.op_index, [])
         if (first_comment) objects.push(<p className="treeComment treeFirstComment" key="treeFirstComment" dangerouslySetInnerHTML={{ __html: process_comment(first_comment) }}></p>)

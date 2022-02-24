@@ -1,4 +1,5 @@
 import Chess from "../chessjs-chesstutor/chess.js"
+import { move_to_fromto } from "../utilities/san_parsing.js";
 
 function does_support_stockfish() {
     return !!(typeof (Worker))
@@ -66,6 +67,9 @@ function debounce(func, delay) {
     }
 } 
 
+// Stockfish and cloud-evaluation cache
+let engine_cache = {} // {"fromtos": {depth: _, eval: _, best: _}} // fromtos = "a1|h1|a2|h2"
+
 class Stockfish {
     state = "off";
     worker = null;
@@ -73,7 +77,6 @@ class Stockfish {
     played_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1" // "unknown" means it has to be calculated
     played_moves = []; // ["fromto", "fromto", ...]
     moves_queue = []; // ["fromto", "fromto", ...]
-    cache = {}; // {"fromtos": {depth: _, eval: _, best: _}}
     depth = 8;
     calculated_depth = 0;
     calculated_eval = 0;
@@ -186,8 +189,8 @@ class Stockfish {
     }
 
     add_to_cache(fromtos, data) {
-        if(!this.cache[fromtos] || this.cache[fromtos].depth < this.calculated_depth){
-            this.cache[fromtos] = {
+        if(!engine_cache[fromtos] || engine_cache[fromtos].depth < this.calculated_depth){
+            engine_cache[fromtos] = {
                 depth: parseInt(data.depth),
                 eval: data.eval,
                 best: data.best,
@@ -263,7 +266,7 @@ class Stockfish {
 
     set_moves(json_moves) {
         json_moves.forEach(m => {
-            this.move(m.from + m.to + (m.promotion ? m.promotion.toLowerCase() : ""))
+            this.move(move_to_fromto(m))
         })
     }
 
@@ -281,7 +284,7 @@ class Stockfish {
 
         let done = false
         const fromtos = this.played_moves.concat(this.moves_queue)
-        const cached = this.cache[fromtos.join("|")] || {depth: -1}
+        const cached = engine_cache[fromtos.join("|")] || {depth: -1}
 
         // check if there's already this calculation in the cache
         if(cached.depth >= this.depth) {

@@ -653,7 +653,7 @@
 }
 
 .treeMoveSan:hover {
-  background-color: var(--onBack);
+  background-color: var(--hoverBack);
   border-radius: var(--borderRadius);
   cursor: pointer;
 }
@@ -888,6 +888,10 @@
   background-color: var(--hoverBookTable);
 }
 
+.bookTable tr.titleLineBookUI td:first-child {
+  text-align: right;
+}
+
 .bookTable .bookTableNumber{
   width: 35px;
   text-align: right;
@@ -976,7 +980,7 @@
   to {opacity: 1;}
 }
 
-#boardDataTreeSlide{
+#boardDataTreeSlide, #boardDataMovesTableSlide{
   scroll-behavior: smooth;
 }
 
@@ -1066,6 +1070,7 @@
   background-color: var(--cardBack);
   margin: var(--mediumMargin);
   box-shadow: var(--shadowShift) var(--shadowShift) var(--shadowBlur) var(--shadow);
+  -webkit-tap-highlight-color: var(--tap);
 }
 
 .togglePanel_visible {
@@ -1093,6 +1098,7 @@
 .togglePanelChevron {
   margin-right: var(--smallMargin);
   margin-left: var(--smallMargin);
+  -webkit-tap-highlight-color: transparent;
 }
 
 #archive.archiveClosed, .togglePanel_hidden{
@@ -1123,4 +1129,75 @@
   margin-right: var(--smallMargin);
   box-sizing: border-box;
   opacity: 0.5;
+}
+
+#movesTable {
+  min-width: calc(var(--uiElementHeight) * 3);
+  margin-top: var(--mediumMargin);
+  font-weight: bold;
+  font-size: var(--bigTextSize);
+  width: 100%;
+  height: auto !important;
+  max-width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 0;
+  border-radius: var(--borderRadius);
+
+  -moz-box-shadow: var(--shadowShift) var(--shadowShift) var(--shadowBlur) var(--shadow);
+  -webkit-box-shadow: var(--shadowShift) var(--shadowShift) var(--shadowBlur) var(--shadow);
+  box-shadow: var(--shadowShift) var(--shadowShift) var(--shadowBlur) var(--shadow);
+}
+
+#movesTable .movesCouple:first-child {
+  border-top: var(--borderSize) solid var(--onBack);
+  border-top-left-radius: var(--borderRadius);
+  border-top-right-radius: var(--borderRadius);
+}
+
+#movesTable .movesCouple:last-child {
+  border-bottom-left-radius: var(--borderRadius);
+  border-bottom-right-radius: var(--borderRadius);
+}
+
+#movesTable .movesCouple div:first-child {
+  text-align: center;
+  border-right: var(--borderSize) solid var(--onBack);
+}
+
+#movesTable .movesCouple:not(:first-child) div:not(:first-child) {
+  color: var(--main);
+  cursor: pointer;
+  padding-left: var(--mediumMargin);
+}
+
+#movesTable .movesCouple:first-child div:not(:first-child) {
+  padding-left: var(--mediumMargin);
+}
+
+#movesTable .movesCouple:not(:first-child) div:not(:first-child):hover {
+  background-color: var(--hoverBookTable);
+}
+
+#movesTable .movesCouple:nth-child(even){
+  background-color: var(--hoverBack);
+}
+
+#movesTable .movesCouple {
+  display: grid;
+  grid-template-columns: minmax(auto, var(--uiElementHeight)) 1fr 1fr;
+  height: var(--uiElementMediumHeight);
+  line-height: var(--uiElementMediumHeight);
+  border-left: var(--borderSize) solid var(--onBack);
+  border-right: var(--borderSize) solid var(--onBack);
+  border-bottom: var(--borderSize) solid var(--onBack);
+  overflow: hidden;
+}
+
+#movesTable .movesCouple div {
+  line-height: var(--uiElementMediumHeight);
+}
+
+#movesTable .movesCouple:not(:first-child) div.moveForward:not(:first-child) {
+  color: var(--onCardBack);
 }

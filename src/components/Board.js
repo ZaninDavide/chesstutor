@@ -4,6 +4,7 @@ import Chess from "../chessjs-chesstutor/chess.js"
 import { cells, cells_rotated, cell_coords, cell_coords_rotated, pieces_names } from "../utilities/pieces_and_coords"
 import { get_piece_src, get_board_svg, get_board_rotated_svg, sound_capture, sound_move, sound_error } from "../utilities/file_paths"
 import { VARI_TRAINING_MODE, GROUP_TRAINING_MODE, OPENING_TRAINING_MODE, COLOR_TRAINING_MODE, SMART_TRAINING_MODE, FREE_PLAYING_MODE, NEW_VARI_MODE, AGAINST_STOCKFISH_MODE } from "../utilities/constants"
+import { move_to_fromto } from "../utilities/san_parsing.js"
 
 import PromotionModal from "../components/PromotionModal"
 import CommentModal from "../components/CommentModal"
@@ -62,6 +63,7 @@ class Board extends Component {
         subname: "",
       },
       smallBoard: false,
+      smart_training_errors_first: null,
       smart_training_errors_counter: 0,
       smart_training_error_made_here: false,
       stockfish: {
@@ -104,7 +106,6 @@ class Board extends Component {
     this.forward_next_button_click = this.forward_next_button_click.bind(this)
     this.setArrows = this.setArrows.bind(this)
     this.makeCongrats = this.makeCongrats.bind(this)
-    this.try_undo_n_times = this.try_undo_n_times.bind(this)
     this.resetBoard = this.resetBoard.bind(this)
     this.onStart = this.onStart.bind(this)
     this.keydown_event = this.keydown_event.bind(this)
@@ -112,6 +113,8 @@ class Board extends Component {
     this.stockfish_switch_show_best = this.stockfish_switch_show_best.bind(this)
     this.stockfish_set_depth = this.stockfish_set_depth.bind(this)
     this.stockfish_switch_use_lichess_cloud = this.stockfish_switch_use_lichess_cloud.bind(this)
+    this.try_undo_n_times = this.try_undo_n_times.bind(this);
+    this.try_redo_n_times = this.try_redo_n_times.bind(this);
     /* refs */
     this.selectedPiece = React.createRef()
     
@@ -179,6 +182,7 @@ class Board extends Component {
               this.props.target_vari_op_index
             }
             json_moves={this.state.json_moves}
+            moves_forward={this.state.moves_forward}
             ops={this.props.ops}
             match={this.props.match}
             vari_index={this.props.vari_index || this.props.target_vari_op_index}
@@ -198,6 +202,7 @@ class Board extends Component {
             book_move={move => this.make_move(move)}
             get_fen={this.state.game.fen}
             try_undo_n_times={this.try_undo_n_times}
+            try_redo_n_times={this.try_redo_n_times}
 
             stockfish={this.state.stockfish}
             stockfish_switch_show_best={this.stockfish_switch_show_best}
@@ -486,6 +491,8 @@ class Board extends Component {
         // store moves_list to return it later
         res(moves_list)
 
+        // TODO: ERROR: THIS CANNOT BE DONE
+        // we are calling setState from within setState
         this.engine.move(move.from + move.to + (move.promotion || ""))
         if(this.state.stockfish.show_best || this.state.stockfish.show_eval) {
           this.engine.go()
@@ -514,6 +521,8 @@ class Board extends Component {
         // scroll the tree to the bottom after the state got updated
         let tree = document.getElementById("boardDataTreeSlide");
         if (tree) tree.scrollTop = tree.scrollHeight;
+        let tableMoves = document.getElementById("boardDataMovesTableSlide");
+        if (tableMoves) tableMoves.scrollTop = tableMoves.scrollHeight;
       })
     })
 
@@ -594,6 +603,7 @@ class Board extends Component {
         this.play_error_sound()
         if(mode === SMART_TRAINING_MODE && !this.state.smart_training_error_made_here) 
           this.setState(old => ({
+            smart_training_errors_first: old.smart_training_errors_first === null ? this.state.json_moves.length + 1 : old.smart_training_errors_first,
             smart_training_errors_counter: old.smart_training_errors_counter + 1, 
             smart_training_error_made_here: true
           }))
@@ -655,7 +665,7 @@ class Board extends Component {
   try_undo_n_times(n) {
     // you can't go back more moves than you played 
     if (this.state.json_moves.length < n) n = this.state.json_moves.length
-    if (n === 0) return;
+    if (n <= 0) return;
 
     this.setState(old => {
 
@@ -668,19 +678,24 @@ class Board extends Component {
         // undo the move
         moves.push(this.state.game.undo())
         moves_list.pop()
+        this.engine.undo()
       }
 
       // if you play with white only you can't stop after a white move
       if (moves_list.length % 2 === 1 && this.props.playColor === "white") {
         moves.push(this.state.game.undo())
         moves_list.pop()
+        this.engine.undo()
       }
 
       // if you play with black only you can't stop after a black move
       if (moves_list.length % 2 === 0 && this.props.playColor === "black") {
         moves.push(this.state.game.undo())
         moves_list.pop()
+        this.engine.undo()
       }
+
+      moves.reverse()
 
       return {
         json_moves: moves_list,
@@ -688,6 +703,39 @@ class Board extends Component {
         arrows: []
       }
 
+    }, () => {
+      this.engine.go()
+    })
+  }
+
+  try_redo_n_times(n) {
+    // you can go forward at maximum moves_forward.length times
+    if (this.state.moves_forward.length < n) n = this.state.json_moves.length
+    // you can't go forward if the are no more moves 
+    if (n <= 0) return;
+
+    this.setState(old => {
+      let played_moves = [] // list of moves this function has played
+      let new_moves_forward = old.moves_forward // moves_forward still remaining
+
+      for (let index = 0; index < n; index++) {
+        // redo the move
+        let m = this.state.game.move(new_moves_forward.shift())
+        if(m) {
+          played_moves.push(m)
+          this.engine.move(move_to_fromto(m))
+        }else{
+          return;
+        }
+      }
+
+      return {
+        json_moves: [...old.json_moves, ...played_moves],
+        moves_forward: new_moves_forward,
+        arrows: []
+      }
+    }, () => {
+      this.engine.go()
     })
   }
 
@@ -763,14 +811,14 @@ class Board extends Component {
           // training finished
           this.makeCongrats()
         } else if (correct_moves_repetitive.length === 0 && mode === SMART_TRAINING_MODE){
-          this.props.onSmartTrainingVariFinished(this.props.targets_list, this.state.smart_training_errors_counter, this.resetBoard)
+          this.props.onSmartTrainingVariFinished(this.props.targets_list, this.state.smart_training_errors_first, this.state.smart_training_errors_counter, this.resetBoard)
         }
 
       }, this.props.wait_time)
     } else if (is_congrats_mode) {
       this.makeCongrats()
     } else if (mode === SMART_TRAINING_MODE){
-      this.props.onSmartTrainingVariFinished(this.props.targets_list, this.state.smart_training_errors_counter, this.resetBoard)
+      this.props.onSmartTrainingVariFinished(this.props.targets_list, this.state.smart_training_errors_first, this.state.smart_training_errors_counter, this.resetBoard)
     }
   }
 
@@ -1361,6 +1409,7 @@ class Board extends Component {
       game: new Chess(), 
       selected_cell: undefined, 
       arrows: [],
+      smart_training_errors_first: null,
       smart_training_errors_counter: 0,
       smart_training_error_made_here: false,
     }}, this.onStart)

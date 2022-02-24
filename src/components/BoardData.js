@@ -6,12 +6,14 @@ import StockfishUI from "./StockfishUI";
 import BookUI from "./BookUI";
 import VariInfoUI from "./VariInfoUI";
 import { getEco } from "../utilities/eco_codes"
+import MovesTable from "./MovesTable";
 
 const tab_to_icon = {
   "moves": "list",
   "book": "menu_book",
   "stockfish": "computer",
-  "vari_info": "info"
+  "vari_info": "info",
+  "moves_table": "format_list_numbered"
 }
 
 class BoardData extends Component {
@@ -46,6 +48,20 @@ class BoardData extends Component {
           />
         </div>
       tabs.push(tabTree)
+    }    
+    
+    // MOVES TABLE TAB
+    if (this.props.tabs.indexOf("moves_table") !== -1) {
+      const tabMovesTable =
+        <div id="boardDataMovesTableSlide" key="boardDataMovesTableSlide" className="boardDataSlide">
+          <MovesTable key="tree"
+            json_moves={this.props.json_moves}
+            moves_forward={this.props.moves_forward}
+            try_undo_n_times={this.props.try_undo_n_times}
+            try_redo_n_times={this.props.try_redo_n_times}
+          />
+        </div>
+      tabs.push(tabMovesTable)
     }
 
     // VARIATION INFO TAB
@@ -116,7 +132,7 @@ class BoardData extends Component {
       }
     }
 
-    let separator = <span>&nbsp;&nbsp;</span>
+    let separator = <span key="separator_extra_bar">&nbsp;&nbsp;</span>
 
     // OPENING TITLE - EXTRA INFO
     if (this.props.tabs.indexOf("op_name") !== -1) {

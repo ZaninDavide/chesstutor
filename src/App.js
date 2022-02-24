@@ -993,12 +993,15 @@ class App extends Component {
     }
   }
 
-  number_of_errors_to_quality(n, line_length) {
-    const normalized = Math.round(n * 7 / Math.max(7, line_length / 2))
+  errors_to_quality(first_error, n_errors, line_length) {
+    if (n_errors === 0) return 5
+
+    const normalized = 6 * (n_errors / line_length) + (line_length / first_error) * 0.8
+
     const quality = {
-      0: 5, 1: 4, 2: 3, 3: 3, 4: 2, 5: 2, 6: 1 // the others are 0
+      1: 4, 2: 3, 3: 2, 4: 1 // the others are 0
     }
-    return quality[normalized] || 0
+    return quality[Math.round(normalized)] || 0
   }
 
   get_new_vari_score(quality, lastSchedule, lastFactor) {
@@ -1061,14 +1064,14 @@ class App extends Component {
     return smart_training_target_vari
   }
 
-  smartTrainingVariFinished(targets_list, number_of_errors, callback) {
+  smartTrainingVariFinished(targets_list, first_error, number_of_errors, callback) {
     const target_vari = this.smart_traning_get_target_vari(targets_list)
     const target_vari_op_index = targets_list.length > 0 ? targets_list[0].vari_op_index : null
     const target_vari_index = targets_list.length > 0 ? targets_list[0].vari_index : null
 
     if(target_vari){
       const new_vari_score = this.get_new_vari_score(
-        this.number_of_errors_to_quality(number_of_errors, target_vari.moves.length),
+        this.errors_to_quality(first_error, number_of_errors, target_vari.moves.length),
         target_vari.vari_score ? target_vari.vari_score.schedule : null,
         target_vari.vari_score ? target_vari.vari_score.factor : null
       )
@@ -1086,9 +1089,9 @@ class App extends Component {
 
   }
 
-  onSmartTrainingVariFinished(targets_list, number_of_errors, resetBoard_callback) {
+  onSmartTrainingVariFinished(targets_list, first_error, number_of_errors, resetBoard_callback) {
     // save this training
-    this.smartTrainingVariFinished(targets_list, number_of_errors, () => {
+    this.smartTrainingVariFinished(targets_list, first_error, number_of_errors, () => {
       if(targets_list.length <= 1) {
         // TODO: BIGGER CONGRATS + SEND THE USER TO THE HOME PAGE
         this.notify("You don't need to train any more for today.", "important")
