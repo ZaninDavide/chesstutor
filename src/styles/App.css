@@ -60,13 +60,13 @@
   --hoverAlert: #b63737;
   --arrow: #41d0a1;
   --ripple: rgb(255 255 255/10%);
-  --tap: rgb(144 144 144/25%);
+  --tap: rgba(141, 146, 148, 0.25);
   --shadow: #2f4f601c;
   --shadowBlur: 10px;
   --shadowShift: 5px;
   --back: #f5f8f9;
   --hoverBack: #e9ecf0;
-  --onBack: #d5d5d5;
+  --onBack: #ccd2d4;
   --headerBack: var(--back);
   --text: #3e3e3e;
   --title: #162528;
@@ -81,7 +81,7 @@
   --onModalBack: #eee;
   --cardButtonsBack: #fff;
   --cardButtonsHover: #f7f7f7;
-  --hoverBookTable: rgb(226, 226, 226);
+  --hoverBookTable: rgb(217, 222, 224);
   --winrateBarBorderColor: black;
   --textBoxBack: #eee;
 }
@@ -98,7 +98,7 @@
   --shadowBlur: 0px;
   --shadowShift: 0px;
   --back: #030304; /* #000000 */
-  --hoverBack: #0e0e0e;
+  --hoverBack: #141414;
   --onBack: #1d1d1d;
   --headerBack: var(--back);
   --text: #c7c7c7;
@@ -126,14 +126,14 @@
     --alert: #f14b4b;
     --hoverAlert: #b63737;
     --arrow: #41d0a1;
-    --ripple: rgb(255 255 255/10%);
-    --tap: rgb(144 144 144/25%);
+    --ripple: #ffffff1a;
+    --tap: rgba(141, 146, 148, 0.25);
     --shadow: #2f4f601c;
     --shadowBlur: 10px;
     --shadowShift: 5px;
     --back: #f5f8f9;
     --hoverBack: #e9ecf0;
-    --onBack: #d5d5d5;
+    --onBack: #ccd2d4;
     --headerBack: var(--back);
     --text: #3e3e3e;
     --title: #162528;
@@ -148,9 +148,9 @@
     --onModalBack: #eee;
     --cardButtonsBack: #fff;
     --cardButtonsHover: #f7f7f7;
-    --hoverBookTable: rgb(226, 226, 226);
+    --hoverBookTable: #d9dee0;
     --winrateBarBorderColor: black;
-    --textBoxBack: #eee;
+    --textBoxBack: #ebedee;
   }
 }
 

@@ -75,7 +75,7 @@ max-width: calc(100vh - var(--headerHeight) - var(--uiElementHeight) - 80px);
 }
 
 /*   VERTICAL */
-@media (max-width: 105vh) {
+@media (max-width: 75vh) {
   #boardGrid {
     display: grid;
     width: 100%;
@@ -97,8 +97,96 @@ max-width: calc(100vh - var(--headerHeight) - var(--uiElementHeight) - 80px);
   }
 }
 
-/* HORIZONTAL SQUARE-LIKE RECTANGLE */
-@media (min-width: 105vh) and (max-width: 133vh) {
+/*   SQUARE LIKE VERTICAL (more vertical) */
+@media (min-width: 75vh) and (max-width: 85vh) {
+  #boardGrid {
+    display: grid;
+    width: 100%;
+    height: calc(100vh - var(--headerHeight));
+    /* max-width: calc(100vh - var(--headerHeight) - var(--uiElementMediumHeight) - 80px); */
+    grid-template-rows: auto 1fr var(--uiElementMediumHeight);
+    /*  auto var(--uiElementMediumHeight) 1fr */
+    grid-template-areas: "boardContainer" "boardData" "boardUI";
+    /* "boardContainer" "boardUI" "boardData" */
+  }
+
+  #boardGrid #boardContainer {
+    margin-left: 10%;
+    margin-right: 10%;
+  }
+
+  #boardGrid.smallBoard {
+    max-width: 100vw;
+    grid-template-columns: 1fr;
+  }
+  #boardGrid.smallBoard #boardContainer {
+    margin-left: 20%;
+    margin-right: 20%;
+  }
+}
+
+/*   SQUARE LIKE VERTICAL (less vertical) */
+@media (min-width: 85vh) and (max-width: 100vh) {
+  #boardGrid {
+    display: grid;
+    width: 100%;
+    height: calc(100vh - var(--headerHeight));
+    /* max-width: calc(100vh - var(--headerHeight) - var(--uiElementMediumHeight) - 80px); */
+    grid-template-rows: auto 1fr var(--uiElementMediumHeight);
+    /*  auto var(--uiElementMediumHeight) 1fr */
+    grid-template-areas: "boardContainer" "boardData" "boardUI";
+    /* "boardContainer" "boardUI" "boardData" */
+  }
+
+  #boardGrid #boardContainer {
+    margin-left: 15%;
+    margin-right: 15%;
+  }
+
+  #boardGrid.smallBoard {
+    max-width: 100vw;
+    grid-template-columns: 1fr;
+  }
+  #boardGrid.smallBoard #boardContainer {
+    margin-left: 20%;
+    margin-right: 20%;
+  }
+}
+
+/*   SQUARE LIKE HORIZONTAL (less horizontal) */
+@media (min-width: 100vh) and (max-width: 110vh) {
+  #boardGrid {
+    display: grid;
+    width: 100%;
+    height: calc(100vh - var(--headerHeight));
+    grid-template-rows: 1fr var(--uiElementMediumHeight);
+    grid-template-columns: calc(100vh - var(--headerHeight) - var(--uiElementMediumHeight) - 20vw) 1fr;
+    grid-template-areas: "boardContainer boardData" "boardUI boardData";
+  }
+
+  #boardGrid.smallBoard {
+    grid-template-columns: calc(60vh - var(--headerHeight) - var(--uiElementMediumHeight)) 1fr;
+  }
+}
+
+/*   SQUARE LIKE HORIZONTAL (more horizontal) */
+@media (min-width: 110vh) and (max-width: 125vh) {
+  #boardGrid {
+    display: grid;
+    width: 100%;
+    height: calc(100vh - var(--headerHeight));
+    grid-template-rows: 1fr var(--uiElementMediumHeight);
+    grid-template-columns: calc(100vh - var(--headerHeight) - var(--uiElementMediumHeight) - 10vw) 1fr;
+    grid-template-areas: "boardContainer boardData" "boardUI boardData";
+  }
+
+  #boardGrid.smallBoard {
+    grid-template-columns: calc(60vh - var(--headerHeight) - var(--uiElementMediumHeight)) 1fr;
+  }
+}
+
+/* HORIZONTAL RECTANGLE */
+@media (min-width: 125vh) and (max-width: 133vh) {
   #boardGrid {
     display: grid;
     width: 100%;
