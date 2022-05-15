@@ -73,10 +73,10 @@ let engine_cache = {} // {"fromtos": {depth: _, eval: _, best: _}} // fromtos = 
 class Stockfish {
     state = "off";
     worker = null;
-    last_ponder_move = null;
     played_fen = "rnbqkbnr/pppppppp/8/8/8/8/PPPPPPPP/RNBQKBNR w KQkq - 0 1" // "unknown" means it has to be calculated
     played_moves = []; // ["fromto", "fromto", ...]
     moves_queue = []; // ["fromto", "fromto", ...]
+    finishing_calculations = 0;
     depth = 8;
     calculated_depth = 0;
     calculated_eval = 0;
@@ -125,7 +125,7 @@ class Stockfish {
         const words = msg.split(/\s/)
         if(words.length > 0){
             const cmd = words[0].trim()
-            const data = msg.slice(cmd.length, msg.length).trim();
+            // const data = msg.slice(cmd.length, msg.length).trim();
             // console.log(cmd, data)
 
             switch (cmd) {
@@ -152,7 +152,7 @@ class Stockfish {
                     this.set_calculated_depth(this.calculated_depth)
 
                     // update arrows
-                    if(this.moves_queue.length === 0) this.update_arrows(this.calculated_best)
+                    if(this.moves_queue.length === 0 && this.finishing_calculations >= 1) this.update_arrows(this.calculated_best)
 
                     // cache result
                     const fromtos = this.played_moves.join("|")
@@ -167,6 +167,7 @@ class Stockfish {
                     break;
 
                 case "bestmove":
+                    this.finishing_calculations = Math.max(0, this.finishing_calculations - 1)
                     if(this.state === "working" || this.state === "waiting"){
                         this.calculated_eval = 0
                         this.calculated_best = ""
@@ -240,6 +241,7 @@ class Stockfish {
         // see if the game is cached at depth>this.depth
         // if the game is not cached use stockfish
         this.state = "working"
+        this.finishing_calculations += 1
         const moves = this.moves_queue.join(" ")
         if(moves) {
             this.send(`position fen ${this.get_played_fen()} moves ${moves}`)
