@@ -348,41 +348,8 @@ class Board extends Component {
           visible={this.state.loadVariationsModalVisible}
           close={() => this.setState({ loadVariationsModalVisible: false })}
           notify={this.props.notify}
-          addVariations={varis => {
-            // it would be better to explore the tree to avoid redoing the same moves
-            let allowed_subnames = this.props.getOpFreeSubnames(varis.length, this.props.op_index, this.props.vari_name, false)
-            varis.forEach(v => {
-              if(v.length > 0){
-                let sub_name;
-                
-                sub_name = allowed_subnames[0]
-                allowed_subnames = allowed_subnames.filter((x, i) => i !== 0)
-  
-                let game = new Chess()
-                let got_error = false
-                let vari_json_moves = v.map(m => {
-                  if(got_error) return null;
-  
-                  let move = game.move(m, {unsafe_san_parsing: false})
-                  
-                  if(move === null){
-                    console.log("error: ", m)
-                    this.props.notify("This PGN contains invalid moves.", "error")
-                    got_error = true
-                    return null;
-                  }
-  
-                  return {
-                    from: move.from,
-                    to: move.to,
-                    promotion: move.promotion,
-                    san: move.san,
-                  }
-                }).filter(m => m !== null)
-                
-                this.props.createVari(this.props.vari_name, vari_json_moves, this.props.op_index, sub_name)
-              }
-            })
+          addVariations={new_varis => {
+            this.props.addMultipleVaris(this.props.op_index, this.props.vari_name, new_varis);
             this.props.history.push("/openings/" + this.props.op_index)
           }}
         />

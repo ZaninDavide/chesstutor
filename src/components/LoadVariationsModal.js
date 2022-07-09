@@ -1,5 +1,6 @@
 import React, { Component } from "react"
 import "../styles/Modal.css"
+import Chess from "../chessjs-chesstutor/chess"
 
 const pgnExample = "1. e4 d5 2. exd5 Qxd5 3. Nc3 (3. Nf3 Bg4 (3... Nc6 4. d4) 4. Be2 Nc6 5. O-O) 3... Qa5 4. d4 Nf6"
 
@@ -15,8 +16,40 @@ class LoadVariationsModal extends Component {
   }
 
   onDone() {
-    let vars = this.game_to_variations(this.state.text)
-    this.props.addVariations(vars)
+    let varis = this.game_to_variations(this.state.text)
+    console.log(varis)
+    let game = new Chess()
+    let err = false;
+    let new_varis = [];
+    // TODO: this code is inefficient because we go thorugh many moves twice
+    varis.forEach(v => {
+      game.reset();
+      // start new variation
+      let new_json_vari = [];
+      // play each move
+      for(let i = 0; i<v.length; i++) {
+        let move = game.move(v[i], {unsafe_san_parsing: false})        
+        if(move === null){
+          console.log("error: ", v[i])
+          err = true;
+          break;
+        }else{
+          new_json_vari.push({
+            from: move.from,
+            to: move.to,
+            promotion: move.promotion,
+            san: move.san,
+          })
+        }
+      }
+      // add this vari to the list
+      if(!err) new_varis.push(new_json_vari);
+    })
+    if(err) {
+      this.props.notify("This PGN contains invalid moves. Some variations where therefore omitted.", "error");
+    }else{
+      this.props.addVariations(new_varis)
+    }
     this.props.close()
   }
 

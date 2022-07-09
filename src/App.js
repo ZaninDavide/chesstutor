@@ -107,6 +107,7 @@ class App extends Component {
     this.onSmartTrainingVariFinished = this.onSmartTrainingVariFinished.bind(this)
     this.play_training_finished_sound = this.play_training_finished_sound.bind(this)
     this.downloadDatabase = this.downloadDatabase.bind(this)
+    this.addMultipleVaris = this.addMultipleVaris.bind(this)
   }
 
   componentDidMount() {
@@ -460,12 +461,6 @@ class App extends Component {
     })
   }
 
-  /* DEPRECATED
-  getOpFreeSubnames(op_index, new_vari_name, allSubNames) {
-    return allSubNames.filter(subname => this.state.user_ops[op_index].variations.filter(v => v.vari_name === new_vari_name && v.vari_subname === subname).length === 0)
-  }
-  */
-
   getOpFreeSubnames(how_many, op_index, new_vari_name, ok_empty_subname = false) {
     let varis = this.state.user_ops[op_index].variations.filter(v => v.vari_name === new_vari_name)
     
@@ -494,7 +489,15 @@ class App extends Component {
     return free_subnames;
   }
 
-  
+  addMultipleVaris(op_index, vari_name, varis){
+    // it would be better to explore the tree to avoid redoing the same moves
+    let allowed_subnames = this.getOpFreeSubnames(varis.length, op_index, vari_name, false)
+    console.log(varis);
+    varis.forEach((v, i) => {        
+        this.createVari(vari_name, v, op_index, allowed_subnames[i])
+    })
+  }
+
   renameVariGroup(op_index, vari_group_name, vari_group_new_name) {
     this.setState(old => {
       let new_user_ops = old.user_ops
@@ -1133,6 +1136,8 @@ class App extends Component {
         if(this.state.user_ops[op_index]) return this.state.user_ops[op_index].op_color
       }}
       getOpFreeSubnames={this.getOpFreeSubnames}
+      addMultipleVaris={this.addMultipleVaris}
+      notify={this.notify}
     />
     const trainingPage = ({ match, history }) => <TrainingPage
       history={history}
@@ -1166,6 +1171,7 @@ class App extends Component {
       notify={this.notify}
       wait_time={this.state.settings.wait_time}
       volume={this.state.settings.volume}
+      addMultipleVaris={this.addMultipleVaris}
     />
     const variPage = ({ match, history }) => <VariationPage
       ops={this.state.user_ops}

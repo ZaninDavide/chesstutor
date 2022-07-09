@@ -47,6 +47,7 @@ class NewVariPage extends Component {
           notify={this.props.notify}
           wait_time={this.props.wait_time}
           volume={this.props.volume}
+          addMultipleVaris={this.props.addMultipleVaris}
         />
       </React.Fragment>
     )

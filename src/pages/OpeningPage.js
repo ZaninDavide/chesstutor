@@ -7,6 +7,7 @@ import Modal from "../components/Modal"
 import RenameVariModal from "../components/RenameVariModal"
 import NewVariGroupModal from "../components/NewVariGroupModal"
 import VariGroupModal from "../components/VariGroupModal"
+import LoadVariationsModal from "../components/LoadVariationsModal"
 
 
 class OpeningPage extends Component {
@@ -22,6 +23,7 @@ class OpeningPage extends Component {
       variNewName: "",
       newVariGroupModalVisible: false,
       variGroupModalVisible: false,
+      loadVarisModalVisible: false,
     }
     this.newVariClick = this.newVariClick.bind(this)
     this.startGame = this.startGame.bind(this)
@@ -306,6 +308,13 @@ class OpeningPage extends Component {
               <div className="hMenuButtonLabel"><span className="alertText"><Translator text="Delete" /></span></div>
             </div>
           </button>
+          {/* LOAD PGN BUTTON */}
+          <button className="simpleButton hMenuButton" onClick={() => this.setState({ loadVarisModalVisible: true, variGroupModalVisible: false })}>
+            <div className="hMenuButtonContent">
+              <div className="hMenuButtonIcon">upload</div>
+              <div className="hMenuButtonLabel"><Translator text="Load PGN" /></div>
+            </div>
+          </button>
           {/* EDIT BUTTON */}
           <button className="simpleButton hMenuButton" onClick={() => this.setState({ variGroupRenameModalVisible: true, variGroupModalVisible: false })}>
             <div className="hMenuButtonContent">
@@ -322,6 +331,16 @@ class OpeningPage extends Component {
           op_index={this.props.match.params.op_index}
           vari_group_name={this.state.selected_vari_group_name}
           renameThisVariGroup={new_name => this.props.renameVariGroup(this.props.match.params.op_index, this.state.selected_vari_group_name, new_name) }
+        />
+
+        {/* LOAD VARIS MODAL */}
+        <LoadVariationsModal
+          visible={this.state.loadVarisModalVisible}
+          close={() => this.setState({ loadVarisModalVisible: false })}
+          notify={this.props.notify}
+          addVariations={new_varis => {
+            this.props.addMultipleVaris(this.props.match.params.op_index, this.state.selected_vari_group_name, new_varis);
+          }}
         />
       </React.Fragment>
     )
