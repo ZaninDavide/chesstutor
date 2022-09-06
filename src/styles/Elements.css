@@ -80,13 +80,7 @@
   -webkit-tap-highlight-color: transparent;
 }
 
-
-#newOpPageBody{
-  margin-left: var(--mediumMargin);
-  margin-right: var(--mediumMargin);
-}
-
-#loginPageBody{
+#loginPageBody, #newOpPageBody, #extraTrainingPageBody {
   position: absolute;
   left: 0px;
   right: 0px;
@@ -603,9 +597,6 @@
   }
   #logoutButton:hover{
     background-color: var(--hoverAlert);
-  }
-  #opsSeparatorWhite:hover, #opsSeparatorBlack:hover{
-    background-color: var(--hoverBack);
   }
   .mailItemCloseButton:hover{
     color: var(--alert);

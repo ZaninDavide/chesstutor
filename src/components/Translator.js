@@ -105,6 +105,7 @@ const languages = {
     "Masters": "Masters",
     "Games": "Games",
     "Winrate WDB": "Winrate WDB",
+    "Start training": "Start training",
   },
   ita: {
     Openings: "Aperture",
@@ -209,6 +210,7 @@ const languages = {
     "Masters": "Maestri",
     "Games": "Partire",
     "Winrate WDB": "Vittorie BPN",
+    "Start training": "Inizia l'allenamento",
   }
 }
 

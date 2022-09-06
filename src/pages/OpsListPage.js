@@ -35,8 +35,8 @@ class OpsListPage extends Component {
     this.getArchiveSeparator = this.getArchiveSeparator.bind(this)
   }
 
-  getSeparator(text, name, goTo) {
-    return <div id={"opsSeparator" + name} className="opsSeparator" key={"opsSeparator" + name} onClick={() => goTo ? this.props.history.push(goTo) : null}>
+  getSeparator(text, name) {
+    return <div id={"opsSeparator" + name} className="opsSeparator" key={"opsSeparator" + name}>
       <h3>
         <Translator text={text} />
       </h3>
@@ -89,11 +89,11 @@ class OpsListPage extends Component {
       // connect all together: not_archived_white + separator + not_archived_black + separator + archived
       let all = []
       if (not_archived_white.length > 0) {
-        all.push(this.getSeparator("white", "White", "/training/fullcolor/1"))
+        all.push(this.getSeparator("white", "White"))
         all = all.concat(not_archived_white)
       }
       if (not_archived_black.length > 0) {
-        all.push(this.getSeparator("black", "Black", "/training/fullcolor/0"))
+        all.push(this.getSeparator("black", "Black"))
         all = all.concat(not_archived_black)
       }
       if (archived.length > 0) {
@@ -170,6 +170,7 @@ class OpsListPage extends Component {
           headerMenu={
             <Menu menuButton={
               <button id="headerButton" className="iconButton">menu</button>}>
+              <MenuItem onClick={() => this.props.history.push("/training/options")}><Translator text="Training" /></MenuItem>
               <MenuItem onClick={() => this.props.history.push("/analysis/white/[]")}><Translator text="Free analisys" /></MenuItem>
               <MenuItem onClick={() => this.props.history.push("/mail")}><Translator text="Messages" /></MenuItem>
               <MenuItem onClick={() => this.props.history.push("/profile")}><Translator text="Settings" /></MenuItem>

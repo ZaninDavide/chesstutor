@@ -15,6 +15,7 @@ import ColorTrainingPage from "./pages/ColorTrainingPage"
 import GroupTrainingPage from "./pages/GroupTrainingPage"
 import AnalysisPage from "./pages/AnalysisPage"
 import SmartTrainingPage from "./pages/SmartTrainingPage"
+import ExtraTrainingPage from "./pages/ExtraTrainingPage"
 
 import Notification from "./components/Notification"
 
@@ -1291,6 +1292,8 @@ class App extends Component {
       get_target_vari={this.smart_traning_get_target_vari}
       targets_list={targets_list}
     />
+    const extraTrainingPage = ({ match, history }) => <ExtraTrainingPage history={history} match={match} />
+
     const redirectToLogin = () => <Redirect to="/login" />
     const redirectToHome = () => <Redirect to="/" />
     let needLogin = (!this.state.username && !this.state.loadingVisible)
@@ -1327,6 +1330,8 @@ class App extends Component {
 
               <Route path="/openings/:op_index/:vari_index" render={noOpenings ? redirectToHome : variPage} />
               <Route path="/openings/:op_index" render={/*noOpenings ? redirectToHome : */opPage} />
+
+              <Route path="/training/options" render={noOpenings ? redirectToHome : extraTrainingPage} />
 
               <Route path="/training/smart" render={/*noOpenings ? redirectToHome : */smartTrainingPage} exact />
               <Route path="/training/fullcolor/:color_number" render={noOpenings ? redirectToHome : colorTrainingPage} />
