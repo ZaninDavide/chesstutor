@@ -27,7 +27,7 @@ class TrainingPage extends Component {
           op_index={op_index}
 
           buttons={["back", "help", "more"]}
-          moreMenuButtons={["analyse", "flip", "smallBoard"]}
+          moreMenuButtons={["Analyze", "flip", "smallBoard"]}
           tabs={["moves"]}
 
           rotation={op.op_color}

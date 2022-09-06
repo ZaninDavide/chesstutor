@@ -43,7 +43,7 @@ class SmartTrainingPage extends Component {
           getDrawBoardPDF={this.props.getDrawBoardPDF}
 
           buttons={["back", "help", "more"]}
-          moreMenuButtons={["analyse", "flip", "smallBoard"]}
+          moreMenuButtons={["Analyze", "flip", "smallBoard"]}
           tabs={["moves", "vari_info", "op_name"]}
 
           notify={this.props.notify}

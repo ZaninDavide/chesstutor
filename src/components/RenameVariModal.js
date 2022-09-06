@@ -19,6 +19,7 @@ class RenameVariModal extends Component {
 
     this.selectRef = React.createRef();
     this.getSubnameOptions = this.getSubnameOptions.bind(this);
+    this.onDone = this.onDone.bind(this);
   }
 
   close() {
@@ -40,8 +41,9 @@ class RenameVariModal extends Component {
   }
 
   getSubnameOptions() {
-    let subns = this.props.getOpFreeSubnames(26*4, this.props.op_index, this.state.variNewName, false)
-    if(this.state.variNewName === this.props.thisVari.vari_name){
+    let trimmedVariNewName = this.state.variNewName.trim();
+    let subns = this.props.getOpFreeSubnames(26*4, this.props.op_index, trimmedVariNewName, false)
+    if(trimmedVariNewName === this.props.thisVari.vari_name){
       // if the name is the same allow to keep the same subname
       subns = [this.props.thisVari.vari_subname, ...subns]
     }
@@ -50,13 +52,41 @@ class RenameVariModal extends Component {
     )
   }
 
+  onDone() {
+    if(!this.state.variNewName || this.state.variNewName.trim().length < 1){
+      console.log("RenameVariModal: variation name shouldn't be empty, null or undefined");
+      return;
+    }
+    if(
+      this.state.variNewName === this.state.variOriginalName &&
+      this.state.variNewSubname === this.state.variOriginalSubname
+    ){
+      // nothing to do in this case
+      return;
+    }
+
+    let trimmedVariNewName = this.state.variNewName.trim();
+
+    // check subname is available
+    let subns = this.props.getOpFreeSubnames(26*4, this.props.op_index, trimmedVariNewName, false)
+    if(subns.includes(this.state.variNewSubname)){
+      this.props.renameThisVari(trimmedVariNewName, this.state.variNewSubname)
+    }else{
+      console.log("RenameVariModal: this variation subname is not available because already used. Fallen back to first available subname.");
+      this.props.renameThisVari(trimmedVariNewName, subns[0])
+    }
+  }
+
   render() {
+    let trimmedVariNewName = this.state.variNewName ? this.state.variNewName.trim() : this.state.variNewName;
     return (
       <Modal
         visible={this.props.visible}
         close={this.close}
-        onDoneClick={() => this.props.renameThisVari(this.state.variNewName, this.state.variNewSubname)}
-        disabledDoneButton={this.state.variNewName.length === 0}
+        onDoneClick={this.onDone}
+        disabledDoneButton={
+          !this.state.variNewName || trimmedVariNewName.length < 1
+        }
       >
             <h2>
               <Translator text={"Rename"} />&nbsp;
@@ -70,10 +100,10 @@ class RenameVariModal extends Component {
               id="renameVariTextbox"
               className="textBox renameTextBox"
               value={this.state.variNewName}
-              onChange={e => this.setState({ variNewName: e.target.value })}
+              onChange={e => {this.setState({ variNewName: e.target.value })}}
               onKeyPress={e => {
                 if (e.which === 13 || e.keyCode === 13) {
-                  this.props.renameThisVari(this.state.variNewName, this.state.variNewSubname)
+                  this.onDone()
                   this.close()
                 }
               }}

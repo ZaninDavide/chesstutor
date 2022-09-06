@@ -171,7 +171,7 @@ class OpsListPage extends Component {
             <Menu menuButton={
               <button id="headerButton" className="iconButton">menu</button>}>
               <MenuItem onClick={() => this.props.history.push("/training/options")}><Translator text="Training" /></MenuItem>
-              <MenuItem onClick={() => this.props.history.push("/analysis/white/[]")}><Translator text="Free analisys" /></MenuItem>
+              <MenuItem onClick={() => this.props.history.push("/analysis/white/[]")}><Translator text="Free analysis" /></MenuItem>
               <MenuItem onClick={() => this.props.history.push("/mail")}><Translator text="Messages" /></MenuItem>
               <MenuItem onClick={() => this.props.history.push("/profile")}><Translator text="Settings" /></MenuItem>
             </Menu>

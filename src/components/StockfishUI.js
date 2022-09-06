@@ -36,7 +36,7 @@ class StockfishUI extends Component {
                     <tr style={{"display": this.props.stockfish.show_eval || this.props.stockfish.show_best ? "revert" : "none"}}>
                         <td>
                             <CheckBox
-                                text={<Translator text={"In-cloud analisys"} />} 
+                                text={<Translator text={"In-cloud analysis"} />} 
                                 checked={this.props.stockfish.use_lichess_cloud} 
                                 click={this.props.stockfish_switch_use_lichess_cloud}
                             />

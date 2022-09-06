@@ -292,7 +292,7 @@ class Board extends Component {
             </button> : null
           }
           {/* ANALYSIS BUTTON */}
-          {this.props.moreMenuButtons.indexOf("analyse") !== -1 ?
+          {this.props.moreMenuButtons.indexOf("Analyze") !== -1 ?
             <button className="simpleButton hMenuButton" onClick={() => {
             this.setState({ boardMenuVisible: false })
             //this.props.history.push("/analysis/" + this.props.rotation + "/" + this.state.game.fen().split("/").join("_"))
@@ -302,7 +302,7 @@ class Board extends Component {
           }}>
             <div className="hMenuButtonContent">
               <div className="hMenuButtonIcon">edit</div>
-              <div className="hMenuButtonLabel"><Translator text={"Analyse position"}/></div>
+              <div className="hMenuButtonLabel"><Translator text={"Analyze position"}/></div>
             </div>
           </button> : null
           }

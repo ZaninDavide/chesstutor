@@ -17,7 +17,7 @@ class VariGroupModal extends Component {
   }
 
   done(){
-    this.props.renameThisVariGroup(this.state.vari_group_name)
+    this.props.renameThisVariGroup(this.state.vari_group_name.trim())
     this.props.close()
   }
 
@@ -29,10 +29,11 @@ class VariGroupModal extends Component {
         close={this.props.close}
         doneButtonText={<span className="impText iconText">edit</span>}
         onDoneClick={this.done}
+        disabledDoneButton={!this.state.vari_group_name || this.state.vari_group_name.trim().length < 1}
       >
         {this.props.visible ? 
           <React.Fragment>
-            <h2><Translator text={"Group name:"} /></h2>  
+            <h2><Translator text={"Group name"} />:</h2>  
             <input type="text" 
               id="newVariGroupTextBox"
               className="textBox"
