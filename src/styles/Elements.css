@@ -322,7 +322,7 @@
 }
 
 #opsSeparatorWhite, #opsSeparatorBlack{
-  cursor: pointer;
+  /* cursor: pointer; */
   -webkit-tap-highlight-color: var(--tap);
 }
 

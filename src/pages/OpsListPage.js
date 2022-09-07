@@ -171,7 +171,7 @@ class OpsListPage extends Component {
             <Menu menuButton={
               <button id="headerButton" className="iconButton">menu</button>}>
               <MenuItem onClick={() => this.props.history.push("/training/options")}><Translator text="Training" /></MenuItem>
-              <MenuItem onClick={() => this.props.history.push("/analysis/white/[]")}><Translator text="Free analysis" /></MenuItem>
+              <MenuItem onClick={() => this.props.history.push("/analysis/white/normal/book/[]")}><Translator text="Free analysis" /></MenuItem>
               <MenuItem onClick={() => this.props.history.push("/mail")}><Translator text="Messages" /></MenuItem>
               <MenuItem onClick={() => this.props.history.push("/profile")}><Translator text="Settings" /></MenuItem>
             </Menu>
@@ -246,7 +246,7 @@ class OpsListPage extends Component {
           </button>
           {/* BOOK BUTTON */}
           <button className="simpleButton hMenuButton" 
-            onClick={() => this.props.history.push(`/openings/${this.state.hMenuOpIndex}/${this.props.ops[this.state.hMenuOpIndex].op_color}/[]`)}
+            onClick={() => this.props.history.push(`/openings/${this.state.hMenuOpIndex}/${this.props.ops[this.state.hMenuOpIndex].op_color}/book/[]`)}
           >
             <div className="hMenuButtonContent">
               <div className="hMenuButtonIcon">menu_book</div>

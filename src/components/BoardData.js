@@ -11,7 +11,7 @@ import MovesTable from "./MovesTable";
 const tab_to_icon = {
   "moves": "list",
   "book": "menu_book",
-  "stockfish": "computer",
+  "stockfish": "miscellaneous_services",
   "vari_info": "info",
   "moves_table": "format_list_numbered"
 }
@@ -20,8 +20,11 @@ class BoardData extends Component {
 
   constructor(props) {
     super(props)
+    let starterTab = this.props.match ? (this.props.match.params.tab !== undefined ? 
+      Math.min(this.props.tabs.length - 1, Math.max(0, this.props.tabs.indexOf(this.props.match.params.tab))) : 0): 0
+    
     this.state = {
-      tab: 0,
+      tab: starterTab,
     }
     this.setTab = this.setTab.bind(this);
   }

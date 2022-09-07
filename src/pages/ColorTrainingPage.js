@@ -38,6 +38,7 @@ class ColorTrainingPage extends Component {
           notify={this.props.notify}
           wait_time={this.props.wait_time}
           volume={this.props.volume}
+          play_training_finished_sound={this.props.play_training_finished_sound}
         />
       </React.Fragment>
     )

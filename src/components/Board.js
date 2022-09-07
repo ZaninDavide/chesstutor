@@ -44,6 +44,11 @@ class Board extends Component {
   )
   constructor(props) {
     super(props)
+    
+    let starterSmallBoard = this.props.match ? (
+      this.props.match.params.board_size ? (
+      this.props.match.params.board_size === "small" ? true : false
+    ) : false ) : false;
 
     this.state = {
       game: new Chess(),
@@ -62,7 +67,7 @@ class Board extends Component {
         name: "",
         subname: "",
       },
-      smallBoard: false,
+      smallBoard: starterSmallBoard,
       smart_training_errors_first: null,
       smart_training_errors_counter: 0,
       smart_training_error_made_here: false,
@@ -106,6 +111,7 @@ class Board extends Component {
     this.forward_next_button_click = this.forward_next_button_click.bind(this)
     this.setArrows = this.setArrows.bind(this)
     this.makeCongrats = this.makeCongrats.bind(this)
+    this.makeSoftCongrats = this.makeSoftCongrats.bind(this)
     this.resetBoard = this.resetBoard.bind(this)
     this.onStart = this.onStart.bind(this)
     this.keydown_event = this.keydown_event.bind(this)
@@ -275,7 +281,7 @@ class Board extends Component {
               this.setState(old => {return { boardMenuVisible: false, rotated: !old.rotated } })
             }}>
               <div className="hMenuButtonContent">
-                <div className="hMenuButtonIcon">import_export</div>
+                <div className="hMenuButtonIcon">rotate_right</div>
                 <div className="hMenuButtonLabel"><Translator text={"Flip"}/></div>
               </div>
             </button> : null
@@ -286,7 +292,7 @@ class Board extends Component {
               this.setState(old => {return{smallBoard: !old.smallBoard}})
             }}>
               <div className="hMenuButtonContent">
-                <div className="hMenuButtonIcon">zoom_out_map</div>
+                <div className="hMenuButtonIcon">{this.state.smallBoard ? "open_in_full" : "close_fullscreen"}</div>
                 <div className="hMenuButtonLabel"><Translator text={this.state.smallBoard ? "Large board" : "Small board"}/></div>
               </div>
             </button> : null
@@ -295,10 +301,10 @@ class Board extends Component {
           {this.props.moreMenuButtons.indexOf("Analyze") !== -1 ?
             <button className="simpleButton hMenuButton" onClick={() => {
             this.setState({ boardMenuVisible: false })
-            //this.props.history.push("/analysis/" + this.props.rotation + "/" + this.state.game.fen().split("/").join("_"))
-            //this.props.history.push("/analysis/" + this.props.rotation + "/" + this.state.game.pgn().split(" ").join("_"))
             const moves = JSON.stringify(this.state.json_moves)
-            this.props.history.push("/analysis/" + this.props.rotation + "/" + moves)
+            // /analysis/:color/:board_size/:tab/:moves
+            let board_size = this.state.smallBoard ? "small" : "normal"
+            this.props.history.push("/analysis/" + this.props.rotation + "/" + board_size + "/moves_list/" + moves)
           }}>
             <div className="hMenuButtonContent">
               <div className="hMenuButtonIcon">edit</div>
@@ -708,11 +714,16 @@ class Board extends Component {
 
   pc_move(json_moves, vari_index = undefined) {
     const mode = this.props.mode
+
+    // SMART_TRAINING_MODE cannot be inside congrats mode
     const is_congrats_mode = 
       mode === OPENING_TRAINING_MODE ||
       mode === VARI_TRAINING_MODE ||
-      mode === COLOR_TRAINING_MODE ||
       mode === GROUP_TRAINING_MODE;
+
+    // SMART_TRAINING_MODE cannot be inside soft congrats mode
+    const is_soft_congrats_mode = 
+      mode === COLOR_TRAINING_MODE;
 
     let move_data = null
 
@@ -749,6 +760,7 @@ class Board extends Component {
         let pc_move_data = await await this.make_move(move_data)
 
         // now that pc has moved is the training finished?
+        // it's repetitive because the same move can occur multiple times
         let correct_moves_repetitive = []
 
         if (mode === OPENING_TRAINING_MODE || mode === VARI_TRAINING_MODE) {
@@ -774,18 +786,37 @@ class Board extends Component {
           correct_moves_repetitive = this.props.get_correct_moves_data(this.props.target_vari_op_index, pc_move_data, this.props.target_vari_index)
         }
 
-        if (correct_moves_repetitive.length === 0 && is_congrats_mode) {
-          // training finished
-          this.makeCongrats()
-        } else if (correct_moves_repetitive.length === 0 && mode === SMART_TRAINING_MODE){
-          this.props.onSmartTrainingVariFinished(this.props.targets_list, this.state.smart_training_errors_first, this.state.smart_training_errors_counter, this.resetBoard)
+        // training finished
+        if(correct_moves_repetitive.length === 0){
+          if (is_congrats_mode) {
+            this.makeCongrats()
+          } else if(is_soft_congrats_mode) {
+            this.makeSoftCongrats()
+          }
+          if(mode === COLOR_TRAINING_MODE){
+            this.resetBoard()
+          }
+          if (mode === SMART_TRAINING_MODE){
+            this.props.onSmartTrainingVariFinished(this.props.targets_list, this.state.smart_training_errors_first, this.state.smart_training_errors_counter, this.resetBoard)
+          }
         }
+        
 
       }, this.props.wait_time)
-    } else if (is_congrats_mode) {
-      this.makeCongrats()
-    } else if (mode === SMART_TRAINING_MODE){
-      this.props.onSmartTrainingVariFinished(this.props.targets_list, this.state.smart_training_errors_first, this.state.smart_training_errors_counter, this.resetBoard)
+    }else{
+      // training finished
+      if (is_congrats_mode) {
+        this.makeCongrats()
+      } else if (is_soft_congrats_mode) {
+        this.makeSoftCongrats()
+      }
+      if(mode === COLOR_TRAINING_MODE){
+        // we wait otherwise we have no time to see the piece moving
+        setTimeout(this.resetBoard, this.props.wait_time);
+      }
+      if (mode === SMART_TRAINING_MODE){
+        this.props.onSmartTrainingVariFinished(this.props.targets_list, this.state.smart_training_errors_first, this.state.smart_training_errors_counter, this.resetBoard)
+      }
     }
   }
 
@@ -1366,6 +1397,10 @@ class Board extends Component {
   makeCongrats() {
     // this.props.notify("Congrats", "important")
     this.setState({ trainingFinishedModalVisible: true })
+  }
+  makeSoftCongrats() {
+    // play congrats sound
+    this.props.play_training_finished_sound();
   }
 
   resetBoard() {

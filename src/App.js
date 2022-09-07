@@ -103,7 +103,7 @@ class App extends Component {
     this.get_compatible_variations = this.get_compatible_variations.bind(this)
     this.updateVariScore = this.updateVariScore.bind(this)
     this.get_smart_training_targets = this.get_smart_training_targets.bind(this)
-    this.smart_traning_get_target_vari = this.smart_traning_get_target_vari.bind(this)
+    this.smart_training_get_target_vari = this.smart_training_get_target_vari.bind(this)
     this.smartTrainingVariFinished = this.smartTrainingVariFinished.bind(this)
     this.onSmartTrainingVariFinished = this.onSmartTrainingVariFinished.bind(this)
     this.play_training_finished_sound = this.play_training_finished_sound.bind(this)
@@ -611,7 +611,7 @@ class App extends Component {
       for (let vari_index = 0; vari_index < op.variations.length; vari_index++) {
         // loop through all variations 
         let vari = op.variations[vari_index]
-        if (vari.moves.length > json_moves.length && !vari.archived) { // this variation is long enougth and not archived
+        if (vari.moves.length > json_moves.length && !vari.archived) { // this variation is long enough and not archived
           let first_moves = vari.moves.slice(0, json_moves.length)
 
           // is the variation compatible with the already done moves?
@@ -658,7 +658,7 @@ class App extends Component {
           // loop through all variations 
           let vari = op.variations[vari_index]
 
-          if (vari.moves.length > json_moves.length && !vari.archived) { // this variation is long enougth and not archived
+          if (vari.moves.length > json_moves.length && !vari.archived) { // this variation is long enough and not archived
             let first_moves = vari.moves.slice(0, json_moves.length)
             // is the variation compatible with the already done moves?
             if (JSON.stringify(first_moves) === JSON.stringify(json_moves)) {
@@ -697,7 +697,7 @@ class App extends Component {
       // loop through all variations 
       let vari = op.variations[vari_index]
       if (vari.vari_name === vari_name) {
-        if (vari.moves.length > json_moves.length && !vari.archived) { // this variation is long enougth and not archived
+        if (vari.moves.length > json_moves.length && !vari.archived) { // this variation is long enough and not archived
           let first_moves = vari.moves.slice(0, json_moves.length)
 
           // is the variation compatible with the already done moves?
@@ -734,7 +734,7 @@ class App extends Component {
     for (let vari_index = 0; vari_index < op.variations.length; vari_index++) {
       // loop through all variations 
       let vari = op.variations[vari_index]
-      if (vari.moves.length > json_moves.length && !vari.archived) { // this variation is long enougth and not archived
+      if (vari.moves.length > json_moves.length && !vari.archived) { // this variation is long enough and not archived
         let first_moves = vari.moves.slice(0, json_moves.length)
 
         // is the variation compatible with the already done moves?
@@ -756,7 +756,7 @@ class App extends Component {
         for (let vari_index = 0; vari_index < op.variations.length; vari_index++) {
           // loop through all variations 
           let vari = op.variations[vari_index]
-          if (vari.moves.length > json_moves.length && !vari.archived) { // this variation is long enougth and not archived
+          if (vari.moves.length > json_moves.length && !vari.archived) { // this variation is long enough and not archived
             let first_moves = vari.moves.slice(0, json_moves.length)
 
             // is the variation compatible with the already done moves?
@@ -780,7 +780,7 @@ class App extends Component {
       let vari = op.variations[vari_index]
       // console.log(vari.vari_name, vari_name)
       if (vari.vari_name === vari_name) {
-        if (vari.moves.length > json_moves.length && !vari.archived) { // this variation is long enougth and not archived
+        if (vari.moves.length > json_moves.length && !vari.archived) { // this variation is long enough and not archived
           let first_moves = vari.moves.slice(0, json_moves.length)
 
           // is the variation compatible with the already done moves?
@@ -832,7 +832,7 @@ class App extends Component {
     let op = this.state.user_ops[op_index]
     let vari = op.variations[vari_index]
 
-    if (vari.moves.length <= json_moves.length) return null // this variation is NOT long enougth
+    if (vari.moves.length <= json_moves.length) return null // this variation is NOT long enough
 
     let vari_next_move = vari.moves[json_moves.length] // take the next move
     return vari_next_move
@@ -853,7 +853,7 @@ class App extends Component {
       ){ 
         query_good = false
       }
-      // name doesnt match with query which is not black or white or null
+      // name doesn't match with query which is not black or white or null
       if(opQuery !== undefined && opQuery !== null && opQuery !== true && opQuery !== false && opQuery !== op_index){
         query_good = false
       }
@@ -864,15 +864,15 @@ class App extends Component {
           let vari = op.variations[vari_index] 
           
           query_good = true
-          // name doesnt match with query
+          // name doesn't match with query
           if(variQuery !== undefined && variQuery !== null && variQuery !== vari.vari_name) 
             query_good = false 
           
-          // subname doesnt match with query
+          // subname doesn't match with query
           if(!(subnameQuery === "" && vari.vari_subname === undefined) && subnameQuery !== undefined && subnameQuery !== null && subnameQuery !== undefined && subnameQuery !== null && subnameQuery !== vari.vari_subname) 
             query_good = false 
 
-          if (vari.moves.length > json_moves.length && !vari.archived && query_good) { // this variation is long enougth and not archived
+          if (vari.moves.length > json_moves.length && !vari.archived && query_good) { // this variation is long enough and not archived
             let first_moves = vari.moves.slice(0, json_moves.length)
 
             // is the variation compatible with the already done moves?
@@ -909,7 +909,7 @@ class App extends Component {
       ){ 
         query_good = false
       }
-      // name doesnt match with query which is not black or white or null
+      // name doesn't match with query which is not black or white or null
       if(opQuery !== undefined && opQuery !== null && opQuery !== true && opQuery !== false && opQuery !== op_index){
         query_good = false
       }
@@ -920,15 +920,15 @@ class App extends Component {
           let vari = op.variations[vari_index] 
           
           query_good = true
-          // name doesnt match with query
+          // name doesn't match with query
           if(variQuery !== undefined && variQuery !== null && variQuery !== vari.vari_name) 
             query_good = false 
           
-          // subname doesnt match with query
+          // subname doesn't match with query
           if(!(subnameQuery === "" && vari.vari_subname === undefined) && subnameQuery !== undefined && subnameQuery !== null && subnameQuery !== undefined && subnameQuery !== null && subnameQuery !== vari.vari_subname) 
             query_good = false 
 
-          if (vari.moves.length >= json_moves.length && !vari.archived && query_good) { // this variation is long enougth and not archived
+          if (vari.moves.length >= json_moves.length && !vari.archived && query_good) { // this variation is long enough and not archived
             let first_moves = vari.moves.slice(0, json_moves.length)
 
             // is the variation compatible with the already done moves?
@@ -1048,7 +1048,7 @@ class App extends Component {
     }
   }
 
-  smart_traning_get_target_vari(targets_list) {
+  smart_training_get_target_vari(targets_list) {
     const target_vari_color = targets_list.length > 0 ? targets_list[0].vari_color : "none"
     const target_vari_op_index = targets_list.length > 0 ? targets_list[0].vari_op_index : null
     const target_vari_index = targets_list.length > 0 ? targets_list[0].vari_index : null
@@ -1069,7 +1069,7 @@ class App extends Component {
   }
 
   smartTrainingVariFinished(targets_list, first_error, number_of_errors, callback) {
-    const target_vari = this.smart_traning_get_target_vari(targets_list)
+    const target_vari = this.smart_training_get_target_vari(targets_list)
     const target_vari_op_index = targets_list.length > 0 ? targets_list[0].vari_op_index : null
     const target_vari_index = targets_list.length > 0 ? targets_list[0].vari_index : null
 
@@ -1252,6 +1252,7 @@ class App extends Component {
       notify={this.notify}
       wait_time={this.state.settings.wait_time}
       volume={this.state.settings.volume}
+      play_training_finished_sound={this.play_training_finished_sound}
     />
     const variTrainingPage = ({ match, history }) => <GroupTrainingPage
       history={history}
@@ -1289,7 +1290,7 @@ class App extends Component {
       getComment={this.getComment}
       getDrawBoardPDF={this.getDrawBoardPDF}
       onSmartTrainingVariFinished={this.onSmartTrainingVariFinished}
-      get_target_vari={this.smart_traning_get_target_vari}
+      get_target_vari={this.smart_training_get_target_vari}
       targets_list={targets_list}
     />
     const extraTrainingPage = ({ match, history }) => <ExtraTrainingPage history={history} match={match} />
@@ -1325,8 +1326,8 @@ class App extends Component {
               <Route path="/openings/training/:op_index/:vari_name" render={noOpenings ? redirectToHome : variTrainingPage} />
               <Route path="/newVariation/:op_index/:vari_name" render={newVariPage} />
 
-              <Route path="/openings/:op_index/:vari_name/:color/:moves" render={analysisPage} />
-              <Route path="/openings/:op_index/:color/:moves" render={analysisPage} />
+              <Route path="/openings/:op_index/:vari_name/:color/:board_size/:tab/:moves" render={analysisPage} />
+              <Route path="/openings/:op_index/:color/:board_size/:tab/:moves" render={analysisPage} />
 
               <Route path="/openings/:op_index/:vari_index" render={noOpenings ? redirectToHome : variPage} />
               <Route path="/openings/:op_index" render={/*noOpenings ? redirectToHome : */opPage} />
@@ -1337,7 +1338,7 @@ class App extends Component {
               <Route path="/training/fullcolor/:color_number" render={noOpenings ? redirectToHome : colorTrainingPage} />
               <Route path="/training/:op_index" render={noOpenings ? redirectToHome : trainingPage} />
 
-              <Route path="/analysis/:color/:moves" render={analysisPage} />
+              <Route path="/analysis/:color/:board_size/:tab/:moves" render={analysisPage} />
               <Route path="/" render={() => { console.warn("Error 404. Redirected to home"); return redirectToHome() }} />
             </Switch>
           </div>
