@@ -31,7 +31,7 @@ const duration = require('dayjs/plugin/duration')
 dayjs.extend(duration)
 
 
-const SERVER_URI = "https://chesstutorserver.herokuapp.com" // "http://localhost:5000"
+const SERVER_URI = "https://chessup.baida.dev:3008" // "http://localhost:5000"
 
 const defaultOps = []
 

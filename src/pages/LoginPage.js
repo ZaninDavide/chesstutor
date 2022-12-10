@@ -19,7 +19,7 @@ class LoginPage extends Component {
 
   login = async () => {
     const res = await fetch(
-      "https://chesstutorserver.herokuapp.com/login",
+      "https://chessup.baida.dev:3008/login",
       {
         body: JSON.stringify({
           email: this.state.username,
@@ -49,7 +49,7 @@ class LoginPage extends Component {
 
   signup = async () => {
     let res = await fetch(
-      "https://chesstutorserver.herokuapp.com/signup",
+      "https://chessup.baida.dev:3008/signup",
       {
         body: JSON.stringify({
           email: this.state.username,
