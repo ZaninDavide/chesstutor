@@ -181,22 +181,22 @@ class Board extends Component {
             tabs={this.props.tabs}
 
             op_index={
-              this.props.target_vari_op_index === undefined || this.props.target_vari_op_index === null 
+              this.props.target_vari === undefined || this.props.target_vari.op_index === undefined || this.props.target_vari.op_index === null 
             ? 
               this.props.op_index
             :
-              this.props.target_vari_op_index
+              this.props.target_vari.op_index
             }
             json_moves={this.state.json_moves}
             moves_forward={this.state.moves_forward}
             ops={this.props.ops}
             match={this.props.match}
-            vari_index={this.props.vari_index || this.props.target_vari_op_index}
-            vari_name={this.props.vari_name || this.props.target_vari_name}
-            vari_subname={this.props.vari_subname || this.props.target_vari_subname}
+            vari_index={choose(this.props.vari_index, this.props.target_vari ? this.props.target_vari.vari_index : null)}
+            vari_name={choose(this.props.vari_name, this.props.target_vari ? this.props.target_vari.vari_name : null)}
+            vari_subname={choose(this.props.vari_subname, this.props.target_vari ? this.props.target_vari.vari_subname : null)}
             vari_op_name={
-              this.props.ops && ((this.props.op_index !== undefined && this.props.op_index !== null) || (this.props.target_vari_op_index !== undefined && this.props.target_vari_op_index !== null)) ? 
-              (this.props.ops[(this.props.op_index || this.props.target_vari_op_index)] ? this.props.ops[(this.props.op_index || this.props.target_vari_op_index)].op_name : null) : null              
+              this.props.ops && ((this.props.op_index !== undefined && this.props.op_index !== null) || ((this.props.target_vari ? this.props.target_vari.op_index : undefined) !== undefined && this.props.target_vari.op_index !== null)) ? 
+              (this.props.ops[choose(this.props.op_index, this.props.target_vari ? this.props.target_vari.op_index : null)] ? this.props.ops[choose(this.props.op_index, this.props.target_vari ? this.props.target_vari.op_index : null)].op_name : null) : null              
             }
             
             thereIsComment={thereIsComment}
@@ -307,7 +307,7 @@ class Board extends Component {
             this.props.history.push("/analysis/" + this.props.rotation + "/" + board_size + "/moves_list/" + moves)
           }}>
             <div className="hMenuButtonContent">
-              <div className="hMenuButtonIcon">edit</div>
+              <div className="hMenuButtonIcon">biotech</div>
               <div className="hMenuButtonLabel"><Translator text={"Analyze position"}/></div>
             </div>
           </button> : null
@@ -549,12 +549,12 @@ class Board extends Component {
       else if (mode === SMART_TRAINING_MODE) {
         // SMART_TRAINING_MODE
         if(!this.props.is_move_allowed) { console.log("Board: try_move() error. is_move_allowed missing"); return false } 
-        is_this_move_allowed = this.props.is_move_allowed(this.props.target_vari_op_index, this.state.json_moves, move_data, this.props.target_vari_index)
+        is_this_move_allowed = this.props.is_move_allowed(this.props.target_vari.op_index, this.state.json_moves, move_data, this.props.target_vari.vari_index)
       
         if(!is_this_move_allowed){
           // is this an alternative move but not the one we want you to train on?
           if(!this.props.is_move_allowed_color) { console.log("Board: try_move() error. is_move_allowed_color missing"); return false } 
-          is_this_move_smart_alternative = this.props.is_move_allowed_color(this.props.target_vari_color, this.state.json_moves, move_data)
+          is_this_move_smart_alternative = this.props.is_move_allowed_color(this.props.target_vari.op_color, this.state.json_moves, move_data)
         }
       }
 
@@ -746,10 +746,10 @@ class Board extends Component {
     
     } else if (mode === SMART_TRAINING_MODE) { 
       // SMART_TRAINING_MODE
-      if(this.props.target_vari_op_index === undefined) { console.log("Board: pc_move() error. target_vari_op_index missing"); return false }
-      if(this.props.target_vari_index === undefined) { console.log("Board: pc_move() error. target_vari_index missing"); return false }
+      if(this.props.target_vari.op_index === undefined) { console.log("Board: pc_move() error. target_vari.op_index missing"); return false }
+      if(this.props.target_vari.vari_index === undefined) { console.log("Board: pc_move() error. target_vari.vari_index missing"); return false }
       if(this.props.get_pc_move_data === undefined) { console.log("Board: pc_move() error. get_pc_move_data missing"); return false }
-      move_data = this.props.get_pc_move_data(this.props.target_vari_op_index, json_moves, this.props.target_vari_index)
+      move_data = this.props.get_pc_move_data(this.props.target_vari.op_index, json_moves, this.props.target_vari.vari_index)
     }
 
 
@@ -783,7 +783,7 @@ class Board extends Component {
         } else if (mode === SMART_TRAINING_MODE) { 
           // SMART_TRAINING_MODE
           if(this.props.get_correct_moves_data === undefined) { console.log("Board: pc_move() error. get_correct_moves_data missing"); return false }
-          correct_moves_repetitive = this.props.get_correct_moves_data(this.props.target_vari_op_index, pc_move_data, this.props.target_vari_index)
+          correct_moves_repetitive = this.props.get_correct_moves_data(this.props.target_vari.op_index, pc_move_data, this.props.target_vari.vari_index)
         }
 
         // training finished
@@ -797,7 +797,12 @@ class Board extends Component {
             this.resetBoard()
           }
           if (mode === SMART_TRAINING_MODE){
-            this.props.onSmartTrainingVariFinished(this.props.targets_list, this.state.smart_training_errors_first, this.state.smart_training_errors_counter, this.resetBoard)
+            this.props.onSmartTrainingVariFinished(
+              this.props.target_vari.op_index,
+              this.props.target_vari.vari_index,
+              this.state.smart_training_errors_first, 
+              this.resetBoard
+            )
           }
         }
         
@@ -815,7 +820,12 @@ class Board extends Component {
         setTimeout(this.resetBoard, this.props.wait_time);
       }
       if (mode === SMART_TRAINING_MODE){
-        this.props.onSmartTrainingVariFinished(this.props.targets_list, this.state.smart_training_errors_first, this.state.smart_training_errors_counter, this.resetBoard)
+        this.props.onSmartTrainingVariFinished(
+          this.props.target_vari.op_index,
+          this.props.target_vari.vari_index,
+          this.state.smart_training_errors_first, 
+          this.resetBoard
+        )
       }
     }
   }
@@ -1210,7 +1220,7 @@ class Board extends Component {
       } else if (mode === SMART_TRAINING_MODE) {
         // OPENING_TRAINING_MODE & VARI_TRAINING_MODE
         if(this.props.get_correct_moves_data === undefined) { console.log("Board: help_button_click() error. get_correct_moves_data missing"); return false }
-        correct_moves_repetitive = this.props.get_correct_moves_data(this.props.target_vari_op_index, this.state.json_moves, this.props.target_vari_index)
+        correct_moves_repetitive = this.props.get_correct_moves_data(this.props.target_vari.op_index, this.state.json_moves, this.props.target_vari.vari_index)
 
       } else if (mode === NEW_VARI_MODE) {
         // NEW_VARI_MODE
@@ -1437,6 +1447,14 @@ class Board extends Component {
         this.props.buttons.indexOf("help") !== -1 &&
         this.is_my_turn()
       ) { this.help_button_click(false) }
+    }
+  }
+}
+
+function choose() {
+  for(let i = 0; i < arguments.length; i++) {
+    if(arguments[i] !== null && arguments[i] !== undefined && arguments[i] !== NaN) {
+      return arguments[i];
     }
   }
 }

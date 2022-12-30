@@ -24,18 +24,18 @@ import "./styles/Elements.css" // css by ID + SECONDARY COMPONENTS
 import "./styles/Modal.css"
 import "./styles/Print.css" // css by CLASSES + MAIN COMPONENTS
 import { LanguageProvider } from "./components/LanguageContext"
-import { shuffle } from "./utilities/shuffle"
 
 import dayjs from "dayjs"
-const duration = require('dayjs/plugin/duration')
-dayjs.extend(duration)
+// import duration from 'dayjs/plugin/duration'
+// dayjs.extend(duration)
 
-
-const SERVER_URI = "https://chessup.baida.dev:3008" // "http://localhost:5000"
+const SERVER_URI = "http://localhost:6543" // "https://chessup.baida.dev:3008" // "https://chesstutorserver.herokuapp.com" "http://localhost:5000"
 
 const defaultOps = []
 
-const seed = Math.round(100000*Math.random())
+const SEED = Math.round(100000*Math.random())
+const MIN_HALF_LIFE = 15.0 / (24 * 60)    // 15 minutes (in days)
+const MAX_HALF_LIFE = 274                //  9 months (in days)
 
 class App extends Component {
   constructor(props) {
@@ -54,7 +54,8 @@ class App extends Component {
       loadingVisible: true,
       notification: { text: "Congrats", type: "important" },
       notification_visible: false,
-      settings: { wait_time: 500, colorTheme: "autoTheme", volume: 0.6 }
+      settings: { wait_time: 500, colorTheme: "autoTheme", volume: 0.6 },
+      stats: {},
     }
 
     this.createOp = this.createOp.bind(this)
@@ -102,13 +103,13 @@ class App extends Component {
     this.setVisualChessNotation = this.setVisualChessNotation.bind(this)
     this.get_compatible_variations = this.get_compatible_variations.bind(this)
     this.updateVariScore = this.updateVariScore.bind(this)
-    this.get_smart_training_targets = this.get_smart_training_targets.bind(this)
     this.smart_training_get_target_vari = this.smart_training_get_target_vari.bind(this)
-    this.smartTrainingVariFinished = this.smartTrainingVariFinished.bind(this)
     this.onSmartTrainingVariFinished = this.onSmartTrainingVariFinished.bind(this)
     this.play_training_finished_sound = this.play_training_finished_sound.bind(this)
     this.downloadDatabase = this.downloadDatabase.bind(this)
     this.addMultipleVaris = this.addMultipleVaris.bind(this)
+    this.updateStats = this.updateStats.bind(this)
+    this.forceSetVariScore = this.forceSetVariScore.bind(this)
   }
 
   componentDidMount() {
@@ -157,6 +158,9 @@ class App extends Component {
           if (userData.settings.colorTheme === undefined) userData.settings.colorTheme = "autoTheme"
           if (userData.settings.volume === undefined) userData.settings.volume = 0.6 /* from 0 to 1 */
         }
+        if(userData.stats === undefined){
+          userData.stats = {}
+        }
 
         return {
           user_ops: ops,
@@ -165,6 +169,7 @@ class App extends Component {
           language: userData.language,
           settings: userData.settings,
           inbox: userData.inbox,
+          stats: userData.stats,
           loadingVisible: false, // LOADING SCREEN NOW HIDDEN
         }
       })
@@ -210,12 +215,18 @@ class App extends Component {
     })
   }
 
-  updateDB(new_ops = this.state.user_ops, language = "eng", settings = { wait_time: 500, colorTheme: "darkTheme", volume: 0.5 }, inbox = []) {
+  updateDB(
+    new_ops = this.state.user_ops, 
+    language = "eng", 
+    settings = { wait_time: 500, colorTheme: "darkTheme", volume: 0.5 }, 
+    inbox = [],
+    stats = {}
+  ) {
     /*if (new_ops.toString() !== this.state.user_ops.toString()) {
       // Warning you that you are saving in the database something that is different from what the user sees now
-      console.log("updateDB: database and state won't match. the database will be updated aniway")
+      console.log("updateDB: database and state won't match. the database will be updated anyway")
     }*/
-    this.updateUserData({ user_ops: new_ops, language, settings, inbox}, this.state.bearer)
+    this.updateUserData({ user_ops: new_ops, language, settings, inbox, stats}, this.state.bearer)
   }
 
   rememberMeLocally(username, bearer) {
@@ -237,7 +248,7 @@ class App extends Component {
     this.setState(old => {
       let setts = old.settings
       setts[setting_name] = setting_value
-      return { setting: setts }
+      return { settings: setts }
     })
   }
 
@@ -475,10 +486,10 @@ class App extends Component {
     let number = 1
     let letters = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"]
     while(free_subnames.length < how_many) {
-      let number_str = number == 1 ? "" : number.toString()
+      let number_str = number === 1 ? "" : number.toString()
       for(let l of letters) {
         let subn = l + number_str;
-        if(varis.filter(v => v.vari_subname == subn).length === 0){
+        if(varis.filter(v => v.vari_subname === subn).length === 0){
           // if this subname is free add it
           free_subnames.push(subn)
           if(free_subnames.length >= how_many) break;
@@ -521,33 +532,82 @@ class App extends Component {
     })
   }
 
-  updateVariScore(op_index, vari_index, number_of_errors, factor, schedule, must_repeat, callback) {
-    // randomize schedule with 10% variability
-    const jitter = 1 + (Math.random() * 2 - 1) * 0.1
-    schedule = Math.round(schedule * jitter)
-    
-    const vari_new_score = {
-      factor: factor,
-      schedule: schedule,
-      must_repeat: must_repeat,
-      next_date: dayjs().add(schedule, "days").toDate(), // local time
-      total_errors: 0,
-      total_trainings: 0, 
+  updateVariScore(op_index, vari_index, first_error) {
+    const choose = function() {
+      for(let i = 0; i < arguments.length; i++) {
+        if(arguments[i] !== null && arguments[i] !== undefined && arguments[i] !== NaN) {
+          return arguments[i];
+        }
+      }
+      console.log("Error: no good value found");
     }
 
     this.setState(old => {
       let new_user_ops = old.user_ops
 
-      const err = new_user_ops[op_index].variations[vari_index].vari_score ? new_user_ops[op_index].variations[vari_index].vari_score.total_errors : 0
-      const tra = new_user_ops[op_index].variations[vari_index].vari_score ? new_user_ops[op_index].variations[vari_index].vari_score.total_trainings : 0      
-      vari_new_score.total_errors = err + number_of_errors
-      vari_new_score.total_trainings = tra + 1
+      if(old.user_ops[op_index] && old.user_ops[op_index].variations[vari_index]) {
+        let vari = old.user_ops[op_index].variations[vari_index]
+        
+        // if this opening has no score create a new one for it
+        if(vari.vari_score === 0 || typeof(vari.vari_score) !== "object") {
+          vari.vari_score = {
+            life: MIN_HALF_LIFE,
+            last: "0",
+            last_depth: 0,
+            times_trained: 0,
+            correct_moves: 0,
+          }
+        }
 
-      new_user_ops[op_index].variations[vari_index].vari_score = vari_new_score
+        if(vari.vari_score && (typeof vari.vari_score) === "object") {
 
-      this.serverRequest("POST", "/setVariationScore/" + op_index + "/" + vari_index, { new_vari_score: vari_new_score })
-      return { user_ops: new_user_ops }
-    }, callback)
+          // UPDATE VARI SCORE
+          let old_score = vari.vari_score
+          const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
+          const new_life = clamp(
+            old_score.life * clamp((first_error + 2) / (old_score.last_depth + 1), 0.25, 3), 
+            MIN_HALF_LIFE, 
+            MAX_HALF_LIFE
+          )
+          let good_moves = first_error === null ? vari.moves.length : first_error;
+          let new_score = {
+            life: choose(new_life, MIN_HALF_LIFE),
+            last: dayjs().startOf("day").unix().toString(),
+            last_depth: choose(good_moves, 0),
+            times_trained: choose(old_score.times_trained + 1, 0),
+            correct_moves: choose(old_score.correct_moves + good_moves, 0),
+          }
+          
+          new_user_ops[op_index].variations[vari_index].vari_score = new_score
+          this.serverRequest("POST", "/setVariationScore/" + op_index + "/" + vari_index, { new_vari_score: new_score })
+          return { user_ops: new_user_ops }
+
+        }else{
+          console.error("updateVariScore: variation score not found or invalid")
+          return {};
+        }
+      }else{
+        console.error("updateVariScore: variation not found")
+        return {};
+      }
+
+    })
+  }
+
+
+  forceSetVariScore(op_index, vari_index, new_score) {
+    this.setState(old => {
+      let new_user_ops = old.user_ops
+      if(old.user_ops[op_index] && old.user_ops[op_index].variations[vari_index]) {
+        let vari = old.user_ops[op_index].variations[vari_index]
+        new_user_ops[op_index].variations[vari_index].vari_score = new_score
+        this.serverRequest("POST", "/setVariationScore/" + op_index + "/" + vari_index, { new_vari_score: new_score })
+        return { user_ops: new_user_ops }
+      }else{
+        console.error("updateVariScore: variation not found")
+        return {};
+      }
+    })
   }
 
   /* ---------------------------- COMMENTS ---------------------------- */
@@ -949,170 +1009,204 @@ class App extends Component {
     return compatible_varis
   }
 
-  /* ---------------------------- SMART TRAINIG ---------------------------- */
+  /* ---------------------------- SMART TRAINING ---------------------------- */
 
-  get_smart_training_targets(user_ops = this.state.user_ops) {
-    // calculate the targets_list
-    if(user_ops){
-      let start_targets_list = []
+  smart_training_get_target_vari() {
+    // This function dictates which opening the user should study next while training in smart mode
 
-      shuffle(user_ops.map((v,i) => {v.op_index = i; return v}), seed).forEach((op) => {
-        if(op.archived) return;
-
-        shuffle(op.variations.map((c,j) => {c.vari_index=j; return c}), seed).forEach((vari) => {
-          // decide if this variation needs to be studied
-          let ok = false
-
-          if(vari.vari_score){
-            // this vari is must_repeat
-            if(vari.vari_score.must_repeat) ok = true
-
-            // is time for this variation to be studied?
-            const next_date = dayjs(vari.vari_score.next_date).hour(0).minute(0).second(0).millisecond(0)
-            const today = dayjs().hour(0).minute(0).second(0).millisecond(0)
-            const days_diff = dayjs.duration(today.diff(next_date)).asDays()
-            if(days_diff >= 0) ok = true
-          }else{
-            ok = true
-          }
-
-          if(ok) start_targets_list.push({
-            vari_color: op.op_color,
-            vari_op_index: op.op_index,
-            vari_index: vari.vari_index,
-          })
-        })
-      })
-
-      // you don't need to train now
-      if(start_targets_list.length === 0) {
-        // this.notify("You don't need to train any more for today.", "important")
-        return []
-      }else{
-        // this.notify("You have " + start_targets_list.length + " variations to train on for today.", "important")
-      }
-      return start_targets_list
-    }else{
-      return []
-    }
-  }
-
-  errors_to_quality(first_error, n_errors, line_length) {
-    if (n_errors === 0) return 5
-
-    const normalized = 6 * (n_errors / line_length) + (line_length / first_error) * 0.8
-
-    const quality = {
-      1: 4, 2: 3, 3: 2, 4: 1 // the others are 0
-    }
-    return quality[Math.round(normalized)] || 0
-  }
-
-  get_new_vari_score(quality, lastSchedule, lastFactor) {
-    let newFac
-    let curSchedule
-
-    if (quality == null || quality < 0 || quality > 5) {
-        quality = 0
-    }
-
-    let calcFactor = function(oldFac, quality) {
-      return oldFac + (0.1 - (5 - quality) * (0.08 + (5 - quality) * 0.02))
-    }
-
-    if (lastSchedule === 1) {
-        curSchedule = 6
-        newFac = 2.5
-    } else if (lastSchedule == null) {
-        curSchedule = 1
-        newFac = 2.5
-    } else {
-        if (quality < 3) {
-            newFac = lastFactor
-            curSchedule = lastSchedule
-        } else {
-            newFac = calcFactor(lastFactor, quality)
-
-            if (newFac < 1.3) {
-                newFac = 1.3
-            }
-
-            curSchedule = Math.round(lastSchedule * newFac)
+    // utility
+    const choose = function() {
+      for(let i = 0; i < arguments.length; i++) {
+        if(arguments[i] !== null && arguments[i] !== undefined && arguments[i] !== NaN) {
+          return arguments[i];
         }
+      }
+      console.log("Error: no good value found");
     }
+
+    // You cannot filter now otherwise all op_index will be changed!
+    // let ops = this.state.user_ops.filter(op => !op.archived)
+    let ops = this.state.user_ops;
+    if(this.state.user_ops.filter(op => !op.archived).length === 0) return null;
+
+    let min_value = null
+    let min_op_index = null
+    let min_op_color = null
+    let min_vari_index = null
+    let min_vari_name = null
+    let min_vari_subname = null
+
+    const today = dayjs().startOf("day").unix();
+
+    // associate a number to each opening, knowing it's score
+    let vari_to_value = (vari_score) => {
+      console.log("VARI SCORE", vari_score);
+      console.log("VARI SCORE LAST", vari_score.last);
+      console.log("VARI SCORE LAST PARSED", parseInt(vari_score.last));
+      const elapsed_days = (today - parseInt(vari_score.last))/60/60/24; // in days
+      const probability = Math.pow(2, -(elapsed_days+0.01) / vari_score.life);
+      console.log({elapsed_days, probability, value: vari_score.last_depth * probability});
+      return choose(vari_score.last_depth * probability, 0);
+    };
+
+    // The variation to study is the one with the lowest value
+    ops.forEach((op, op_index) => {
+      if(!op.archived) {
+        op.variations.forEach((vari, vari_index) => {
+          // archived variations are deprecated but we check anyway
+          if(!vari.archived) {
+            // if this opening has no score create a new one for it
+            let value = 0;
+            if(vari.vari_score === 0 || typeof(vari.vari_score) !== "object" || vari.vari_score.schedule !== undefined) {
+              // if there is no score it's probably a new variation so we need to study this
+              // let's give this opening a new score
+              // vari.vari_score.schedule !== undefined is used to remove the vari_score an old method of scheduling used
+              this.forceSetVariScore(op_index, vari_index, {
+                life: MIN_HALF_LIFE,
+                last: "0",
+                last_depth: 0,
+                times_trained: 0,
+                correct_moves: 0,
+              })
+            }else{
+              // give a value to this opening
+              value = vari_to_value(vari.vari_score)
+            }
+            if(min_value === null || value < min_value) {
+              min_value = value;
+              min_op_index = op_index;
+              min_op_color = op.op_color;
+              min_vari_index = vari_index;
+              min_vari_name = vari.vari_name;
+              min_vari_subname = vari.vari_subname;
+            }
+          }
+        })
+      }
+    });
 
     return {
-        factor: newFac,
-        schedule: curSchedule,
-        must_repeat: quality <= 3,
+      op_index: min_op_index,
+      op_color: min_op_color,
+      vari_index: min_vari_index,
+      vari_name: min_vari_name,
+      vari_subname: min_vari_subname,
     }
   }
 
-  smart_training_get_target_vari(targets_list) {
-    const target_vari_color = targets_list.length > 0 ? targets_list[0].vari_color : "none"
-    const target_vari_op_index = targets_list.length > 0 ? targets_list[0].vari_op_index : null
-    const target_vari_index = targets_list.length > 0 ? targets_list[0].vari_index : null
-
-    let smart_training_target_vari = null;
-    if(
-      target_vari_color !== null &&
-      target_vari_color !== "none" &&
-      target_vari_op_index !== null &&
-      target_vari_index !== null &&
-      this.state.user_ops && 
-      this.state.user_ops.length > target_vari_op_index &&
-      this.state.user_ops[target_vari_op_index].variations.length > target_vari_index
-    ){
-      smart_training_target_vari = this.state.user_ops[target_vari_op_index].variations[target_vari_index]
-    }
-    return smart_training_target_vari
-  }
-
-  smartTrainingVariFinished(targets_list, first_error, number_of_errors, callback) {
-    const target_vari = this.smart_training_get_target_vari(targets_list)
-    const target_vari_op_index = targets_list.length > 0 ? targets_list[0].vari_op_index : null
-    const target_vari_index = targets_list.length > 0 ? targets_list[0].vari_index : null
-
-    if(target_vari){
-      const new_vari_score = this.get_new_vari_score(
-        this.errors_to_quality(first_error, number_of_errors, target_vari.moves.length),
-        target_vari.vari_score ? target_vari.vari_score.schedule : null,
-        target_vari.vari_score ? target_vari.vari_score.factor : null
-      )
-  
-      this.updateVariScore(
-        target_vari_op_index, 
-        target_vari_index,
-        number_of_errors,
-        new_vari_score.factor,
-        new_vari_score.schedule,
-        new_vari_score.must_repeat,
-        callback
-      )
-    }
-
-  }
-
-  onSmartTrainingVariFinished(targets_list, first_error, number_of_errors, resetBoard_callback) {
-    // save this training
-    this.smartTrainingVariFinished(targets_list, first_error, number_of_errors, () => {
-      if(targets_list.length <= 1) {
-        // TODO: BIGGER CONGRATS + SEND THE USER TO THE HOME PAGE
-        this.notify("You don't need to train any more for today.", "important")
-        this.play_training_finished_sound()
-        return false
+  updateStats(op_index, vari_index, callback) {
+    this.setState(old => {
+      if(old.user_ops[op_index] && old.user_ops[op_index].variations[vari_index]) {
+        const op = old.user_ops[op_index]
+        const vari = old.user_ops[op_index].variations[vari_index]
+        const color = op.op_color
+        const total_moves = vari.moves.length
+        const today_str = dayjs().startOf("day").unix().toString()
+        let new_stats = old.stats
+        if(new_stats[today_str] !== undefined && new_stats[today_str] !== null) {
+          // WE ALREADY HAVE STATS FOR TODAY
+          if(color === "white"){
+            new_stats[today_str] = {
+              white_varis: old.stats[today_str].white_varis + 1,
+              white_moves: old.stats[today_str].white_moves + total_moves,
+              black_varis: old.stats[today_str].black_varis,
+              black_moves: old.stats[today_str].black_moves,
+            }
+            // update on DB, server automatically checks if this day's stats are new or not
+            this.serverRequest("POST", "/updateUserStats/" + today_str, { 
+              extra_white_varis: 1,
+              extra_white_moves: total_moves,
+              extra_black_varis: 0,
+              extra_black_moves: 0
+            })
+          }else if(color === "black"){
+            new_stats[today_str] = {
+              white_varis: old.stats[today_str].white_varis,
+              white_moves: old.stats[today_str].white_moves,
+              black_varis: old.stats[today_str].black_varis + 1,
+              black_moves: old.stats[today_str].black_moves + total_moves,
+            }
+            // update on DB, server automatically checks if this day's stats are new or not
+            this.serverRequest("POST", "/updateUserStats/" + today_str, { 
+              extra_white_varis: 0,
+              extra_white_moves: 0,
+              extra_black_varis: 1,
+              extra_black_moves: total_moves
+            })
+          }else{
+            console.log("updateUserStats: invalid color for an opening")
+          }
+        }else{
+          // THIS IS THE FIRST TIME WE ADD STATS FOR TODAY
+          if(color === "white"){
+            new_stats[today_str] = {
+              white_varis: 1,
+              white_moves: total_moves,
+              black_varis: 0,
+              black_moves: 0,
+            }
+            // update on DB, server automatically checks if this day's stats are new or not
+            this.serverRequest("POST", "/updateUserStats/" + today_str, { 
+              extra_white_varis: 1,
+              extra_white_moves: total_moves,
+              extra_black_varis: 0,
+              extra_black_moves: 0
+            })
+          }else if(color === "black"){
+            new_stats[today_str] = {
+              white_varis: 0,
+              white_moves: 0,
+              black_varis: 1,
+              black_moves: total_moves,
+            }
+            // update on DB, server automatically checks if this day's stats are new or not
+            this.serverRequest("POST", "/updateUserStats/" + today_str, { 
+              extra_white_varis: 0,
+              extra_white_moves: 0,
+              extra_black_varis: 1,
+              extra_black_moves: total_moves
+            })
+          }else{
+            console.log("updateUserStats: invalid color for an opening")
+          }
+        }
+        // update locally
+        return {stats: new_stats};
       }else{
-        setTimeout(resetBoard_callback, 500) // TODO: you can try to move even if you have finished
+        console.log("updateUserStats: opening or variation not found")
+        return {};
       }
-    })
+
+    }, callback)
+  }
+
+  onSmartTrainingVariFinished(op_index, vari_index, first_error, resetBoard_callback) {
+    // UPDATE VARI SCORE
+    this.updateVariScore(op_index, vari_index, first_error)
+
+    // UPDATE TRAINING STATS
+    this.updateStats(op_index, vari_index, () => {
+      // CHECK IF THE TRAINING IS FINISHED FOR TODAY (todays_moves >= daily_goal)
+      // we use a callback because we want to use the updated stats
+      const today_str = dayjs().startOf("day").unix().toString()
+      if(this.state.stats[today_str]){
+        const GOAL = 300; // TODO ADD USER SETTING
+        if(this.state.stats[today_str].white_moves + this.state.stats[today_str].black_moves >= GOAL){
+          // TRAINING FINISHED
+          // TODO CONGRATS
+          this.play_training_finished_sound() 
+        }else{
+          // KEEP TRAINING
+          setTimeout(resetBoard_callback, 500) // TODO LOCK BOARD STATE WHILE WAITING FOR ANIMATION
+        }
+      }else{
+        console.log("onSmartTrainingVariFinished: missing stats for today")
+      }
+    })    
   }
 
   /* ---------------------------- RENDER ---------------------------- */
   render() {
-    let targets_list = this.get_smart_training_targets()
-
-    // console.log(this.state.user_ops)
-
     const opsListPage = ({ history }) => <OpsListPage
       ops={this.state.user_ops}
       history={history}
@@ -1121,7 +1215,8 @@ class App extends Component {
       sendOpening={this.sendOpening}
       switchArchivedOpening={this.switchArchivedOpening}
       username={this.state.username}
-      targets_list={targets_list}
+      stats={this.state.stats}
+      today_str={dayjs().startOf("day").unix().toString()}
     />
     const opPage = ({ match, history }) => <OpeningPage
       ops={this.state.user_ops}
@@ -1291,7 +1386,6 @@ class App extends Component {
       getDrawBoardPDF={this.getDrawBoardPDF}
       onSmartTrainingVariFinished={this.onSmartTrainingVariFinished}
       get_target_vari={this.smart_training_get_target_vari}
-      targets_list={targets_list}
     />
     const extraTrainingPage = ({ match, history }) => <ExtraTrainingPage history={history} match={match} />
 

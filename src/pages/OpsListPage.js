@@ -180,7 +180,7 @@ class OpsListPage extends Component {
         <div id="opsListPage" className={"page"} style={this.no_openings_style(this.props.ops.length)}>
           {
             this.props.ops.length > 0 ? 
-              <SmartTrainingBox targets_list={this.props.targets_list} history={this.props.history} />
+              <SmartTrainingBox stats={this.props.stats} today_str={this.props.today_str} history={this.props.history} />
             : null
           }
           
