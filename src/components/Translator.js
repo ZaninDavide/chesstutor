@@ -55,7 +55,7 @@ const languages = {
     "Archive": "Archive",
     "Print PDF": "Print PDF",
     "Extra Features": "Extra Features",
-    "Computer waits before moving (ms)": "Computer waits before moving (ms)",
+    "Computer waits before moving": "Delay in computer's answer",
     "Free analysis": "Free analysis",
     "Color theme": "Color theme",
     "Messages": "Messages",
@@ -107,6 +107,9 @@ const languages = {
     "Winrate WDB": "Winrate WDB",
     "Start training": "Start training",
     "Group name": "Group name",
+    "all moves": "all moves",
+    "Review depth": "Review depth",
+    "Targeted daily effort": "Targeted daily effort",
   },
   ita: {
     Openings: "Aperture",
@@ -161,7 +164,7 @@ const languages = {
     "Archive": "Archivia",
     "Print PDF": "Stampa PDF",
     "Extra Features": "Funzionalità Aggiuntive",
-    "Computer waits before moving (ms)": "Tempo d'attesa prima che il computer risponda (ms)",
+    "Computer waits before moving": "Ritardo nella riposta del computer",
     "Free analysis": "Analisi libera",
     "Color theme": "Tema colori",
     "Messages": "Messaggi",
@@ -212,7 +215,10 @@ const languages = {
     "Games": "Partire",
     "Winrate WDB": "Vittorie BPN",
     "Start training": "Inizia l'allenamento",
-    "Group name": "Nome del gruppo"
+    "Group name": "Nome del gruppo",
+    "all moves": "tutte le mosse",
+    "Review depth": "Profondità del ripasso",
+    "Targeted daily effort": "Obiettivo giornaliero",
   }
 }
 

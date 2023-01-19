@@ -26,8 +26,9 @@ class SmartTrainingPage extends Component {
           rotation={this.state.target_vari.op_color}
           onSmartTrainingVariFinished={(op_index, vari_index, first_error, resetBoard_callback) => (
             this.props.onSmartTrainingVariFinished(op_index, vari_index, first_error, () => {
-              this.setState({target_vari: this.props.get_target_vari()}, resetBoard_callback);
-              console.log(this.state.target_vari)
+              let tv = this.props.get_target_vari();
+              this.setState({target_vari: tv}, () => resetBoard_callback(tv.op_color));
+              // console.log(this.state.target_vari)
             })
           )}
           target_vari={this.state.target_vari}
@@ -42,11 +43,14 @@ class SmartTrainingPage extends Component {
 
           buttons={["back", "help", "more"]}
           moreMenuButtons={["Analyze", "flip", "smallBoard"]}
-          tabs={["moves", "vari_info", "op_name"]}
+          tabs={["moves", "vari_info", "op_name", "goal_bar"]}
 
           notify={this.props.notify}
           wait_time={this.props.wait_time}
           volume={this.props.volume}
+          settings={this.props.settings}
+          stats={this.props.stats}
+          today_str={this.props.today_str}
         />
       </React.Fragment>
     )

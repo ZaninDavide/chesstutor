@@ -4,7 +4,7 @@ import Chess from "../chessjs-chesstutor/chess.js"
 import { cells, cells_rotated, cell_coords, cell_coords_rotated, pieces_names } from "../utilities/pieces_and_coords"
 import { get_piece_src, get_board_svg, get_board_rotated_svg, sound_capture, sound_move, sound_error } from "../utilities/file_paths"
 import { VARI_TRAINING_MODE, GROUP_TRAINING_MODE, OPENING_TRAINING_MODE, COLOR_TRAINING_MODE, SMART_TRAINING_MODE, FREE_PLAYING_MODE, NEW_VARI_MODE, AGAINST_STOCKFISH_MODE } from "../utilities/constants"
-import { move_to_fromto } from "../utilities/san_parsing.js"
+import { make_san_nicer, move_to_fromto } from "../utilities/san_parsing.js"
 
 import PromotionModal from "../components/PromotionModal"
 import CommentModal from "../components/CommentModal"
@@ -230,6 +230,9 @@ class Board extends Component {
             })}
 
             rotated={this.state.rotated}
+            settings={this.props.settings}
+            stats={this.props.stats}
+            today_str={this.props.today_str}
           />
         </div>
 
@@ -722,8 +725,10 @@ class Board extends Component {
       mode === GROUP_TRAINING_MODE;
 
     // SMART_TRAINING_MODE cannot be inside soft congrats mode
-    const is_soft_congrats_mode = 
-      mode === COLOR_TRAINING_MODE;
+    const is_soft_congrats_mode = mode === COLOR_TRAINING_MODE;
+
+    const is_depth_goal_mode = mode === SMART_TRAINING_MODE;
+    const depth_goal_reached = json_moves.length >= this.props.settings.depth_goal;
 
     let move_data = null
 
@@ -752,8 +757,7 @@ class Board extends Component {
       move_data = this.props.get_pc_move_data(this.props.target_vari.op_index, json_moves, this.props.target_vari.vari_index)
     }
 
-
-    if (move_data !== null) {
+    if (move_data !== null && !(depth_goal_reached && is_depth_goal_mode)) {
       // WAIT AND PLAY THE COMPUTER MOVE, THEN CHECK IF THE TRAINING HAS FINISHED
       setTimeout(async () => {
         // the pc makes his move
@@ -820,11 +824,15 @@ class Board extends Component {
         setTimeout(this.resetBoard, this.props.wait_time);
       }
       if (mode === SMART_TRAINING_MODE){
+        const last_depth = this.state.smart_training_errors_first !== 0 ? this.state.smart_training_errors_first : json_moves.length;
         this.props.onSmartTrainingVariFinished(
           this.props.target_vari.op_index,
           this.props.target_vari.vari_index,
-          this.state.smart_training_errors_first, 
-          this.resetBoard
+          last_depth, 
+          (color) => {
+            this.resetBoard();
+            this.setState({rotated: color === "black"});
+          }
         )
       }
     }

@@ -170,7 +170,7 @@ class OpsListPage extends Component {
           headerMenu={
             <Menu menuButton={
               <button id="headerButton" className="iconButton">menu</button>}>
-              <MenuItem onClick={() => this.props.history.push("/training/options")}><Translator text="Training" /></MenuItem>
+              {/*<MenuItem onClick={() => this.props.history.push("/training/options")}><Translator text="Training" /></MenuItem>*/}
               <MenuItem onClick={() => this.props.history.push("/analysis/white/normal/book/[]")}><Translator text="Free analysis" /></MenuItem>
               <MenuItem onClick={() => this.props.history.push("/mail")}><Translator text="Messages" /></MenuItem>
               <MenuItem onClick={() => this.props.history.push("/profile")}><Translator text="Settings" /></MenuItem>
@@ -180,7 +180,12 @@ class OpsListPage extends Component {
         <div id="opsListPage" className={"page"} style={this.no_openings_style(this.props.ops.length)}>
           {
             this.props.ops.length > 0 ? 
-              <SmartTrainingBox stats={this.props.stats} today_str={this.props.today_str} history={this.props.history} />
+              <SmartTrainingBox 
+                stats={this.props.stats} 
+                today_str={this.props.today_str} 
+                history={this.props.history} 
+                settings={this.props.settings}
+              />
             : null
           }
           

@@ -29,7 +29,7 @@ import dayjs from "dayjs"
 // import duration from 'dayjs/plugin/duration'
 // dayjs.extend(duration)
 
-const SERVER_URI = "http://localhost:6543" // "https://chessup.baida.dev:3008" // "https://chesstutorserver.herokuapp.com" "http://localhost:5000"
+const SERVER_URI = "https://chessup.baida.dev:3008" // "http://localhost:6543" "https://chesstutorserver.herokuapp.com" "http://localhost:5000"
 
 const defaultOps = []
 
@@ -54,7 +54,7 @@ class App extends Component {
       loadingVisible: true,
       notification: { text: "Congrats", type: "important" },
       notification_visible: false,
-      settings: { wait_time: 500, colorTheme: "autoTheme", volume: 0.6 },
+      settings: { wait_time: 500, colorTheme: "autoTheme", volume: 0.6, moves_goal: 200, depth_goal: 7},
       stats: {},
     }
 
@@ -152,11 +152,13 @@ class App extends Component {
           userData.language = "eng"
         }
         if (userData.settings === undefined) {
-          userData.settings = { wait_time: 500, colorTheme: "autoTheme", volume: 0.6, visual_chess_notation: true }
+          userData.settings = { wait_time: 500, colorTheme: "autoTheme", volume: 0.6, visual_chess_notation: true, moves_goal: 200, depth_goal: 7 }
         } else {
           if (userData.settings.wait_time === undefined) userData.settings.wait_time = 500
           if (userData.settings.colorTheme === undefined) userData.settings.colorTheme = "autoTheme"
           if (userData.settings.volume === undefined) userData.settings.volume = 0.6 /* from 0 to 1 */
+          if (userData.settings.moves_goal === undefined) userData.settings.moves_goal = 150
+          if (userData.settings.depth_goal === undefined) userData.settings.depth_goal = 8
         }
         if(userData.stats === undefined){
           userData.stats = {}
@@ -1040,12 +1042,8 @@ class App extends Component {
 
     // associate a number to each opening, knowing it's score
     let vari_to_value = (vari_score) => {
-      console.log("VARI SCORE", vari_score);
-      console.log("VARI SCORE LAST", vari_score.last);
-      console.log("VARI SCORE LAST PARSED", parseInt(vari_score.last));
       const elapsed_days = (today - parseInt(vari_score.last))/60/60/24; // in days
       const probability = Math.pow(2, -(elapsed_days+0.01) / vari_score.life);
-      console.log({elapsed_days, probability, value: vari_score.last_depth * probability});
       return choose(vari_score.last_depth * probability, 0);
     };
 
@@ -1190,15 +1188,15 @@ class App extends Component {
       // we use a callback because we want to use the updated stats
       const today_str = dayjs().startOf("day").unix().toString()
       if(this.state.stats[today_str]){
-        const GOAL = 300; // TODO ADD USER SETTING
-        if(this.state.stats[today_str].white_moves + this.state.stats[today_str].black_moves >= GOAL){
-          // TRAINING FINISHED
-          // TODO CONGRATS
+        if(
+          this.state.stats[today_str].white_moves + this.state.stats[today_str].black_moves - first_error < this.state.settings.moves_goal &&
+          this.state.stats[today_str].white_moves + this.state.stats[today_str].black_moves >= this.state.settings.moves_goal
+        ){
+          // TRAINING FINISHED (before the goal wasn't met and now it is)
           this.play_training_finished_sound() 
-        }else{
-          // KEEP TRAINING
-          setTimeout(resetBoard_callback, 500) // TODO LOCK BOARD STATE WHILE WAITING FOR ANIMATION
         }
+        // KEEP TRAINING
+        setTimeout(resetBoard_callback, 500) // TODO LOCK BOARD STATE WHILE WAITING FOR ANIMATION
       }else{
         console.log("onSmartTrainingVariFinished: missing stats for today")
       }
@@ -1217,6 +1215,7 @@ class App extends Component {
       username={this.state.username}
       stats={this.state.stats}
       today_str={dayjs().startOf("day").unix().toString()}
+      settings={this.state.settings}
     />
     const opPage = ({ match, history }) => <OpeningPage
       ops={this.state.user_ops}
@@ -1323,6 +1322,8 @@ class App extends Component {
       setVisualChessNotation={this.setVisualChessNotation}
       visual_chess_notation={this.state.settings.visual_chess_notation}
       downloadDatabase={this.downloadDatabase}
+      setSetting={this.setSetting}
+      settings={this.state.settings}
     />
     const mailPage = ({ match, history }) => <MailPage
       history={history}
@@ -1386,6 +1387,9 @@ class App extends Component {
       getDrawBoardPDF={this.getDrawBoardPDF}
       onSmartTrainingVariFinished={this.onSmartTrainingVariFinished}
       get_target_vari={this.smart_training_get_target_vari}
+      settings={this.state.settings}
+      stats={this.state.stats}
+      today_str={dayjs().startOf("day").unix().toString()}
     />
     const extraTrainingPage = ({ match, history }) => <ExtraTrainingPage history={history} match={match} />
 

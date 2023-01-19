@@ -79,15 +79,34 @@ class userPage extends Component {
         </div>
       </TogglePanel>
       
-      <TogglePanel title="Training" name="settingsTraingingPanel">
+      <TogglePanel title="Training" name="settingsTraingingPanel" startOpen>
         <div className="settingsSection">
-          <Translator text="Computer waits before moving (ms)" />:&nbsp;
+          <Translator text="Targeted daily effort" />:&nbsp;
           <div className="optionButtonsContainer">
-            <Ripples><button onClick={() => this.props.setWaitTime(0)} className="simpleButton" style={{ marginRight: 0, color: this.props.wait_time === 0 ? "var(--main)" : "var(--text)" }}>0</button></Ripples>
-            <Ripples><button onClick={() => this.props.setWaitTime(250)} className="simpleButton" style={{ marginRight: 0, color: this.props.wait_time === 250 ? "var(--main)" : "var(--text)" }}>250</button></Ripples>
-            <Ripples><button onClick={() => this.props.setWaitTime(500)} className="simpleButton" style={{ marginRight: 0, color: this.props.wait_time === 500 ? "var(--main)" : "var(--text)" }}>500</button></Ripples>
-            <Ripples><button onClick={() => this.props.setWaitTime(1000)} className="simpleButton" style={{ marginLeft: 0, color: this.props.wait_time === 1000 ? "var(--main)" : "var(--text)" }}>1000</button></Ripples>
-            <Ripples><button onClick={() => this.props.setWaitTime(2000)} className="simpleButton" style={{ marginLeft: 0, color: this.props.wait_time === 2000 ? "var(--main)" : "var(--text)" }}>2000</button></Ripples>
+            <Ripples><button onClick={() => this.props.setSetting("moves_goal", 0)} className="simpleButton" style={{ marginRight: 0, color: this.props.settings.moves_goal === 0 ? "var(--main)" : "var(--text)" }}>{"0 "}<Translator text="moves"/></button></Ripples>
+            <Ripples><button onClick={() => this.props.setSetting("moves_goal", 200)} className="simpleButton" style={{ marginRight: 0, color: this.props.settings.moves_goal === 200 ? "var(--main)" : "var(--text)" }}>{"100 "}<Translator text="moves"/></button></Ripples>
+            <Ripples><button onClick={() => this.props.setSetting("moves_goal", 600)} className="simpleButton" style={{ marginRight: 0, color: this.props.settings.moves_goal === 600 ? "var(--main)" : "var(--text)" }}>{"300 "}<Translator text="moves"/></button></Ripples>
+            <Ripples><button onClick={() => this.props.setSetting("moves_goal", 1000)} className="simpleButton" style={{ marginLeft: 0, color: this.props.settings.moves_goal === 1000 ? "var(--main)" : "var(--text)" }}>{"500 "}<Translator text="moves"/></button></Ripples>
+          </div>
+        </div>
+        <div className="settingsSection">
+          <Translator text="Review depth" />:&nbsp;
+          <div className="optionButtonsContainer">
+            <Ripples><button onClick={() => this.props.setSetting("depth_goal", 6)} className="simpleButton" style={{ marginRight: 0, color: this.props.settings.depth_goal === 6 ? "var(--main)" : "var(--text)" }}>{"3 "}<Translator text="moves"/></button></Ripples>
+            <Ripples><button onClick={() => this.props.setSetting("depth_goal", 12)} className="simpleButton" style={{ marginRight: 0, color: this.props.settings.depth_goal === 12 ? "var(--main)" : "var(--text)" }}>{"6 "}<Translator text="moves"/></button></Ripples>
+            <Ripples><button onClick={() => this.props.setSetting("depth_goal", 18)} className="simpleButton" style={{ marginRight: 0, color: this.props.settings.depth_goal === 18 ? "var(--main)" : "var(--text)" }}>{"9 "}<Translator text="moves"/></button></Ripples>
+            <Ripples><button onClick={() => this.props.setSetting("depth_goal", 24)} className="simpleButton" style={{ marginLeft: 0, color: this.props.settings.depth_goal === 24 ? "var(--main)" : "var(--text)" }}>{"12 "}<Translator text="moves"/></button></Ripples>
+            <Ripples><button onClick={() => this.props.setSetting("depth_goal", 999)} className="simpleButton" style={{ marginLeft: 0, color: this.props.settings.depth_goal === 999 ? "var(--main)" : "var(--text)" }}><Translator text="all moves"/></button></Ripples>
+          </div>
+        </div>
+        <div className="settingsSection"> 
+          <Translator text="Computer waits before moving" />:&nbsp;
+          <div className="optionButtonsContainer">
+            <Ripples><button onClick={() => this.props.setWaitTime(0)} className="simpleButton" style={{ marginRight: 0, color: this.props.wait_time === 0 ? "var(--main)" : "var(--text)" }}>0ms</button></Ripples>
+            <Ripples><button onClick={() => this.props.setWaitTime(250)} className="simpleButton" style={{ marginRight: 0, color: this.props.wait_time === 250 ? "var(--main)" : "var(--text)" }}>250ms</button></Ripples>
+            <Ripples><button onClick={() => this.props.setWaitTime(500)} className="simpleButton" style={{ marginRight: 0, color: this.props.wait_time === 500 ? "var(--main)" : "var(--text)" }}>500ms</button></Ripples>
+            <Ripples><button onClick={() => this.props.setWaitTime(1000)} className="simpleButton" style={{ marginLeft: 0, color: this.props.wait_time === 1000 ? "var(--main)" : "var(--text)" }}>1000ms</button></Ripples>
+            <Ripples><button onClick={() => this.props.setWaitTime(2000)} className="simpleButton" style={{ marginLeft: 0, color: this.props.wait_time === 2000 ? "var(--main)" : "var(--text)" }}>2000ms</button></Ripples>
           </div>
         </div>
       </TogglePanel>
