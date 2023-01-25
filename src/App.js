@@ -110,6 +110,7 @@ class App extends Component {
     this.addMultipleVaris = this.addMultipleVaris.bind(this)
     this.updateStats = this.updateStats.bind(this)
     this.forceSetVariScore = this.forceSetVariScore.bind(this)
+    this.user_over_all_score = this.user_over_all_score.bind(this)
   }
 
   componentDidMount() {
@@ -1012,8 +1013,56 @@ class App extends Component {
   }
 
   /* ---------------------------- SMART TRAINING ---------------------------- */
+  vari_score_to_value(vari_score) {
+    if(vari_score === 0 || typeof(vari_score) !== "object" || vari_score.schedule !== undefined) {
+      return 0;
+    }
+    // utility
+    const choose = function() {
+      for(let i = 0; i < arguments.length; i++) {
+        if(arguments[i] !== null && arguments[i] !== undefined && arguments[i] !== NaN) {
+          return arguments[i];
+        }
+      }
+      console.log("Error: no good value found");
+    }
+    const today = dayjs().startOf("day").unix();
+    const elapsed_days = (today - parseInt(vari_score.last))/60/60/24; // in days
+    const probability = Math.pow(2, -(elapsed_days+0.01) / vari_score.life);
+    return choose(vari_score.last_depth * probability, 0);
+  };
 
-  smart_training_get_target_vari() {
+  user_over_all_score() {
+    let total_score_white = 0;
+    let total_score_black = 0;
+    let ops = this.state.user_ops;
+    ops.forEach((op, op_index) => {
+      if(!op.archived) {
+        op.variations.forEach((vari, vari_index) => {
+          // archived variations are deprecated but we check anyway
+          if(!vari.archived) {
+            // if this opening has no score create a new one for it
+            let value = 0;
+            if(vari.vari_score === 0 || typeof(vari.vari_score) !== "object" || vari.vari_score.schedule !== undefined) {
+              value = 0;
+            }else{
+              // give a value to this opening
+              value = this.vari_score_to_value(vari.vari_score)
+            }
+            if(op.op_color === "white") {
+              total_score_white += value;
+            }else{
+              total_score_black += value;
+            }
+          }
+        })
+      }
+    });
+
+    return { total_score_white, total_score_black, total_score: total_score_black + total_score_white};
+  }
+
+  smart_training_get_target_vari(color = "both") {
     // This function dictates which opening the user should study next while training in smart mode
 
     // utility
@@ -1026,10 +1075,14 @@ class App extends Component {
       console.log("Error: no good value found");
     }
 
+    const check_color = function(col) {
+      return col === color || color === "both"
+    }
+
     // You cannot filter now otherwise all op_index will be changed!
     // let ops = this.state.user_ops.filter(op => !op.archived)
     let ops = this.state.user_ops;
-    if(this.state.user_ops.filter(op => !op.archived).length === 0) return null;
+    if(this.state.user_ops.filter(op => !op.archived && check_color(op.op_color)).length === 0) return null;
 
     let min_value = null
     let min_op_index = null
@@ -1038,18 +1091,9 @@ class App extends Component {
     let min_vari_name = null
     let min_vari_subname = null
 
-    const today = dayjs().startOf("day").unix();
-
-    // associate a number to each opening, knowing it's score
-    let vari_to_value = (vari_score) => {
-      const elapsed_days = (today - parseInt(vari_score.last))/60/60/24; // in days
-      const probability = Math.pow(2, -(elapsed_days+0.01) / vari_score.life);
-      return choose(vari_score.last_depth * probability, 0);
-    };
-
     // The variation to study is the one with the lowest value
     ops.forEach((op, op_index) => {
-      if(!op.archived) {
+      if(!op.archived && check_color(op.op_color)) {
         op.variations.forEach((vari, vari_index) => {
           // archived variations are deprecated but we check anyway
           if(!vari.archived) {
@@ -1068,7 +1112,7 @@ class App extends Component {
               })
             }else{
               // give a value to this opening
-              value = vari_to_value(vari.vari_score)
+              value = this.vari_score_to_value(vari.vari_score)
             }
             if(min_value === null || value < min_value) {
               min_value = value;
@@ -1216,6 +1260,7 @@ class App extends Component {
       stats={this.state.stats}
       today_str={dayjs().startOf("day").unix().toString()}
       settings={this.state.settings}
+      user_over_all_score={this.user_over_all_score}
     />
     const opPage = ({ match, history }) => <OpeningPage
       ops={this.state.user_ops}
@@ -1247,8 +1292,7 @@ class App extends Component {
       get_correct_moves_data={this.get_correct_moves_data}
       get_compatible_variations={this.get_compatible_variations}
       notify={this.notify}
-      wait_time={this.state.settings.wait_time}
-      volume={this.state.settings.volume}
+      settings={this.state.settings}
     />
     const newVariPage = ({ match, history }) => <NewVariPage
       ops={this.state.user_ops}
@@ -1264,9 +1308,8 @@ class App extends Component {
       get_correct_moves_data_book={this.get_correct_moves_data_book}
       getOpFreeSubnames={this.getOpFreeSubnames}
       notify={this.notify}
-      wait_time={this.state.settings.wait_time}
-      volume={this.state.settings.volume}
       addMultipleVaris={this.addMultipleVaris}
+      settings={this.state.settings}
     />
     const variPage = ({ match, history }) => <VariationPage
       ops={this.state.user_ops}
@@ -1283,10 +1326,14 @@ class App extends Component {
       get_correct_moves_data={this.get_correct_moves_data}
       get_compatible_variations={this.get_compatible_variations}
       notify={this.notify}
-      wait_time={this.state.settings.wait_time}
-      volume={this.state.settings.volume}
+      settings={this.state.settings}
     />
-    const newOpPage = ({ match, history }) => <NewOpPage history={history} match={match} createOp={this.createOp} />
+    const newOpPage = ({ match, history }) => <NewOpPage 
+      history={history} 
+      match={match} 
+      createOp={this.createOp} 
+      settings={this.state.settings}
+    />
     const loginPage = ({ match, history }) => <LoginPage
       history={history}
       match={match}
@@ -1314,13 +1361,9 @@ class App extends Component {
       setLanguage={this.setLanguage}
       language={this.state.language}
       setTheme={this.setTheme}
-      colorTheme={this.state.settings.colorTheme}
-      wait_time={this.state.settings.wait_time}
       setWaitTime={this.setWaitTime}
-      volume={this.state.settings.volume}
       setVolume={value => this.setSetting("volume", value)}
       setVisualChessNotation={this.setVisualChessNotation}
-      visual_chess_notation={this.state.settings.visual_chess_notation}
       downloadDatabase={this.downloadDatabase}
       setSetting={this.setSetting}
       settings={this.state.settings}
@@ -1346,9 +1389,8 @@ class App extends Component {
       getComment={this.getComment}
       getDrawBoardPDF={this.getDrawBoardPDF}
       notify={this.notify}
-      wait_time={this.state.settings.wait_time}
-      volume={this.state.settings.volume}
       play_training_finished_sound={this.play_training_finished_sound}
+      settings={this.state.settings}
     />
     const variTrainingPage = ({ match, history }) => <GroupTrainingPage
       history={history}
@@ -1361,24 +1403,20 @@ class App extends Component {
       getComment={this.getComment}
       getDrawBoardPDF={this.getDrawBoardPDF}
       notify={this.notify}
-      wait_time={this.state.settings.wait_time}
-      volume={this.state.settings.volume}
+      settings={this.state.settings}
     />
     const analysisPage = ({ match, history }) => <AnalysisPage
       history={history}
       match={match}
-      wait_time={this.state.settings.wait_time}
-      volume={this.state.settings.volume}
       get_correct_moves_data_book={this.get_correct_moves_data_book}
       ops={this.state.user_ops}
+      settings={this.state.settings}
     />
     const smartTrainingPage = ({ match, history }) => <SmartTrainingPage
       history={history}
       match={match}
       ops={this.state.user_ops}
       notify={this.notify}
-      wait_time={this.state.settings.wait_time}
-      volume={this.state.settings.volume}
       get_pc_move_data={this.get_pc_move_data}
       get_correct_moves_data={this.get_correct_moves_data}
       is_move_allowed={this.is_move_allowed}
@@ -1391,7 +1429,11 @@ class App extends Component {
       stats={this.state.stats}
       today_str={dayjs().startOf("day").unix().toString()}
     />
-    const extraTrainingPage = ({ match, history }) => <ExtraTrainingPage history={history} match={match} />
+    const extraTrainingPage = ({ match, history }) => <ExtraTrainingPage 
+      history={history} 
+      match={match} 
+      settings={this.state.settings}
+    />
 
     const redirectToLogin = () => <Redirect to="/login" />
     const redirectToHome = () => <Redirect to="/" />
@@ -1432,7 +1474,7 @@ class App extends Component {
 
               <Route path="/training/options" render={noOpenings ? redirectToHome : extraTrainingPage} />
 
-              <Route path="/training/smart" render={/*noOpenings ? redirectToHome : */smartTrainingPage} exact />
+              <Route path="/training/smart/:color" render={/*noOpenings ? redirectToHome : */smartTrainingPage} exact />
               <Route path="/training/fullcolor/:color_number" render={noOpenings ? redirectToHome : colorTrainingPage} />
               <Route path="/training/:op_index" render={noOpenings ? redirectToHome : trainingPage} />
 

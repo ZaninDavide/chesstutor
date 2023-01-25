@@ -45,8 +45,7 @@ class GroupTrainingPage extends Component {
           getDrawBoardPDF={this.props.getDrawBoardPDF}
           allowCommentEdit={false}
           notify={this.props.notify}
-          wait_time={this.props.wait_time}
-          volume={this.props.volume}
+          settings={this.props.settings}
         />
       </React.Fragment>
     )

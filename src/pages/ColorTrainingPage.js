@@ -36,9 +36,8 @@ class ColorTrainingPage extends Component {
           getDrawBoardPDF={this.props.getDrawBoardPDF}
           allowCommentEdit={false}
           notify={this.props.notify}
-          wait_time={this.props.wait_time}
-          volume={this.props.volume}
           play_training_finished_sound={this.props.play_training_finished_sound}
+          settings={this.props.settings}
         />
       </React.Fragment>
     )

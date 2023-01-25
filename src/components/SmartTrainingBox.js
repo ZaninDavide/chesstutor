@@ -1,31 +1,55 @@
 import React, { Component } from "react"
 import Translator from "./Translator"
 
+
 class SmartTrainingBox extends Component {
+
+    numberToText(value) {
+        let count = Math.max(0, Math.round(value));
+        
+        if (count < 10000) {
+            return count.toString()
+        }else{
+            let digits = Math.round(count / 100) / 10
+            return digits.toString() + "k";
+        };
+
+    }
+
+
+    // TODO: SHOULD CHECK IF ANY OPENING EXISTS AT ALL
     render() {
-        let to_study = true
         let total = 0
         if(this.props.stats && this.props.stats[this.props.today_str]){
             const stats = this.props.stats[this.props.today_str]
             total = stats.white_moves + stats.black_moves;
-            to_study = total < this.props.settings.moves_goal
         }
         let percentage = total / this.props.settings.moves_goal * 100
         return <div id="smartTrainingBox" key="smartTrainingBox">
             <div id="smartTrainingBoxInfo" >
                 <h1><Translator text="Daily training" /></h1>
-            </div>
-            <div id="smartTrainingBoxButtons">
-                <button className="simpleButton impButton iconText" id="smartTrainingButton" 
-                    onClick={() => this.props.history.push("/training/smart")}
-                    >
-                    school
-                </button><br />
                 {
                     this.props.settings.moves_goal != 0 ?
-                    <div style={{width: "100%", borderRadius: "2px", height: "4px", backgroundImage: `-webkit-linear-gradient(left, var(--main) 0%, var(--main) ${percentage}%, var(--onModalBack) ${percentage}%, var(--onModalBack) 100%)`}}></div>
+                    <div style={{marginTop: "var(--mediumMargin)", width: "100%", borderRadius: "2px", height: "4px", backgroundImage: `-webkit-linear-gradient(left, var(--main) 0%, var(--main) ${percentage}%, var(--onModalBack) ${percentage}%, var(--onModalBack) 100%)`}}></div>
                     : null
                 }
+            </div>
+            <div id="smartTrainingBoxButtons">
+                <button className="simpleButton smartTrainingButton" onClick={() => this.props.history.push("/training/smart/white")}>
+                    <div className="smartTrainingBoxButtonIcon">school</div>
+                    <div className="smartTrainingBoxButtonLabel"><Translator text="White" /></div>
+                </button>
+                <div></div>
+                <button className="simpleButton smartTrainingButton" onClick={() => this.props.history.push("/training/smart/black")}>
+                    <div className="smartTrainingBoxButtonIcon">school</div>
+                    <div className="smartTrainingBoxButtonLabel"><Translator text="Black" /></div>
+                </button>
+                
+            </div>
+            <div id="smartTrainingBoxTotalScore">
+                <div></div>
+                <div>{this.numberToText(this.props.user_over_all_score().total_score)}</div>
+                <div><Translator text="Current score"/></div>
             </div>
         </div>
     }

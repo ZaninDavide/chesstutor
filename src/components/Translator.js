@@ -110,6 +110,7 @@ const languages = {
     "all moves": "all moves",
     "Review depth": "Review depth",
     "Targeted daily effort": "Targeted daily effort",
+    "Current score": "Current score",
   },
   ita: {
     Openings: "Aperture",
@@ -219,6 +220,7 @@ const languages = {
     "all moves": "tutte le mosse",
     "Review depth": "Profondità del ripasso",
     "Targeted daily effort": "Obiettivo giornaliero",
+    "Current score": "Punteggio",
   }
 }
 

@@ -8,10 +8,11 @@ class SmartTrainingPage extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      target_vari: this.props.get_target_vari(),
+      target_vari: this.props.get_target_vari(this.props.match.params.color),
     }
   }
   render() {
+    const color = this.props.match.params.color
     return (
       <React.Fragment>
         <Header mainButtonText="arrow_back" goTo={"/"} title={<React.Fragment><Translator text={"Daily training"} /></React.Fragment>} />
@@ -26,7 +27,7 @@ class SmartTrainingPage extends Component {
           rotation={this.state.target_vari.op_color}
           onSmartTrainingVariFinished={(op_index, vari_index, first_error, resetBoard_callback) => (
             this.props.onSmartTrainingVariFinished(op_index, vari_index, first_error, () => {
-              let tv = this.props.get_target_vari();
+              let tv = this.props.get_target_vari(color);
               this.setState({target_vari: tv}, () => resetBoard_callback(tv.op_color));
               // console.log(this.state.target_vari)
             })
@@ -46,8 +47,6 @@ class SmartTrainingPage extends Component {
           tabs={["moves", "vari_info", "op_name", "goal_bar"]}
 
           notify={this.props.notify}
-          wait_time={this.props.wait_time}
-          volume={this.props.volume}
           settings={this.props.settings}
           stats={this.props.stats}
           today_str={this.props.today_str}

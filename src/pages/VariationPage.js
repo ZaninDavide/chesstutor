@@ -51,13 +51,13 @@ class VariationPage extends Component {
           get_correct_moves_data={this.props.get_correct_moves_data}
           get_compatible_variations={this.props.get_compatible_variations}
           notify={this.props.notify}
-          wait_time={this.props.wait_time}
-          volume={this.props.volume}
 
           set_in_training={(bool, callback = () => {}) => {
             this.setState({ in_training: bool }, () => callback(op.op_color))
             return op.op_color
           }}
+
+          settings={this.props.settings}
         />
       </React.Fragment>
     )

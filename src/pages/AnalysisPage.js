@@ -86,8 +86,7 @@ class TrainingPage extends Component {
           set_stockfish_depth={depth => this.setState({ stockfish_depth: depth})}
 
           get_correct_moves_data_book={this.props.get_correct_moves_data_book}
-          wait_time={this.props.wait_time}
-          volume={this.props.volume}
+          settings={this.props.settings}
         />
       </React.Fragment>
     )

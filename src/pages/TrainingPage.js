@@ -41,8 +41,7 @@ class TrainingPage extends Component {
           get_correct_moves_data={this.props.get_correct_moves_data}
           get_compatible_variations={this.props.get_compatible_variations}
           notify={this.props.notify}
-          wait_time={this.props.wait_time}
-          volume={this.props.volume}
+          settings={this.props.settings}
         />
       </React.Fragment>
     )

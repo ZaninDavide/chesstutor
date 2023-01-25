@@ -185,6 +185,7 @@ class OpsListPage extends Component {
                 today_str={this.props.today_str} 
                 history={this.props.history} 
                 settings={this.props.settings}
+                user_over_all_score={this.props.user_over_all_score}
               />
             : null
           }

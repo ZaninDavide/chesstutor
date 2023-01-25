@@ -811,7 +811,7 @@ class Board extends Component {
         }
         
 
-      }, this.props.wait_time)
+      }, this.props.settings.wait_time)
     }else{
       // training finished
       if (is_congrats_mode) {
@@ -821,7 +821,7 @@ class Board extends Component {
       }
       if(mode === COLOR_TRAINING_MODE){
         // we wait otherwise we have no time to see the piece moving
-        setTimeout(this.resetBoard, this.props.wait_time);
+        setTimeout(this.resetBoard, this.props.settings.wait_time);
       }
       if (mode === SMART_TRAINING_MODE){
         const last_depth = this.state.smart_training_errors_first !== 0 ? this.state.smart_training_errors_first : json_moves.length;
@@ -1148,11 +1148,11 @@ class Board extends Component {
     // move is what the game.move() function returns
     if (move) {
       if (move.flags.indexOf("c") !== -1 || move.flags.indexOf("e") !== -1) {
-        this.capture_audio.volume = this.props.volume
+        this.capture_audio.volume = this.props.settings.volume
         this.capture_audio.currentTime = 0
         this.capture_audio.play()
       } else {
-        this.move_audio.volume = this.props.volume
+        this.move_audio.volume = this.props.settings.volume
         this.move_audio.currentTime = 0
         this.move_audio.play()
       }
@@ -1160,7 +1160,7 @@ class Board extends Component {
   }
 
   async play_error_sound() {
-    this.move_audio.volume = this.props.volume
+    this.move_audio.volume = this.props.settings.volume
     this.error_audio.currentTime = 0
     this.error_audio.play()
   }
