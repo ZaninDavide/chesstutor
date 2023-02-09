@@ -923,8 +923,8 @@ var Chess = function(fen) {
   }
 
   function make_fake_move(move) {
-    var fake_board = JSON.parse(JSON.stringify(board));
-    var fake_kings = JSON.parse(JSON.stringify(kings));
+    var fake_board = board.slice(0);
+    var fake_kings = { w: kings.w, b: kings.b };
     var us = turn;
     // var them = swap_color(us);
     // push(move); IT'S A FAKE MOVE

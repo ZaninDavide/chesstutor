@@ -16,6 +16,7 @@ import GroupTrainingPage from "./pages/GroupTrainingPage"
 import AnalysisPage from "./pages/AnalysisPage"
 import SmartTrainingPage from "./pages/SmartTrainingPage"
 import ExtraTrainingPage from "./pages/ExtraTrainingPage"
+import StatsPage from "./pages/StatsPage"
 
 import Notification from "./components/Notification"
 
@@ -24,10 +25,7 @@ import "./styles/Elements.css" // css by ID + SECONDARY COMPONENTS
 import "./styles/Modal.css"
 import "./styles/Print.css" // css by CLASSES + MAIN COMPONENTS
 import { LanguageProvider } from "./components/LanguageContext"
-
 import dayjs from "dayjs"
-// import duration from 'dayjs/plugin/duration'
-// dayjs.extend(duration)
 
 const SERVER_URI = "https://chessup.baida.dev:3008" // "http://localhost:6543" "https://chesstutorserver.herokuapp.com" "http://localhost:5000"
 
@@ -145,7 +143,7 @@ class App extends Component {
         if (ops === undefined) {
           this.updateDB(defaultOps) // add them to the database
           ops = defaultOps
-          console.log("You have recived the default datapack")
+          console.log("You have received the default data")
         }
 
         // fill missing data with defaults
@@ -190,7 +188,7 @@ class App extends Component {
   logout = () => {
     localStorage.removeItem("username")
     localStorage.removeItem("bearer")
-    this.setState({ username: null, bearer: null, user_ops: [], _id: undefined })
+    this.setState({ username: null, bearer: null, user_ops: [], _id: undefined, stats: {}, inbox: [] })
   }
 
   updateUserData = (newUserData, bearer, refresh = true) => {
@@ -1059,7 +1057,23 @@ class App extends Component {
       }
     });
 
-    return { total_score_white, total_score_black, total_score: total_score_black + total_score_white};
+    let numberToText = function (value) {
+      let count = Math.max(0, Math.round(value));
+      
+      if (count < 10000) {
+          return count.toString()
+      }else{
+          let digits = Math.round(count / 100) / 10
+          return digits.toString() + "k";
+      };
+    }
+
+    return { 
+      total_score_white, 
+      total_score_black, 
+      total_score: total_score_black + total_score_white,
+      total_score_str: numberToText(total_score_black + total_score_white)
+    };
   }
 
   smart_training_get_target_vari(color = "both") {
@@ -1434,6 +1448,15 @@ class App extends Component {
       match={match} 
       settings={this.state.settings}
     />
+    const statsPage = ({ match, history }) => <StatsPage
+      history={history}
+      match={match}
+      username={this.state.username}
+      setSetting={this.setSetting}
+      settings={this.state.settings}
+      user_over_all_score={this.user_over_all_score}
+      stats={this.state.stats}
+    />
 
     const redirectToLogin = () => <Redirect to="/login" />
     const redirectToHome = () => <Redirect to="/" />
@@ -1461,6 +1484,7 @@ class App extends Component {
               <Route path="/login" render={!needLogin ? redirectToHome : loginPage} exact />
               <Route path="/signup" render={!needLogin ? redirectToHome : signupPage} exact />
               <Route path="/profile" render={needLogin ? redirectToLogin : userPage} exact />
+              <Route path="/stats" render={needLogin ? redirectToLogin : statsPage} exact />
               <Route path="/mail" render={needLogin ? redirectToLogin : mailPage} exact />
               <Route path="/newOpening" render={newOpPage} />
               <Route path="/openings/training/:op_index/:vari_name" render={noOpenings ? redirectToHome : variTrainingPage} />

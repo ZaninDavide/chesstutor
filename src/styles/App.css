@@ -84,6 +84,14 @@
   --hoverBookTable: rgb(217, 222, 224);
   --winrateBarBorderColor: black;
   --textBoxBack: #eee;
+  --calendarColor1: var(--hoverBack);
+  --calendarColor2: #cef1de;
+  --calendarColor3: #9ee3b9;
+  --calendarColor4: #6dd498;
+  --calendarColor5: #3cc678;
+  --calendarColor6: #33a966;
+  --calendarColor7: #298b53;
+  --calendarColor8: #226d41;
 }
 
 .darkTheme, .autoTheme {
@@ -99,7 +107,7 @@
   --shadowShift: 0px;
   --back: #030304; /* #000000 */
   --hoverBack: #141414;
-  --onBack: #1d1d1d;
+  --onBack: #242424;
   --headerBack: var(--back);
   --text: #c7c7c7;
   --title: #ffffff;
@@ -117,6 +125,14 @@
   --hoverBookTable: #1d1d1d;
   --winrateBarBorderColor: white;
   --textBoxBack: #252525;
+  --calendarColor8: #cef1de;
+  --calendarColor7: #9ee3b9;
+  --calendarColor6: #6dd498;
+  --calendarColor5: #3cc678;
+  --calendarColor4: #33a966;
+  --calendarColor3: #298b53;
+  --calendarColor2: #226d41;
+  --calendarColor1: var(--onBack);
 }
 
 @media (prefers-color-scheme: light) {
@@ -151,6 +167,14 @@
     --hoverBookTable: #d9dee0;
     --winrateBarBorderColor: black;
     --textBoxBack: #ebedee;
+    --calendarColor1: var(--hoverBack);
+    --calendarColor2: #0dff7a;
+    --calendarColor3: #14f169;
+    --calendarColor4: #3fd67e;
+    --calendarColor5: #3cc678;
+    --calendarColor6: #33a966;
+    --calendarColor7: #298b53;
+    --calendarColor8: #226d41;
   }
 }
 

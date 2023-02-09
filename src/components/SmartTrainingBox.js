@@ -4,19 +4,6 @@ import Translator from "./Translator"
 
 class SmartTrainingBox extends Component {
 
-    numberToText(value) {
-        let count = Math.max(0, Math.round(value));
-        
-        if (count < 10000) {
-            return count.toString()
-        }else{
-            let digits = Math.round(count / 100) / 10
-            return digits.toString() + "k";
-        };
-
-    }
-
-
     // TODO: SHOULD CHECK IF ANY OPENING EXISTS AT ALL
     render() {
         let total = 0
@@ -46,9 +33,9 @@ class SmartTrainingBox extends Component {
                 </button>
                 
             </div>
-            <div id="smartTrainingBoxTotalScore">
+            <div id="smartTrainingBoxTotalScore" onClick={() => this.props.history.push("/stats")}>
                 <div></div>
-                <div>{this.numberToText(this.props.user_over_all_score().total_score)}</div>
+                <div>{this.props.user_over_all_score().total_score_str}</div>
                 <div><Translator text="Current score"/></div>
             </div>
         </div>
