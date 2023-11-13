@@ -66,7 +66,7 @@ class TrainingPage extends Component {
           match={this.props.match}
 
           buttons={["more", "back", "forward_next"]}
-          moreMenuButtons={["flip", "smallBoard"]}
+          moreMenuButtons={["flip", "smallBoard", "copy_png", "copy_fen"]}
           tabs={["moves_table", "book", "stockfish", "op_eco"]}
 
           rotation={color}
@@ -87,6 +87,7 @@ class TrainingPage extends Component {
 
           get_correct_moves_data_book={this.props.get_correct_moves_data_book}
           settings={this.props.settings}
+          notify={this.props.notify}
         />
       </React.Fragment>
     )

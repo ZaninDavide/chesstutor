@@ -1425,6 +1425,7 @@ class App extends Component {
       get_correct_moves_data_book={this.get_correct_moves_data_book}
       ops={this.state.user_ops}
       settings={this.state.settings}
+      notify={this.notify}
     />
     const smartTrainingPage = ({ match, history }) => <SmartTrainingPage
       history={history}

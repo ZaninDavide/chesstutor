@@ -65,7 +65,8 @@
 }
 
 .tallModalContent{
-    min-height: 250px;
+    min-height: calc(min(350px, 60vh));
+    max-width: calc(min(500px, 100vw));
 }
 
 .hMenu {

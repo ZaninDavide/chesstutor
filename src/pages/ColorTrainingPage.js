@@ -25,7 +25,7 @@ class ColorTrainingPage extends Component {
           playColor={color}
 
           buttons={["back", "help", "more"]}
-          moreMenuButtons={["Analyze", "flip", "smallBoard"]}
+          moreMenuButtons={["Analyze", "flip", "smallBoard", "copy_png", "copy_fen"]}
           tabs={["moves"]}
 
           is_move_allowed_color={this.props.is_move_allowed_color}

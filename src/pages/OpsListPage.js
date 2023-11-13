@@ -252,7 +252,7 @@ class OpsListPage extends Component {
           </button>
           {/* BOOK BUTTON */}
           <button className="simpleButton hMenuButton" 
-            onClick={() => this.props.history.push(`/openings/${this.state.hMenuOpIndex}/${this.props.ops[this.state.hMenuOpIndex].op_color}/book/[]`)}
+            onClick={() => this.props.history.push(`/openings/${this.state.hMenuOpIndex}/${this.props.ops[this.state.hMenuOpIndex].op_color}/normal/book/[]`)}
           >
             <div className="hMenuButtonContent">
               <div className="hMenuButtonIcon">menu_book</div>

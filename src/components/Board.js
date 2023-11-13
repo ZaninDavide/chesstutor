@@ -5,6 +5,7 @@ import { cells, cells_rotated, cell_coords, cell_coords_rotated, pieces_names } 
 import { get_piece_src, get_board_svg, get_board_rotated_svg, sound_capture, sound_move, sound_error } from "../utilities/file_paths"
 import { VARI_TRAINING_MODE, GROUP_TRAINING_MODE, OPENING_TRAINING_MODE, COLOR_TRAINING_MODE, SMART_TRAINING_MODE, FREE_PLAYING_MODE, NEW_VARI_MODE, AGAINST_STOCKFISH_MODE } from "../utilities/constants"
 import { make_san_nicer, move_to_fromto } from "../utilities/san_parsing.js"
+import { copy_text_to_clipboard } from "../utilities/copy.js"
 
 import PromotionModal from "../components/PromotionModal"
 import CommentModal from "../components/CommentModal"
@@ -278,17 +279,39 @@ class Board extends Component {
           close={() => this.setState({ boardMenuVisible: false })}
           title={<Translator text={"Board"}/>}
         >
-          {/* ROTATE BOARD */}
-          {this.props.moreMenuButtons.indexOf("flip") !== -1 ?
+          {/* COPY PNG TO CLIPBOARD */}
+          {this.props.moreMenuButtons.indexOf("copy_png") !== -1 ?
             <button className="simpleButton hMenuButton" onClick={() => {
-              this.setState(old => {return { boardMenuVisible: false, rotated: !old.rotated } })
+              copy_text_to_clipboard(this.state.game.pgn(), () => {
+                this.props.notify("PGN copied successfully", "normal");
+              }, () => {
+                this.props.notify("PGN could not be copied", "error");
+              });
+              this.setState({ boardMenuVisible: false });
             }}>
               <div className="hMenuButtonContent">
-                <div className="hMenuButtonIcon">rotate_right</div>
-                <div className="hMenuButtonLabel"><Translator text={"Flip"}/></div>
+                <div className="hMenuButtonIcon">file_copy</div>
+                <div className="hMenuButtonLabel"><Translator text="Copy PNG"/></div>
               </div>
             </button> : null
           }
+          {/* COPY FEN TO CLIPBOARD */}
+          {this.props.moreMenuButtons.indexOf("copy_fen") !== -1 ?
+            <button className="simpleButton hMenuButton" onClick={() => {
+              copy_text_to_clipboard(this.state.game.fen(), () => {
+                this.props.notify("FEN copied successfully", "normal");
+              }, () => {
+                this.props.notify("FEN could not be copied", "error");
+              });
+              this.setState({ boardMenuVisible: false });
+            }}>
+              <div className="hMenuButtonContent">
+                <div className="hMenuButtonIcon">content_copy</div>
+                <div className="hMenuButtonLabel"><Translator text="Copy FEN"/></div>
+              </div>
+            </button> : null
+          }
+          {/* BOARD SIZE */}
           {this.props.moreMenuButtons.indexOf("smallBoard") !== -1 ?
             <button className="simpleButton hMenuButton" onClick={() => {
               this.setState({ boardMenuVisible: false })
@@ -297,6 +320,17 @@ class Board extends Component {
               <div className="hMenuButtonContent">
                 <div className="hMenuButtonIcon">{this.state.smallBoard ? "open_in_full" : "close_fullscreen"}</div>
                 <div className="hMenuButtonLabel"><Translator text={this.state.smallBoard ? "Large board" : "Small board"}/></div>
+              </div>
+            </button> : null
+          }
+          {/* ROTATE BOARD */}
+          {this.props.moreMenuButtons.indexOf("flip") !== -1 ?
+            <button className="simpleButton hMenuButton" onClick={() => {
+              this.setState(old => {return { boardMenuVisible: false, rotated: !old.rotated } })
+            }}>
+              <div className="hMenuButtonContent">
+                <div className="hMenuButtonIcon">rotate_right</div>
+                <div className="hMenuButtonLabel"><Translator text={"Flip"}/></div>
               </div>
             </button> : null
           }

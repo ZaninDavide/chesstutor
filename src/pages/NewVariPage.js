@@ -30,7 +30,7 @@ class NewVariPage extends Component {
           vari_name={vari_name}
           
           buttons={["back", "done", "multi_next", "more", "add_comment"]}
-          moreMenuButtons={["flip", "load_variations", "smallBoard"]}
+          moreMenuButtons={["flip", "load_variations", "smallBoard", "copy_png", "copy_fen"]}
           tabs={["moves", "book", "stockfish"]}
 
           rotation={op.op_color}
