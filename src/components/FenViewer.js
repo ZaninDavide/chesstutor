@@ -1,7 +1,7 @@
 import React, { Component } from "react"
 import Chess from "../chessjs-chesstutor/chess.js"
 import { pieces_names } from "../utilities/pieces_and_coords"
-import { get_piece_src, printBoardSVG, fenViewerBoard } from "../utilities/file_paths"
+import { get_piece_src, fenViewerBoard } from "../utilities/file_paths"
 
 const chess = new Chess();
 
@@ -48,13 +48,13 @@ class FenViewer extends Component {
                         let x = collumn * 100
                         let y = line * 100
                         pieces.push(
-                            <img key={`${type}_${collumn}_${line}`} src={get_piece_src(type, "standard")} style={{transform: `translate(${x}%, ${y}%)`}} className="fenViewerPiece"/>
+                            <img alt="piece" key={`${type}_${collumn}_${line}`} src={get_piece_src(type, "standard")} style={{transform: `translate(${x}%, ${y}%)`}} className="fenViewerPiece"/>
                         )
                     } else {
                         let x = 700 - collumn * 100
                         let y = 700 - line * 100
                         pieces.push(
-                            <img key={`${type}_${collumn}_${line}`} src={get_piece_src(type, "standard")} style={{transform: `translate(${x}%, ${y}%)`}} className="fenViewerPiece"/>
+                            <img alt="piece" key={`${type}_${collumn}_${line}`} src={get_piece_src(type, "standard")} style={{transform: `translate(${x}%, ${y}%)`}} className="fenViewerPiece"/>
                         )
                     }
                 }
@@ -66,7 +66,7 @@ class FenViewer extends Component {
 
     render() {
         return <div className="fenViewerContainer"><div className="fenViewerGrid">
-            <img className="fenViewerBackground" key="fenViewerBackground" src={fenViewerBoard} />
+            <img alt="board" className="fenViewerBackground" key="fenViewerBackground" src={fenViewerBoard} />
             {this.renderBoard(this.state.board, this.state.rotated)}
         </div></div>
     }

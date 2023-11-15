@@ -381,10 +381,6 @@ class ErrorBoundary extends React.Component {
 }
 
 class MasterGames extends React.Component {
-    constructor(props) {
-        super(props)
-    }
-
     render() {
         let res = this.props.getMastersMovesRes.read()
 

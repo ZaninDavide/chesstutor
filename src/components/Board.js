@@ -4,7 +4,7 @@ import Chess from "../chessjs-chesstutor/chess.js"
 import { cells, cells_rotated, cell_coords, cell_coords_rotated, pieces_names } from "../utilities/pieces_and_coords"
 import { get_piece_src, get_board_svg, get_board_rotated_svg, sound_capture, sound_move, sound_error } from "../utilities/file_paths"
 import { VARI_TRAINING_MODE, GROUP_TRAINING_MODE, OPENING_TRAINING_MODE, COLOR_TRAINING_MODE, SMART_TRAINING_MODE, FREE_PLAYING_MODE, NEW_VARI_MODE, AGAINST_STOCKFISH_MODE } from "../utilities/constants"
-import { make_san_nicer, move_to_fromto } from "../utilities/san_parsing.js"
+import { move_to_fromto } from "../utilities/san_parsing.js"
 import { copy_text_to_clipboard } from "../utilities/copy.js"
 
 import PromotionModal from "../components/PromotionModal"
@@ -1378,7 +1378,6 @@ class Board extends Component {
           <button id="doneButton" key="doneButton" className="simpleButton boardButton"
             onClick={() => {
               const allowed_subnames = this.props.getOpFreeSubnames(1, this.props.op_index, this.props.vari_name, false)
-              console.log("SUBNAMES: ", allowed_subnames)
               this.createThisVariation(this.props.vari_name, allowed_subnames[0])
             }}
             disabled={this.state.json_moves.length === 0}
@@ -1495,7 +1494,7 @@ class Board extends Component {
 
 function choose() {
   for(let i = 0; i < arguments.length; i++) {
-    if(arguments[i] !== null && arguments[i] !== undefined && arguments[i] !== NaN) {
+    if(arguments[i] !== null && arguments[i] !== undefined && !isNaN(arguments[i])) {
       return arguments[i];
     }
   }

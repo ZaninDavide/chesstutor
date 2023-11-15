@@ -1,10 +1,7 @@
 import React, { Component } from "react"
 import CheckBox from "../components/CheckBox"
-// import TrainingFinishedModal from "./TrainingFinishedModal"
 import Translator from "../components/Translator"
 import Ripples from "react-ripples"
-import { AGAINST_STOCKFISH_MODE } from "../utilities/constants"
-import TogglePanel from "./TogglePanel"
 
 class StockfishUI extends Component {
     render() {

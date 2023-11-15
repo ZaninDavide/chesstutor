@@ -139,17 +139,17 @@ class BoardData extends Component {
 
     // SMART TRAINING GOAL BAR - EXTRA INFO
     if (this.props.tabs.indexOf("goal_bar") !== -1 && this.props.settings.depth_goal > 0) {
-      let to_study = true
+      // let to_study = true
       let total = 0
       if(this.props.stats && this.props.stats[this.props.today_str]){
           const stats = this.props.stats[this.props.today_str]
           total = stats.white_moves + stats.black_moves;
-          to_study = total < this.props.settings.moves_goal
+          // to_study = total < this.props.settings.moves_goal
       }
       let percentage = total / this.props.settings.moves_goal * 100
 
       extra_info_bar.push(
-        <div key="goal_bar" id="goal_bar" style={{width: "200px", width: "100%", height: "4px", borderRadius: "2px", margin: "3px 0px 5px 0px", backgroundImage: `-webkit-linear-gradient(left, var(--main) 0%, var(--main) ${percentage}%, var(--onBack) ${percentage}%, var(--onBack) 100%)`}}></div>
+        <div key="goal_bar" id="goal_bar" style={{width: "100%", height: "4px", borderRadius: "2px", margin: "3px 0px 5px 0px", backgroundImage: `-webkit-linear-gradient(left, var(--main) 0%, var(--main) ${percentage}%, var(--onBack) ${percentage}%, var(--onBack) 100%)`}}></div>
       )
     }
 

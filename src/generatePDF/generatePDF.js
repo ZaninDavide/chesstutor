@@ -28,6 +28,7 @@ let can_be_inline_comment = comment => {
     }
 }
 
+/*
 let line_moves = (moves_array, last_index, discussed_count) => {
     let index = last_index - (moves_array.length - 1)
     let text = ""
@@ -60,6 +61,7 @@ let line_moves = (moves_array, last_index, discussed_count) => {
 
     return `<p class="lineMoves">${text}</p>`
 }
+*/
 
 let board_from_sans = (sans, side) => {
     // generate fen
@@ -94,9 +96,9 @@ let board_from_sans = (sans, side) => {
     return boardHTML
 }
 
-let comment = text => {
-    return `<p class="commentPDF">${process_comment(text)}</p>` // \subsubsection*{\large{1. e4 - c5 2. \knight f6}}
-}
+// let comment = text => {
+//     return `<p class="commentPDF">${process_comment(text)}</p>` // \subsubsection*{\large{1. e4 - c5 2. \knight f6}}
+// }
 
 function varis_to_tree(varis, comments, boards, op_color) {
     let tree = { moves: [], comment: "" }
@@ -139,7 +141,7 @@ function is_short_mono_line(node, max_length = 4) {
         }else{
             if(!move.board.board && (!move.comment || can_be_inline_comment(move.comment))){
                 half_moves_couter++
-                if(move.moves.length != 0) navigate(move.moves[0])
+                if(move.moves.length !== 0) navigate(move.moves[0])
             }else{
                 not_allowed = true
             }
@@ -263,7 +265,7 @@ function generatePDF(op) {
         }
     })
 
-    let comments_displayed = []
+    // let comments_displayed = []
 
     html += Object.keys(groups).map(group_name => 
         group_to_html(group_name, groups[group_name], op.comments, op.pdfBoards, op.op_color)

@@ -4,10 +4,6 @@ import Header from "../components/Header"
 import dayjs from "dayjs"
 
 class StatsPage extends Component {
-  constructor(props) {
-    super(props)
-  }
-
   get_calendar_values(stats){
     if(stats === undefined || stats === null){
       console.log("get_calendar_values: stats not found.")

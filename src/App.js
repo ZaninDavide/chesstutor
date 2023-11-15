@@ -31,7 +31,6 @@ const SERVER_URI = "https://chessup.baida.dev:3008" // "http://localhost:6543" "
 
 const defaultOps = []
 
-const SEED = Math.round(100000*Math.random())
 const MIN_HALF_LIFE = 15.0 / (24 * 60)    // 15 minutes (in days)
 const MAX_HALF_LIFE = 274                //  9 months (in days)
 
@@ -536,7 +535,7 @@ class App extends Component {
   updateVariScore(op_index, vari_index, first_error) {
     const choose = function() {
       for(let i = 0; i < arguments.length; i++) {
-        if(arguments[i] !== null && arguments[i] !== undefined && arguments[i] !== NaN) {
+        if(arguments[i] !== null && arguments[i] !== undefined && !isNaN(arguments[i])) {
           return arguments[i];
         }
       }
@@ -600,7 +599,7 @@ class App extends Component {
     this.setState(old => {
       let new_user_ops = old.user_ops
       if(old.user_ops[op_index] && old.user_ops[op_index].variations[vari_index]) {
-        let vari = old.user_ops[op_index].variations[vari_index]
+        // let vari = old.user_ops[op_index].variations[vari_index]
         new_user_ops[op_index].variations[vari_index].vari_score = new_score
         this.serverRequest("POST", "/setVariationScore/" + op_index + "/" + vari_index, { new_vari_score: new_score })
         return { user_ops: new_user_ops }
@@ -1018,7 +1017,7 @@ class App extends Component {
     // utility
     const choose = function() {
       for(let i = 0; i < arguments.length; i++) {
-        if(arguments[i] !== null && arguments[i] !== undefined && arguments[i] !== NaN) {
+        if(arguments[i] !== null && arguments[i] !== undefined && !isNaN(arguments[i])) {
           return arguments[i];
         }
       }
@@ -1078,16 +1077,6 @@ class App extends Component {
 
   smart_training_get_target_vari(color = "both") {
     // This function dictates which opening the user should study next while training in smart mode
-
-    // utility
-    const choose = function() {
-      for(let i = 0; i < arguments.length; i++) {
-        if(arguments[i] !== null && arguments[i] !== undefined && arguments[i] !== NaN) {
-          return arguments[i];
-        }
-      }
-      console.log("Error: no good value found");
-    }
 
     const check_color = function(col) {
       return col === color || color === "both"

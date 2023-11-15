@@ -98,7 +98,7 @@ class CommitmentCalendar extends Component {
                 days_obj.push(today_obj);
             }
             weeks_obj.push(
-                <tr className="calendarWeek" key={first_day + "-month" + "-" + w.toString()}>
+                <tr className="calendarWeek" key={first_day + "-month-" + w.toString()}>
                     {days_obj}
                 </tr>
             );
@@ -129,7 +129,7 @@ class CommitmentCalendar extends Component {
         let first_day = {year: dayjs().year(), month: dayjs().month() + 1, day: dayjs().date()};
         let today = {year: dayjs().year(), month: dayjs().month() + 1, day: dayjs().date()};
         if(stats !== undefined && stats !== null){
-            Object.entries(stats).map(stat => {
+            Object.entries(stats).forEach(stat => {
                 let stat_day = {year: 0, month: 0, day: 0};
                 let dd = dayjs(stat[0]*1000);
                 stat_day.year = dd.year();

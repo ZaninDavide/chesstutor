@@ -176,6 +176,7 @@ class Stockfish {
 
                     if(this.state === "working") this.state = "idle"
                     if(this.state === "waiting") this.send("isready")
+                    break;
                 default:
                     break;
             }

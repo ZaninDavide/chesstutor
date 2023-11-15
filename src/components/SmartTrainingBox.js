@@ -16,7 +16,7 @@ class SmartTrainingBox extends Component {
             <div id="smartTrainingBoxInfo" >
                 <h1><Translator text="Daily training" /></h1>
                 {
-                    this.props.settings.moves_goal != 0 ?
+                    this.props.settings.moves_goal !== 0 ?
                     <div style={{marginTop: "var(--mediumMargin)", width: "100%", borderRadius: "2px", height: "4px", backgroundImage: `-webkit-linear-gradient(left, var(--main) 0%, var(--main) ${percentage}%, var(--onModalBack) ${percentage}%, var(--onModalBack) 100%)`}}></div>
                     : null
                 }
