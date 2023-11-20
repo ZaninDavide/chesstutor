@@ -250,6 +250,28 @@
     outline-style: none; /* Internet Explorer  */
 }
 
+.pgnTextBox{
+    grid-area: "commentBoxModal";
+    height: calc(100% - 20px - var(--smallMargin));
+    width: calc(100% - 20px - var(--mediumMargin) * 2);
+
+    margin-top: var(--smallMargin);
+    margin-left: var(--mediumMargin);
+    margin-right: var(--mediumMargin);
+    padding: 10px;
+    border: 0px;
+    border: 0; 
+    border-radius: 0;
+
+    background-color: var(--onModalBack);
+    color: var(--title);
+    font-size: var(--textSize);
+    font-family: inherit;
+    resize: none;
+    outline: none;
+    outline-style: none; /* Internet Explorer  */
+}
+
 .commentCheckBox{
     grid-template-areas: "commentCheckBox";
 }
@@ -442,4 +464,9 @@
 
 .rc-menu__item:hover{
     background-color: var(--hoverModalBack);
+}
+
+.insideGroupFromPGNModal {
+    display: grid;
+    grid-template-rows: auto auto 1fr;
 }

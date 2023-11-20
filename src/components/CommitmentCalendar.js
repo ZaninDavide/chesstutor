@@ -54,7 +54,7 @@ class CommitmentCalendar extends Component {
 
         let this_today = {year: dayjs().year(), month: dayjs().month() + 1, day: dayjs().date()};
 
-        let first_day = new Date(year, month - 1, 0);
+        let first_day = new Date(year, month - 1, 1);
         let first_day_num_week = this.props.sundayFirst ? dayjs(first_day).day() : monday_week[dayjs(first_day).day()];
         let num_of_days = dayjs(first_day).daysInMonth();
         let num_of_weeks = Math.ceil((num_of_days + first_day_num_week) / 7);

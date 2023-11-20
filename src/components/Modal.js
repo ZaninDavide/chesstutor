@@ -9,10 +9,10 @@ class Modal extends Component {
         onClick={this.props.close} 
       >
         <div 
-          className="modalContent"
+          className={"modalContent" + (this.props.tallModal ? " tallModalContent" : "")}
           onClick={e => e.stopPropagation()}
         >
-          <div className="insideModal" onClick={e => e.stopPropagation()}>
+          <div className={"insideModal" + (this.props.insideModalClasses ? " " + this.props.insideModalClasses : "")} onClick={e => e.stopPropagation()}>
             {this.props.children} 
           </div>
           <div className="modalButtons">

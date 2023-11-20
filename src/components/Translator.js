@@ -112,7 +112,13 @@ const languages = {
     "Targeted daily effort": "Targeted daily effort",
     "Current score": "Current score",
     "Load PGN": "Load PGN",
+    "Add from PGN": "Add from PGN",
     "Download database": "Download your data",
+    "Copy PGN": "Copy PGN",
+    "Copy FEN": "Copy FEN",
+    "Load lines from PGN": "Load lines from PGN",
+    "was successfully added to your repertoire!": "was successfully added to your repertoire!",
+    "was successfully updated!": "was successfully updated!",
   },
   ita: {
     Openings: "Aperture",
@@ -223,8 +229,14 @@ const languages = {
     "Review depth": "Profondità del ripasso",
     "Targeted daily effort": "Obiettivo giornaliero",
     "Current score": "Punteggio",
-    "Load PGN": "Carica PNG",
+    "Load PGN": "Carica PGN",
+    "Add from PGN": "Aggiungi da PGN",
     "Download database": "Scarica i tuoi dati",
+    "Copy PGN": "Copia PGN",
+    "Copy FEN": "Copia FEN",
+    "Load lines from PGN": "Carica varianti da PGN",
+    "was successfully added to your repertoire!": "è stata aggiunta al repertorio!",
+    "was successfully updated!": "è stata aggiornata!",
   }
 }
 

@@ -4,6 +4,8 @@ import Translator from "../components/Translator"
 import Ripples from "react-ripples"
 import { Link } from "react-router-dom"
 
+const SERVER_URI = "https://chessup.baida.dev:3008" // "http://localhost:6543" "https://chesstutorserver.herokuapp.com" "http://localhost:5000"
+
 class SignupPage extends Component {
   constructor(props) {
     super(props)
@@ -21,7 +23,7 @@ class SignupPage extends Component {
 
   login = async () => {
     const res = await fetch(
-      "https://chessup.baida.dev:3008/login",
+      SERVER_URI + "/login",
       {
         body: JSON.stringify({
           email: this.state.username,
@@ -51,7 +53,7 @@ class SignupPage extends Component {
 
   signup = async () => {
     let res = await fetch(
-      "https://chessup.baida.dev:3008/signup",
+      SERVER_URI + "/signup",
       {
         body: JSON.stringify({
           email: this.state.username,

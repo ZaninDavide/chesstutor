@@ -87,6 +87,7 @@ class RenameVariModal extends Component {
         disabledDoneButton={
           !this.state.variNewName || trimmedVariNewName.length < 1
         }
+        doneButtonText={<span className="impText iconText">edit</span>}
       >
             <h2>
               <Translator text={"Rename"} />&nbsp;

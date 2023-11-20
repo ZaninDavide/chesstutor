@@ -8,6 +8,7 @@ import RenameVariModal from "../components/RenameVariModal"
 import NewVariGroupModal from "../components/NewVariGroupModal"
 import VariGroupModal from "../components/VariGroupModal"
 import LoadVariationsModal from "../components/LoadVariationsModal"
+import NewVariGroupFromPGNModal from "../components/NewVariGroupFromPGNModal"
 
 
 class OpeningPage extends Component {
@@ -24,6 +25,7 @@ class OpeningPage extends Component {
       newVariGroupModalVisible: false,
       variGroupModalVisible: false,
       loadVarisModalVisible: false,
+      newVariGroupFromPGNModalVisible: false,
     }
     this.newVariClick = this.newVariClick.bind(this)
     this.startGame = this.startGame.bind(this)
@@ -219,10 +221,12 @@ class OpeningPage extends Component {
         <Header title={op.op_name} mainButtonText="arrow_back"/*headerButtonContent={<span className="iconText">school</span>}*/ /> {/* play_arrow */}
         <div id="openingPage" className="page" style={this.no_variations_style(op.variations.length)}>
           {this.getVariItems(op.variations, op_index)}
-          <div id="newVariationBox" onClick={() => this.setState({ newVariGroupModalVisible: true })}>
-            +
-            <div>
-              <Translator text="group" />
+          <div id="newVariationBox">
+            <div className="boxWithIconAndText" onClick={() => this.setState({ newVariGroupModalVisible: true })}>
+              <div className="boxWithIconAndTextContent"><div>add</div><div><Translator text="group" /></div></div>
+            </div>
+            <div className="boxWithIconAndText" onClick={() => this.setState({ newVariGroupFromPGNModalVisible: true })}>
+              <div className="boxWithIconAndTextContent"><div>upload</div><div><Translator text="Load PGN" /></div></div>
             </div>
           </div>
         </div>
@@ -269,7 +273,7 @@ class OpeningPage extends Component {
           doneButtonText={<span className="alertText iconText">delete</span>}
           onDoneClick={this.deleteThisVari}>
           {this.state.variDeleteVisible ?
-            <React.Fragment><h2><Translator text={"Delete permanently:"} />&nbsp;<span className="alertText">{thisVari.vari_name}</span>{"?"}</h2></React.Fragment> : null
+            <React.Fragment><h2><Translator text={"Delete permanently:"} />&nbsp;<span className="alertText">{thisVari.vari_name} {thisVari.vari_subname}</span>{"?"}</h2></React.Fragment> : null
           }
         </Modal>
         {/* RENAME VARI MODAL */}
@@ -291,6 +295,31 @@ class OpeningPage extends Component {
           op_index={this.props.match.params.op_index}
         ></NewVariGroupModal>
 
+        {/* NEW VARI GROUP FROM PGN MODAL */}
+        <NewVariGroupFromPGNModal
+          visible={this.state.newVariGroupFromPGNModalVisible}
+          close={() => this.setState({ newVariGroupFromPGNModalVisible: false })}
+          history={this.props.history}
+          op_index={this.props.match.params.op_index}
+          addVariations={(new_vari_name, text) => {
+            this.props.add_varis_from_pgn(this.props.match.params.op_index, new_vari_name, text)
+          }}
+        ></NewVariGroupFromPGNModal>
+
+        {/* DELETE VARI GROUP MODAL */}
+        <Modal
+          id="deleteVariModal"
+          visible={this.state.deleteVariGroupModalVisible}
+          close={() => {this.setState({deleteVariGroupModalVisible: false})}}
+          doneButtonText={<span className="alertText iconText">delete</span>}
+          onDoneClick={() => {
+            this.props.deleteVariGroup(this.props.match.params.op_index, this.state.selected_vari_group_name);
+          }}>
+          {this.state.deleteVariGroupModalVisible ?
+            <React.Fragment><h2><Translator text={"Delete permanently:"} />&nbsp;<span className="alertText">{this.state.selected_vari_group_name}</span>{"?"}</h2></React.Fragment> : null
+          }
+        </Modal>
+
         <HangingMenu 
           visible={this.state.variGroupModalVisible} 
           close={() => this.setState({ variGroupModalVisible: false })}
@@ -299,8 +328,7 @@ class OpeningPage extends Component {
           {/* DELETE BUTTON */}
           <button className="simpleButton hMenuButton" 
             onClick={() => {           
-              this.props.deleteVariGroup(this.props.match.params.op_index, this.state.selected_vari_group_name);
-              this.setState({ variGroupModalVisible: false }); 
+              this.setState({ variGroupModalVisible: false, deleteVariGroupModalVisible: true }); 
             }}
           >
             <div className="hMenuButtonContent">
@@ -312,7 +340,7 @@ class OpeningPage extends Component {
           <button className="simpleButton hMenuButton" onClick={() => this.setState({ loadVarisModalVisible: true, variGroupModalVisible: false })}>
             <div className="hMenuButtonContent">
               <div className="hMenuButtonIcon">upload</div>
-              <div className="hMenuButtonLabel"><Translator text="Load PGN" /></div>
+              <div className="hMenuButtonLabel"><Translator text="Add from PGN" /></div>
             </div>
           </button>
           {/* EDIT BUTTON */}
@@ -338,8 +366,8 @@ class OpeningPage extends Component {
           visible={this.state.loadVarisModalVisible}
           close={() => this.setState({ loadVarisModalVisible: false })}
           notify={this.props.notify}
-          addVariations={new_varis => {
-            this.props.addMultipleVaris(this.props.match.params.op_index, this.state.selected_vari_group_name, new_varis);
+          addVariations={text => {
+            this.props.add_varis_from_pgn(this.props.match.params.op_index, this.state.selected_vari_group_name, text);
           }}
         />
       </React.Fragment>

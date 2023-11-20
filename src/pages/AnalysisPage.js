@@ -66,7 +66,7 @@ class TrainingPage extends Component {
           match={this.props.match}
 
           buttons={["more", "back", "forward_next"]}
-          moreMenuButtons={["flip", "smallBoard", "copy_png", "copy_fen"]}
+          moreMenuButtons={["flip", "smallBoard", "copy_pgn", "copy_fen"]}
           tabs={["moves_table", "book", "stockfish", "op_eco"]}
 
           rotation={color}

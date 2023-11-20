@@ -673,50 +673,72 @@
 }
 
 #newVariationBox{
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  min-height: var(--uiElementHeight); 
+  height: fit-content;
+  overflow: hidden;
+}
+
+.boxWithIconAndText:hover{
+  background-color: var(--cardBack);
+}
+
+.boxWithIconAndText {
+  background-color: var(--back);
+  align-content: center;
+
+  min-height: var(--uiElementHeight); 
 
   border-radius: var(--borderRadius);
   margin: var(--mediumMargin);
   border: 2px solid var(--onBack);
   border-style: dashed;
 
-  min-height: var(--uiElementHeight); 
-  overflow: hidden;
-
-  font-size: var(--iconsFontSize);
-  font-family: "Material Icons";
-  font-weight: bold;
-  color: var(--main);
-
   cursor: pointer;
   -webkit-tap-highlight-color: var(--tap);
-
-  max-height: calc(var(--uiElementHeight) * 2);
 
   /* TRANSITIONS */
   transition-property: background-color;
   transition-duration: 50ms;
   transition-timing-function: cubic-bezier(0.3, 0, 0.7, 1);
   transition-delay: 0s;
+  align-self: center;
 }
 
-#newVariationBox:hover{
-  background-color: var(--cardBack);
+.boxWithIconAndTextContent {
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-template-rows: 1fr;
+  width: fit-content;  
+  margin-left: auto;
+  margin-right: auto;
 }
 
-#newVariationBox div {
+.boxWithIconAndTextContent div:nth-child(1) {
+  font-size: var(--iconsFontSize) !important;
+  font-family: "Material Icons" !important;
+  font-weight: bold;
+  color: var(--main);  
+  width: fit-content;
+  height: var(--uiElementHeight);
+  line-height: var(--uiElementHeight);
+}
+
+.boxWithIconAndTextContent div:nth-child(2) {
   font-family: var(--textFont);
   font-size: var(--titleSize);
-  height: 100%;
-  display: flex;
+  width: fit-content;
+  height: var(--uiElementHeight);
+  line-height: var(--uiElementHeight);
   justify-content: center; /* align horizontal */
   align-items: center; /* align vertical */
-  margin-left: var(--smallMargin);
+  text-align: left;
+  padding-left: var(--smallMargin);
   position: relative;
   top: 1px;
   text-transform: uppercase;
+  align-self: center;
+  color: var(--main);  
+  font-weight: bold;
 }
 
 #goodJobIconContainer, #trainingFinishedIconContainer{

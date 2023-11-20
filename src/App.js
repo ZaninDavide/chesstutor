@@ -26,6 +26,7 @@ import "./styles/Modal.css"
 import "./styles/Print.css" // css by CLASSES + MAIN COMPONENTS
 import { LanguageProvider } from "./components/LanguageContext"
 import dayjs from "dayjs"
+import Chess from "./chessjs-chesstutor/chess.js"
 
 const SERVER_URI = "https://chessup.baida.dev:3008" // "http://localhost:6543" "https://chesstutorserver.herokuapp.com" "http://localhost:5000"
 
@@ -108,6 +109,7 @@ class App extends Component {
     this.updateStats = this.updateStats.bind(this)
     this.forceSetVariScore = this.forceSetVariScore.bind(this)
     this.user_over_all_score = this.user_over_all_score.bind(this)
+    this.add_varis_from_pgn = this.add_varis_from_pgn.bind(this)
   }
 
   componentDidMount() {
@@ -405,23 +407,109 @@ class App extends Component {
     }
   }
 
+  // returns  1 if A contains B or A == B
+  // returns -1 if B contains A
+  // returns  0 if neither A contains B nor B contains A
+  variationStartsWith(vari_moves_A, vari_moves_B) {
+    let same = true;
+    for (let i = 0; i <= Math.min(vari_moves_A.length, vari_moves_B.length) - 1; i++) {
+      if (vari_moves_A[i].san !== vari_moves_B[i].san) {
+        same = false;
+        break;
+      }
+    }
+    if (same && vari_moves_A.length >= vari_moves_B.length) {
+      return 1
+    }else if (same && vari_moves_A.length < vari_moves_B.length){
+      return -1
+    }else{
+      return 0
+    }
+  }
+
   addVariation(vari_object, op_index) {
-    if (vari_object.vari_name !== undefined) {
-      /* Update state and database */
-      const vari_index = this.state.user_ops[op_index].variations.length // index of the new variation
+    let vari_index_to_override = -1;
+    let new_vari_adds_no_new_moves = false;
+    this.state.user_ops[op_index].variations.every((v,i) => {
+      let override_vari = this.variationStartsWith(v.moves, vari_object.moves);
+      if (override_vari === -1) {
+        vari_index_to_override = i;
+        return false;
+      }else if(override_vari === 1){
+        // adding this variation is useless
+        vari_index_to_override = i;
+        new_vari_adds_no_new_moves = true;
+        return false;
+      }else{
+        return true;
+      }
+    })
+
+    // if this new variation would not contribute with new moves
+    // we just return the variation info and do nothing
+    if(new_vari_adds_no_new_moves) {
+      console.log("addVariation: Adding this variation is pointless since this line is already part of this opening.")
+      return {
+        vari_index: vari_index_to_override,
+        vari_name: this.state.user_ops[op_index].variations[vari_index_to_override].vari_name,
+        vari_subname: this.state.user_ops[op_index].variations[vari_index_to_override].vari_subname,
+        is_update: true,
+      }
+    }
+
+    // We see if we have to update an existing variation or create a new one
+    if (vari_index_to_override >= 0) {
+      // Update existing variation locally and in database
       this.setState(old => {
         let new_ops = old.user_ops
-        new_ops[op_index].variations.push(JSON.parse(JSON.stringify(vari_object)))
+        new_ops[op_index].variations[vari_index_to_override].moves = vari_object.moves.map(c => c);
+        if (new_ops[op_index].variations[vari_index_to_override].vari_score === 0) {
+          new_ops[op_index].variations[vari_index_to_override].vari_score = { life: MIN_HALF_LIFE, last: "0", last_depth: 0, times_trained: 0, correct_moves: 0, };
+        }
+        // since the variation has been expanded
+        new_ops[op_index].variations[vari_index_to_override].vari_score.last = "0";
         return {
           user_ops: new_ops
         }
       })
 
-      this.serverRequest("POST", "/addVariation/" + op_index, vari_object)
-      return vari_index
-    } else {
-      console.log("addVariation: Can't add an variation without its name")
-      return false
+      // TODO update variation
+      // this.serverRequest("POST", "/updateVariation/" + op_index, vari_object)
+      return {
+        vari_index: vari_index_to_override,
+        vari_name: this.state.user_ops[op_index].variations[vari_index_to_override].vari_name,
+        vari_subname: this.state.user_ops[op_index].variations[vari_index_to_override].vari_subname,
+        is_update: true,
+      }
+    }else{
+      // Create a new variation
+      if (vari_object.vari_name !== undefined) {
+        /* Update state and database */
+        const vari_index = this.state.user_ops[op_index].variations.length // index of the new variation
+        this.setState(old => {
+          let new_ops = old.user_ops
+          new_ops[op_index].variations.push(JSON.parse(JSON.stringify(vari_object)))
+          return {
+            user_ops: new_ops
+          }
+        })
+  
+        this.serverRequest("POST", "/addVariation/" + op_index, vari_object)
+        return {
+          vari_index: vari_index,
+          vari_name: vari_object.vari_name,
+          vari_subname: vari_object.vari_subname,
+          is_update: false,
+        }
+      } else {
+        console.log("addVariation: Can't add a variation without its name")
+        return {
+          vari_index: -1,
+          vari_name: "",
+          vari_subname: "",
+          is_update: false,
+        }
+      }
     }
   }
 
@@ -502,10 +590,9 @@ class App extends Component {
   }
 
   addMultipleVaris(op_index, vari_name, varis){
-    // it would be better to explore the tree to avoid redoing the same moves
+    varis = varis.filter(v => v.length > 0);
     let allowed_subnames = this.getOpFreeSubnames(varis.length, op_index, vari_name, false)
-    console.log(varis);
-    varis.forEach((v, i) => {        
+    varis.forEach((v, i) => {
         this.createVari(vari_name, v, op_index, allowed_subnames[i])
     })
   }
@@ -594,7 +681,6 @@ class App extends Component {
     })
   }
 
-
   forceSetVariScore(op_index, vari_index, new_score) {
     this.setState(old => {
       let new_user_ops = old.user_ops
@@ -608,6 +694,101 @@ class App extends Component {
         return {};
       }
     })
+  }
+
+  /* ---------------------------- LOAD VARIATIONS FROM PGN ---------------------------- */
+
+  // 1. e4 d5 2. exd5 Qxd5 3. Nc3 (3. Nf3 Bg4 (3... Nc6 4. d4) 4. Be2 Nc6 5. O-O (5. d4 O-O-O)
+  game_to_variations(text) {
+    // I want to extract from text all possible ways of ending the game, so all possible variations
+
+    // remove move numbers
+    text = text.replace(/\n+/gm, " ").replace(/[0-9]+\.+\s*/gm, "").replace(/\(\s/gm, "(").trim();
+    // e4 d5 exd5 Qxd5 Nc3 (Nf3 Bg4 (Nc6 d4) Be2 Nc6 O-O (d4 O-O-O) O-O-O Nc3 Qd7 b4 Nf6 b5 Bxf3 Bxf3 Nd4 a4 Qf5)
+
+    let ready_vars = []
+    let active_vars = [[]] // start with one empty variation
+  
+    let san = ""
+
+    text.split("").forEach(letter => {
+        switch (letter) {
+            case "(":
+                // add this san to the current variation
+                if(active_vars.length > 0 && san) active_vars[active_vars.length - 1].push(san)
+                san = ""
+                // start a new variation from this point
+                if(active_vars.length > 0){
+                    let new_vari = [...active_vars[active_vars.length - 1]]
+                    new_vari.pop() // the variation starts from the move before
+                    active_vars.push(new_vari)
+                }else{
+                    active_vars.push([])
+                }
+                break;
+            case ")":
+                // add this san to the current variation
+                if(active_vars.length > 0 && san) active_vars[active_vars.length - 1].push(san)
+                san = ""
+                // end this variation
+                if(active_vars.length > 0) ready_vars.push(active_vars.pop())
+                break;
+            case " ":
+                // add this san to the current variation
+                if(active_vars.length > 0 && san) active_vars[active_vars.length - 1].push(san)
+                san = ""
+                break;
+            default:
+                san += letter
+                break;
+        }
+    });
+
+    if(active_vars.length > 0) {
+        if(active_vars.length > 0 && san) active_vars[active_vars.length - 1].push(san)
+        ready_vars.push(active_vars.pop())
+    }
+
+    if(active_vars.length !== 0) {
+      this.props.notify("Incomplete lines were found inside this PGN.", "error")
+    }
+
+    return ready_vars
+  }
+
+  add_varis_from_pgn(op_index, vari_name, text){
+    let varis = this.game_to_variations(text)
+    let game = new Chess()
+    let err_count = false;
+    let new_varis = [];
+    // TODO: this code is inefficient because we go through many moves twice
+    varis.every(v => {
+      game.reset();
+      // start new variation
+      let new_json_vari = [];
+      // play each move
+      for(let i = 0; i<v.length; i++) {
+        let move = game.move(v[i], {unsafe_san_parsing: false})        
+        if(move === null){
+          console.log("Error playing move: ", v[i])
+          err_count += 1;
+          return false;
+        }else{
+          new_json_vari.push({
+            from: move.from,
+            to: move.to,
+            promotion: move.promotion,
+            san: move.san,
+          })
+        }
+      }
+      // add this vari to the list
+      new_varis.push(new_json_vari);
+    })
+    if(err_count > 0) {
+      this.notify("This PGN contains invalid moves. Some variations where therefore omitted.", "error");
+    }
+    this.addMultipleVaris(op_index, vari_name, new_varis);
   }
 
   /* ---------------------------- COMMENTS ---------------------------- */
@@ -1279,7 +1460,7 @@ class App extends Component {
         if(this.state.user_ops[op_index]) return this.state.user_ops[op_index].op_color
       }}
       getOpFreeSubnames={this.getOpFreeSubnames}
-      addMultipleVaris={this.addMultipleVaris}
+      add_varis_from_pgn={this.add_varis_from_pgn}
       notify={this.notify}
     />
     const trainingPage = ({ match, history }) => <TrainingPage
@@ -1311,7 +1492,6 @@ class App extends Component {
       get_correct_moves_data_book={this.get_correct_moves_data_book}
       getOpFreeSubnames={this.getOpFreeSubnames}
       notify={this.notify}
-      addMultipleVaris={this.addMultipleVaris}
       settings={this.state.settings}
     />
     const variPage = ({ match, history }) => <VariationPage

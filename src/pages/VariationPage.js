@@ -34,7 +34,7 @@ class VariationPage extends Component {
           vari_subname={vari.vari_subname}
 
           buttons={in_training ? ["back", "help", "stopTrainThis", "more"] : ["back", "single_next", "trainThis", "more", "add_comment"]}
-          moreMenuButtons={["Analyze", "flip", "smallBoard", "copy_png", "copy_fen"]}
+          moreMenuButtons={["Analyze", "flip", "smallBoard", "copy_pgn", "copy_fen"]}
           tabs={["moves", "vari_info"]}
 
           rotation={op.op_color}

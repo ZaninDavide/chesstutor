@@ -1,4 +1,5 @@
 import React, { Component } from "react"
+import Translator from "../components/Translator"
 import "../styles/Modal.css"
 
 class VariationAddedModal extends Component {
@@ -19,7 +20,14 @@ class VariationAddedModal extends Component {
                         <h2>
                             <span className="impText">
                                 {this.props.added_vari_names.name + " " + this.props.added_vari_names.subname}
-                            </span>{" "}was succesfully added to your repertoire!<br />
+                            </span>{" "}
+                            {
+                                this.props.added_vari_names.is_update ?
+                                    <Translator text="was successfully updated!"/>
+                                :
+                                    <Translator text="was successfully added to your repertoire!"/>
+                            }
+                            <br />
                         </h2>
                         <div id="goodJobIconContainer">
                             <div id="goodJobIcon" className="iconText impText">thumb_up_alt</div>

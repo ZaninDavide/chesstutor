@@ -65,8 +65,9 @@ class Board extends Component {
       moves_forward: [],
       arrows: [],
       variationAddedNames: {
-        name: "",
+        name: "", 
         subname: "",
+        is_update: false,
       },
       smallBoard: starterSmallBoard,
       smart_training_errors_first: null,
@@ -279,8 +280,8 @@ class Board extends Component {
           close={() => this.setState({ boardMenuVisible: false })}
           title={<Translator text={"Board"}/>}
         >
-          {/* COPY PNG TO CLIPBOARD */}
-          {this.props.moreMenuButtons.indexOf("copy_png") !== -1 ?
+          {/* COPY PGN TO CLIPBOARD */}
+          {this.props.moreMenuButtons.indexOf("copy_pgn") !== -1 ?
             <button className="simpleButton hMenuButton" onClick={() => {
               copy_text_to_clipboard(this.state.game.pgn(), () => {
                 this.props.notify("PGN copied successfully", "normal");
@@ -291,7 +292,7 @@ class Board extends Component {
             }}>
               <div className="hMenuButtonContent">
                 <div className="hMenuButtonIcon">file_copy</div>
-                <div className="hMenuButtonLabel"><Translator text="Copy PNG"/></div>
+                <div className="hMenuButtonLabel"><Translator text="Copy PGN"/></div>
               </div>
             </button> : null
           }
@@ -349,17 +350,6 @@ class Board extends Component {
             </div>
           </button> : null
           }
-          {/* LOAD VARIATIONS BUTTON */}
-          {this.props.moreMenuButtons.indexOf("load_variations") !== -1 ?
-            <button className="simpleButton hMenuButton" onClick={() => {
-              this.setState({ boardMenuVisible: false, loadVariationsModalVisible: true })
-          }}>
-            <div className="hMenuButtonContent">
-              <div className="hMenuButtonIcon">upload</div>
-              <div className="hMenuButtonLabel"><Translator text="Load lines from PGN"/></div>
-            </div>
-          </button> : null
-          }
         </HangingMenu>
 
         {/* YOU ADDED A VARIATION! */}
@@ -384,17 +374,6 @@ class Board extends Component {
           vari_name={this.props.vari_name}
           vari_subname={this.props.vari_subname}
           get_compatible_variations={this.props.get_compatible_variations}
-        />
-
-        {/* LOAD VARIATIONS MODAL */}
-        <LoadVariationsModal 
-          visible={this.state.loadVariationsModalVisible}
-          close={() => this.setState({ loadVariationsModalVisible: false })}
-          notify={this.props.notify}
-          addVariations={new_varis => {
-            this.props.addMultipleVaris(this.props.op_index, this.props.vari_name, new_varis);
-            this.props.history.push("/openings/" + this.props.op_index)
-          }}
         />
       </React.Fragment>
     )
@@ -1418,16 +1397,18 @@ class Board extends Component {
 
   createThisVariation(name, subname = undefined) {
     if (name.length !== 0) {
-      /*let vari_index = */this.props.createVari(name, this.state.json_moves, this.props.op_index, subname)
-      // this.props.history.push("/openings/" + this.props.op_index)
-
-      // this.props.notify(`${name} ${subname} created!`, "important")
-      this.setState({
-        variationAddedModalVisible: true, variationAddedNames: {
-          name: name,
-          subname: subname
-        }
-      })
+      let vari_info = this.props.createVari(name, this.state.json_moves, this.props.op_index, subname)
+      if (vari_info.vari_index !== -1) {
+        this.setState({
+          variationAddedModalVisible: true, variationAddedNames: {
+            name: vari_info.vari_name,
+            subname: vari_info.vari_subname,
+            is_update: vari_info.is_update,
+          }
+        })
+      }else{
+        this.props.notify("Impossible to add this variation.", "error");
+      }
     }
   }
 
