@@ -22,16 +22,19 @@ class SmartTrainingBox extends Component {
                 }
             </div>
             <div id="smartTrainingBoxButtons">
-                <button className="simpleButton smartTrainingButton" onClick={() => this.props.history.push("/training/smart/white")}>
-                    <div className="smartTrainingBoxButtonIcon">school</div>
-                    <div className="smartTrainingBoxButtonLabel"><Translator text="White" /></div>
+                <button className="simpleButton smartTrainingButton impButton" onClick={() => this.props.history.push("/training/smart/white")}>
+                    <div className="simpleButton smartTrainingButtonContent">
+                        <div>school</div>
+                        <div><Translator text="White" /></div>
+                    </div>
                 </button>
                 <div></div>
-                <button className="simpleButton smartTrainingButton" onClick={() => this.props.history.push("/training/smart/black")}>
-                    <div className="smartTrainingBoxButtonIcon">school</div>
-                    <div className="smartTrainingBoxButtonLabel"><Translator text="Black" /></div>
-                </button>
-                
+                <button className="simpleButton smartTrainingButton impButton" onClick={() => this.props.history.push("/training/smart/black")}>
+                    <div className="simpleButton smartTrainingButtonContent">
+                        <div>school</div>
+                        <div><Translator text="Black" /></div>
+                    </div>
+                </button>                
             </div>
             <div id="smartTrainingBoxTotalScore" onClick={() => this.props.history.push("/stats")}>
                 <div></div>

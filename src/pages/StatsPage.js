@@ -4,7 +4,7 @@ import Header from "../components/Header"
 import dayjs from "dayjs"
 
 class StatsPage extends Component {
-  get_calendar_values(stats){
+  get_calendar_days(stats){
     if(stats === undefined || stats === null){
       console.log("get_calendar_values: stats not found.")
       return []
@@ -20,33 +20,55 @@ class StatsPage extends Component {
     })
   }
 
+  get_streaks(days, goal) {
+    if(goal <= 0) return [];
+    let streaks = [];
+    let from = null;
+    let to = null;
+    let last = null;
+    days.push({year:5000, month:1, day:1, value: 0}); // this forces the code to push the last streak
+    for(let i = 0; i < days.length; i++) {
+      let delta = 1;
+      if (last !== null){
+        delta = Math.round((
+            (new Date(days[i].year, days[i].month - 1, days[i].day)) -
+            (new Date(last.year, last.month - 1, last.day))
+          ) / 1000 / 60 / 60 / 24); // we need to round because days aren't exactly 24 hours
+      }
+      if(
+        (days[i].value >= goal && delta === 1 && from !== null) || 
+        (days[i].value >= goal && from === null)
+      ){
+        if(from !== null){
+          to = days[i];
+        }else{
+          from = days[i];
+          to = null;
+        }
+      }else{
+        if(from !== null && to !== null){
+          streaks.push({from: from, to: to})
+          from = null;
+          to = null;
+        }
+      }
+      last = days[i];
+    }
+    return streaks;
+  }
+
   render() {
+    const days = this.get_calendar_days(this.props.stats);
     return (
       <React.Fragment>
         <Header title={this.props.username} mainButtonText="arrow_back" />
         <div id="statsPage" className="page">
           <div style={{"alignContent": "center"}}>
-            {/*<h1>Score: <span className="impText">{this.props.user_over_all_score().total_score_str}</span></h1>*/}
             <CommitmentCalendar 
               title="streaks"
-              values={this.get_calendar_values(this.props.stats)} 
-              colors={[
-                "var(--calendarColor1)",
-                "var(--calendarColor2)",
-                "var(--calendarColor3)",
-                "var(--calendarColor4)",
-                "var(--calendarColor5)",
-                "var(--calendarColor6)",
-                "var(--calendarColor7)",
-                "var(--calendarColor8)"
-              ]}
-              maxValue={150}
-              streaks={[]}
-              // streaks={[{
-              //     from: {year: 2023, month: 1, day:1},
-              //     to: {year: 2023, month: 1, day:10},
-              //     color: "#686ae2"
-              // }]}
+              days={days}
+              maxValue={this.props.settings.moves_goal}
+              streaks={this.get_streaks(days, this.props.settings.moves_goal)}
             />
           </div>
         </div>

@@ -1,5 +1,6 @@
 import React, { Component } from "react"
 import dayjs from "dayjs"
+import Translator from "./Translator"
 
 class CommitmentCalendar extends Component {
     constructor(props) {
@@ -30,7 +31,7 @@ class CommitmentCalendar extends Component {
             const cmp_from = this.compare_days(day, st.from);
             const cmp_to = this.compare_days(day, st.to);
 
-            console.log(day, cmp_from, cmp_to, cmp_from > 0 && cmp_to < 0 )
+            // console.log(day, cmp_from, cmp_to, cmp_from > 0 && cmp_to < 0 )
 
             if( cmp_from > 0 && cmp_to < 0 ){
                 return {
@@ -59,41 +60,55 @@ class CommitmentCalendar extends Component {
         let num_of_days = dayjs(first_day).daysInMonth();
         let num_of_weeks = Math.ceil((num_of_days + first_day_num_week) / 7);
 
+        const levels = 3;
+
         let weeks_obj = [];
         for(let w = 0; w < num_of_weeks; w++){
             let days_obj = [];
             for(let d = 1; d <= 7; d++){
                 let today_obj = null;
                 let day_num = w*7 + d - first_day_num_week;
-                let today_value = this.props.values ? (
-                    this.props.values.find(elem => elem.year === year && elem.month === month && elem.day === day_num)
+                let today_value = this.props.days ? (
+                    this.props.days.find(elem => elem.year === year && elem.month === month && elem.day === day_num)
                 ) : 0;
                 if(today_value === undefined) {
                     today_value = 0;
                 }else{
                     today_value = today_value.value !== undefined ? today_value.value : 0;
                 };
-                let percent = Math.min(1, Math.max(0, today_value / this.props.maxValue));
-                let col_num = Math.ceil(percent * (this.props.colors.length - 1));
-                const bg_str = this.props.colors[col_num];
+                let percent = 0;
+                if(this.props.maxValue <= 0) {
+                    if(today_value > 0) { percent = 1; } else { percent = 0; }
+                }else{
+                    percent = Math.min(1, Math.max(0, today_value / this.props.maxValue));   
+                }
+                let level_num = Math.min(levels, Math.ceil(percent * levels) + 1);
+
+                let level_class = "calendarLevel" + level_num.toString();
 
                 let extraClasses = "";
-                let bc_str = undefined;
                 let in_st = this.day_is_in_streak({year, month, day: day_num}, this.props.streaks)
                 if(in_st !== null){
-                    bc_str = in_st.streak.color;
-                    extraClasses = " streak" + in_st.pos;
+                    extraClasses += " streak" + in_st.pos;
                 }
                 
                 if(this.compare_days({year,month,day:day_num}, this_today) === 1){
-                    extraClasses = " calendarFutureDay";
+                    extraClasses += " calendarFutureDay";
                 }
+
+                if(d == 7) extraClasses += " daySunday";
 
                 if(day_num > num_of_days || day_num < 1) {
                     day_num -= num_of_days;
-                    today_obj = <td className={"calendarEmptyDay" + extraClasses} key={"emptyday-" + year.toString() + "-" + month.toString() + "-" + d.toString()}></td>;
+                    today_obj = <td 
+                        className={"calendarEmptyDay" + extraClasses} 
+                        key={"emptyday-" + year.toString() + "-" + month.toString() + "-" + d.toString()}
+                    ></td>;
                 }else{
-                    today_obj = <td style={{backgroundColor: bg_str, borderColor: bc_str}} className={"calendarDay" + extraClasses} key={"day-" + year.toString() + "-" + month.toString() + "-" + d.toString()}>{day_num}</td>;
+                    today_obj = <td  
+                        className={"calendarDay " + level_class + extraClasses} 
+                        key={"day-" + year.toString() + "-" + month.toString() + "-" + d.toString()}
+                    >{day_num}</td>;
                 }
                 days_obj.push(today_obj);
             }
@@ -105,13 +120,13 @@ class CommitmentCalendar extends Component {
         }
 
         const month_names = {
-            1: "Gen", 2: "Feb", 3: "Mar", 4: "Apr", 5: "Mag", 6: "Giu", 7: "Lug", 8: "Ago",
-            9: "Set", 10: "Ott", 11: "Nov", 12: "Dic"
+            1: "Gennaio", 2: "Febbraio", 3: "Marzo", 4: "Aprile", 5: "Maggio", 6: "Giugno", 7: "Luglio", 8: "Agosto",
+            9: "Settembre", 10: "Ottobre", 11: "Novembre", 12: "Dicembre"
         }
 
         return <div className="calendarMonthContainer" key={"container_month_" + month.toString() + "_year_" + year.toString() + "_" + this.props.title }>
             <h2 key={"title_month_" + month.toString() + "_year_" + year.toString() + "_" + this.props.title }>
-                {year.toString() + " " + month_names[month]}    
+                {year.toString() + " "}<Translator text={month_names[month]}/>    
             </h2>
             <table 
                 key={"month_" + month.toString() + "_year_" + year.toString() + "_" + this.props.title }

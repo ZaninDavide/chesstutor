@@ -1069,49 +1069,75 @@
   padding: 0;
 }
 
-.smartTrainingButton{
-  display: grid;
-  grid-template-columns: auto 1fr;
-  grid-template-areas: "smartTrainingBoxButtonIcon smartTrainingBoxButtonLabel";
-  width: 100%;
-  max-width: 250px;
-  margin: 0 !important;
-  padding: 0 !important;
 
-  /*
-  border-radius: var(--borderRadius);
-  margin-left: auto;
-  margin-right: auto;
-  display: block;
-  height: var(--uiElementMediumHeight);
-  line-height: var(--uiElementMediumHeight); */
+.boxWithIconAndText:hover{
+  background-color: var(--cardBack);
 }
 
-.smartTrainingBoxButtonIcon{
-  grid-area: smartTrainingBoxButtonIcon;
-  font-family: "Material Icons" !important; /* overwrite simpleButton */
-  font-size: calc(var(--iconsFontSize) * 0.9) !important; /* overwrite simpleButton */
+.boxWithIconAndText {
+  background-color: var(--back);
+  align-content: center;
+
+  min-height: var(--uiElementHeight); 
+
+  border-radius: var(--borderRadius);
+  margin: var(--mediumMargin);
+  border: 2px solid var(--onBack);
+  border-style: dashed;
+
+  cursor: pointer;
+  -webkit-tap-highlight-color: var(--tap);
+
+  /* TRANSITIONS */
+  transition-property: background-color;
+  transition-duration: 50ms;
+  transition-timing-function: cubic-bezier(0.3, 0, 0.7, 1);
+  transition-delay: 0s;
+  align-self: center;
+}
+
+.smartTrainingButton {
+  border-radius: var(--borderRadius) !important;
+  margin-left: 0px !important;
+  margin-right: 0px !important;
+  margin-top: 0px !important;
+  margin-bottom: 0px !important;
+}
+
+.smartTrainingButtonContent {
+  display: grid;
+  grid-template-columns: auto auto;
+  grid-template-rows: 1fr;
+  width: fit-content;  
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.smartTrainingButtonContent div:nth-child(1) {
+  font-size: var(--iconsFontSize) !important;
+  font-family: "Material Icons" !important;
+  font-weight: bold;
+  width: fit-content;
   height: var(--uiElementHeight);
+  line-height: var(--uiElementHeight);
   color: var(--back);
-  border-top-left-radius: var(--borderRadius);
-  border-bottom-left-radius: var(--borderRadius);
-  background-color: var(--main);
-  padding-left: var(--smallMargin);
   padding-right: var(--smallMargin);
 }
 
-.smartTrainingBoxButtonLabel{
-  grid-area: smartTrainingBoxButtonLabel;
-  text-align: left;
-  line-height: var(--uiElementHeight);
-  border-top-right-radius: var(--borderRadius);
-  border-bottom-right-radius: var(--borderRadius);
-  /* TEXT */
-  color: var(--back);
+.smartTrainingButtonContent div:nth-child(2) {
   font-family: var(--textFont);
-  font-weight: var(--textWeight);
-  font-size: var(--textSize);
-  background-color: var(--main);
+  font-size: var(--titleSize);
+  width: fit-content;
+  height: var(--uiElementHeight);
+  line-height: var(--uiElementHeight);
+  justify-content: center; /* align horizontal */
+  align-items: center; /* align vertical */
+  text-align: left;
+  padding-left: var(--smallMargin);
+  position: relative;
+  top: 1px;
+  align-self: center;
+  color: var(--back);
 }
 
 #opsSeparatorArchivedOpenings{
@@ -1302,8 +1328,9 @@
 }
 
 .calendarMonthTable {
-  border-spacing: var(--smallMargin);
+  border-spacing: 4px;
 }
+
 
 .calendarDay, .calendarEmptyDay {
   width: calc(0.85*var(--uiElementHeight));
@@ -1312,52 +1339,64 @@
   text-align: center;
   box-sizing: border-box;
   border-radius: var(--borderRadius);
+  font-weight: bold;
 }
 
 .calendarDay {
   color: var(--text);
-  border: 1px solid var(--shadow);
 }
 
-.calendarDay:not(.streakFrom):not(.streakMid):not(.streakTo) {
-  border: var(--borderSize) solid var(--onBack);
+.calendarEmptyDay {
+  border: 1px solid var(--hoverBack);
 }
 
 .calendarDay.streakMid {
   border-radius: 0;
-  border-top-width: 6px; 
-  border-bottom-width: 6px;
-  border-left-width: 0px;
-  border-right-width: 0px; 
-  border-style: double;
+  background-color: var(--main);
+}
+
+td.calendarDay.streakMid:not(.daySunday), td.calendarDay.streakFrom:not(.daySunday) {
+  -moz-box-shadow: 8px 0px 0px var(--main), 0px 0px var(--shadowBlur) var(--main);
+  -webkit-box-shadow: 8px 0px 0px var(--main), 0px 0px var(--shadowBlur) var(--main);
+  box-shadow: 8px 0px 0px var(--main), 0px 0px var(--shadowBlur) var(--main);
+}
+
+td.calendarDay.streakMid, td.calendarDay.streakFrom, td.calendarDay.streakTo {
+  -moz-box-shadow: 0px 0px var(--shadowBlur) var(--main);
+  -webkit-box-shadow: 0px 0px var(--shadowBlur) var(--main);
+  box-shadow: 0px 0px var(--shadowBlur) var(--main);
+  font-size: var(--bigTextSize);
+  color: var(--back) !important;
 }
 
 .calendarDay.streakFrom {
   border-top-right-radius: 0;
   border-bottom-right-radius: 0;
-  border-top-width: 6px; 
-  border-bottom-width: 6px;
-  border-left-width: 6px;
-  border-right-width: 0px; 
-  border-style: double;
+  background-color: var(--main);
 }
-
 .calendarDay.streakTo {
   border-top-left-radius: 0;
   border-bottom-left-radius: 0;
-  border-top-width: 6px; 
-  border-bottom-width: 6px;
-  border-left-width: 0px;
-  border-right-width: 6px; 
-  border-style: double;
+  background-color: var(--main);
 }
 
 .calendarEmptyDay{
-  border: 1px solid var(--onBack);
+  border: 2px solid var(--hoverBack);
 }
 
 .calendarFutureDay{
-  border: 1px solid var(--onBack);
+  border: 2px solid var(--hoverBack);
   color: var(--onBack);
   background-color: transparent !important;
+}
+
+.calendarLevel1 {
+  background-color: var(--hoverBack);
+}
+.calendarLevel2 {
+  border: 2px solid var(--main);
+  color: var(--main);
+}
+.calendarLevel3 {
+  background-color: var(--main);
 }
