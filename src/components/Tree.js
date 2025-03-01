@@ -2,7 +2,7 @@ import React, { Component } from "react"
 import { make_san_nicer_html, process_comment } from "../utilities/san_parsing"
 import FenViewer from "../components/FenViewer";
 // import FenViewerCanvas from "../components/FenViewerCanvas";
-import Chess from "../chessjs-chesstutor/chess.js"
+import Chess from "../chessjs_custom/chess.js"
 
 // JSON.stringify(moves_slice): fen
 let fen_cache = {}

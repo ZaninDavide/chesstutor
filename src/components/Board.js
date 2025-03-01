@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import Chess from "../chessjs-chesstutor/chess.js"
+import Chess from "../chessjs_custom/chess.js"
 
 import { cells, cells_rotated, cell_coords, cell_coords_rotated, pieces_names } from "../utilities/pieces_and_coords"
 import { get_piece_src, get_board_svg, get_board_rotated_svg, sound_capture, sound_move, sound_error } from "../utilities/file_paths"
@@ -13,7 +13,6 @@ import HelpModal from "../components/HelpModal"
 import HangingMenu from "../components/HangingMenu"
 import VariationAddedModal from "../components/VariationAddedModal"
 import TrainingFinishedModal from "../components/TrainingFinishedModal"
-import LoadVariationsModal from "../components/LoadVariationsModal"
 import Translator from "../components/Translator"
 
 import Ripples from "react-ripples"
@@ -89,7 +88,6 @@ class Board extends Component {
     }
     /* functions */
     this.newGame = this.newGame.bind(this)
-    this.testChess = this.testChess.bind(this)
     this.selectCell = this.selectCell.bind(this)
     this.deselectCells = this.deselectCells.bind(this)
     this.boardClick = this.boardClick.bind(this)
@@ -395,28 +393,6 @@ class Board extends Component {
     if (this.props.playColor === "black") {
       this.pc_move([])
     }
-  }
-
-  /* ---------------------------- DEBUG ---------------------------- */
-
-  testChess() {
-    this.make_move("d4")
-    this.make_move("d5")
-    this.make_move("e4")
-    this.make_move("dxe4")
-    this.state.game.undo()
-    this.logBoard()
-    this.state.game.undo()
-    this.logBoard()
-    this.make_move("h3")
-    this.make_move("h5")
-    this.state.game.undo()
-    this.logBoard()
-    console.log(this.state.game.board())
-  }
-
-  logBoard() {
-    console.log(this.state.game.ascii())
   }
 
   /* ---------------------------- GAME MANAGEMENT ---------------------------- */

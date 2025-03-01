@@ -1,4 +1,4 @@
-import Chess from "../chessjs-chesstutor/chess.js"
+import Chess from "../chessjs_custom/chess.js"
 import { get_piece_src, printBoardSVG } from "../utilities/file_paths"
 
 import { make_san_nicer_html, process_comment } from "../utilities/san_parsing"
@@ -246,7 +246,7 @@ function group_to_html(group_name, varis, comments, boards, op_color) {
     return html;
 }
 
-function generatePDF(op) {
+function generate_pdf(op) {
     let html = ""
     
     html += intro(op.op_name, op.comments["|"])
@@ -274,4 +274,4 @@ function generatePDF(op) {
     return start() + html + end()
 }
 
-export default generatePDF
+export default generate_pdf

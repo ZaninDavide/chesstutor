@@ -1,5 +1,5 @@
 import React, { Component } from "react"
-import Chess from "../chessjs-chesstutor/chess.js"
+import Chess from "../chessjs_custom/chess.js"
 import { pieces_names } from "../utilities/pieces_and_coords"
 import { get_piece_src, fenViewerBoard } from "../utilities/file_paths"
 

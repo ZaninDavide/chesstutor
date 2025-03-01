@@ -1,4 +1,4 @@
-import Chess from "../chessjs-chesstutor/chess.js"
+import Chess from "../chessjs_custom/chess.js"
 import { move_to_fromto } from "../utilities/san_parsing.js";
 
 function does_support_stockfish() {

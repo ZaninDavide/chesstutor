@@ -7,7 +7,7 @@ import Modal from "../components/Modal"
 import SendModal from "../components/SendModal"
 import SmartTrainingBox from "../components/SmartTrainingBox"
 
-import generatePDF from "../generatePDF/generatePDF.js"
+import generate_pdf from "../generate_pdf/generate_pdf.js"
 
 import { Menu, MenuItem } from '@szhsin/react-menu';
 
@@ -226,7 +226,7 @@ class OpsListPage extends Component {
             className="simpleButton hMenuButton"
             onClick={() => {
               this.hMenuClose();
-              this.printPDF(generatePDF(this.props.ops[this.state.hMenuOpIndex]))
+              this.printPDF(generate_pdf(this.props.ops[this.state.hMenuOpIndex]))
             }}
           >
             <div className="hMenuButtonContent">

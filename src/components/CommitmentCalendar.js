@@ -96,7 +96,7 @@ class CommitmentCalendar extends Component {
                     extraClasses += " calendarFutureDay";
                 }
 
-                if(d == 7) extraClasses += " daySunday";
+                if(d === 7) extraClasses += " daySunday";
 
                 if(day_num > num_of_days || day_num < 1) {
                     day_num -= num_of_days;

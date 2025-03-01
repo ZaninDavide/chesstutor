@@ -26,7 +26,7 @@ import "./styles/Modal.css"
 import "./styles/Print.css" // css by CLASSES + MAIN COMPONENTS
 import { LanguageProvider } from "./components/LanguageContext"
 import dayjs from "dayjs"
-import Chess from "./chessjs-chesstutor/chess.js"
+import Chess from "./chessjs_custom/chess.js"
 
 const SERVER_URI = "https://chessup.baida.dev:3008" // "http://localhost:6543" "https://chesstutorserver.herokuapp.com" "http://localhost:5000"
 
