@@ -44,7 +44,7 @@ class SmartTrainingPage extends Component {
 
           buttons={["back", "help", "more"]}
           moreMenuButtons={["Analyze", "flip", "smallBoard", "copy_pgn", "copy_fen"]}
-          tabs={["moves", "vari_info", "op_name", "goal_bar"]}
+          tabs={["moves", "op_name", "goal_bar"]}
 
           notify={this.props.notify}
           settings={this.props.settings}

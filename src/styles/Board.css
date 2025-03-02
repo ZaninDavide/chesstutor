@@ -301,8 +301,15 @@ max-width: calc(100vh - var(--headerHeight) - var(--uiElementHeight) - 80px);
   border-bottom: solid var(--borderSize) var(--onBack);
   padding-top: 2px;
   display: grid;
-  grid-template-columns: 1fr auto;
+  grid-template: 
+    "a a" auto
+    "b c" auto / 
+    1fr auto;
 }
+
+#boardDataTabTopBar :nth-child(1) { grid-area: a; }
+#boardDataTabTopBar :nth-child(2) { grid-area: b; }
+#boardDataTabTopBar :nth-child(3) { grid-area: c; }
 
 #boardDataTabTopBarExtraInfo {
   padding-top: 1px;

@@ -93,7 +93,7 @@ class BookUI extends Component {
                     <tr onClick={() => this.props.book_move(san)} key={`santr_${san}_${op_name}}`}>
                         <td key={`number_${number}_${san}`} className="bookTableNumber">{number}</td>
                         <td key={`san_${number}_${san}`} className="bookTableSan" dangerouslySetInnerHTML={{__html: make_san_nicer_html(san)}}></td>
-                        <td key={`op_name_${number}_${san}`}>{op_name}</td>
+                        <td key={`op_name_${number}_${san}`} colSpan={2}>{op_name}</td>
                         <td key={`varis_${number}_${san}`}>{varis}</td>
                     </tr>
                 )
@@ -157,46 +157,35 @@ class BookUI extends Component {
         return res;
     }
 
-    mineBook() {
-        return <table id="bookTableMine" className="bookTable" key="bookTableMine">
-                <tbody>
-                    {this.getOptions()}
-                    <tr className="titleLineBookUI" key="titleLineBookUIMine">
-                        <td>#</td>
-                        <td><Translator key="translatorMove" text={"Move"}/></td>
-                        <td>
-                            <Translator key="translatorOpening" text={"Opening"}/>
-                        </td>
-                        <td>
-                            <Translator key="translatorLine" text={"Line"}/>
-                        </td>
-                    </tr>
-                </tbody>
-        </table>
-    }
+    mineBook() { return [
+        <tr className="titleLineBookUI" key="titleLineBookUIMine">
+            <td style={{textAlign: "right"}}>#</td>
+            <td><Translator key="translatorMove" text={"Move"}/></td>
+            <td colSpan={2}><Translator key="translatorOpening" text={"Opening"}/></td>
+            <td><Translator key="translatorLine" text={"Line"}/>
+            </td>
+        </tr>,
+        this.getOptions()
+    ]}
 
-    mastersBook() {
-        return <table id="bookTableMasters" className="bookTable" key="bookTableMasters">
-            <tbody>
-                <ErrorBoundary fallback={<tr><td>Error fetching</td><td></td><td></td><td></td></tr>}>
-                    <Suspense fallback={<tr><td></td><td></td><td></td><td></td></tr>}>
-                        <MasterGames 
-                            getMastersMovesRes={this.getMastersMoves()} 
-                            moves_count={this.props.json_moves.length}
-                            book_move={this.props.book_move} 
-                        />
-                    </Suspense>
-                </ErrorBoundary>
-                <tr className="titleLineBookUI" key="titleLineBookUIMasters">
-                    <td>#</td>
-                    <td><Translator text={"Move"}/></td>
-                    <td><Translator text={"Rating"}/></td>
-                    <td><Translator text={"Winrate WDB"}/></td>
-                    <td><Translator text={"Games"}/></td>
-                </tr>
-            </tbody>
-        </table>
-    }
+    mastersBook() { return [
+        <tr className="titleLineBookUI" key="titleLineBookUIMasters">
+            <td style={{textAlign: "right"}}>#</td>
+            <td><Translator text={"Move"}/></td>
+            <td><Translator text={"Rating"}/></td>
+            <td><Translator text={"Games"}/></td>
+            <td><Translator text={"Winrate WDB"}/></td>
+        </tr>,
+        <ErrorBoundary fallback={<tr><td>Error fetching</td><td></td><td></td><td></td></tr>}>
+            <Suspense fallback={<tr><td></td><td></td><td></td><td></td></tr>}>
+                <MasterGames 
+                    getMastersMovesRes={this.getMastersMoves()} 
+                    moves_count={this.props.json_moves.length}
+                    book_move={this.props.book_move} 
+                />
+            </Suspense>
+        </ErrorBoundary>
+    ]}
 
     filtersSection() {
         const queryToValue = (query) => {
@@ -217,8 +206,7 @@ class BookUI extends Component {
             }
         }
 
-        return <TogglePanel title="Filters" panelName="bookFiltersPanel">
-            <table id="bookQueryTable" key="bookQueryTable"><tbody>
+        return <table id="bookQueryTable" key="bookQueryTable"><tbody>
                 <tr key="bookQueryTableTrOpening"><td><Translator key="translatorOpening" text={"Opening"}/>:</td><td>
                     <select className="bookQuerySelector opQuery" key="bookQueryTableOpeningSelector"
                         onChange={e => {
@@ -272,26 +260,26 @@ class BookUI extends Component {
                         </select>
                     </div>
                 </td></tr>
-            </tbody></table>
-        </TogglePanel>
+            </tbody>
+        </table>
     }
 
     render() {
         return <React.Fragment key="bookFragment">
-            {this.state.show_mine ? this.mineBook() : null}
-            {this.state.show_mine && this.state.show_masters ? <>
-                <br />
-                <h2 className="bookTableLabel"><Translator text="Masters" /></h2>
-                <br />
-            </> : null}
-            {this.state.show_masters ? this.mastersBook() : null}
+            <table id="bookTable" key="bookTable">
+                <tbody>
+                    {this.state.show_mine ? this.mineBook() : null}
+                    {this.state.show_masters ? this.mastersBook() : null}
+                </tbody>
+            </table>
             <br />
-            <TogglePanel title="Dataset">
+            <TogglePanel title="Repertoire">
                 <CheckBox 
                     text={<Translator text={"My repertoire"} />} 
                     checked={this.state.show_mine} 
                     click={() => this.setState(old => {return {show_mine: !old.show_mine}})}
                 />
+                {this.state.show_mine ? this.filtersSection() : null}
                 <br />
                 <CheckBox 
                     text={<Translator text={"Masters games"} />} 
@@ -299,7 +287,6 @@ class BookUI extends Component {
                     click={() => this.setState(old => {return {show_masters: !old.show_masters}})}
                 />
             </TogglePanel>
-            {this.state.show_mine ? this.filtersSection() : null}
         </React.Fragment>
         
     }
@@ -455,13 +442,13 @@ class MasterGames extends React.Component {
                 <td className="bookTableNumber">{number}</td>
                 <td className="bookTableSan" dangerouslySetInnerHTML={{__html: make_san_nicer_html(m.san)}}></td>
                 <td>{m.averageRating}</td>
+                <td>{nicer_count(m.white + m.black + m.draws)}</td>
                 <td>
                     <div 
                         className="winrateBar" 
                         style={{backgroundImage: get_winrate_gradient(m)}}
                     />
                 </td>
-                <td>{nicer_count(m.white + m.black + m.draws)}</td>
             </tr>
         )
 

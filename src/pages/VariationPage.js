@@ -35,7 +35,7 @@ class VariationPage extends Component {
 
           buttons={in_training ? ["back", "help", "stopTrainThis", "more"] : ["back", "single_next", "trainThis", "more", "add_comment"]}
           moreMenuButtons={["Analyze", "flip", "smallBoard", "copy_pgn", "copy_fen"]}
-          tabs={["moves", "vari_info"]}
+          tabs={["moves_table", "moves", "book"]}
 
           rotation={op.op_color}
           playColor={in_training ? op.op_color : "none"}
@@ -49,8 +49,10 @@ class VariationPage extends Component {
           get_pc_move_data={this.props.get_pc_move_data}
           is_move_allowed={this.props.is_move_allowed}
           get_correct_moves_data={this.props.get_correct_moves_data}
+          get_correct_moves_data_book={this.props.get_correct_moves_data_book}
           get_compatible_variations={this.props.get_compatible_variations}
           notify={this.props.notify}
+          ops={this.props.ops}
 
           set_in_training={(bool, callback = () => {}) => {
             this.setState({ in_training: bool }, () => callback(op.op_color))

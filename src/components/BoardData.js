@@ -137,22 +137,6 @@ class BoardData extends Component {
 
     let separator = <span key="separator_extra_bar">&nbsp;&nbsp;</span>
 
-    // SMART TRAINING GOAL BAR - EXTRA INFO
-    if (this.props.tabs.indexOf("goal_bar") !== -1 && this.props.settings.depth_goal > 0) {
-      // let to_study = true
-      let total = 0
-      if(this.props.stats && this.props.stats[this.props.today_str]){
-          const stats = this.props.stats[this.props.today_str]
-          total = stats.white_moves + stats.black_moves;
-          // to_study = total < this.props.settings.moves_goal
-      }
-      let percentage = total / this.props.settings.moves_goal * 100
-
-      extra_info_bar.push(
-        <div key="goal_bar" id="goal_bar" style={{width: "100%", height: "4px", borderRadius: "2px", margin: "3px 0px 5px 0px", backgroundImage: `-webkit-linear-gradient(left, var(--main) 0%, var(--main) ${percentage}%, var(--onBack) ${percentage}%, var(--onBack) 100%)`}}></div>
-      )
-    }
-
     // OPENING TITLE - EXTRA INFO
     if (this.props.tabs.indexOf("op_name") !== -1) {
       let op_name_extra = <span key="opening_title">{this.props.vari_op_name || ""}</span>
@@ -170,10 +154,25 @@ class BoardData extends Component {
       extra_info_bar.push(op_eco_extra)
     }
 
+    // SMART TRAINING GOAL BAR - EXTRA INFO
+    let goal_bar = <div></div>
+    if (this.props.tabs.indexOf("goal_bar") !== -1 && this.props.settings.depth_goal > 0) {
+      // let to_study = true
+      let total = 0
+      if(this.props.stats && this.props.stats[this.props.today_str]){
+          const stats = this.props.stats[this.props.today_str]
+          total = stats.white_moves + stats.black_moves;
+          // to_study = total < this.props.settings.moves_goal
+      }
+      let percentage = total / this.props.settings.moves_goal * 100
+      goal_bar = <div key="goalBar" id="goalBar" style={{backgroundImage: `-webkit-linear-gradient(left, var(--main) 0%, var(--main) ${percentage}%, var(--onBack) ${percentage}%, var(--onBack) 100%)`}}></div>
+    }
+
     return <div id="boardData" key="boardData">
 
     { this.props.tabs.length > 1 ?
       <div id="boardDataTabTopBar">
+        {goal_bar}
         <div id="boardDataTabTopBarExtraInfo">
           {this.props.tabs.length > 1 || extra_info_bar.length ? extra_info_bar : null}
         </div>
@@ -195,6 +194,7 @@ class BoardData extends Component {
           {tabs}
         </SwipeableViews>
       </div>
+
     </div>
   }
 

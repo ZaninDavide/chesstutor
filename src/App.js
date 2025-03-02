@@ -1507,6 +1507,7 @@ class App extends Component {
       get_pc_move_data={this.get_pc_move_data}
       is_move_allowed={this.is_move_allowed}
       get_correct_moves_data={this.get_correct_moves_data}
+      get_correct_moves_data_book={this.get_correct_moves_data_book}
       get_compatible_variations={this.get_compatible_variations}
       notify={this.notify}
       settings={this.state.settings}

@@ -111,20 +111,21 @@ class userPage extends Component {
         </div>
       </TogglePanel>
       
-      <TogglePanel title="Profile" name="settingsProfilePanel">
+      <TogglePanel title="Advanced" name="settingsAdvancedPanel">
         <div className="settingsSection">
           <button
             onClick={this.props.downloadDatabase}
-            id="downloadDataBaseButton" className="simpleButton"
+            id="downloadDatabaseButton" className="simpleButton"
           ><Translator text="Download database" /></button>
         </div>
-        <div className="settingsSection">
-          <button
-            onClick={this.props.logout}
-            id="logoutButton" className="simpleButton"
-          ><Translator text="Log out" /></button>
-        </div>
       </TogglePanel>
+      <div style={{textAlign: "center", paddingBottom: "150px"}}>
+      <button
+        onClick={this.props.logout}
+        id="logoutButton"
+        className="barButton alertButton"
+        ><Translator text="Log out" /></button>
+      </div>
     </div>
 
     return (

@@ -120,8 +120,8 @@ class CommitmentCalendar extends Component {
         }
 
         const month_names = {
-            1: "Gennaio", 2: "Febbraio", 3: "Marzo", 4: "Aprile", 5: "Maggio", 6: "Giugno", 7: "Luglio", 8: "Agosto",
-            9: "Settembre", 10: "Ottobre", 11: "Novembre", 12: "Dicembre"
+            1: "January", 2: "February", 3: "March", 4: "April", 5: "May", 6: "June", 7: "July", 8: "August",
+            9: "September", 10: "October", 11: "November", 12: "December"
         }
 
         return <div className="calendarMonthContainer" key={"container_month_" + month.toString() + "_year_" + year.toString() + "_" + this.props.title }>
@@ -140,32 +140,28 @@ class CommitmentCalendar extends Component {
         </div>;
     }
 
-    calendar_table(stats) {
+    calendar_table(days) {
         let first_day = {year: dayjs().year(), month: dayjs().month() + 1, day: dayjs().date()};
         let today = {year: dayjs().year(), month: dayjs().month() + 1, day: dayjs().date()};
-        if(stats !== undefined && stats !== null){
-            Object.entries(stats).forEach(stat => {
-                let stat_day = {year: 0, month: 0, day: 0};
-                let dd = dayjs(stat[0]*1000);
-                stat_day.year = dd.year();
-                stat_day.month = dd.month() + 1;
-                stat_day.day = dd.date();
+        if(days !== undefined && days !== null){
+            days.forEach(stat_day => {
                 if(this.compare_days(stat_day, first_day) === -1) {
                     first_day = stat_day;
                 }
             })
         }
 
+        let months = [];
         for(let yy = first_day.year; yy <= today.year; yy++){
-            let months = [];
+            console.log(yy, first_day.year, today.year)
             let max_mm = 12;
             if(today.year === yy) max_mm = today.month;
             for(let mm = 1; mm <= max_mm; mm++){
                 months.push(this.month_table(yy, mm))
             }
-            return months;
         }
 
+        return months;
     }
 
     render() {
@@ -174,7 +170,7 @@ class CommitmentCalendar extends Component {
             key={"calendar_" + this.props.title} 
             className="commitmentCalendarContainer"
         >
-            {this.calendar_table(this.props.stats)}
+            {this.calendar_table(this.props.days)}
         </div>; 
     }
 }
